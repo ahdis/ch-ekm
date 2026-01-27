@@ -1,4 +1,4 @@
 All significant changes to this FHIR implementation guide are documented on this page.
 
-### STU 1 (2025-12-15)
-* [#Nº](https://github.com/ahdis/ch-ig/issues): Description
+### (2026-01-27)
+* [#2](https://github.com/ahdis/ch-ekm/issues/2): Adapted template 

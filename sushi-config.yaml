@@ -3,38 +3,37 @@
 
 # Package name
 # https://confluence.hl7.org/display/FHIR/NPM+Package+Specification#NPMPackageSpecification-Packagename
-id: ch.fhir.ig.ch-ig
-canonical: http://fhir.ch/ig/ch-ig
-name: CH_IG
-title: "CH IG (R4)"
-description: Template for HL7.ch FHIR Implementation Guides
+id: ch.fhir.ig.ch-ekm
+canonical: http://fhir.ch/ig/ch-ekm
+name: CH_EKM
+title: "CH EKM (R4)"
+description: FHIR® Implementation Guide for the Electronic Clinical Report (Elektronische klinische Meldung) of the Swiss Federal Office of Public Health
 status: draft # draft | active | retired | unknown
 license: CC0-1.0
 copyright: CC0-1.0
 jurisdiction: urn:iso:std:iso:3166#CHE
-date: 2025-12-10
-version: 1.2.3 # 1.2.3 published in December 2025
+date: 2026-01-27
+version: 0.0.1 
 fhirVersion: 4.0.1
-copyrightYear: 2024+
-releaseLabel: draft # ci-build # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
+copyrightYear: 2026+
+releaseLabel: ci-build  # ci-build # ci-build | draft | qa-preview | ballot | trial-use | release | update | normative+trial-use
 publisher:
-  name: HL7 Switzerland
+  name: Federal Office of Public Health FOPH
 contact:
-  - name: HL7 Switzerland
+  - name: Federal Office of Public Health FOPH
     telecom:
       - system: url
-        value: https://www.hl7.ch/
+        value: https://www.bag.admin.ch/bag/en/home/das-bag/kontakt-standort.html
 
 dependencies:
-  ch.fhir.ig.ch-core: 6.0.0-ballot
-  hl7.fhir.extensions.r5: 4.0.1
-  hl7.fhir.uv.xver-r5.r4: 0.0.1-snapshot-2 # https://packages2.fhir.org/packages/
-
+ ch.fhir.ig.ch-term: 3.3.x
+ ch.fhir.ig.ch-core: 6.0.0
+ ch.fhir.ig.ch-lab-report: 2.0.0
 pages:
   index.md:
     title: Home
-  guidance.md:
-    title: Guidance
+  usecase.md:
+    title: Use Cases
   profiles.md:
     title: Profiles
   extensions.md:
@@ -46,35 +45,36 @@ pages:
 
 menu:
   Home: index.html
-  Guidance: guidance.html
+  Use Cases: usecase.html
   Profiles: profiles.html
   Extensions: extensions.html
   Terminology: terminology.html
   Artifacts: artifacts.html
 
-resources:
-  Encounter/xver-encounter-r4:
-    name: Cross-Version Encounter R4
-    description: Example for CH IG Encounter using a backport extension for a new introduced resource element in R5 (Encounter.subjectStatus).
-    exampleBoolean: true
-    profile:
-      - http://fhir.ch/ig/ch-ig/StructureDefinition/ch-ig-encounter
-
 # Parameters
-  # Core FHIR: http://build.fhir.org/codesystem-guide-parameter-code.html
-  # FHIR Tools IG: http://build.fhir.org/ig/FHIR/fhir-tools-ig/branches/master/CodeSystem-ig-parameters.html
+# Core FHIR: http://build.fhir.org/codesystem-guide-parameter-code.html
+# FHIR Tools IG: http://build.fhir.org/ig/FHIR/fhir-tools-ig/branches/master/CodeSystem-ig-parameters.html
 parameters:
-  excludettl: true
   allow-extensible-warnings: true
-  display-warnings: true 
-  path-expansion-params: '../../expansion-params.json'  # for using SNOMED CT Swiss Extension
-  pin-canonicals: pin-multiples
+  display-warnings: true
   path-resource:
-    - input/resources  
+    - input/resources
+    - fsh-generated/resources
+#  no-narrative: 
+#    - Bundle/*
+#  special-url:
+#    - urn:oid:2.16.840.1.113883.6.316
+  pin-canonicals: pin-multiples  
+  excludettl: true
+#  apply-version: false
+#  default-version: true
 
-FSHOnly: false
-applyExtensionMetadataToRoot: false
 instanceOptions:
-  setMetaProfile: always
-  setId: always
-  manualSliceOrdering: true
+  # Determines for which types of Instances SUSHI will automatically set meta.profile
+  # if InstanceOf references a profile. Options are:
+  # - always: Set meta.profile for all Instances of profiles (default)
+  # - never: Do not set meta.profile on any Instances
+  # - inline-only: Set meta.profile for only Instances of profiles with Usage set to #inline
+  # - standalone-only: Set meta.profile for only Instances of profiles where Usage is any value other than #inline
+  setMetaProfile: never
+
