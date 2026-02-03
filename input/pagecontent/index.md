@@ -57,12 +57,7 @@ HL7®, HEALTH LEVEL SEVEN®, FHIR® and the FHIR <img src="icon-fhir-16.png" sty
 ### Dependencies
 
 #### Dependency Overview
-This overview illustrates the relevant dependencies of CH EKM to the [Swiss implementation guides](https://fhir.ch/).
 
-[//]: # (// TODO and the [European laboratory project](https://hl7.eu/fhir/laboratory/).)
-
-{% include ig-dependencies.svg %}
-*Fig. 1: Dependency Overview*
 
 #### Dependency Table
 {% include dependency-table.xhtml %}
