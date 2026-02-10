@@ -8,24 +8,24 @@ Usage: #example
 * timestamp = "2026-01-27T11:30:00+02:00"
 * entry[0].fullUrl = "urn:uuid:da065461-34df-4e2e-b69f-4181908575d0" // Composition
 * entry[=].resource = da065461-34df-4e2e-b69f-4181908575d0
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655" // Patient
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015655
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015656" // Condition
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015656
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645" // Patient
+* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015645
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656" // Condition
+* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f025656
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660" // Encounter
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015660
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015661" // Organization
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015661
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015662" // Specimen
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015662
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015680" // ServiceRequest
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015680
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015664" // PractitionerRole
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015664
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015665" // Practitioner
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015665
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015663" // Organization
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015663
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4130-8cec-40ac1f015680" // ServiceRequest
+* entry[=].resource = 50d5deca-64e9-4130-8cec-40ac1f015680
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664" // PractitionerRole
+* entry[=].resource = 50d5deca-64e9-4a30-8fec-40ac1f015664
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-7cec-40ac1f015665" // Practitioner
+* entry[=].resource = 50d5deca-64e9-4a30-7cec-40ac1f015665
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-50ac1f015663" // Organization
+* entry[=].resource = 50d5deca-64e9-4a30-8cec-50ac1f015663 
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015671" // Immunization
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015671
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673" // Immunization
@@ -44,20 +44,20 @@ Usage: #example
 * identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
 * status = #final
 * type.coding[0] = $loinc#34782-3 "Infectious disease Note"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655) // Angaben zur betroffenen Person
+* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645) // Angaben zur betroffenen Person
 * subject.type = "Patient"
 * date = "2026-01-27"
-* author[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015664) // Arzt/Ärztin
+* author[+] = Reference(50d5deca-64e9-4a30-8fec-40ac1f015664) // Arzt/Ärztin
 * author[=].type = "PractitionerRole"
 * title = "Meldung zum klinischen Befund Infektionskrankheit" // ASK here how the process is, do you send this when the lab result is confirmed or also when it's just a suspicion? If so, we have to play with Condition.verificationStatus
 * section[+].title = "Diagnosis section" // Diagnose und Manifestation
 * section[=].code = $sct#1269502008 "Diagnosis section"
 * section[=].code = $loinc#29308-4 "Diagnosis"
-* section[=].entry[0] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015656)
+* section[=].entry[0] = Reference(50d5deca-64e9-4a30-8cec-40ac1f025656)
 * section[=].entry[0].type = "Condition"
 * section[+].title = "Laboratory section" // Laboratory
 * section[=].code = $loinc#30954-2  "Relevant diagnostic tests/laboratory data Narrative" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015680) 
+* section[=].entry[+] = Reference(50d5deca-64e9-4130-8cec-40ac1f015680) 
 * section[=].entry[=].type = "ServiceRequest" 
 * section[+].title = "Hospitalisation section" // Hospitalisation
 * section[=].code = $loinc#46240-8 "History of hospitalizations+History of outpatient visits Narrative" 
@@ -71,11 +71,11 @@ Usage: #example
 * section[=].entry[=].type = "Immunization" 
 * section[+].title = "Social History section"
 * section[=].code = $loinc#29762-2 "Social history Narrative"
-* section[=].section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015672) 
+* section[=].section[+].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015672) 
 * section[=].section[=].entry[=].type = "Condition" 
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015655
+Instance: 50d5deca-64e9-4a30-8cec-40ac1f015645
 InstanceOf: Patient
 Usage: #example
 //AHV-Nummer
@@ -109,37 +109,38 @@ Usage: #example
 * extension[+].url = "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
 * extension[=].valueCodeableConcept = urn:iso:std:iso:3166#CH
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015656
+Instance: 50d5deca-64e9-4a30-8cec-40ac1f025656
 InstanceOf: Condition
 Usage: #example
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
 //* category = $condition-category#encounter-diagnosis "Encounter Diagnosis"
 * code = $sct#406617004 "Invasive Streptococcus pneumoniae disease (disorder)"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)" 
 * onsetDateTime = "2026-01-27"
 * evidence[0].code = $sct#91302008 "Sepsis (disorder)"
 //* encounter = Reference(50d5deca-64e9-4a30-8cec-40ac1f015660)
-//* recorder = Reference(50d5deca-64e9-4a30-8cec-40ac1f015664)
+//* recorder = Reference(50d5deca-64e9-4a30-8fec-40ac1f015664)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015660
 InstanceOf: Encounter
 Usage: #example
-//* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+//* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
 * class = #IMP
 * status = #unknown
 // Hospitalisation - Eintrittsdatum
 * period.start = "2026-01-19"
 // Hospitalisationsgrund - gemeldete Erreger
-* reasonReference = Reference(50d5deca-64e9-4a30-8cec-40ac1f015656)
+* reasonReference = Reference(50d5deca-64e9-4a30-8cec-40ac1f025656)
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015680
+Instance: 50d5deca-64e9-4130-8cec-40ac1f015680
 InstanceOf: ServiceRequest
 Usage: #example
 * intent = #order
 * status = #unknown
 * specimen = Reference(50d5deca-64e9-4a30-8cec-40ac1f015662)
 * performer = Reference(50d5deca-64e9-4a30-8cec-40ac1f015661)
+* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015661 
@@ -154,20 +155,20 @@ Usage: #example
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015662
 InstanceOf: Specimen
 Usage: #example
-//* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655) 
+//* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645) 
 // Labor - Entnahmedatum
 * collection.collectedDateTime = "2026-01-27"
 // Labor - Material
 * type.coding[0] = $sct#19297000 "Blood specimen (specimen)"
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015664
+Instance: 50d5deca-64e9-4a30-8fec-40ac1f015664
 InstanceOf: PractitionerRole
 Usage: #example
-* practitioner = Reference(50d5deca-64e9-4a30-8cec-40ac1f015665)
-* organization = Reference(50d5deca-64e9-4a30-8cec-40ac1f015663)
+* practitioner = Reference(50d5deca-64e9-4a30-7cec-40ac1f015665)
+* organization = Reference(50d5deca-64e9-4a30-8cec-50ac1f015663 )
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015665
+Instance: 50d5deca-64e9-4a30-7cec-40ac1f015665
 InstanceOf: Practitioner
 Usage: #example
 // Arzt/Ärztin - Name
@@ -180,7 +181,7 @@ Usage: #example
 * telecom[+].system = #phone
 * telecom[=].value = "+41 79 111 44 55"
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015663
+Instance: 50d5deca-64e9-4a30-8cec-50ac1f015663 
 InstanceOf: Organization
 Usage: #example
 // Arzt/Ärztin - Addresse
@@ -195,7 +196,7 @@ Usage: #example
 // Impfstatus vor Krankheitsbeginn - Gemäss
 // // Impfstatus vor Krankheitsbeginn - mit Impfstoff: Markenname
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
 * occurrenceDateTime = "2000-03-01"
 // Impfstatus vor Krankheitsbeginn - Pneumokokken
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
@@ -209,7 +210,7 @@ Usage: #example
 // Impfstatus vor Krankheitsbeginn - Gemäss
 // // Impfstatus vor Krankheitsbeginn - mit Impfstoff: Markenname
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
 * occurrenceDateTime = "2000-05-01"
 // Impfstatus vor Krankheitsbeginn - Pneumokokken
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
@@ -222,9 +223,9 @@ InstanceOf: Condition
 Usage: #example
 //* category = $condition-category#problem-list-item "Problem List Item"
 * code = $sct#38013005 "Immunosuppression (finding)"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
 //* recordedDate = "2026-01-27"
-//* recorder = Reference(50d5deca-64e9-4a30-8cec-40ac1f015664)
+//* recorder = Reference(50d5deca-64e9-4a30-8fec-40ac1f015664)
 // We can use this two code use in IPS for kein or unknow in Conditions
 // $sct#160245001 "No current problems or disability (situation)"
 // $sct#3219008 "Disease type AND/OR category unknown (finding)"

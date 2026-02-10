@@ -3,42 +3,34 @@ Instance: HepatitisC
 InstanceOf: Bundle
 Usage: #example
 * identifier.system = "urn:ietf:rfc:3986"
-* identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
+* identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e156"
 * type = #document
 * timestamp = "2026-01-27T11:30:00+02:00"
-* entry[0].fullUrl = "urn:uuid:da065461-34df-4e2e-b69f-4181908575d0" // Composition
-* entry[=].resource = da065461-34df-4e2e-b69f-4181908575d0
+* entry[0].fullUrl = "urn:uuid:da065461-34df-4e2e-b69f-4181908575d1" // Composition
+* entry[=].resource = da065461-34df-4e2e-b69f-4181908575d1
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655" // Patient
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015655
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015656" // Condition
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015656
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660" // Encounter
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015660
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015661" // Organization
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015661
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015662" // Specimen
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015662
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690" // Observation
+* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015690
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015790" // Observation
+* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015790 
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f016790" // Observation
+* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f016790 
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015791" // Observation
+* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015791
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015680" // ServiceRequest
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015662
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015664" // PractitionerRole
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015664
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015670" // PractitionerRole
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015670
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015665" // Practitioner
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015665
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015663" // Organization
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015663
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015671" // Immunization
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015671
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673" // Immunization
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015673
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015672" // Condition
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015672
 
 
-
-
-Instance: da065461-34df-4e2e-b69f-4181908575d0
+Instance: da065461-34df-4e2e-b69f-4181908575d1
 InstanceOf: Composition
 Usage: #example
 * language = #de-CH
@@ -67,15 +59,10 @@ Usage: #example
 * section[=].entry[=].type = "Observation" 
 * section[+].title = "Social History section"
 * section[=].code = $loinc#29762-2 "Social history Narrative"
-* section[=].section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015672) 
+* section[=].section[+].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f016790) 
+* section[=].section[=].entry[=].type = "Observation"
+* section[=].section[+].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015791) 
 * section[=].section[=].entry[=].type = "Observation" 
-
-* section[+].title = "Immunizations section" 
-* section[=].code = $loinc#11369-6  "History of immunization Narrative" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015671) 
-* section[=].entry[=].type = "Immunization" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015673) 
-* section[=].entry[=].type = "Immunization" 
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015655
@@ -96,7 +83,7 @@ Usage: #example
 * extension[=].extension[=].valueCodeableConcept = $sct#446141000124107 "Identifies as female gender (finding)"
 * extension[+].url = "http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender"
 * extension[=].extension[0].url = "value"
-* extension[=].extension[=].valueCodeableConcept = $administrative-gender#male "Male"
+* extension[=].extension[=].valueCodeableConcept = #male 
 * extension[=].extension[+].url = "type"
 * extension[=].extension[=].valueCodeableConcept = $loinc#76689-9 "Sex Assigned At Birth"
 //* gender = #male
@@ -114,14 +101,16 @@ Usage: #example
 * address[=].state = "BE"
 //Land
 * address[=].country = "Schweiz"
-* address[=].country.extension.valueCoding = urn:iso:std:iso:3166#CH
+* address[=].country.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-SC-coding"
+* address[=].country.extension[=].valueCoding = urn:iso:std:iso:3166#CH
 //Nationalität
 * extension[+].url = "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
 * extension[=].valueCodeableConcept = urn:iso:std:iso:3166#CH
 // Herkunftsland
 * extension[0].url = "http://hl7.org/fhir/StructureDefinition/patient-birthPlace"
 * extension[=].valueAddress.country = "Niederlande"
-* extension[=].valueAddress.country.extension.valueCoding = urn:iso:std:iso:3166#NL
+* address[=].country.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-SC-coding"
+* address[=].country.extension[=].valueCoding = urn:iso:std:iso:3166#NL
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015656
 InstanceOf: Condition
@@ -131,7 +120,7 @@ Usage: #example
 * code = $sct#50711007 "Viral hepatitis type C (disorder)"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)" 
 * onsetDateTime.extension[+].url = "http://hl7.org/fhir/StructureDefinition/data-absent-reason"
-* onsetDateTime.extension[=].valueCode = "unknown"
+* onsetDateTime.extension[=].valueCode = #asked-unknown
 * evidence[0].code = $sct#235866006 "Acute hepatitis C (disorder)"
 * evidence[1].code = $sct#166642001 "Elevated transaminases (finding)"
 * evidence[1].code.text = "Transaminase ≥ 2.5x"
@@ -161,14 +150,14 @@ InstanceOf: Observation
 Usage: #example
 * extension[+].url = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-exposition-address"
 * extension[=].valueAddress.country = "Nepal"
-* extension[=].valueAddress.country.extension.valueCoding = urn:iso:std:iso:3166#NP
+* extension[=].valueAddress.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-SC-coding"
+* extension[=].valueAddress.extension[=].valueCoding = urn:iso:std:iso:3166#CH
 * status = #final
 * category = $v3-ActClass#AEXPOS "acquisition exposure"
 * code = $sct#150781000119103 "Exposure to viral disease (event)"
-* valueCodeableConcept = $sct#223366009 Healthcare professional (occupation)
-* valueCodeableConcept.text = "Ärztin"
-* effectivePeriod.start = "2025-12-1"
-* effectivePeriod.end = "2025-12-1"
+* valueCodeableConcept = $sct#223366009 "Healthcare professional (occupation)"
+* effectivePeriod.start = "2025-12-01"
+* effectivePeriod.end = "2025-12-01"
 * subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
 * component.code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
 * component.valueCodeableConcept = $sct#62944002 "Hepatitis C virus (organism)"
@@ -177,28 +166,14 @@ Usage: #example
 * component.code = $v3-ParticipationType#PART "Participant"
 * component.valueCodeableConcept = $sct#61665006 "Unknown (qualifier value)"
 
-
-
-Instance: observation-us-ph-exposure-contact-info-football-game
+Instance: 50d5deca-64e9-4a30-8cec-40ac1f015791
 InstanceOf: Observation
 Usage: #example
-* meta.versionId = "6"
-* meta.lastUpdated = "2021-08-21T03:52:28.637+00:00"
-* meta.source = "#4mfRzWw4DxNmp8a8"
-* meta.profile = "http://hl7.org/fhir/us/ecr/StructureDefinition/us-ph-exposure-contact-information"
 * status = #final
-* category = $v3-ActClass#EXPOS "exposure"
-* category.text = "An interaction between entities that provides opportunity for transmission of a physical, chemical, or biological agent from an exposure source entity to an exposure target entity."
-* code = $umls#C3841750 "Mass gathering"
-* code.text = "Mass gathering (football game)"
-* subject = Reference(Patient/patient-ecr-eve-everywoman) "Eve Everywoman"
-* focus = Reference(Location/location-ecr-city-football-stadium) "City Football Stadium"
-* effectivePeriod.start = "2020-01-11T18:00:00Z"
-* effectivePeriod.end = "2020-01-11T21:30:00Z"
-* valueCodeableConcept = $sct#264379009 "Sports stadium (environment)"
-* valueCodeableConcept.text = "City Football Stadium"
-* component.code = $v3-ParticipationType#EXPAGNT "ExposureAgent"
-* component.valueCodeableConcept = $sct#840533007 "Severe acute respiratory syndrome coronavirus 2 (organism)"
+* code = $loinc#21843-8 "History of Usual occupation"
+* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* valueString = "Ärztin"
+
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015680
 InstanceOf: ServiceRequest
@@ -206,6 +181,7 @@ Usage: #example
 * intent = #order
 * status = #unknown
 * reasonCode =  $sct#71112000 "Screening due" 
+* subject = Reference(50d5deca-64e9-4a30-8cec-40ac1f015655)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015664
@@ -236,37 +212,5 @@ Usage: #example
 * address.city = "Bern"
 * address.postalCode = "3000"
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015671
-InstanceOf: Immunization
-Usage: #example
-* status = #completed
-// Impfstatus vor Krankheitsbeginn - Gemäss
-// If the input is "Impfauweis or Krankengeschichte" it references to a PractitionerRole with Organization; if the input is "Anamnese" it references to a PractitionerRole without Organizationp PractitionerRole with Practitioner
-* extension[+].url = "http://fhir.ch/ig/ch-core/StructureDefinition/ch-ext-author"
-* extension[=].valueReference = Reference(50d5deca-64e9-4a30-8cec-40ac1f015670)
-// // Impfstatus vor Krankheitsbeginn - mit Impfstoff: Markenname
-* vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
-* occurrenceDateTime = "2000-03-01"
-// Impfstatus vor Krankheitsbeginn - Pneumokokken
-* protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
-// Impfstatus vor Krankheitsbeginn - mit X Dosen
-* protocolApplied.doseNumberPositiveInt = 1
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015673
-InstanceOf: Immunization
-Usage: #example
-* status = #completed
-// Impfstatus vor Krankheitsbeginn - Gemäss
-// If the input is "Impfauweis or Krankengeschichte" it references to a PractitionerRole with Organization; if the input is "Anamnese" it references to a PractitionerRole without Organizationp PractitionerRole with Practitioner
-* extension[+].url = "http://fhir.ch/ig/ch-core/StructureDefinition/ch-ext-author"
-* extension[=].valueReference = Reference(50d5deca-64e9-4a30-8cec-40ac1f015670)
-// // Impfstatus vor Krankheitsbeginn - mit Impfstoff: Markenname
-* vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
-* occurrenceDateTime = "2000-05-01"
-// Impfstatus vor Krankheitsbeginn - Pneumokokken
-* protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
-// Impfstatus vor Krankheitsbeginn - mit X Dosen
-* protocolApplied.doseNumberPositiveInt = 2
 
