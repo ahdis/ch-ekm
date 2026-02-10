@@ -1,11 +1,3 @@
-ValueSet: InvasiveStreptococcusPneumoniaeDiagnosisVS 
-Id: invasive-streptococcus-pneumoniae-diagnosis-vs
-* http://snomed.info/sct#233604007 "Pneumonia (disorder)"
-* http://snomed.info/sct#91302008  "Sepsis (disorder)"
-* http://snomed.info/sct#7180009   "Meningitis (disorder)"
-* http://snomed.info/sct#160245001 "No current problems or disability (situation)"
-* http://snomed.info/sct#3219008   "Disease type AND/OR category unknown (finding)"
-
 
 Instance: PneumokokkenErkrankungInvasive
 InstanceOf: Bundle
@@ -26,10 +18,10 @@ Usage: #example
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015661
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015662" // Specimen
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015662
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015680" // ServiceRequest
+* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015680
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015664" // PractitionerRole
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015664
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015670" // PractitionerRole
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015670
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015665" // Practitioner
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015665
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015663" // Organization
@@ -41,6 +33,9 @@ Usage: #example
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015672" // Condition
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015672
 
+
+
+
 Instance: da065461-34df-4e2e-b69f-4181908575d0
 InstanceOf: Composition
 Usage: #example
@@ -51,43 +46,41 @@ Usage: #example
 * type.coding[0] = $loinc#34782-3 "Infectious disease Note"
 * subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655) // Angaben zur betroffenen Person
 * subject.type = "Patient"
-* date = "2026-01-27T11:30:00+02:00"
+* date = "2026-01-27"
 * author[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015664) // Arzt/Ärztin
 * author[=].type = "PractitionerRole"
 * title = "Meldung zum klinischen Befund Infektionskrankheit" // ASK here how the process is, do you send this when the lab result is confirmed or also when it's just a suspicion? If so, we have to play with Condition.verificationStatus
-* section[+].title = "Diagnose und Manifestation" // Diagnose und Manifestation
+* section[+].title = "Diagnosis section" // Diagnose und Manifestation
 * section[=].code = $sct#1269502008 "Diagnosis section"
 * section[=].code = $loinc#29308-4 "Diagnosis"
 * section[=].entry[0] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015656)
 * section[=].entry[0].type = "Condition"
-* section[+].title = "Verlauf - Labor" // Laboratory
+* section[+].title = "Laboratory section" // Laboratory
 * section[=].code = $loinc#30954-2  "Relevant diagnostic tests/laboratory data Narrative" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015661) 
-* section[=].entry[=].type = "Organization" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015662) 
-* section[=].entry[=].type = "Specimen"
-* section[+].title = "Verlauf - Hospitalisation" // Hospitalisation
+* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015680) 
+* section[=].entry[=].type = "ServiceRequest" 
+* section[+].title = "Hospitalisation section" // Hospitalisation
 * section[=].code = $loinc#46240-8 "History of hospitalizations+History of outpatient visits Narrative" 
 * section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015660) 
 * section[=].entry[=].type = "Encounter" 
-* section[+].title = "Impfstatus vor Krankheitsbeginn" // Impfstatus vor Krankheitsbeginn
+* section[+].title = "Immunization section" // Impfstatus vor Krankheitsbeginn
 * section[=].code = $loinc#11369-6  "History of immunization Narrative" 
 * section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015671) 
 * section[=].entry[=].type = "Immunization" 
 * section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015673) 
 * section[=].entry[=].type = "Immunization" 
-* section[+].title = "Risikofaktoren" // Risikofaktoren
-* section[=].code = $loinc#46467-7 "Risk factors" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015672) 
-* section[=].entry[=].type = "Condition" 
+* section[+].title = "Social History section"
+* section[=].code = $loinc#29762-2 "Social history Narrative"
+* section[=].section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015672) 
+* section[=].section[=].entry[=].type = "Condition" 
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015655
 InstanceOf: Patient
 Usage: #example
 //AHV-Nummer
-//* identifier[+].system = "urn:oid:2.16.756.5.32"
-//* identifier[=].value = "7561234567897"
+* identifier[+].system = "urn:oid:2.16.756.5.32"
+* identifier[=].value = "7561234567897"
 //Initiale Name
 * name.family = "M"
 //Initiale Vorname
@@ -109,7 +102,9 @@ Usage: #example
 //Kanton
 * address[=].state = "BE"
 //Land
-* address[=].country = "CH"
+* address[=].country = "Schweiz"
+* address.country.extension.url = "http://hl7.org/fhir/StructureDefinition/iso21090-codedString"
+* address.country.extension.valueCoding = urn:iso:std:iso:3166#CH
 //Nationalität
 * extension[+].url = "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
 * extension[=].valueCodeableConcept = urn:iso:std:iso:3166#CH
@@ -121,7 +116,7 @@ Usage: #example
 //* category = $condition-category#encounter-diagnosis "Encounter Diagnosis"
 * code = $sct#406617004 "Invasive Streptococcus pneumoniae disease (disorder)"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)" 
-* onsetDateTime = "2026-01-27T00:00:00+02:00"
+* onsetDateTime = "2026-01-27"
 * evidence[0].code = $sct#91302008 "Sepsis (disorder)"
 //* encounter = Reference(50d5deca-64e9-4a30-8cec-40ac1f015660)
 //* recorder = Reference(50d5deca-64e9-4a30-8cec-40ac1f015664)
@@ -134,9 +129,18 @@ Usage: #example
 * class = #IMP
 * status = #unknown
 // Hospitalisation - Eintrittsdatum
-* period.start = "2026-01-19T14:00:00+02:00"
+* period.start = "2026-01-19"
 // Hospitalisationsgrund - gemeldete Erreger
 * reasonReference = Reference(50d5deca-64e9-4a30-8cec-40ac1f015656)
+
+Instance: 50d5deca-64e9-4a30-8cec-40ac1f015680
+InstanceOf: ServiceRequest
+Usage: #example
+* intent = #order
+* status = #unknown
+* specimen = Reference(50d5deca-64e9-4a30-8cec-40ac1f015662)
+* performer = Reference(50d5deca-64e9-4a30-8cec-40ac1f015661)
+
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015661 
 InstanceOf: Organization
@@ -152,7 +156,7 @@ InstanceOf: Specimen
 Usage: #example
 //* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655) 
 // Labor - Entnahmedatum
-* collection.collectedDateTime = "2026-01-27T10:00:00+02:00"
+* collection.collectedDateTime = "2026-01-27"
 // Labor - Material
 * type.coding[0] = $sct#19297000 "Blood specimen (specimen)"
 
@@ -162,10 +166,6 @@ Usage: #example
 * practitioner = Reference(50d5deca-64e9-4a30-8cec-40ac1f015665)
 * organization = Reference(50d5deca-64e9-4a30-8cec-40ac1f015663)
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015670
-InstanceOf: PractitionerRole
-Usage: #example
-* organization = Reference(50d5deca-64e9-4a30-8cec-40ac1f015663)
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015665
 InstanceOf: Practitioner
@@ -193,13 +193,10 @@ InstanceOf: Immunization
 Usage: #example
 * status = #completed
 // Impfstatus vor Krankheitsbeginn - Gemäss
-// If the input is "Impfauweis or Krankengeschichte" it references to a PractitionerRole with Organization; if the input is "Anamnese" it references to a PractitionerRole without Organizationp PractitionerRole with Practitioner
-* extension[+].url = "http://fhir.ch/ig/ch-core/StructureDefinition/ch-ext-author"
-* extension[=].valueReference = Reference(50d5deca-64e9-4a30-8cec-40ac1f015670)
 // // Impfstatus vor Krankheitsbeginn - mit Impfstoff: Markenname
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
 * patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
-* occurrenceDateTime = "2000-03-01T09:12:56+02:00"
+* occurrenceDateTime = "2000-03-01"
 // Impfstatus vor Krankheitsbeginn - Pneumokokken
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
 // Impfstatus vor Krankheitsbeginn - mit X Dosen
@@ -210,13 +207,10 @@ InstanceOf: Immunization
 Usage: #example
 * status = #completed
 // Impfstatus vor Krankheitsbeginn - Gemäss
-// If the input is "Impfauweis or Krankengeschichte" it references to a PractitionerRole with Organization; if the input is "Anamnese" it references to a PractitionerRole without Organizationp PractitionerRole with Practitioner
-* extension[+].url = "http://fhir.ch/ig/ch-core/StructureDefinition/ch-ext-author"
-* extension[=].valueReference = Reference(50d5deca-64e9-4a30-8cec-40ac1f015670)
 // // Impfstatus vor Krankheitsbeginn - mit Impfstoff: Markenname
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
 * patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
-* occurrenceDateTime = "2000-05-01T09:12:56+02:00"
+* occurrenceDateTime = "2000-05-01"
 // Impfstatus vor Krankheitsbeginn - Pneumokokken
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
 // Impfstatus vor Krankheitsbeginn - mit X Dosen
@@ -240,9 +234,6 @@ Usage: #example
 // Usage: #example
 // Title: "Meldung zum klinischen Befund Infektionskrankheit: Pneumokokken-Erkrankung Invasive"
 // * status = #active
-// * meta.profile = "http://hl7.org/fhir/4.0/StructureDefinition/Questionnaire"
-// * extension.url = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-preferredTerminologyServer"
-// * extension.valueUrl = "http://tx.fhir.org"
 // 
 // // ---  Angaben zur betroffenen Person ---
 // * item[+].linkId = "patient-section"
