@@ -49,15 +49,15 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * section[immunization].entry 1..*
 * section[immunization].entry only Reference(Immunization)
 
-// "Risk Factors"
-* section[risk-factors].code = $loinc#46467-7 
-* section[risk-factors].entry 1..*
-* section[risk-factors].entry only Reference(Condition)
-
 // "History of medication use Narrative"
 * section[medication].code = $loinc#10160-0
 * section[medication].entry 1..1
 * section[medication].entry only Reference(Observation)
+
+// "Risk Factors"
+* section[risk-factors].code = $loinc#46467-7 
+* section[risk-factors].entry 1..*
+* section[risk-factors].entry only Reference(Condition)
 
 // "Social history Narrative"
 * section[social-history].code = $loinc#29762-2 
@@ -72,3 +72,8 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * section[social-history].section[exposure-to-infectious-disease].entry only Reference(Observation)
 * section[social-history].section[occupation].entry 1..1
 * section[social-history].section[occupation].entry only Reference(Observation)
+
+// "Cause of death"
+* section[cause-death].code = $loinc#79378-6 
+* section[cause-death].entry 1..*
+* section[cause-death].entry only Reference(Condition)

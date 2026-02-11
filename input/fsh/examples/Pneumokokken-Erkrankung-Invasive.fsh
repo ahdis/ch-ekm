@@ -64,10 +64,12 @@ Usage: #example
 * section[=].entry[=].type = "Immunization" 
 * section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673) 
 * section[=].entry[=].type = "Immunization" 
-* section[+].title = "Social History section"
-* section[=].code = $loinc#46467-7 "Risk factors" 
+* section[+].title = "Risk factors section"
+* section[=].code = $loinc#46467-7 "Risk factors"  
 * section[=].section[+].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015672) 
 * section[=].section[=].entry[=].type = "Condition" 
+
+
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015645
@@ -120,7 +122,7 @@ Usage: #example
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015660
 InstanceOf: Encounter
 Usage: #example
-//* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
+* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
 * class = #IMP
 * status = #unknown
 * period.start = "2026-01-19"
@@ -146,7 +148,7 @@ Usage: #example
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015662
 InstanceOf: Specimen
 Usage: #example
-//* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645) 
+* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645) 
 * collection.collectedDateTime = "2026-01-27"
 * type.coding[0] = $sct#119297000 "Blood specimen"
 
@@ -208,6 +210,9 @@ Usage: #example
 * category = $condition-category#problem-list-item 
 * code = $sct#91302008 "Sepsis (disorder)"
 * subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
+
+
+
 
 
 
