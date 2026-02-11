@@ -37,41 +37,36 @@ Usage: #example
 
 
 Instance: da065461-34df-4e2e-b69f-4181908575d0
-InstanceOf: Composition
+InstanceOf: ChEkmComposition
 Usage: #example
-* language = #de-CH
-* identifier.system = "urn:ietf:rfc:3986"
-* identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
 * status = #final
 * type.coding[0] = $loinc#34782-3 "Infectious disease Note"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645) // Angaben zur betroffenen Person
-* subject.type = "Patient"
+* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645) 
 * date = "2026-01-27"
-* author[+] = Reference(50d5deca-64e9-4a30-8fec-40ac1f015664) // Arzt/Ärztin
-* author[=].type = "PractitionerRole"
-* title = "Meldung zum klinischen Befund Infektionskrankheit" // ASK here how the process is, do you send this when the lab result is confirmed or also when it's just a suspicion? If so, we have to play with Condition.verificationStatus
-* section[+].title = "Diagnosis section" // Diagnose und Manifestation
-* section[=].code = $sct#1269502008 "Diagnosis section"
+* author[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664) 
+* encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
+* title = "Meldung zum klinischen Befund Infektionskrankheit" 
+* section[+].title = "Diagnosis section" 
 * section[=].code = $loinc#29308-4 "Diagnosis"
-* section[=].entry[0] = Reference(50d5deca-64e9-4a30-8cec-40ac1f025656)
+* section[=].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656)
 * section[=].entry[0].type = "Condition"
-* section[+].title = "Laboratory section" // Laboratory
+* section[+].title = "Laboratory section" 
 * section[=].code = $loinc#30954-2  "Relevant diagnostic tests/laboratory data Narrative" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4130-8cec-40ac1f015680) 
+* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4130-8cec-40ac1f015680) 
 * section[=].entry[=].type = "ServiceRequest" 
-* section[+].title = "Hospitalisation section" // Hospitalisation
+* section[+].title = "Hospitalisation section" 
 * section[=].code = $loinc#46240-8 "History of hospitalizations+History of outpatient visits Narrative" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015660) 
+* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660) 
 * section[=].entry[=].type = "Encounter" 
-* section[+].title = "Immunization section" // Impfstatus vor Krankheitsbeginn
+* section[+].title = "Immunization section"
 * section[=].code = $loinc#11369-6  "History of immunization Narrative" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015671) 
+* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015671) 
 * section[=].entry[=].type = "Immunization" 
-* section[=].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015673) 
+* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673) 
 * section[=].entry[=].type = "Immunization" 
 * section[+].title = "Social History section"
-* section[=].code = $loinc#29762-2 "Social history Narrative"
-* section[=].section[+].entry[+] = Reference(50d5deca-64e9-4a30-8cec-40ac1f015672) 
+* section[=].code = $loinc#46467-7 "Risk factors" 
+* section[=].section[+].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015672) 
 * section[=].section[=].entry[=].type = "Condition" 
 
 
@@ -113,13 +108,13 @@ Instance: 50d5deca-64e9-4a30-8cec-40ac1f025656
 InstanceOf: Condition
 Usage: #example
 * subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
-//* category = $condition-category#encounter-diagnosis "Encounter Diagnosis"
+* category = $condition-category#encounter-diagnosis 
 * code = $sct#406617004 "Invasive Streptococcus pneumoniae disease (disorder)"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)" 
 * onsetDateTime = "2026-01-27"
-* evidence[0].code = $sct#91302008 "Sepsis (disorder)"
-//* encounter = Reference(50d5deca-64e9-4a30-8cec-40ac1f015660)
-//* recorder = Reference(50d5deca-64e9-4a30-8fec-40ac1f015664)
+* evidence[0].detail = Reference (urn:uuid:50d5deca-64e9-4a30-8cec-80ac1f015672)
+//* encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
+//* recorder = Reference(urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015660
@@ -128,27 +123,23 @@ Usage: #example
 //* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
 * class = #IMP
 * status = #unknown
-// Hospitalisation - Eintrittsdatum
 * period.start = "2026-01-19"
-// Hospitalisationsgrund - gemeldete Erreger
-* reasonReference = Reference(50d5deca-64e9-4a30-8cec-40ac1f025656)
+* reasonReference = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656)
 
 Instance: 50d5deca-64e9-4130-8cec-40ac1f015680
 InstanceOf: ServiceRequest
 Usage: #example
 * intent = #order
 * status = #unknown
-* specimen = Reference(50d5deca-64e9-4a30-8cec-40ac1f015662)
-* performer = Reference(50d5deca-64e9-4a30-8cec-40ac1f015661)
+* specimen = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015662)
+* performer = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015661)
 * subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015661 
 InstanceOf: Organization
 Usage: #example
-// Labor - Name
 * name = "Viollier Bern AG"
-// Labor - Tel.
 * telecom[+].system = #phone
 * telecom[=].value = "+41 848 121 121"
 
@@ -156,35 +147,29 @@ Instance: 50d5deca-64e9-4a30-8cec-40ac1f015662
 InstanceOf: Specimen
 Usage: #example
 //* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645) 
-// Labor - Entnahmedatum
 * collection.collectedDateTime = "2026-01-27"
-// Labor - Material
-* type.coding[0] = $sct#19297000 "Blood specimen (specimen)"
+* type.coding[0] = $sct#119297000 "Blood specimen"
 
 Instance: 50d5deca-64e9-4a30-8fec-40ac1f015664
 InstanceOf: PractitionerRole
 Usage: #example
-* practitioner = Reference(50d5deca-64e9-4a30-7cec-40ac1f015665)
-* organization = Reference(50d5deca-64e9-4a30-8cec-50ac1f015663 )
+* practitioner = Reference(urn:uuid:50d5deca-64e9-4a30-7cec-40ac1f015665)
+* organization = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-50ac1f015663 )
 
 
 Instance: 50d5deca-64e9-4a30-7cec-40ac1f015665
 InstanceOf: Practitioner
 Usage: #example
-// Arzt/Ärztin - Name
 * name.family = "Giacometti"
 * name.given = "Monika"
-// Arzt/Ärztin - Tel.
 * telecom[+].system = #email
 * telecom[=].value = "m.giacometti@ks-abc.ch"
-// Arzt/Ärztin - E-Mail
 * telecom[+].system = #phone
 * telecom[=].value = "+41 79 111 44 55"
 
 Instance: 50d5deca-64e9-4a30-8cec-50ac1f015663 
 InstanceOf: Organization
 Usage: #example
-// Arzt/Ärztin - Addresse
 * address.line = "Aortastrasse 22"
 * address.city = "Bern"
 * address.postalCode = "3000"
@@ -193,42 +178,38 @@ Instance: 50d5deca-64e9-4a30-8cec-40ac1f015671
 InstanceOf: Immunization
 Usage: #example
 * status = #completed
-// Impfstatus vor Krankheitsbeginn - Gemäss
-// // Impfstatus vor Krankheitsbeginn - mit Impfstoff: Markenname
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
 * patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
 * occurrenceDateTime = "2000-03-01"
-// Impfstatus vor Krankheitsbeginn - Pneumokokken
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
-// Impfstatus vor Krankheitsbeginn - mit X Dosen
 * protocolApplied.doseNumberPositiveInt = 1
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015673
 InstanceOf: Immunization
 Usage: #example
 * status = #completed
-// Impfstatus vor Krankheitsbeginn - Gemäss
-// // Impfstatus vor Krankheitsbeginn - mit Impfstoff: Markenname
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
 * patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
 * occurrenceDateTime = "2000-05-01"
-// Impfstatus vor Krankheitsbeginn - Pneumokokken
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
-// Impfstatus vor Krankheitsbeginn - mit X Dosen
 * protocolApplied.doseNumberPositiveInt = 2
 
-// Risikofaktoren
+
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015672
 InstanceOf: Condition
 Usage: #example
-//* category = $condition-category#problem-list-item "Problem List Item"
+* category = $condition-category#problem-list-item 
 * code = $sct#38013005 "Immunosuppression (finding)"
 * subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
-//* recordedDate = "2026-01-27"
-//* recorder = Reference(50d5deca-64e9-4a30-8fec-40ac1f015664)
-// We can use this two code use in IPS for kein or unknow in Conditions
-// $sct#160245001 "No current problems or disability (situation)"
-// $sct#3219008 "Disease type AND/OR category unknown (finding)"
+
+Instance: 50d5deca-64e9-4a30-8cec-80ac1f015672
+InstanceOf: Condition
+Usage: #example
+* category = $condition-category#problem-list-item 
+* code = $sct#91302008 "Sepsis (disorder)"
+* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
+
+
 
 // Instance: QuestionnairePneumoInvasive
 // InstanceOf: Questionnaire

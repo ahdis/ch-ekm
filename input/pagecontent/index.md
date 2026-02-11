@@ -1,5 +1,5 @@
 ### Introduction
-CH EKM (Elektronische klinische Meldung) is a project of the Swiss Federal Office of Public Health (FOPH), Communicable Diseases Division, to enable clinicians to send their clinical findings of notifiable communicable infectious diseases to the FOPH electronically.
+CH EKM (Elektronische klinische Meldung) is a project of the Swiss Federal Office of Public Health (FOPH), Communicable Diseases Division, to enable clinicians to send their clinical findings of communicable infectious diseases to the FOPH electronically.
 A report is created as a specialized Clinical Document based on the HL7® FHIR® standard. This [FHIR document](document.html) is sent to the FOPH by a [FHIR RESTful web API endpoint](api.html). CH EKM derives from the [Swiss implementation guides](https://fhir.ch/) 
 
 [//]: # (// TODO and the [European laboratory project](https://hl7.eu/fhir/laboratory/) (see [graphical overview](#dependency-overview)).)
