@@ -36,7 +36,6 @@ pages:
 
 menu:
   Home: index.html
-  Examples: examples.html
   Artifacts: artifacts.html
 
 # Parameters
