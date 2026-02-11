@@ -32,8 +32,7 @@ dependencies:
 pages:
   index.md:
     title: Home
-  examples.md:
-    title: Examples
+
 
 menu:
   Home: index.html

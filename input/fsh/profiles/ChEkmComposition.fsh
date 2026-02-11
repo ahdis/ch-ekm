@@ -26,7 +26,8 @@ Description: "This CH EKM base profile constrains the Composition resource for t
     medication 0..1 and
     immunization 0..1 and
     risk-factors 0..1 and
-    social-history 0..1
+    social-history 0..1 and
+    cause-death 0..1 
 
 // "Diagnosis"
 * section[diagnosis].code = $loinc#29308-4
