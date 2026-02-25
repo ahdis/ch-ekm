@@ -1,6 +1,5 @@
-
 ### Personal Data (Patient)
-Depending on the organism (leading code), the requirement for how the patient’s personal data, such as name or address, (e.g. Beispielin Muster, Tannenstrasse 10a, 3097 Bern) is reported varies. There are different Patient profiles to be used:
+Depending on the organism (Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type= 'Condition').resolve().code), the requirement for how the patient’s personal data, such as name or address, (e.g. Beispielin Muster, Tannenstrasse 10a, 3097 Bern) is reported varies. There are different Patient profiles to be used:
 * **Full Name**
    * Organism: Hepatitis C, etc.
    * see Profile [CH EKM Patient](StructureDefinition-ch-ekm-patient.html) 
