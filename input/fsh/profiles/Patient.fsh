@@ -18,7 +18,7 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 * identifier[AHVN13] ..1 MS
 * identifier[AHVN13] ^short = "OASI Number Switzerland"
 * name 1..1
-* name ^short = "Whether the personal data is transmitted by using initials or full name"
+* name ^short = "Whether the personal data is transmitted by using initials or full name is described under 'Guidance - Personal Data (Patient Name)'"
 * name.family 1..
 * name.given 1..1
 * gender 1..
@@ -49,6 +49,7 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 
 Profile: ChEkmPatientInitials
 Parent: ChEkmPatient
+Id: ch-ekm-patient-initials
 Title: "CH Ekm Patient Initials"
 Description: "Patient representation via Initials"
 * name obeys name-initials

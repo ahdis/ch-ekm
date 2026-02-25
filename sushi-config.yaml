@@ -31,10 +31,16 @@ dependencies:
 pages:
   index.md:
     title: Home
+  guidance.md:
+    title: Guidance
+  terminology.md:
+    title: Terminology
 
 
 menu:
   Home: index.html
+  Guidance: guidance.html
+  Terminology: terminology.html
   Artifacts: artifacts.html
 
 # Parameters
