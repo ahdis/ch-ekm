@@ -8,8 +8,8 @@ Usage: #example
 * timestamp = "2026-01-27T11:30:00+02:00"
 * entry[0].fullUrl = "urn:uuid:da065461-34df-4e2e-b69f-4181908575d0" // Composition
 * entry[=].resource = da065461-34df-4e2e-b69f-4181908575d0
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645" // Patient
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015645
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample" // Patient
+* entry[=].resource = ChEkmPatientInitialsExample
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656" // Condition
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f025656
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660" // Encounter
@@ -41,7 +41,7 @@ InstanceOf: ChEkmComposition
 Usage: #example
 * status = #final
 * type.coding[0] = $loinc#34782-3 "Infectious disease Note"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645) 
+* subject = Reference(ChEkmPatientInitialsExample) 
 * date = "2026-01-27"
 * author[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664) 
 * encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
@@ -70,46 +70,10 @@ Usage: #example
 * section[=].section[=].entry[=].type = "Condition" 
 
 
-
-
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015645
-InstanceOf: Patient
-Usage: #example
-//AHV-Nummer
-* identifier[+].system = "urn:oid:2.16.756.5.32"
-* identifier[=].value = "7561234567897"
-//Initiale Name
-* name.family = "M"
-//Initiale Vorname
-* name.given = "B"
-//Geburtsdatum
-* birthDate = "2000-01-01"
-//Administratives Geschlecht
-* gender = #male
-//Adresse (Strasse + Hausnumme + Ort)
-//* address[home].use = #home
-//* address[home].line = "Tannenstrasse 10a"
-//* address[home].line.extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName"
-//* address[home].line.extension[=].valueString = "Tannenstrasse"
-//* address[home].line.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber"
-//* address[home].line.extension[=].valueString = "10a"
-* address[+].city = "Liebefeld"
-//PLZ/Wohnort
-* address[=].postalCode = "3097"
-//Kanton
-* address[=].state = "BE"
-//Land
-* address[=].country = "Schweiz"
-* address.country.extension.url = "http://hl7.org/fhir/StructureDefinition/iso21090-codedString"
-* address.country.extension.valueCoding = urn:iso:std:iso:3166#CH
-//Nationalität
-* extension[+].url = "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
-* extension[=].valueCodeableConcept = urn:iso:std:iso:3166#CH
-
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f025656
 InstanceOf: Condition
 Usage: #example
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
+* subject = Reference(ChEkmPatientInitialsExample)
 * category = $condition-category#encounter-diagnosis 
 * code = $sct#406617004 "Invasive Streptococcus pneumoniae disease (disorder)"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)" 
@@ -122,7 +86,7 @@ Usage: #example
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015660
 InstanceOf: Encounter
 Usage: #example
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
+* subject = Reference(ChEkmPatientInitialsExample)
 * class = #IMP
 * status = #unknown
 * period.start = "2026-01-19"
@@ -148,7 +112,7 @@ Usage: #example
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015662
 InstanceOf: Specimen
 Usage: #example
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645) 
+* subject = Reference(ChEkmPatientInitialsExample) 
 * collection.collectedDateTime = "2026-01-27"
 * type.coding[0] = $sct#119297000 "Blood specimen"
 
@@ -181,7 +145,7 @@ InstanceOf: Immunization
 Usage: #example
 * status = #completed
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
+* patient = Reference(ChEkmPatientInitialsExample)
 * occurrenceDateTime = "2000-03-01"
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
 * protocolApplied.doseNumberPositiveInt = 1
@@ -191,7 +155,7 @@ InstanceOf: Immunization
 Usage: #example
 * status = #completed
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
+* patient = Reference(ChEkmPatientInitialsExample)
 * occurrenceDateTime = "2000-05-01"
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
 * protocolApplied.doseNumberPositiveInt = 2
@@ -202,14 +166,14 @@ InstanceOf: Condition
 Usage: #example
 * category = $condition-category#problem-list-item 
 * code = $sct#38013005 "Immunosuppression (finding)"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
+* subject = Reference(ChEkmPatientInitialsExample)
 
 Instance: 50d5deca-64e9-4a30-8cec-80ac1f015672
 InstanceOf: Condition
 Usage: #example
 * category = $condition-category#problem-list-item 
 * code = $sct#91302008 "Sepsis (disorder)"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015645)
+* subject = Reference(ChEkmPatientInitialsExample)
 
 
 

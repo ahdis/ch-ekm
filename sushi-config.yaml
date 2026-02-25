@@ -28,14 +28,19 @@ contact:
 dependencies:
  ch.fhir.ig.ch-term: 3.3.x
  ch.fhir.ig.ch-core: 6.0.0
- ch.fhir.ig.ch-lab-report: 2.0.0
 pages:
   index.md:
     title: Home
+  guidance.md:
+    title: Guidance
+  terminology.md:
+    title: Terminology
 
 
 menu:
   Home: index.html
+  Guidance: guidance.html
+  Terminology: terminology.html
   Artifacts: artifacts.html
 
 # Parameters

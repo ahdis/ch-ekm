@@ -6,8 +6,8 @@ Usage: #example
 * timestamp = "2026-01-27T11:30:00+02:00"
 * entry[0].fullUrl = "urn:uuid:da065461-34df-4e2e-b69f-4181908575d1" // Composition
 * entry[=].resource = da065461-34df-4e2e-b69f-4181908575d1
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655" // Patient
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015655
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ChEkmPatientExample" // Patient
+* entry[=].resource = ChEkmPatientExample
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015656" // Condition
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015656
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690" // Observation
@@ -38,7 +38,7 @@ Usage: #example
 * identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
 * status = #final
 * type.coding[0] = $loinc#34782-3 "Infectious disease Note"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655) // Angaben zur betroffenen Person
+* subject = Reference(ChEkmPatientExample) // Angaben zur betroffenen Person
 * subject.type = "Patient"
 * date = "2026-01-27"
 * author[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015664) // Arzt/Ärztin
@@ -64,59 +64,10 @@ Usage: #example
 * section[=].section[=].entry[=].type = "Observation" 
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015655
-InstanceOf: Patient
-Usage: #example
-//AHV-Nummer
-* identifier[+].system = "urn:oid:2.16.756.5.32"
-* identifier[=].value = "7561234567897"
-//Initiale Name
-* name.family = "Muster"
-//Initiale Vorname
-* name.given = "Beispielin"
-//Geburtsdatum
-* birthDate = "2000-01-01"
-// Geschlecht
-* extension[+].url = "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity"
-* extension[=].extension[0].url = "value"
-* extension[=].extension[=].valueCodeableConcept = $sct#446141000124107 "Identifies as female gender (finding)"
-* extension[+].url = "http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender"
-* extension[=].extension[0].url = "value"
-* extension[=].extension[=].valueCodeableConcept = #male 
-* extension[=].extension[+].url = "type"
-* extension[=].extension[=].valueCodeableConcept = $loinc#76689-9 "Sex Assigned At Birth"
-//* gender = #male
-//Adresse (Strasse + Hausnumme + Ort)
-//* address[home].use = #home
-//* address[home].line = "Tannenstrasse 10a"
-//* address[home].line.extension[0].url = "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName"
-//* address[home].line.extension[=].valueString = "Tannenstrasse"
-//* address[home].line.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber"
-//* address[home].line.extension[=].valueString = "10a"
-* address[+].city = "Liebefeld"
-//PLZ/Wohnort
-* address[=].postalCode = "3097"
-//Kanton
-* address[=].state = "BE"
-//Land
-* address[=].country = "Schweiz"
-* address[=].country.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-SC-coding"
-* address[=].country.extension[=].valueCoding = urn:iso:std:iso:3166#CH
-//Nationalität
-* extension[+].url = "http://hl7.org/fhir/StructureDefinition/patient-citizenship"
-* extension[=].extension[+].url = "code" 
-* extension[=].extension[=].valueCodeableConcept = urn:iso:std:iso:3166#CH
-
-// Herkunftsland
-* extension[+].url = "http://hl7.org/fhir/StructureDefinition/patient-birthPlace"
-* extension[=].valueAddress.country = "Niederlande"
-//* address[=].country.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-SC-coding"
-//* address[=].country.extension[=].valueCoding = urn:iso:std:iso:3166#NL
-
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015656
 InstanceOf: Condition
 Usage: #example
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(ChEkmPatientExample)
 //* category = $condition-category#encounter-diagnosis "Encounter Diagnosis"
 * code = $sct#50711007 "Viral hepatitis type C (disorder)"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)" 
@@ -133,7 +84,7 @@ InstanceOf: Observation
 Usage: #example
 * status = #final
 * code = $loinc#16128-1 "Hepatitis C virus Ab [Presence] in Serum"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(ChEkmPatientExample)
 * valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015790
@@ -141,7 +92,7 @@ InstanceOf: Observation
 Usage: #example
 * status = #final
 * code = $sct#427314002 "Antiviral therapy (procedure)"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(ChEkmPatientExample)
 * valueCodeableConcept = $sct#386053000 "Evaluation procedure (procedure)"
 
 
@@ -158,7 +109,7 @@ Usage: #example
 * valueCodeableConcept = $sct#223366009 "Healthcare professional (occupation)"
 * effectivePeriod.start = "2025-12-01"
 * effectivePeriod.end = "2025-12-01"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(ChEkmPatientExample)
 * component.code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
 * component.valueCodeableConcept = $sct#62944002 "Hepatitis C virus (organism)"
 * component.code = $v3-ParticipationType#LOC "Location"
@@ -171,7 +122,7 @@ InstanceOf: Observation
 Usage: #example
 * status = #final
 * code = $loinc#21843-8 "History of Usual occupation"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(ChEkmPatientExample)
 * valueString = "Ärztin"
 
 
@@ -181,7 +132,7 @@ Usage: #example
 * intent = #order
 * status = #unknown
 * reasonCode =  $sct#713883003 "Screening due" 
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(ChEkmPatientExample)
 * performer = Reference(urn:uuid:50d5deca-64e9-5a30-8cec-40ac1f015661)
 
 Instance: 50d5deca-64e9-5a30-8cec-40ac1f015661 
@@ -223,7 +174,7 @@ Instance: 50d5deca-64e9-4a30-8cec-80bc1f015672
 InstanceOf: Condition
 Usage: #example
 * code =  $sct#235866006 "Acute hepatitis C (disorder)"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(ChEkmPatientExample)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-80cc1f015672
@@ -232,7 +183,7 @@ Usage: #example
 * status = #final
 * code = $sct#166642001 "Elevated transaminases (finding)"
 * code.text = "Transaminase ≥ 2.5x"
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(ChEkmPatientExample)
 
 
 
