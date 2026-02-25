@@ -17,7 +17,7 @@ The specification herewith documented is work in progress. No liability can be i
 
 **Download**: You can download this implementation guide in [npm format](https://confluence.hl7.org/display/FHIR/NPM+Package+Specification) from [here](package.tgz).
 
-### Implementation Support for Laboratories
+### Implementation Support for Clinical Information Systems.
 
 
 This guide supports you as a clinical information system in the following way:
