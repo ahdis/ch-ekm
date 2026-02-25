@@ -6,10 +6,6 @@
   
 {% include list-codesystems.xhtml %}
 
-### ConceptMaps
-
-{% include list-conceptmaps.xhtml %}
-
 ### NamingSystems
 
 {% include list-namingsystems.xhtml %}
