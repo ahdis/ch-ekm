@@ -11,3 +11,18 @@ Alias: $v3-ObservationInterpretation =  http://terminology.hl7.org/CodeSystem/v3
 Alias: $v3-ActClass =                   http://terminology.hl7.org/CodeSystem/v3-ActClass
 Alias: $v3-ParticipationType =          http://terminology.hl7.org/CodeSystem/v3-ParticipationType
 
+//External Extensions 
+Alias: $individual-genderIdentity =      http://hl7.org/fhir/StructureDefinition/individual-genderIdentity
+Alias: $individual-recordedSexOrGender = http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender
+Alias: $patient-citizenship =            http://hl7.org/fhir/StructureDefinition/patient-citizenship
+Alias: $iso21090-ADXP-streetName =       http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName
+Alias: $iso21090-ADXP-houseNumber =      http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber
+
+//External Value Sets
+Alias: $gender-identity =               http://terminology.hl7.org/ValueSet/gender-identity
+
+//Internal Value Sets
+Alias: $biological-sex =                http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmBiologicalSex 
+
+// CH Core & CH EPR Term
+Alias: $bfs-country-codes = http://fhir.ch/ig/ch-term/ValueSet/bfs-country-codes
