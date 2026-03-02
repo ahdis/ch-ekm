@@ -7,4 +7,4 @@ Depending on the disease defined in the code of the Condition, the requirement f
 * **Initials**
    * Disease: Pneumococcal infectious, etc
    * see Profile [CH EKM Patient Initials](StructureDefinition-ch-ekm-patient-initials.html) 
-   * [Example](Patient-ChEkmPatientInitials.json.html): MB (Patient.name.family = M, Patient.name.given = B, no telecom and no street address)
+   * [Example](Patient-ChEkmPatientInitials.json.html): MB (Patient.name.family = M, Patient.name.given = B, no telecom, no street address, no gender identity and no biological sex information)
