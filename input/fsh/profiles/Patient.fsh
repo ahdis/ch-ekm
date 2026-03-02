@@ -25,7 +25,7 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 * gender ^short = "Administrative gender" 
 * obeys ch-ekm-gender-sync
 * birthDate 1..
-* birthDate obeys ch-elm-dateTime
+* birthDate obeys ch-ekm-dateTime
 * address ..1 MS
 * address ^slicing.discriminator[0].type = #value
 * address ^slicing.discriminator[=].path = "use"

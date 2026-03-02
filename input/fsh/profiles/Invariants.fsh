@@ -5,7 +5,7 @@ Severity: #error
 Expression: "given.exists() and given.first().exists() and (''+given.first()).length() = 1 and family.exists() and (''+family).length() = 1"
 
 
-Invariant: ch-elm-dateTime
+Invariant: ch-ekm-dateTime
 Description: "At least the format YYYY-MM-DD is required."
 Severity: #error
 Expression: "$this.toString().length() >= 10"
