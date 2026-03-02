@@ -17,6 +17,9 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 * identifier ..1 MS
 * identifier[AHVN13] ..1 MS
 * identifier[AHVN13] ^short = "OASI Number Switzerland"
+* identifier[EPR-SPID] 0..0
+* identifier[LocalPid] 0..0
+* identifier[insuranceCardNumber] 0..0
 * name 1..1
 * name ^short = "Whether the personal data is transmitted by using initials or full name is described under 'Guidance - Personal Data (Patient Name)'"
 * name.family 1..
