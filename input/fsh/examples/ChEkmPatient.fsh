@@ -6,7 +6,7 @@ Usage: #example
 * name.family = "Muster"
 * name.given = "Beispielin"
 * birthDate = "2000-01-01"
-* extension[genderIdentity].extension[value].valueCodeableConcept = $sct#446141000124107 "Identifies as female gender (finding)"
+* extension[genderIdentity].extension[value].valueCodeableConcept = $sct#446151000124109 "Male gender Identity"
 * extension[biologicalSexAtBirth].extension[type].valueCodeableConcept = $loinc#76689-9 "Sex Assigned At Birth"
 * extension[biologicalSexAtBirth].extension[value].valueCodeableConcept = $sct#248153007 "Male (finding)"
 * gender = #male
