@@ -1,9 +1,6 @@
 Instance: ChEkmPatientExample
 InstanceOf: ChEkmPatient
 Usage: #example
-* identifier[EPR-SPID] 0..0
-* identifier[LocalPid] 0..0
-* identifier[insuranceCardNumber] 0..0
 * identifier[AHVN13].system = "urn:oid:2.16.756.5.32"
 * identifier[AHVN13].value = "7561234567897"
 * name.family = "Muster"
