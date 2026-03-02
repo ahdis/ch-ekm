@@ -3,8 +3,8 @@ Depending on the disease defined in the code of the Condition, the requirement f
 * **Full Name**
    * Disease: Hepatitis C, etc.
    * see Profile [CH EKM Patient](StructureDefinition-ch-ekm-patient.html) 
-   * [Example](Patient-ChEkmPatient.json.html): Beispielin Muster (Patient.name.family = Muster, Patient.name.given = Beispielin, Patient.address)
+   * [Example](Patient-ChEkmPatient.json.html): Beispielin Muster (Patient.name.family = Muster, Patient.name.given = Beispielin, where Patient.address.line, Patien.telecom[phone] and birth place (pending to decide) specified)
 * **Initials**
    * Disease: Pneumococcal infectious, etc
    * see Profile [CH EKM Patient Initials](StructureDefinition-ch-ekm-patient-initials.html) 
-   * [Example](Patient-ChEkmPatientInitials.json.html): MB (Patient.name.family = M, Patient.name.given = B, no telecom, no street address, no gender identity and no biological sex information)
+   * [Example](Patient-ChEkmPatientInitials.json.html): MB (Patient.name.family = M, Patient.name.given = B)

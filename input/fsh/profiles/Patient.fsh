@@ -6,12 +6,12 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 
 * extension[citizenship] ..1 MS 
 * extension[placeOfBirth] ..1  
-* extension contains $individual-genderIdentity named genderIdentity 0..1 MS
+* extension contains $individual-genderIdentity named genderIdentity 0..1 
 * extension[genderIdentity].extension[value].valueCodeableConcept from $gender-identity (required)
-* extension contains $individual-recordedSexOrGender named biologicalSexAtBirth ..1 
+* extension contains $individual-recordedSexOrGender named biologicalSexAtBirth 0..1 
 * extension[biologicalSexAtBirth].extension[type].valueCodeableConcept = $loinc#76689-9 "Sex Assigned At Birth"
 * extension[biologicalSexAtBirth].extension[value].valueCodeableConcept from $biological-sex (required)
-* extension contains $individual-recordedSexOrGender named biologicalSex ..1 
+* extension contains $individual-recordedSexOrGender named biologicalSex 0..1 
 * extension[biologicalSex].extension[type].valueCodeableConcept = $loinc#46098-0 "Sex"
 * extension[biologicalSex].extension[value].valueCodeableConcept from $biological-sex (required)
 * identifier ..1 MS
@@ -37,9 +37,7 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 * address[home] ^short = "Residential address"
 * address[home].use 1..
 * address[home].use = #home
-* address[home].line ..1 
-* address[home].line.extension[streetName].valueString ..1 
-* address[home].line.extension[houseNumber].valueString ..1 
+* address[home].line ..1 MS
 * address[home].postalCode MS
 * address[home].city MS
 * address[home].state MS 
@@ -47,7 +45,7 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 * address[home].country MS
 * address[home].country.extension[countrycode] 1.. 
 * address[home].country.extension[countrycode].valueCoding from $bfs-country-codes (required)
-* telecom[phone] ..1
+* telecom[phone] ..1 MS
 
 
 Profile: ChEkmPatientInitials
