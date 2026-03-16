@@ -1,3 +1,16 @@
+Profile: CHEkmHumanName
+Parent: CHCoreHumanName
+Id: ch-ekm-humanname
+Title: "Human Name"
+Description: "Name with extensions for data-absent-reason"
+* extension ^slicing.discriminator.type = #value
+* extension ^slicing.discriminator.path = "url"
+* extension ^slicing.rules = #open
+* extension contains ChEkmExtHivCode named hivcode 0..1
+* family.extension contains $data-absent-reason named dataabsentreason 0..1
+* given.extension contains $data-absent-reason named dataabsentreason 0..1
+
+
 Profile: ChEkmPatient
 Parent: CHCorePatient
 Id: ch-ekm-patient
@@ -17,18 +30,18 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 * identifier ..1 MS
 * identifier[AHVN13] ..1 MS
 * identifier[AHVN13] ^short = "OASI Number Switzerland"
+* identifier[LocalPid] 0..1
 * identifier[EPR-SPID] 0..0
-* identifier[LocalPid] 0..0
 * identifier[insuranceCardNumber] 0..0
 * name 1..1
+* name only CHEkmHumanName
 * name ^short = "Whether the personal data is transmitted by using initials or full name is described under 'Guidance - Personal Data (Patient Name)'"
 * name.family 1..
 * name.given 1..1
 * gender 1..
 * gender ^short = "Administrative gender" 
-* obeys ch-ekm-gender-sync
 * birthDate 1..
-* birthDate obeys ch-ekm-dateTime
+* birthDate.extension contains $data-absent-reason named dataabsentreason 0..1
 * address ..1 MS
 * address ^slicing.discriminator[0].type = #value
 * address ^slicing.discriminator[=].path = "use"
@@ -56,4 +69,35 @@ Description: "Patient representation via Initials"
 * name obeys name-initials
 * address[home].line ..0
 * telecom ..0
+
+
+Profile: ChEkmPatientHIV
+Parent: ChEkmPatient
+Title: "CH EKM Patient HIV"
+Description: "Patient representation for HIV"
+* . ^short = "CH EKM Patient HIV"
+* name.extension[hivcode] 1..
+* name.family.extension[dataabsentreason] 1..
+* name.family.extension[dataabsentreason].valueCode = #masked
+* name.given.extension[dataabsentreason] 1..
+* name.given.extension[dataabsentreason].valueCode = #masked
+* address[home].line ..0
+* telecom ..0
+
+Profile: ChEkmPatientVCT
+Parent: ChEkmPatient
+Title: "CH EKM Patient VCT"
+Description: "Patient representation via a VCT Code"
+* . ^short = "CH EKM Patient VCT"
+* identifier[AHVN13] 0..0
+* identifier[LocalPid] only VCTIdentifier
+* identifier[LocalPid] ^short = "VCT identifier"
+* identifier[LocalPid] ^patternIdentifier.system = "http://fhir.ch/ig/ch-ekm/identifier/vct"
+* name.family.extension[dataabsentreason] 1..
+* name.family.extension[dataabsentreason].valueCode = #masked
+* name.given.extension[dataabsentreason] 1..
+* name.given.extension[dataabsentreason].valueCode = #masked
+* address[home].line ..0
+* telecom ..0
+
 
