@@ -16,9 +16,8 @@ Parent: CHCorePatient
 Id: ch-ekm-patient
 Title: "CH EKM Patient"
 Description: "This CH EKM base profile constrains the Patient resource for the purpose of Clinical Findings of Communicable Infectious Diseases Reports."
-
-* extension[citizenship] ..1 MS 
 * extension[placeOfBirth] ..1  
+* extension[citizenship] ..1 MS 
 * extension contains $individual-genderIdentity named genderIdentity 0..1 
 * extension[genderIdentity].extension[value].valueCodeableConcept from $gender-identity (required)
 * extension contains $individual-recordedSexOrGender named biologicalSexAtBirth 0..1 
@@ -27,10 +26,9 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 * extension contains $individual-recordedSexOrGender named biologicalSex 0..1 
 * extension[biologicalSex].extension[type].valueCodeableConcept = $loinc#46098-0 "Sex"
 * extension[biologicalSex].extension[value].valueCodeableConcept from $biological-sex (required)
-* identifier ..1 MS
+* identifier MS
 * identifier[AHVN13] ..1 MS
 * identifier[AHVN13] ^short = "OASI Number Switzerland"
-* identifier[LocalPid] 0..1
 * identifier[EPR-SPID] 0..0
 * identifier[insuranceCardNumber] 0..0
 * name 1..1
@@ -61,12 +59,16 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 * telecom[phone] ..1 MS
 
 
+
 Profile: ChEkmPatientInitials
 Parent: ChEkmPatient
 Id: ch-ekm-patient-initials
 Title: "CH Ekm Patient Initials"
 Description: "Patient representation via Initials"
 * name obeys name-initials
+* extension[genderIdentity] 0..0
+* extension[biologicalSexAtBirth] 0..0
+* extension[biologicalSex] 0..0
 * address[home].line ..0
 * telecom ..0
 
@@ -76,6 +78,9 @@ Parent: ChEkmPatient
 Title: "CH EKM Patient HIV"
 Description: "Patient representation for HIV"
 * . ^short = "CH EKM Patient HIV"
+* extension[genderIdentity] 0..0
+* extension[biologicalSexAtBirth] 0..0
+* extension[biologicalSex] 0..0
 * name.extension[hivcode] 1..
 * name.family.extension[dataabsentreason] 1..
 * name.family.extension[dataabsentreason].valueCode = #masked
@@ -90,6 +95,10 @@ Title: "CH EKM Patient VCT"
 Description: "Patient representation via a VCT Code"
 * . ^short = "CH EKM Patient VCT"
 * identifier[AHVN13] 0..0
+* extension[genderIdentity] 0..0
+* extension[biologicalSexAtBirth] 0..0
+* extension[biologicalSex] 0..0
+* identifier[LocalPid] 1..1
 * identifier[LocalPid] only VCTIdentifier
 * identifier[LocalPid] ^short = "VCT identifier"
 * identifier[LocalPid] ^patternIdentifier.system = "http://fhir.ch/ig/ch-ekm/identifier/vct"
