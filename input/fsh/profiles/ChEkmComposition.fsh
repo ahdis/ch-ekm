@@ -63,15 +63,17 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 // "Social history Narrative"
 * section[social-history].code = $loinc#29762-2 
 * section[social-history].section 2..2 
-  * ^slicing.discriminator.type = #profile
-  * ^slicing.discriminator.path = "$this"
-  * ^slicing.rules = #closed
+* section[social-history].section ^slicing.discriminator.type = #value
+* section[social-history].section ^slicing.discriminator.path = "code"
+* section[social-history].section ^slicing.rules = #closed 
 * section[social-history].section contains
     exposure-to-infectious-disease 1..1 and
     occupation 1..1
 * section[social-history].section[exposure-to-infectious-disease].entry 1..1
+* section[social-history].section[exposure-to-infectious-disease].code = $sct#150781000119103
 * section[social-history].section[exposure-to-infectious-disease].entry only Reference(Observation)
 * section[social-history].section[occupation].entry 1..1
+* section[social-history].section[occupation].code = $loinc#21843-8
 * section[social-history].section[occupation].entry only Reference(Observation)
 
 // "Cause of death"

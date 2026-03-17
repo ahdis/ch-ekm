@@ -1,6 +1,8 @@
 ### Introduction
 CH EKM (Elektronische klinische Meldung) is a project of the Swiss Federal Office of Public Health (FOPH), Communicable Diseases Division, to enable clinicians to send their clinical findings of communicable infectious diseases to the FOPH electronically.
-A report is created as a specialized Clinical Document based on the HL7® FHIR® standard. This [FHIR document](document.html) is sent to the FOPH by a [FHIR RESTful web API endpoint](api.html). CH EKM derives from the [Swiss implementation guides](https://fhir.ch/) 
+A report is created as a specialized Clinical Document based on the HL7® FHIR® standard. 
+
+[//]: # (This [FHIR document](document.html) is sent to the FOPH by a [FHIR RESTful web API endpoint](api.html). CH EKM derives from the [Swiss implementation guides](https://fhir.ch/))
 
 [//]: # (// TODO and the [European laboratory project](https://hl7.eu/fhir/laboratory/) (see [graphical overview](#dependency-overview)).)
 
@@ -11,7 +13,8 @@ A report is created as a specialized Clinical Document based on the HL7® FHIR®
 
 The specification herewith documented is work in progress. No liability can be inferred from the use or misuse of this specification, or its consequences.
 
-[Changelog](changelog.html) with significant changes, open and closed issues.
+[//]: # ([Changelog](changelog.html) with significant changes, open and closed issues.)
+
 
 </div>
 
@@ -21,7 +24,9 @@ The specification herewith documented is work in progress. No liability can be i
 
 
 This guide supports you as a clinical information system in the following way:
-- [Use cases](usecase.html) describe the different scenarios with respective example reports for specific organisms.
+
+[//]: # (- [Use cases](usecase.html) describe the different scenarios with respective example reports for specific organisms.)
+
 
 - Value sets for the [terminology](terminology.html) are provided as FHIR resources which you can directly import from the [npm package](package.tgz).  
 

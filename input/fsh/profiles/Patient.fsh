@@ -16,6 +16,12 @@ Parent: CHCorePatient
 Id: ch-ekm-patient
 Title: "CH EKM Patient"
 Description: "This CH EKM base profile constrains the Patient resource for the purpose of Clinical Findings of Communicable Infectious Diseases Reports."
+* extension ^slicing.discriminator[0].type = #value
+* extension ^slicing.discriminator[0].path = "url"
+* extension ^slicing.discriminator[1].type = #profile
+* extension ^slicing.discriminator[1].path = "$this"
+* extension ^slicing.rules = #open
+
 * extension[placeOfBirth] ..1  
 * extension[citizenship] ..1 MS 
 * extension contains $individual-genderIdentity named genderIdentity 0..1 
@@ -25,7 +31,6 @@ Description: "This CH EKM base profile constrains the Patient resource for the p
 * extension[biologicalSexAtBirth].extension[value].valueCodeableConcept from $biological-sex (required)
 * extension contains $individual-recordedSexOrGender named biologicalSex 0..1 
 * extension[biologicalSex].extension[type].valueCodeableConcept = $loinc#46098-0 "Sex"
-* extension[biologicalSex].extension[value].valueCodeableConcept from $biological-sex (required)
 * identifier MS
 * identifier[AHVN13] ..1 MS
 * identifier[AHVN13] ^short = "OASI Number Switzerland"

@@ -1,6 +1,7 @@
 Instance: ChEkmPatientInitialsExample
 InstanceOf: ChEkmPatientInitials
 Usage: #example
+* id = "ChEkmPatientInitialsExample"
 * identifier[AHVN13].system = "urn:oid:2.16.756.5.32"
 * identifier[AHVN13].value = "7561234567897"
 * name.family = "M"

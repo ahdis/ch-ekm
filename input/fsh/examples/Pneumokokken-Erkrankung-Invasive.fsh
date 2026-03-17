@@ -32,6 +32,8 @@ Usage: #example
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015673
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015672" // Condition
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015672
+* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-80ac1f015672" // Condition
+* entry[=].resource = 50d5deca-64e9-4a30-8cec-80ac1f015672
 
 
 
@@ -41,7 +43,7 @@ InstanceOf: ChEkmComposition
 Usage: #example
 * status = #final
 * type = $loinc#34782-3 "Infectious disease Note"
-* subject = Reference(ChEkmPatientInitialsExample) 
+* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 * date = "2026-01-27"
 * author = Reference(urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664) 
 * encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
@@ -77,7 +79,7 @@ Usage: #example
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f025656
 InstanceOf: Condition
 Usage: #example
-* subject = Reference(ChEkmPatientInitialsExample)
+* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 * category = $condition-category#encounter-diagnosis 
 * code = $sct#406617004 "Invasive Streptococcus pneumoniae disease (disorder)"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)" 
@@ -90,7 +92,7 @@ Usage: #example
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015660
 InstanceOf: Encounter
 Usage: #example
-* subject = Reference(ChEkmPatientInitialsExample)
+* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 * class = #IMP
 * status = #unknown
 * period.start = "2026-01-19"
@@ -103,7 +105,7 @@ Usage: #example
 * status = #unknown
 * specimen = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015662)
 * performer = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015661)
-* subject = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015655)
+* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015661 
@@ -116,7 +118,7 @@ Usage: #example
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015662
 InstanceOf: Specimen
 Usage: #example
-* subject = Reference(ChEkmPatientInitialsExample) 
+* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 * collection.collectedDateTime = "2026-01-27"
 * type.coding[0] = $sct#119297000 "Blood specimen"
 
@@ -140,6 +142,7 @@ Usage: #example
 Instance: 50d5deca-64e9-4a30-8cec-50ac1f015663 
 InstanceOf: Organization
 Usage: #example
+* name = "Praxis Dr. Hauser"
 * address.line = "Aortastrasse 22"
 * address.city = "Bern"
 * address.postalCode = "3000"
@@ -149,7 +152,7 @@ InstanceOf: Immunization
 Usage: #example
 * status = #completed
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(ChEkmPatientInitialsExample)
+* patient = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 * occurrenceDateTime = "2000-03-01"
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
 * protocolApplied.doseNumberPositiveInt = 1
@@ -159,7 +162,7 @@ InstanceOf: Immunization
 Usage: #example
 * status = #completed
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(ChEkmPatientInitialsExample)
+* patient = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 * occurrenceDateTime = "2000-05-01"
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
 * protocolApplied.doseNumberPositiveInt = 2
@@ -170,14 +173,14 @@ InstanceOf: Condition
 Usage: #example
 * category = $condition-category#problem-list-item 
 * code = $sct#38013005 "Immunosuppression (finding)"
-* subject = Reference(ChEkmPatientInitialsExample)
+* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 
 Instance: 50d5deca-64e9-4a30-8cec-80ac1f015672
 InstanceOf: Condition
 Usage: #example
 * category = $condition-category#problem-list-item 
 * code = $sct#91302008 "Sepsis (disorder)"
-* subject = Reference(ChEkmPatientInitialsExample)
+* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 
 
 
