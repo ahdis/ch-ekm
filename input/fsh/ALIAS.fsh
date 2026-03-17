@@ -10,6 +10,7 @@ Alias: $condition-category =            http://terminology.hl7.org/CodeSystem/co
 Alias: $v3-ObservationInterpretation =  http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation
 Alias: $v3-ActClass =                   http://terminology.hl7.org/CodeSystem/v3-ActClass
 Alias: $v3-ParticipationType =          http://terminology.hl7.org/CodeSystem/v3-ParticipationType
+Alias: $v2-0203 = http://terminology.hl7.org/CodeSystem/v2-0203
 
 //External Extensions 
 Alias: $individual-genderIdentity =      http://hl7.org/fhir/StructureDefinition/individual-genderIdentity
@@ -26,3 +27,4 @@ Alias: $biological-sex =                http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmB
 
 // CH Core & CH EPR Term
 Alias: $bfs-country-codes = http://fhir.ch/ig/ch-term/ValueSet/bfs-country-codes
+Alias: $data-absent-reason = http://hl7.org/fhir/StructureDefinition/data-absent-reason

@@ -40,34 +40,38 @@ Instance: da065461-34df-4e2e-b69f-4181908575d0
 InstanceOf: ChEkmComposition
 Usage: #example
 * status = #final
-* type.coding[0] = $loinc#34782-3 "Infectious disease Note"
+* type = $loinc#34782-3 "Infectious disease Note"
 * subject = Reference(ChEkmPatientInitialsExample) 
 * date = "2026-01-27"
-* author[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664) 
+* author = Reference(urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664) 
 * encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
 * title = "Meldung zum klinischen Befund Infektionskrankheit" 
-* section[+].title = "Diagnosis section" 
-* section[=].code = $loinc#29308-4 "Diagnosis"
-* section[=].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656)
-* section[=].entry[0].type = "Condition"
-* section[+].title = "Laboratory section" 
-* section[=].code = $loinc#30954-2  "Relevant diagnostic tests/laboratory data Narrative" 
-* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4130-8cec-40ac1f015680) 
-* section[=].entry[=].type = "ServiceRequest" 
-* section[+].title = "Hospitalisation section" 
-* section[=].code = $loinc#46240-8 "History of hospitalizations+History of outpatient visits Narrative" 
-* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660) 
-* section[=].entry[=].type = "Encounter" 
-* section[+].title = "Immunization section"
-* section[=].code = $loinc#11369-6  "History of immunization Narrative" 
-* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015671) 
-* section[=].entry[=].type = "Immunization" 
-* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673) 
-* section[=].entry[=].type = "Immunization" 
-* section[+].title = "Risk factors section"
-* section[=].code = $loinc#46467-7 "Risk factors"  
-* section[=].section[+].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015672) 
-* section[=].section[=].entry[=].type = "Condition" 
+
+// Diagnosis Section
+* section[diagnosis].title = "Diagnosis section" 
+* section[diagnosis].code = $loinc#29308-4
+* section[diagnosis].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656)
+
+// Laboratory Section
+* section[laboratory].title = "Laboratory section" 
+* section[laboratory].code = $loinc#30954-2
+* section[laboratory].entry[0] = Reference(urn:uuid:50d5deca-64e9-4130-8cec-40ac1f015680) 
+
+// Hospitalization Section
+* section[hospitalization].title = "Hospitalisation section" 
+* section[hospitalization].code = $loinc#46240-8
+* section[hospitalization].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660) 
+
+// Immunization Section
+* section[immunization].title = "Immunization section"
+* section[immunization].code = $loinc#11369-6
+* section[immunization].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015671) 
+* section[immunization].entry[1] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673) 
+
+// Risk Factors Section (Direct Entry)
+* section[risk-factors].title = "Risk factors section"
+* section[risk-factors].code = $loinc#46467-7
+* section[risk-factors].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015672)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f025656

@@ -37,31 +37,32 @@ Usage: #example
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
 * status = #final
-* type.coding[0] = $loinc#34782-3 "Infectious disease Note"
-* subject = Reference(ChEkmPatientExample) // Angaben zur betroffenen Person
-* subject.type = "Patient"
+* type = $loinc#34782-3 "Infectious disease Note"
+* subject = Reference(ChEkmPatientExample)
 * date = "2026-01-27"
-* author[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015664) // Arzt/Ärztin
-* author[=].type = "PractitionerRole"
-* title = "Meldung zum klinischen Befund Infektionskrankheit" // ASK here how the process is, do you send this when the lab result is confirmed or also when it's just a suspicion? If so, we have to play with Condition.verificationStatus
-* section[+].title = "Diagnosis section"
-* section[=].code = $loinc#29308-4 "Diagnosis"
-* section[=].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015656)
-* section[=].entry[0].type = "Condition"
-* section[+].title = "Laboratory Results section" 
-* section[=].code = $loinc#30954-2  "Relevant diagnostic tests/laboratory data Narrative" 
-* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015680) 
-* section[=].entry[=].type = "ServiceRequest" 
-* section[+].title = "Medication section" 
-* section[=].code = $loinc#10160-0 	"History of medication use Narrative"
-* section[=].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015790) 
-* section[=].entry[=].type = "Observation" 
-* section[+].title = "Social History section"
-* section[=].code = $loinc#29762-2 "Social history Narrative"
-* section[=].section[+].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f016790) 
-* section[=].section[=].entry[=].type = "Observation"
-* section[=].section[+].entry[+] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015791) 
-* section[=].section[=].entry[=].type = "Observation" 
+* author = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015664)
+* title = "Meldung zum klinischen Befund Infektionskrankheit"
+
+// Diagnosis section
+* section[diagnosis].title = "Diagnosis section"
+* section[diagnosis].code = $loinc#29308-4
+* section[diagnosis].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015656)
+
+// Laboratory section
+* section[laboratory].title = "Laboratory Results section" 
+* section[laboratory].code = $loinc#30954-2
+* section[laboratory].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015680) 
+
+// Medication section
+* section[medication].title = "Medication section" 
+* section[medication].code = $loinc#10160-0
+* section[medication].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015790) 
+
+// Social History section (Nested Slicing)
+* section[social-history].title = "Social History section"
+* section[social-history].code = $loinc#29762-2
+* section[social-history].section[exposure-to-infectious-disease].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f016790) 
+* section[social-history].section[occupation].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015791)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015656
