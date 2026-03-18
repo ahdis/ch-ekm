@@ -1,6 +1,7 @@
 Instance: ChEkmPatientHIVExample
 InstanceOf: ChEkmPatientHIV
 Usage: #example
+Description: "Example for a CH EKM Patient: HIV Code"
 * identifier[AHVN13].system = "urn:oid:2.16.756.5.32"
 * identifier[AHVN13].value = "7561234567897"
 * name.extension[hivcode].valueString = "E5"

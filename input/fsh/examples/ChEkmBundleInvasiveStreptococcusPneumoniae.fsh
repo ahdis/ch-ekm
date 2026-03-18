@@ -1,7 +1,8 @@
 
-Instance: PneumokokkenErkrankungInvasive
+Instance: ChEkmBundleInvasiveStreptococcusPneumoniae 
 InstanceOf: Bundle
 Usage: #example
+Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
 * type = #document
@@ -10,6 +11,8 @@ Usage: #example
 * entry[=].resource = da065461-34df-4e2e-b69f-4181908575d0
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample" // Patient
 * entry[=].resource = ChEkmPatientInitialsExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationAuthorExample" // Organization - Author
+* entry[=].resource = ChEkmOrganizationAuthorExample
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656" // Condition
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f025656
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660" // Encounter
@@ -20,12 +23,6 @@ Usage: #example
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015662
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4130-8cec-40ac1f015680" // ServiceRequest
 * entry[=].resource = 50d5deca-64e9-4130-8cec-40ac1f015680
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664" // PractitionerRole
-* entry[=].resource = 50d5deca-64e9-4a30-8fec-40ac1f015664
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-7cec-40ac1f015665" // Practitioner
-* entry[=].resource = 50d5deca-64e9-4a30-7cec-40ac1f015665
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-50ac1f015663" // Organization
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-50ac1f015663 
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015671" // Immunization
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015671
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673" // Immunization
@@ -45,7 +42,7 @@ Usage: #example
 * type = $loinc#34782-3 "Infectious disease Note"
 * subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 * date = "2026-01-27"
-* author = Reference(urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664) 
+* author = Reference(http://test.fhir.ch/r4/Organization/ChEkmOrganizationAuthorExample) 
 * encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
 * title = "Meldung zum klinischen Befund Infektionskrankheit" 
 
@@ -86,7 +83,7 @@ Usage: #example
 * onsetDateTime = "2026-01-27"
 * evidence[0].detail = Reference (urn:uuid:50d5deca-64e9-4a30-8cec-80ac1f015672)
 //* encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
-//* recorder = Reference(urn:uuid:50d5deca-64e9-4a30-8fec-40ac1f015664)
+
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015660
@@ -122,30 +119,6 @@ Usage: #example
 * collection.collectedDateTime = "2026-01-27"
 * type.coding[0] = $sct#119297000 "Blood specimen"
 
-Instance: 50d5deca-64e9-4a30-8fec-40ac1f015664
-InstanceOf: PractitionerRole
-Usage: #example
-* practitioner = Reference(urn:uuid:50d5deca-64e9-4a30-7cec-40ac1f015665)
-* organization = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-50ac1f015663 )
-
-
-Instance: 50d5deca-64e9-4a30-7cec-40ac1f015665
-InstanceOf: Practitioner
-Usage: #example
-* name.family = "Giacometti"
-* name.given = "Monika"
-* telecom[+].system = #email
-* telecom[=].value = "m.giacometti@ks-abc.ch"
-* telecom[+].system = #phone
-* telecom[=].value = "+41 79 111 44 55"
-
-Instance: 50d5deca-64e9-4a30-8cec-50ac1f015663 
-InstanceOf: Organization
-Usage: #example
-* name = "Praxis Dr. Hauser"
-* address.line = "Aortastrasse 22"
-* address.city = "Bern"
-* address.postalCode = "3000"
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015671
 InstanceOf: Immunization

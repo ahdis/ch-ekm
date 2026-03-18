@@ -1,7 +1,8 @@
 
-Instance: HepatitisC
+Instance: ChEkmBundleHepatitisC
 InstanceOf: Bundle
 Usage: #example
+Description: "Example for a CH EKM Bundle: Hepatitis C"
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:1901332d-6012-443f-9690-9291adb234fa"
 * type = #document
@@ -10,6 +11,12 @@ Usage: #example
 * entry[=].resource = da065461-34df-4e2e-b69f-4181908575d1
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ChEkmPatientExample" // Patient
 * entry[=].resource = ChEkmPatientExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleResponsiblePhysicianExample" // PractitionerRole - Responsible Physician
+* entry[=].resource = ChEkmPractitionerRoleResponsiblePhysicianExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Practitioner/ChEkmPractitionerResponsiblePhysicianExample" // Practitioner - Responsible Physician
+* entry[=].resource = ChEkmPractitionerResponsiblePhysicianExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationResponsiblePhysicianExample" // Organization - Responsible Physician
+* entry[=].resource = ChEkmOrganizationResponsiblePhysicianExample
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015656" // Condition
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015656
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690" // Observation
@@ -26,14 +33,8 @@ Usage: #example
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015791
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015680" // ServiceRequest
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015680
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015664" // PractitionerRole
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015664
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015665" // Practitioner
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015665
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015663" // Organization
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015663
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-5a30-8cec-40ac1f015661" // Organization
-* entry[=].resource = 50d5deca-64e9-5a30-8cec-40ac1f015661
+//* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-5a30-8cec-40ac1f015661" // Organization
+//* entry[=].resource = 50d5deca-64e9-5a30-8cec-40ac1f015661
 
 
 
@@ -46,7 +47,7 @@ Usage: #example
 * type = $loinc#34782-3 "Infectious disease Note"
 * subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
 * date = "2026-01-27"
-* author = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015664)
+* author = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleResponsiblePhysicianExample)
 * title = "Meldung zum klinischen Befund Infektionskrankheit"
 
 // Diagnosis section
@@ -85,7 +86,7 @@ Usage: #example
 * evidence[0].detail = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-80bc1f015672)
 * evidence[1].detail = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-80cc1f015672)
 * evidence[2].detail = Reference (urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690)
-//* recorder = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015664)
+* recorder = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleResponsiblePhysicianExample)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015690
@@ -142,43 +143,8 @@ Usage: #example
 * status = #unknown
 * reasonCode =  $sct#713883003 "Screening due" 
 * subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
-* performer = Reference(urn:uuid:50d5deca-64e9-5a30-8cec-40ac1f015661)
+//* performer = Reference(urn:uuid:50d5deca-64e9-5a30-8cec-40ac1f015661)
 
-Instance: 50d5deca-64e9-5a30-8cec-40ac1f015661 
-InstanceOf: Organization
-Usage: #example
-* name = "Viollier Bern AG"
-* telecom[+].system = #phone
-* telecom[=].value = "+41 848 121 121"
-
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015664
-InstanceOf: PractitionerRole
-Usage: #example
-* practitioner = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015665)
-* organization = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015663)
-
-
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015665
-InstanceOf: Practitioner
-Usage: #example
-// Arzt/Ärztin - Name
-* name.family = "Giacometti"
-* name.given = "Monika"
-// Arzt/Ärztin - Tel.
-* telecom[+].system = #email
-* telecom[=].value = "m.giacometti@ks-abc.ch"
-// Arzt/Ärztin - E-Mail
-* telecom[+].system = #phone
-* telecom[=].value = "+41 79 111 44 55"
-
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015663
-InstanceOf: Organization
-Usage: #example
-// Arzt/Ärztin - Addresse
-* name = "Praxis Dr. Hauser"
-* address.line = "Aortastrasse 22"
-* address.city = "Bern"
-* address.postalCode = "3000"
 
 Instance: 50d5deca-64e9-4a30-8cec-80bc1f015672
 InstanceOf: Condition

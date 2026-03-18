@@ -1,7 +1,7 @@
 Instance: ChEkmPatientVCTExample
 InstanceOf: ChEkmPatientVCT
 Usage: #example
-
+Description: "Example for a CH EKM Patient: VCT Code"
 * identifier[LocalPid].system = "http://fhir.ch/ig/ch-ekm/identifier/vct"
 * identifier[LocalPid].type = $v2-0203#MR
 * identifier[LocalPid].value = "kste12345"

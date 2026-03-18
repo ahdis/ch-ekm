@@ -28,3 +28,6 @@ Alias: $biological-sex =                http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmB
 // CH Core & CH EPR Term
 Alias: $bfs-country-codes = http://fhir.ch/ig/ch-term/ValueSet/bfs-country-codes
 Alias: $data-absent-reason = http://hl7.org/fhir/StructureDefinition/data-absent-reason
+Alias: $ch-core-organization = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-organization
+Alias: $ch-core-practitioner = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-practitioner
+Alias: $ch-core-practitioner-role = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-practitionerrole
