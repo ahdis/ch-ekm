@@ -31,6 +31,8 @@ dependencies:
 pages:
   index.md:
     title: Home
+  usecase.md:
+    title: Use Case 
   guidance.md:
     title: Guidance
   terminology.md:
@@ -38,7 +40,9 @@ pages:
 
 
 menu:
+  Table of Contents: toc.html
   Home: index.html
+  Use Case: usecase.html
   Guidance: guidance.html
   Terminology: terminology.html
   Artifacts: artifacts.html

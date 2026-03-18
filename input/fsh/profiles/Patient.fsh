@@ -15,7 +15,7 @@ Profile: ChEkmPatient
 Parent: CHCorePatient
 Id: ch-ekm-patient
 Title: "CH EKM Patient"
-Description: "This CH EKM base profile constrains the Patient resource for the purpose of Clinical Findings of Communicable Infectious Diseases Reports."
+Description: "This CH EKM base profile constrains the Patient resource."
 * extension ^slicing.discriminator[0].type = #value
 * extension ^slicing.discriminator[0].path = "url"
 * extension ^slicing.discriminator[1].type = #profile
@@ -69,7 +69,7 @@ Profile: ChEkmPatientInitials
 Parent: ChEkmPatient
 Id: ch-ekm-patient-initials
 Title: "CH Ekm Patient Initials"
-Description: "Patient representation via Initials"
+Description: "This CH EKM base profile constrains the Patient resource for patient representation via Initials."
 * name obeys name-initials
 * extension[genderIdentity] 0..0
 * extension[biologicalSexAtBirth] 0..0
@@ -81,7 +81,7 @@ Description: "Patient representation via Initials"
 Profile: ChEkmPatientHIV
 Parent: ChEkmPatient
 Title: "CH EKM Patient HIV"
-Description: "Patient representation for HIV"
+Description: "This CH EKM base profile constrains the Patient resource for patient representation via HIV code."
 * . ^short = "CH EKM Patient HIV"
 * extension[genderIdentity] 0..0
 * extension[biologicalSexAtBirth] 0..0
@@ -97,7 +97,7 @@ Description: "Patient representation for HIV"
 Profile: ChEkmPatientVCT
 Parent: ChEkmPatient
 Title: "CH EKM Patient VCT"
-Description: "Patient representation via a VCT Code"
+Description: "This CH EKM base profile constrains the Patient resource for patient representation via VCT code."
 * . ^short = "CH EKM Patient VCT"
 * identifier[AHVN13] 0..0
 * extension[genderIdentity] 0..0
