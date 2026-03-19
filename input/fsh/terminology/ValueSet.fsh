@@ -35,3 +35,15 @@ Usage: #definition
 * group[0].element[3].code = #32570691000036108
 * group[0].element[3].target[0].code = #other
 * group[0].element[3].target[0].equivalence = #wider
+
+
+// klinischer Verdacht, Screening, Exposition, Unbekannt, anderer
+ValueSet: ChEkmServiceRequestReason
+Title: "CH EKM ServiceRequest Reason"
+Description: "This CH EKM value set includes the codes for service request reason."
+* ^status = #active
+
+* $sct#171112000 "Screening due (finding)"
+* $sct#415684004 "Suspected (qualifier value)"
+* $sct#444071008 "Exposure to organism (event)"
+* $sct#74964007  "Other (qualifier value)"

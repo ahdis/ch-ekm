@@ -17,6 +17,12 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * entry[=].resource = ChEkmPractitionerResponsiblePhysicianExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationResponsiblePhysicianExample" // Organization - Responsible Physician
 * entry[=].resource = ChEkmOrganizationResponsiblePhysicianExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-HepatitisC" // ServiceRequest
+* entry[=].resource = ChEkmServiceRequestExample-HepatitisC
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationLabExample" // Organization - Lab
+* entry[=].resource = ChEkmOrganizationLabExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Specimen/ChEkmSpecimenExample-HepatitisC" // Specimen
+* entry[=].resource = ChEkmSpecimenExample-HepatitisC
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015656" // Condition
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015656
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690" // Observation
@@ -31,10 +37,8 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f016790 
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015791" // Observation
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015791
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015680" // ServiceRequest
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015680
-//* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-5a30-8cec-40ac1f015661" // Organization
-//* entry[=].resource = 50d5deca-64e9-5a30-8cec-40ac1f015661
+
+
 
 
 
@@ -58,7 +62,7 @@ Usage: #example
 // Laboratory section
 * section[laboratory].title = "Laboratory Results section" 
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015680) 
+* section[laboratory].entry[0] = Reference(http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-HepatitisC) 
 
 // Medication section
 * section[medication].title = "Medication section" 
@@ -135,15 +139,6 @@ Usage: #example
 * subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
 * valueString = "Ärztin"
 
-
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015680
-InstanceOf: ServiceRequest
-Usage: #example
-* intent = #order
-* status = #unknown
-* reasonCode =  $sct#713883003 "Screening due" 
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
-//* performer = Reference(urn:uuid:50d5deca-64e9-5a30-8cec-40ac1f015661)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-80bc1f015672
