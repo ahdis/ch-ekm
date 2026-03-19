@@ -31,3 +31,4 @@ Alias: $data-absent-reason = http://hl7.org/fhir/StructureDefinition/data-absent
 Alias: $ch-core-organization = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-organization
 Alias: $ch-core-practitioner = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-practitioner
 Alias: $ch-core-practitioner-role = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-practitionerrole
+Alias: $ch-core-patient =  http://fhir.ch/ig/ch-elm/ValueSet/ch-elm-results-complete-spec

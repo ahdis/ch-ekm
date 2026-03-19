@@ -54,7 +54,7 @@ Usage: #example
 // Laboratory Section
 * section[laboratory].title = "Laboratory section" 
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].entry[0] = Reference(urn:uuid:50d5deca-64e9-4130-8cec-40ac1f015680) 
+* section[laboratory].entry[0] = Reference(http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae) 
 
 // Hospitalization Section
 * section[hospitalization].title = "Hospitalisation section" 
