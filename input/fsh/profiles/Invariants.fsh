@@ -9,3 +9,8 @@ Description: "invalid hiv code: 1) either start with a letter or the number 0, 2
 Severity: #error
 Expression: "value.matches('^[A-Za-z][0-9]$|^0$|^01$')"
 
+Invariant: ch-ekm-dateTime
+Description: "At least the format YYYY-MM-DD is required."
+Severity: #error
+Expression: "$this.toString().length() >= 10"
+

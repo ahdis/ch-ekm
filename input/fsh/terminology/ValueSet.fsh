@@ -2,6 +2,7 @@ ValueSet: ChEkmBiologicalSex
 Title: "CH EKM Biological Sex"
 Description: "This CH EKM value set includes the codes for biological sex."
 * ^status = #active
+* ^experimental = false
 
 * $sct#248152002 "Female (finding)"
 * $sct#248153007 "Male (finding)"
@@ -35,3 +36,24 @@ Usage: #definition
 * group[0].element[3].code = #32570691000036108
 * group[0].element[3].target[0].code = #other
 * group[0].element[3].target[0].equivalence = #wider
+
+
+ValueSet: ChEkmServiceRequestReason
+Title: "CH EKM ServiceRequest Reason"
+Description: "This CH EKM value set includes the codes for service request reason."
+* ^status = #active
+* ^experimental = false
+
+* $sct#171112000 "Screening due (finding)"
+* $sct#415684004 "Suspected (qualifier value)"
+* $sct#444071008 "Exposure to organism (event)"
+* $sct#74964007  "Other (qualifier value)"
+
+ValueSet: ChEkmSpecimenType
+Title: "CH EKM Specime Types"
+Description: "This CH EKM value set includes the codes for specimen types."
+* ^status = #active
+* ^experimental = false
+
+* include codes from valueset $ch-elm-results-laboratory-observation
+

@@ -39,7 +39,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 // "Relevant diagnostic tests/laboratory data Narrative"
 * section[laboratory].code = $loinc#30954-2
 * section[laboratory].entry 1..1
-* section[laboratory].entry only Reference(ServiceRequest)
+* section[laboratory].entry only Reference(ChEkmServiceRequest)
 
 // "History of hospitalizations+History of outpatient visits Narrative"
 * section[hospitalization].code = $loinc#46240-8

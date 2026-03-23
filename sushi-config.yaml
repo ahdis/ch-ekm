@@ -28,6 +28,8 @@ contact:
 dependencies:
  ch.fhir.ig.ch-term: 3.3.x
  ch.fhir.ig.ch-core: 6.0.0
+
+
 pages:
   index.md:
     title: Home

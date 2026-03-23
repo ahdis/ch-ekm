@@ -1,5 +1,5 @@
 Profile: ChEkmOrganizationAuthor
-Parent:  $ch-core-organization
+Parent:  CHCoreOrganization
 Id: ch-ekm-organization-author
 Title: "CH EKM Organization: Author"
 Description: "This CH EKM base profile constrains the Organization resource for the author of the report."

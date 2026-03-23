@@ -17,12 +17,12 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f025656
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660" // Encounter
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015660
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015661" // Organization
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015661
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015662" // Specimen
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015662
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4130-8cec-40ac1f015680" // ServiceRequest
-* entry[=].resource = 50d5deca-64e9-4130-8cec-40ac1f015680
+* entry[+].fullUrl = "http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae" // ServiceRequest
+* entry[=].resource = ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Specimen/ChEkmSpecimenExample-InvasiveStreptococcusPneumoniae" // Specimen
+* entry[=].resource = ChEkmSpecimenExample-InvasiveStreptococcusPneumoniae
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationLabExample" // Organization - Lab
+* entry[=].resource = ChEkmOrganizationLabExample
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015671" // Immunization
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015671
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673" // Immunization
@@ -54,7 +54,7 @@ Usage: #example
 // Laboratory Section
 * section[laboratory].title = "Laboratory section" 
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].entry[0] = Reference(urn:uuid:50d5deca-64e9-4130-8cec-40ac1f015680) 
+* section[laboratory].entry[0] = Reference(http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae) 
 
 // Hospitalization Section
 * section[hospitalization].title = "Hospitalisation section" 
@@ -95,29 +95,6 @@ Usage: #example
 * period.start = "2026-01-19"
 * reasonReference = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656)
 
-Instance: 50d5deca-64e9-4130-8cec-40ac1f015680
-InstanceOf: ServiceRequest
-Usage: #example
-* intent = #order
-* status = #unknown
-* specimen = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015662)
-* performer = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015661)
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
-
-
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015661 
-InstanceOf: Organization
-Usage: #example
-* name = "Viollier Bern AG"
-* telecom[+].system = #phone
-* telecom[=].value = "+41 848 121 121"
-
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015662
-InstanceOf: Specimen
-Usage: #example
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
-* collection.collectedDateTime = "2026-01-27"
-* type.coding[0] = $sct#119297000 "Blood specimen"
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015671
