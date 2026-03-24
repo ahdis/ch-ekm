@@ -6,7 +6,7 @@ Description: "This CH EKM base profile constrains the Specimen resource for the 
 * . ^short = "CH Lab Specimen: Laboratory"
 
 * type.coding ..1
-* type.coding from ChElmResultsCompleteSpec (required)
+* type.coding from ChEkmSpecimenType (required)
 
 * subject 1..
 * subject only Reference(ChEkmPatient)

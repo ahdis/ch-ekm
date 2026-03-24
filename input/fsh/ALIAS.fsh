@@ -32,3 +32,4 @@ Alias: $ch-core-organization = http://fhir.ch/ig/ch-core/StructureDefinition/ch-
 Alias: $ch-core-practitioner = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-practitioner
 Alias: $ch-core-practitioner-role = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-practitionerrole
 Alias: $ch-core-patient =  http://fhir.ch/ig/ch-elm/ValueSet/ch-elm-results-complete-spec
+Alias: $ch-elm-results-complete-spec = http://fhir.ch/ig/ch-elm/ValueSet/ch-elm-results-complete-spec

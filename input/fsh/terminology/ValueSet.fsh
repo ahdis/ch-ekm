@@ -50,10 +50,10 @@ Description: "This CH EKM value set includes the codes for service request reaso
 * $sct#74964007  "Other (qualifier value)"
 
 ValueSet: ChEkmSpecimenType
-Title: "CH EKM Specime Types"
+Title: "CH EKM Specimen Types"
 Description: "This CH EKM value set includes the codes for specimen types."
 * ^status = #active
 * ^experimental = false
 
-* include codes from valueset $ch-elm-results-laboratory-observation
+* include codes from valueset $ch-elm-results-complete-spec
 
