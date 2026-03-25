@@ -2,8 +2,9 @@
 Instance: ChEkmPatientVCTExample
 InstanceOf: ChEkmPatientVCT
 Usage: #example
-* identifier[VCTCode].type = $v2-0203#MR
-* identifier[VCTCode].value = "kste12345"
+* identifier[LocalPid].system = "http://fhir.ch/ig/ch-ekm/identifier/vct"
+* identifier[LocalPid].type = $v2-0203#MR
+* identifier[LocalPid].value = "kste12345"
 * name.given.extension[dataabsentreason].valueCode = #unknown
 * name.family.extension[dataabsentreason].valueCode = #unknown
 * birthDate = "2000-01-01"
