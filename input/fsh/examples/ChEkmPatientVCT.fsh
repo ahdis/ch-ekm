@@ -1,12 +1,12 @@
+
 Instance: ChEkmPatientVCTExample
 InstanceOf: ChEkmPatientVCT
 Usage: #example
-Description: "Example for a CH EKM Patient: VCT Code"
 * identifier[LocalPid].system = "http://fhir.ch/ig/ch-ekm/identifier/vct"
 * identifier[LocalPid].type = $v2-0203#MR
 * identifier[LocalPid].value = "kste12345"
-* name.given.extension[dataabsentreason].valueCode = #masked
-* name.family.extension[dataabsentreason].valueCode = #masked
+* name.given.extension[dataabsentreason].valueCode = #unknown
+* name.family.extension[dataabsentreason].valueCode = #unknown
 * birthDate = "2000-01-01"
 * gender = #male
 * address[home].use = #home

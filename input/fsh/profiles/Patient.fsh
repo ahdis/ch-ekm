@@ -36,6 +36,7 @@ Description: "This CH EKM base profile constrains the Patient resource."
 * identifier[AHVN13] ^short = "OASI Number Switzerland"
 * identifier[EPR-SPID] 0..0
 * identifier[insuranceCardNumber] 0..0
+* identifier[LocalPid] ..1
 * name 1..1
 * name only CHEkmHumanName
 * name ^short = "Whether the personal data is transmitted by using initials or full name is described under 'Guidance - Personal Data (Patient Name)'"
@@ -74,6 +75,7 @@ Description: "This CH EKM base profile constrains the Patient resource for patie
 * extension[genderIdentity] 0..0
 * extension[biologicalSexAtBirth] 0..0
 * extension[biologicalSex] 0..0
+* identifier[LocalPid] 0..0
 * address[home].line ..0
 * telecom ..0
 
@@ -86,6 +88,7 @@ Description: "This CH EKM base profile constrains the Patient resource for patie
 * extension[genderIdentity] 0..0
 * extension[biologicalSexAtBirth] 0..0
 * extension[biologicalSex] 0..0
+* identifier[LocalPid] 0..0
 * name.extension[hivcode] 1..
 * name.family.extension[dataabsentreason] 1..
 * name.family.extension[dataabsentreason].valueCode = #masked
@@ -93,6 +96,17 @@ Description: "This CH EKM base profile constrains the Patient resource for patie
 * name.given.extension[dataabsentreason].valueCode = #masked
 * address[home].line ..0
 * telecom ..0
+
+Profile: VCTIdentifier
+Parent: Identifier
+Id: ch-ekm-vct-identifier
+Title: "VCT Identifier"
+Description: "Identifier holding the VCT code."
+* system 1..
+* system = "http://fhir.ch/ig/ch-ekm/identifier/vct" (exactly)
+* type 1..
+* type = $v2-0203#MR (exactly)
+* value 1..
 
 Profile: ChEkmPatientVCT
 Parent: ChEkmPatient
@@ -103,14 +117,13 @@ Description: "This CH EKM base profile constrains the Patient resource for patie
 * extension[genderIdentity] 0..0
 * extension[biologicalSexAtBirth] 0..0
 * extension[biologicalSex] 0..0
-* identifier[LocalPid] 1..1
+* identifier[LocalPid] 1..1 
 * identifier[LocalPid] only VCTIdentifier
 * identifier[LocalPid] ^short = "VCT identifier"
-* identifier[LocalPid] ^patternIdentifier.system = "http://fhir.ch/ig/ch-ekm/identifier/vct"
 * name.family.extension[dataabsentreason] 1..
-* name.family.extension[dataabsentreason].valueCode = #masked
+* name.family.extension[dataabsentreason].valueCode = #unknown
 * name.given.extension[dataabsentreason] 1..
-* name.given.extension[dataabsentreason].valueCode = #masked
+* name.given.extension[dataabsentreason].valueCode = #unknown
 * address[home].line ..0
 * telecom ..0
 

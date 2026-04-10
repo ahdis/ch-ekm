@@ -11,7 +11,7 @@ Depending on the disease defined in the code of the Condition, the requirement f
 * **VCT Code**
    * Organism: Pending
    * see Profile [CH EKM Patient VCT](StructureDefinition-ChEkmPatientVCT.html) 
-   * [Example](Patient-ChEkmPatientVCTExample.json.html): kste12345 (Patient.identifier[LocalPid].system= http://fhir.ch/ig/ch-ekm/identifier/vct Patient.identifier[LocalPid].value=kste12345, Patient.name.family/Patient.name.given = masked, no telecom and no street address)
+   * [Example](Patient-ChEkmPatientVCTExample.json.html): kste12345 (Patient.identifier[VCTCode].value=kste12345, Patient.name.family/Patient.name.given = masked, no telecom and no street address)
 * **HIV Code**
    * Organism: HIV/AIDS
    * Basic principle: Take the first letter of the first name and add the number of letters of the first name. E.g. Samuel -> S6. This value need to be provided in the [CH EKM Extension: HIV code](StructureDefinition-ch-ekm-ext-hiv-code.html) and Patient.name.family, Patient.name.given need to be masked.
