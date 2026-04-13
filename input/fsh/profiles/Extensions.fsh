@@ -21,3 +21,14 @@ Description: "This CH EKM extension enables to provide the exposition address."
 * value[x] 1..
 * value[x] only Address
 * valueAddress ^short = "Exposition address"
+
+Extension: ChEkmExtDepartment
+Id: ch-ekm-ext-department
+Title: "CH EKM Extension: Department"
+Description: "This CH EKM extension enables the representation of a department (name) of an organization directly in the resource Organization itself."
+* ^context[+].type = #element
+* ^context[=].expression = "Organization"
+* . ^short = "CH EKM Extension: Department"
+* value[x] 1..
+* value[x] only string
+* valueString ^short = "Name of the department"

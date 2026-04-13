@@ -12,10 +12,6 @@ Description: "Example for a CH EKM Patient: Full Name"
 * gender = #male
 * address[home].use = #home
 * address[home].line = "Tannenstrasse 10a"
-* address[home].line.extension[0].url = $iso21090-ADXP-streetName
-* address[home].line.extension[=].valueString = "Tannenstrasse"
-* address[home].line.extension[+].url = $iso21090-ADXP-houseNumber
-* address[home].line.extension[=].valueString = "10a"
 * address[home].city = "Liebefeld"
 * address[home].postalCode = "3097"
 * address[home].state = "BE"

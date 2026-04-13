@@ -11,12 +11,12 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * entry[=].resource = da065461-34df-4e2e-b69f-4181908575d1
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ChEkmPatientExample" // Patient
 * entry[=].resource = ChEkmPatientExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleResponsiblePhysicianExample" // PractitionerRole - Responsible Physician
-* entry[=].resource = ChEkmPractitionerRoleResponsiblePhysicianExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Practitioner/ChEkmPractitionerResponsiblePhysicianExample" // Practitioner - Responsible Physician
-* entry[=].resource = ChEkmPractitionerResponsiblePhysicianExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationResponsiblePhysicianExample" // Organization - Responsible Physician
-* entry[=].resource = ChEkmOrganizationResponsiblePhysicianExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample" // PractitionerRole - Treating Physician
+* entry[=].resource = ChEkmPractitionerRoleTreatingPhysicianExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Practitioner/ChEkmPractitionerTreatingPhysicianExample" // Practitioner - Treating Physician
+* entry[=].resource = ChEkmPractitionerTreatingPhysicianExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationTreatingPhysicianExample" // Organization - Treating Physician
+* entry[=].resource = ChEkmOrganizationTreatingPhysicianExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-HepatitisC" // ServiceRequest
 * entry[=].resource = ChEkmServiceRequestExample-HepatitisC
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationLabExample" // Organization - Lab
@@ -51,7 +51,7 @@ Usage: #example
 * type = $loinc#34782-3 "Infectious disease Note"
 * subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
 * date = "2026-01-27"
-* author = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleResponsiblePhysicianExample)
+* author = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample)
 * title = "Meldung zum klinischen Befund Infektionskrankheit"
 
 // Diagnosis section
@@ -90,7 +90,7 @@ Usage: #example
 * evidence[0].detail = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-80bc1f015672)
 * evidence[1].detail = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-80cc1f015672)
 * evidence[2].detail = Reference (urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690)
-* recorder = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleResponsiblePhysicianExample)
+* recorder = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample)
 
 
 Instance: 50d5deca-64e9-4a30-8cec-40ac1f015690
