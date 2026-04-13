@@ -22,7 +22,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 
 * section contains
     diagnosis 1..1 and
-    laboratory 1..1 and
+    laboratory 0..1 and
     hospitalization 0..1 and
     medication 0..1 and
     immunization 0..1 and

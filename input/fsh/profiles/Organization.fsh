@@ -21,6 +21,7 @@ Description: "This CH EKM base profile constrains the Organization resource for 
 * telecom[phone] 1..1
 * telecom[phone].value ^example.label = "CH EKM"
 * telecom[phone].value ^example.valueString = "+24 74 200 88 77"
+* telecom[internet] 0..0
 
 Profile: ChEkmOrganizationAuthor
 Parent:  ChEkmOrganization
@@ -39,7 +40,7 @@ Description: "This CH EKM base profile constrains the Organization resource for 
 
 
 Profile: ChEkmOrganizationLab
-Parent: CHCoreOrganization
+Parent: ChEkmOrganization
 Id: ch-ekm-organization-lab
 Title: "CH EKM Organization: Lab"
 Description: "This CH EKM base profile constrains the Organization resource for the reporting laboratory."
