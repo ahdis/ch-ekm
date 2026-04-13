@@ -103,7 +103,6 @@ Id: ch-ekm-vct-identifier
 Title: "VCT Identifier"
 Description: "Identifier holding the VCT code."
 * system 1..
-* system = "http://fhir.ch/ig/ch-ekm/identifier/vct" (exactly)
 * type 1..
 * type = $v2-0203#MR (exactly)
 * value 1..
