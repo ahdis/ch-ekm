@@ -19,3 +19,16 @@ Description: "This CH EKM base profile constrains the Practitioner resource for 
 * telecom[phone] 1..1
 * telecom[phone].value ^example.label = "CH EKM"
 * telecom[phone].value ^example.valueString = "+24 74 200 88 77"
+
+Profile: ChEkmPractitionerBroker
+Parent: $ch-core-practitioner
+Id: ch-ekm-practitioner-broker
+Title: "CH EKM Practitioner: Broker"
+Description: "This CH EKM base profile constrains the Practitioner resource for the broker."
+* . ^short = "CH EKM Practitioner: Broker"
+* name 1..1
+* name.given 1..1 
+* name.family ..1 
+* telecom[email] ..1 MS
+* telecom[email].value ^example.label = "CH EKM"
+* telecom[email].value ^example.valueString = "info@domain.ch"

@@ -1,7 +1,7 @@
-Instance: ChEkmOrganizationAuthorExample
-InstanceOf: ChEkmOrganizationAuthor
+Instance: ChEkmOrganizationBrokerExample
+InstanceOf: ChEkmOrganizationBroker
 Usage: #example
-Description: "Example for a CH EKM Organization: Author"
+Description: "Example for a CH EKM Organization: Broker"
 * identifier[GLN].system = "urn:oid:2.51.1.3"
 * identifier[GLN].value = "7601000435333"
 * identifier[BER].system = "urn:oid:2.16.756.5.45"
