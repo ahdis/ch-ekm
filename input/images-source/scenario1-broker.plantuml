@@ -1,24 +1,26 @@
 @startuml
+' Forzamos una disposición de izquierda a derecha más compacta
+skinparam componentStyle rectangle
+skinparam nodesep 10
+skinparam ranksep 20
 
-node "Healthcare Provider" {
-  [Clinic Database / EHR] as EHR
-  [Responsible Physician] as Doc
+rectangle "Healthcare Provider" as HP {
+  component "Treating Physician" as Doc
+  component "Clinic Database / EHR" as EHR
 }
 
-node "Private Service Provider" {
-  [Broker] as Broker
+rectangle "Private Service Provider" as PSP {
+  component "Broker" as Broker
 }
 
-node "Public Health" {
-  [FOPH Reporting System] as FOPH
+rectangle "Public Health" as PH {
+  component "FOPH Reporting System" as FOPH
 }
 
 ' --- Relations ---
-Doc -right-> EHR : Enters Clinical Findings (Diagnosis, Symptoms, Risks,...)
-
-' Using -right-> instead of -down-> to stretch the width
-Broker -left-> EHR : Accesses  Data
-Broker -right-> FOPH : Transmits Clinical Report
-
+' Usamos una sola flecha de dirección para mantener la linealidad
+Doc -> EHR : Enters Clinical Findings\n(Diagnosis, Symptoms, Risks,...)
+EHR <- Broker : Accesses Data
+Broker -> FOPH : Transmits Clinical Report
 
 @enduml

@@ -1,0 +1,19 @@
+@startuml
+' Forzamos una disposición compacta y plana
+skinparam componentStyle rectangle
+skinparam nodesep 10
+skinparam ranksep 20
+
+rectangle "Healthcare Provider" as HP {
+  component "Treating Physician" as Doc
+}
+
+rectangle "Public Health" as PH {
+  component "FOPH Reporting System" as FOPH
+}
+
+' --- Relations ---
+' Usamos flecha simple para que PlantUML gestione el espacio óptimamente
+Doc -> FOPH : Transmits Clinical Report
+
+@enduml

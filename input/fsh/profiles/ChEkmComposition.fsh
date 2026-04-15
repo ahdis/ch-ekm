@@ -9,9 +9,9 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * date 1..
 * subject 1..
 * subject only Reference(Patient)
-* author ..1
-* author only Reference(ChEkmOrganizationAuthor or ChEkmPractitionerRoleResponsiblePhysician)
-* author ^short = "Author of the report. This can be either a private service provider (so-called broker) who transmit the report to the reporting system of the Federal Office of Public Health on behalf of the responsible laboratory or the responsible physician."
+* author 1..
+* author only Reference(ChEkmPractitionerRole)
+* author ^short = "Author of the report. This can be either a private service provider (so-called broker) who transmit the report to the reporting system of the Federal Office of Public Health on behalf of the Treating physician or the Treating physician."
 * encounter ..1
 * encounter only Reference(Encounter)
 
@@ -22,7 +22,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 
 * section contains
     diagnosis 1..1 and
-    laboratory 1..1 and
+    laboratory 0..1 and
     hospitalization 0..1 and
     medication 0..1 and
     immunization 0..1 and

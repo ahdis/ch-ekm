@@ -1,24 +1,34 @@
-Profile: ChEkmPractitionerResponsiblePhysician
+Profile: ChEkmPractitionerTreatingPhysician
 Parent: $ch-core-practitioner
-Id: ch-ekm-practitioner-responsible-physician
-Title: "CH EKM Practitioner: Responsible Physician"
-Description: "This CH EKM base profile constrains the Practitioner resource for the responsible physician."
-//* obeys ch-ekm-practitioner-zsr-check-length and ch-ekm-practitioner-zsr-check-digit
-* . ^short = "CH EKM Practitioner: Responsible Physician"
-* identifier ..2 MS
+Id: ch-ekm-practitioner-treating-physician
+Title: "CH EKM Practitioner: Treating Physician"
+Description: "This CH EKM base profile constrains the Practitioner resource for the treating physician."
+* . ^short = "CH EKM Practitioner: Treating Physician"
+* identifier ..1 
 * identifier[GLN] ..1 MS
-* identifier[ZSR] 0..1 MS
-* name ..1
-* name.given ..1 MS
-* name.given.extension contains $data-absent-reason named dataabsentreason 0..1
-* name.family MS
-* name.family.extension contains $data-absent-reason named dataabsentreason 0..0
-* telecom[email] MS
+* name 1..1
+* name.given 1..1 
+* name.family ..1 
+* address 1..1
+* address.line ..1 MS
+* address.city 1..1
+* address.postalCode 1..1
+* telecom[email] ..1 MS
 * telecom[email].value ^example.label = "CH EKM"
 * telecom[email].value ^example.valueString = "info@domain.ch"
-* telecom[phone] MS
+* telecom[phone] 1..1
 * telecom[phone].value ^example.label = "CH EKM"
-* telecom[phone].value ^example.valueString = "+41 79 999 55 66"
-* address ..1 MS
-* address.postalCode MS
-* address.city MS
+* telecom[phone].value ^example.valueString = "+24 74 200 88 77"
+
+Profile: ChEkmPractitionerBroker
+Parent: $ch-core-practitioner
+Id: ch-ekm-practitioner-broker
+Title: "CH EKM Practitioner: Broker"
+Description: "This CH EKM base profile constrains the Practitioner resource for the broker."
+* . ^short = "CH EKM Practitioner: Broker"
+* name 1..1
+* name.given 1..1 
+* name.family ..1 
+* telecom[email] ..1 MS
+* telecom[email].value ^example.label = "CH EKM"
+* telecom[email].value ^example.valueString = "info@domain.ch"

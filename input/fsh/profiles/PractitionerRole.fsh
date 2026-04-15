@@ -1,10 +1,10 @@
-Profile: ChEkmPractitionerRoleResponsiblePhysician
+Profile: ChEkmPractitionerRole
 Parent: $ch-core-practitioner-role
-Id: ch-ekm-practitionerrole-responsible-physician
-Title: "CH EKM PractitionerRole: Responsible Physician"
-Description:    "This CH EKM base profile constrains the Organization resource for the responsible physician and organization of the responsible clinician."
-* . ^short = "CH EKM PractitionerRole: Responsible Physician."
+Id: ch-ekm-practitionerrole
+Title: "CH EKM PractitionerRole: Treating Physician or Broker"
+Description: "This CH EKM base profile constrains the PractitionerRole resource for the treating physician or broker."
+* . ^short = "CH EKM PractitionerRole: Treating Physician or Broker"
 * practitioner MS
-* practitioner only Reference(ChEkmPractitionerResponsiblePhysician)
+* practitioner only Reference(ChEkmPractitionerTreatingPhysician or ChEkmPractitionerBroker)
 * organization MS
-* organization only Reference(ChEkmOrganizationResponsiblePhysician)
+* organization only Reference(ChEkmOrganizationTreatingPhysician or ChEkmOrganizationBroker)
