@@ -11,8 +11,12 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * entry[=].resource = da065461-34df-4e2e-b69f-4181908575d0
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample" // Patient
 * entry[=].resource = ChEkmPatientInitialsExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmPractitionerRoleBrokerExample" // PractitionerRole - Broker
+* entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleBrokerExample" // PractitionerRole - Broker
 * entry[=].resource = ChEkmPractitionerRoleBrokerExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Practitioner/ChEkmPractitionerBrokerExample" // Practitioner - Broker
+* entry[=].resource = ChEkmPractitionerBrokerExample
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationBrokerExample" // Organization - Broker
+* entry[=].resource = ChEkmOrganizationBrokerExample
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656" // Condition
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f025656
 * entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660" // Encounter
@@ -42,7 +46,7 @@ Usage: #example
 * type = $loinc#34782-3 "Infectious disease Note"
 * subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 * date = "2026-01-27"
-* author = Reference(http://test.fhir.ch/r4/Organization/ChEkmPractitionerRoleBrokerExample) 
+* author = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleBrokerExample) 
 * encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
 * title = "Meldung zum klinischen Befund Infektionskrankheit" 
 
