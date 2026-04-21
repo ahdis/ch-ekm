@@ -5,7 +5,8 @@ Title: "CH EKM Composition: Clinical Findings of Communicable Infectious Disease
 Description: "This CH EKM base profile constrains the Composition resource for the purpose of clinical findings of communicable infectious diseases reports."
 
 * status = #final
-* type = $loinc#34782-3
+* category = $sct#423876004 "Clinical report"
+* type = $sct#722143004 "Infectious disease diagnostic study note"
 * date 1..
 * subject 1..
 * subject only Reference(Patient)
@@ -38,8 +39,16 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 
 // "Relevant diagnostic tests/laboratory data Narrative"
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].entry 1..1
-* section[laboratory].entry only Reference(ChEkmServiceRequest)
+* section[laboratory].section ^slicing.discriminator.type = #profile
+* section[laboratory].section ^slicing.discriminator.path = "$"
+* section[laboratory].section ^slicing.rules = #open 
+* section[laboratory].section contains
+    lab-order 1..1 and
+    seroconversion 0..1
+* section[laboratory].section[lab-order].entry 1..1
+* section[laboratory].section[lab-order].entry only Reference(ChEkmServiceRequest)
+* section[laboratory].section[seroconversion].entry 1..1
+* section[laboratory].section[seroconversion].entry only Reference(Observation)
 
 // "History of hospitalizations+History of outpatient visits Narrative"
 * section[hospitalization].code = $loinc#46240-8
@@ -64,17 +73,15 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 // "Social history Narrative"
 * section[social-history].code = $loinc#29762-2 
 * section[social-history].section 2..2 
-* section[social-history].section ^slicing.discriminator.type = #value
-* section[social-history].section ^slicing.discriminator.path = "code"
-* section[social-history].section ^slicing.rules = #closed 
+* section[social-history].section ^slicing.discriminator.type = #profile
+* section[social-history].section ^slicing.discriminator.path = "$"
+* section[social-history].section ^slicing.rules = #open 
 * section[social-history].section contains
     exposure-to-infectious-disease 1..1 and
     occupation 1..1
 * section[social-history].section[exposure-to-infectious-disease].entry 1..1
-* section[social-history].section[exposure-to-infectious-disease].code = $sct#150781000119103
 * section[social-history].section[exposure-to-infectious-disease].entry only Reference(Observation)
 * section[social-history].section[occupation].entry 1..1
-* section[social-history].section[occupation].code = $loinc#21843-8
 * section[social-history].section[occupation].entry only Reference(Observation)
 
 // "Cause of death"

@@ -43,7 +43,8 @@ Instance: da065461-34df-4e2e-b69f-4181908575d0
 InstanceOf: ChEkmComposition
 Usage: #example
 * status = #final
-* type = $loinc#34782-3 "Infectious disease Note"
+* category = $sct#423876004 "Clinical report"
+* type = $sct#722143004 "Infectious disease diagnostic study note"
 * subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
 * date = "2026-01-27"
 * author = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleBrokerExample) 
@@ -58,7 +59,7 @@ Usage: #example
 // Laboratory Section
 * section[laboratory].title = "Laboratory section" 
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].entry[0] = Reference(http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae) 
+* section[laboratory].section[lab-order].entry[0] = Reference(http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae) 
 
 // Hospitalization Section
 * section[hospitalization].title = "Hospitalisation section" 

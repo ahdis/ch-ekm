@@ -39,16 +39,14 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015791
 
 
-
-
-
 Instance: da065461-34df-4e2e-b69f-4181908575d1
 InstanceOf: ChEkmComposition
 Usage: #example
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
 * status = #final
-* type = $loinc#34782-3 "Infectious disease Note"
+* category = $sct#423876004 "Clinical report"
+* type = $sct#722143004 "Infectious disease diagnostic study note"
 * subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
 * date = "2026-01-27"
 * author = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample)
@@ -62,7 +60,8 @@ Usage: #example
 // Laboratory section
 * section[laboratory].title = "Laboratory Results section" 
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].entry[0] = Reference(http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-HepatitisC) 
+* section[laboratory].section[lab-order].entry[0] = Reference(http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-HepatitisC) 
+* section[laboratory].section[seroconversion].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690)
 
 // Medication section
 * section[medication].title = "Medication section" 
@@ -72,9 +71,7 @@ Usage: #example
 // Social History section
 * section[social-history].title = "Social History section"
 * section[social-history].code = $loinc#29762-2
-* section[social-history].section[exposure-to-infectious-disease].code = $sct#150781000119103
 * section[social-history].section[exposure-to-infectious-disease].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f016790)
-* section[social-history].section[occupation].code = $loinc#21843-8
 * section[social-history].section[occupation].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015791)
 
 
@@ -89,7 +86,6 @@ Usage: #example
 * onsetDateTime.extension[=].valueCode = #asked-unknown
 * evidence[0].detail = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-80bc1f015672)
 * evidence[1].detail = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-80cc1f015672)
-* evidence[2].detail = Reference (urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690)
 * recorder = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample)
 
 
