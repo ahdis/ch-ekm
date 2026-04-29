@@ -7,8 +7,8 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * identifier.value = "urn:uuid:1901332d-6012-443f-9690-9291adb234fa"
 * type = #document
 * timestamp = "2026-01-27T11:30:00+02:00"
-* entry[0].fullUrl = "urn:uuid:da065461-34df-4e2e-b69f-4181908575d1" // Composition
-* entry[=].resource = da065461-34df-4e2e-b69f-4181908575d1
+* entry[0].fullUrl = "http://test.fhir.ch/r4/Composition/ChEkmCompositionExample-HepatitisC" // Composition
+* entry[=].resource = ChEkmCompositionExample-HepatitisC
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ChEkmPatientExample" // Patient
 * entry[=].resource = ChEkmPatientExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample" // PractitionerRole - Treating Physician
@@ -23,31 +23,32 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * entry[=].resource = ChEkmOrganizationLabExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Specimen/ChEkmSpecimenExample-HepatitisC" // Specimen
 * entry[=].resource = ChEkmSpecimenExample-HepatitisC
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015656" // Condition
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015656
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690" // Observation
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015690
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-80bc1f015672" // Observation
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-80bc1f015672
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-80cc1f015672" // Observation
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-80cc1f015672
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015790" // Observation
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015790 
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f016790" // Observation
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f016790 
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015791" // Observation
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015791
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-HepatitisC" // Condition
+* entry[=].resource = ChEkmConditionExample-HepatitisC
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-HepatitisCVirusAb" // Observation
+* entry[=].resource = ChEkmObservationExample-HepatitisCVirusAb
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-AcuteHepatitisC" // Condition
+* entry[=].resource = ChEkmConditionExample-AcuteHepatitisC
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-ElevatedTransaminases" // Observation
+* entry[=].resource = ChEkmObservationExample-ElevatedTransaminases
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-AntiviralTherapy" // Observation
+* entry[=].resource = ChEkmObservationExample-AntiviralTherapy
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-ExposureViralDisease" // Observation
+* entry[=].resource = ChEkmObservationExample-ExposureViralDisease
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-Occupation" // Observation
+* entry[=].resource = ChEkmObservationExample-Occupation
 
 
-Instance: da065461-34df-4e2e-b69f-4181908575d1
+Instance: ChEkmCompositionExample-HepatitisC
 InstanceOf: ChEkmComposition
 Usage: #example
+Description: "Example for a CH EKM Composition: Hepatitis C"
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
 * status = #final
 * category = $sct#423876004 "Clinical report"
 * type = $sct#722143004 "Infectious disease diagnostic study note"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
+* subject = Reference(ChEkmPatientExample)
 * date = "2026-01-27"
 * author = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample)
 * title = "Meldung zum klinischen Befund Infektionskrankheit"
@@ -55,60 +56,64 @@ Usage: #example
 // Diagnosis section
 * section[diagnosis].title = "Diagnosis section"
 * section[diagnosis].code = $loinc#29308-4
-* section[diagnosis].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015656)
+* section[diagnosis].entry[0] = Reference(ChEkmConditionExample-HepatitisC)
 
 // Laboratory section
-* section[laboratory].title = "Laboratory Results section" 
+* section[laboratory].title = "Laboratory Results section"
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].section[lab-order].entry[0] = Reference(http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-HepatitisC) 
-* section[laboratory].section[seroconversion].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015690)
+* section[laboratory].entry[0] = Reference(ChEkmServiceRequestExample-HepatitisC)
+* section[laboratory].entry[1] = Reference(ChEkmObservationExample-HepatitisCVirusAb)
 
 // Medication section
-* section[medication].title = "Medication section" 
+* section[medication].title = "Medication section"
 * section[medication].code = $loinc#10160-0
-* section[medication].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015790) 
+* section[medication].entry[0] = Reference(ChEkmObservationExample-AntiviralTherapy)
 
 // Social History section
 * section[social-history].title = "Social History section"
 * section[social-history].code = $loinc#29762-2
-* section[social-history].section[exposure-to-infectious-disease].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f016790)
-* section[social-history].section[occupation].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015791)
+* section[social-history].entry[0] = Reference(ChEkmObservationExample-ExposureViralDisease)
+* section[social-history].entry[1] = Reference(ChEkmObservationExample-Occupation)
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015656
+Instance: ChEkmConditionExample-HepatitisC
 InstanceOf: Condition
 Usage: #example
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
+Description: "Example for a CH EKM Condition: Hepatitis C"
+* subject = Reference(ChEkmPatientExample)
 //* category = $condition-category#encounter-diagnosis "Encounter Diagnosis"
 * code = $sct#50711007 "Viral hepatitis type C (disorder)"
-//* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)" 
+//* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)"
 * onsetDateTime.extension[+].url = "http://hl7.org/fhir/StructureDefinition/data-absent-reason"
 * onsetDateTime.extension[=].valueCode = #asked-unknown
-* evidence[0].detail = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-80bc1f015672)
-* evidence[1].detail = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-80cc1f015672)
-* recorder = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample)
+* evidence[0].detail = Reference(ChEkmConditionExample-AcuteHepatitisC)
+* evidence[1].detail = Reference(ChEkmObservationExample-ElevatedTransaminases)
+* recorder = Reference(ChEkmPractitionerRoleTreatingPhysicianExample)
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015690
+Instance: ChEkmObservationExample-HepatitisCVirusAb
 InstanceOf: Observation
 Usage: #example
+Description: "Example for a CH EKM Observation: Hepatitis C virus Ab"
 * status = #final
 * code = $loinc#16128-1 "Hepatitis C virus Ab [Presence] in Serum"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
+* subject = Reference(ChEkmPatientExample)
 * valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015790
+Instance: ChEkmObservationExample-AntiviralTherapy
 InstanceOf: Observation
 Usage: #example
+Description: "Example for a CH EKM Observation: Antiviral Therapy"
 * status = #final
 * code = $sct#427314002 "Antiviral therapy (procedure)"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
+* subject = Reference(ChEkmPatientExample)
 * valueCodeableConcept = $sct#386053000 "Evaluation procedure (procedure)"
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f016790
+Instance: ChEkmObservationExample-ExposureViralDisease
 InstanceOf: Observation
 Usage: #example
+Description: "Example for a CH EKM Observation: Exposure to Viral Disease"
 * extension[+].url = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposition-address"
 * extension[=].valueAddress.country = "Nepal"
 //* extension[=].valueAddress.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-SC-coding"
@@ -119,7 +124,7 @@ Usage: #example
 * valueCodeableConcept = $sct#223366009 "Healthcare professional (occupation)"
 * effectivePeriod.start = "2025-12-01"
 * effectivePeriod.end = "2025-12-01"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
+* subject = Reference(ChEkmPatientExample)
 * component.code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
 * component.valueCodeableConcept = $sct#62944002 "Hepatitis C virus (organism)"
 * component.code = $v3-ParticipationType#LOC "Location"
@@ -127,31 +132,30 @@ Usage: #example
 * component.code = $v3-ParticipationType#PART "Participant"
 * component.valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015791
+Instance: ChEkmObservationExample-Occupation
 InstanceOf: Observation
 Usage: #example
+Description: "Example for a CH EKM Observation: Occupation"
 * status = #final
 * code = $loinc#21843-8 "History of Usual occupation"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
+* subject = Reference(ChEkmPatientExample)
 * valueString = "Ärztin"
 
-
-
-Instance: 50d5deca-64e9-4a30-8cec-80bc1f015672
+Instance: ChEkmConditionExample-AcuteHepatitisC
 InstanceOf: Condition
 Usage: #example
+Description: "Example for a CH EKM Condition: Acute Hepatitis C"
 * code =  $sct#235866006 "Acute hepatitis C (disorder)"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
+* subject = Reference(ChEkmPatientExample)
 
-
-Instance: 50d5deca-64e9-4a30-8cec-80cc1f015672
+Instance: ChEkmObservationExample-ElevatedTransaminases
 InstanceOf: Observation
 Usage: #example
+Description: "Example for a CH EKM Observation: Elevated Transaminases"
 * status = #final
 * code = $sct#166642001 "Elevated transaminases (finding)"
 * code.text = "Transaminase ≥ 2.5x"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientExample)
-
+* subject = Reference(ChEkmPatientExample)
 
 
 

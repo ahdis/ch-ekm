@@ -39,16 +39,14 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 
 // "Relevant diagnostic tests/laboratory data Narrative"
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].section ^slicing.discriminator.type = #profile
-* section[laboratory].section ^slicing.discriminator.path = "entry.resolve()"
-* section[laboratory].section ^slicing.rules = #open 
-* section[laboratory].section contains
+* section[laboratory].entry ^slicing.discriminator.type = #profile
+* section[laboratory].entry ^slicing.discriminator.path = "$this.resolve()"
+* section[laboratory].entry ^slicing.rules = #open 
+* section[laboratory].entry contains
     lab-order 1..1 and
     seroconversion 0..1
-* section[laboratory].section[lab-order].entry 1..1
-* section[laboratory].section[lab-order].entry only Reference(ChEkmServiceRequest)
-* section[laboratory].section[seroconversion].entry 1..1
-* section[laboratory].section[seroconversion].entry only Reference(Observation)
+* section[laboratory].entry[lab-order] only Reference(ChEkmServiceRequest)
+* section[laboratory].entry[seroconversion] only Reference(Observation)
 
 // "History of hospitalizations+History of outpatient visits Narrative"
 * section[hospitalization].code = $loinc#46240-8
@@ -72,17 +70,17 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 
 // "Social history Narrative"
 * section[social-history].code = $loinc#29762-2 
-* section[social-history].section 2..2 
-* section[social-history].section ^slicing.discriminator.type = #profile
-* section[social-history].section ^slicing.discriminator.path = "entry.resolve()"
-* section[social-history].section ^slicing.rules = #open 
-* section[social-history].section contains
-    exposure-to-infectious-disease 1..1 and
-    occupation 1..1
-* section[social-history].section[exposure-to-infectious-disease].entry 1..1
-* section[social-history].section[exposure-to-infectious-disease].entry only Reference(Observation)
-* section[social-history].section[occupation].entry 1..1
-* section[social-history].section[occupation].entry only Reference(Observation)
+* section[social-history].entry ^slicing.discriminator.type = #profile
+* section[social-history].entry ^slicing.discriminator.path = "$this.resolve()"
+* section[social-history].entry ^slicing.rules = #open 
+* section[social-history].entry contains
+    exposure-to-infectious-disease 1..*
+//     and
+//    occupation 1..1
+* section[social-history].entry[exposure-to-infectious-disease] only Reference(Observation)
+// * section[social-history].section[occupation].entry 1..1
+// * section[social-history].section[occupation].entry only Reference(Observation)
+// this doest not work we need ot make the slicing different
 
 // "Cause of death"
 * section[cause-death].code = $loinc#79378-6 

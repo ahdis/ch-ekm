@@ -7,8 +7,8 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
 * type = #document
 * timestamp = "2026-01-27T11:30:00+02:00"
-* entry[0].fullUrl = "urn:uuid:da065461-34df-4e2e-b69f-4181908575d0" // Composition
-* entry[=].resource = da065461-34df-4e2e-b69f-4181908575d0
+* entry[0].fullUrl = "http://test.fhir.ch/r4/Composition/ChEkmCompositionExample-InvasiveStreptococcusPneumoniae" // Composition
+* entry[=].resource = ChEkmCompositionExample-InvasiveStreptococcusPneumoniae
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample" // Patient
 * entry[=].resource = ChEkmPatientInitialsExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleBrokerExample" // PractitionerRole - Broker
@@ -17,125 +17,129 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * entry[=].resource = ChEkmPractitionerBrokerExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationBrokerExample" // Organization - Broker
 * entry[=].resource = ChEkmOrganizationBrokerExample
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656" // Condition
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f025656
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660" // Encounter
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015660
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-InvasiveStreptococcusPneumoniae" // Condition
+* entry[=].resource = ChEkmConditionExample-InvasiveStreptococcusPneumoniae
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Encounter/ChEkmEncounterExample-InvasiveStreptococcusPneumoniae" // Encounter
+* entry[=].resource = ChEkmEncounterExample-InvasiveStreptococcusPneumoniae
 * entry[+].fullUrl = "http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae" // ServiceRequest
 * entry[=].resource = ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Specimen/ChEkmSpecimenExample-InvasiveStreptococcusPneumoniae" // Specimen
 * entry[=].resource = ChEkmSpecimenExample-InvasiveStreptococcusPneumoniae
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationLabExample" // Organization - Lab
 * entry[=].resource = ChEkmOrganizationLabExample
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015671" // Immunization
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015671
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673" // Immunization
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015673
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015672" // Condition
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-40ac1f015672
-* entry[+].fullUrl = "urn:uuid:50d5deca-64e9-4a30-8cec-80ac1f015672" // Condition
-* entry[=].resource = 50d5deca-64e9-4a30-8cec-80ac1f015672
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Immunization/ChEkmImmunizationExample-Pneumococcal1" // Immunization
+* entry[=].resource = ChEkmImmunizationExample-Pneumococcal1
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Immunization/ChEkmImmunizationExample-Pneumococcal2" // Immunization
+* entry[=].resource = ChEkmImmunizationExample-Pneumococcal2
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-Immunosuppression" // Condition
+* entry[=].resource = ChEkmConditionExample-Immunosuppression
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-Sepsis" // Condition
+* entry[=].resource = ChEkmConditionExample-Sepsis
 
-
-
-
-Instance: da065461-34df-4e2e-b69f-4181908575d0
+Instance: ChEkmCompositionExample-InvasiveStreptococcusPneumoniae
 InstanceOf: ChEkmComposition
 Usage: #example
+Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumoniae"
 * status = #final
 * category = $sct#423876004 "Clinical report"
 * type = $sct#722143004 "Infectious disease diagnostic study note"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
+* subject = Reference(ChEkmPatientInitialsExample)
 * date = "2026-01-27"
-* author = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleBrokerExample) 
-* encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
-* title = "Meldung zum klinischen Befund Infektionskrankheit" 
+* author = Reference(ChEkmPractitionerRoleBrokerExample)
+* encounter = Reference(ChEkmEncounterExample-InvasiveStreptococcusPneumoniae)
+* title = "Meldung zum klinischen Befund Infektionskrankheit"
 
 // Diagnosis Section
-* section[diagnosis].title = "Diagnosis section" 
+* section[diagnosis].title = "Diagnosis section"
 * section[diagnosis].code = $loinc#29308-4
-* section[diagnosis].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656)
+* section[diagnosis].entry[0] = Reference(ChEkmConditionExample-InvasiveStreptococcusPneumoniae)
 
 // Laboratory Section
-* section[laboratory].title = "Laboratory section" 
+* section[laboratory].title = "Laboratory section"
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].section[lab-order].entry[0] = Reference(http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae) 
+* section[laboratory].entry[0] = Reference(ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae)
 
 // Hospitalization Section
-* section[hospitalization].title = "Hospitalisation section" 
+* section[hospitalization].title = "Hospitalisation section"
 * section[hospitalization].code = $loinc#46240-8
-* section[hospitalization].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660) 
+* section[hospitalization].entry[0] = Reference(ChEkmEncounterExample-InvasiveStreptococcusPneumoniae)
 
 // Immunization Section
 * section[immunization].title = "Immunization section"
 * section[immunization].code = $loinc#11369-6
-* section[immunization].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015671) 
-* section[immunization].entry[1] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015673) 
+* section[immunization].entry[0] = Reference(ChEkmImmunizationExample-Pneumococcal1)
+* section[immunization].entry[1] = Reference(ChEkmImmunizationExample-Pneumococcal2)
 
 // Risk Factors Section (Direct Entry)
 * section[risk-factors].title = "Risk factors section"
 * section[risk-factors].code = $loinc#46467-7
-* section[risk-factors].entry[0] = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015672)
+* section[risk-factors].entry[0] = Reference(ChEkmConditionExample-Immunosuppression)
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f025656
+Instance: ChEkmConditionExample-InvasiveStreptococcusPneumoniae
 InstanceOf: Condition
 Usage: #example
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
-* category = $condition-category#encounter-diagnosis 
+Description: "Example for a CH EKM Condition: Invasive Streptococcus Pneumoniae"
+* subject = Reference(ChEkmPatientInitialsExample)
+* category = $condition-category#encounter-diagnosis
 * code = $sct#406617004 "Invasive Streptococcus pneumoniae disease (disorder)"
-//* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)" 
+//* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)"
 * onsetDateTime = "2026-01-27"
-* evidence[0].detail = Reference (urn:uuid:50d5deca-64e9-4a30-8cec-80ac1f015672)
-//* encounter = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f015660)
+* evidence[0].detail = Reference (ChEkmConditionExample-Sepsis)
+//* encounter = Reference(Encounter/ChEkmEncounterExample-InvasiveStreptococcusPneumoniae)
 
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015660
+Instance: ChEkmEncounterExample-InvasiveStreptococcusPneumoniae
 InstanceOf: Encounter
 Usage: #example
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
+Description: "Example for a CH EKM Encounter: Invasive Streptococcus Pneumoniae"
+* subject = Reference(ChEkmPatientInitialsExample)
 * class = #IMP
 * status = #unknown
 * period.start = "2026-01-19"
-* reasonReference = Reference(urn:uuid:50d5deca-64e9-4a30-8cec-40ac1f025656)
+* reasonReference = Reference(ChEkmConditionExample-InvasiveStreptococcusPneumoniae)
 
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015671
+Instance: ChEkmImmunizationExample-Pneumococcal1
 InstanceOf: Immunization
 Usage: #example
+Description: "Example for a CH EKM Immunization: Pneumococcal Dose 1"
 * status = #completed
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
+* patient = Reference(ChEkmPatientInitialsExample)
 * occurrenceDateTime = "2000-03-01"
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
 * protocolApplied.doseNumberPositiveInt = 1
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015673
+Instance: ChEkmImmunizationExample-Pneumococcal2
 InstanceOf: Immunization
 Usage: #example
+Description: "Example for a CH EKM Immunization: Pneumococcal Dose 2"
 * status = #completed
 * vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
+* patient = Reference(ChEkmPatientInitialsExample)
 * occurrenceDateTime = "2000-05-01"
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
 * protocolApplied.doseNumberPositiveInt = 2
 
 
-Instance: 50d5deca-64e9-4a30-8cec-40ac1f015672
+Instance: ChEkmConditionExample-Immunosuppression
 InstanceOf: Condition
 Usage: #example
-* category = $condition-category#problem-list-item 
+Description: "Example for a CH EKM Condition: Immunosuppression"
+* category = $condition-category#problem-list-item
 * code = $sct#38013005 "Immunosuppression (finding)"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
+* subject = Reference(ChEkmPatientInitialsExample)
 
-Instance: 50d5deca-64e9-4a30-8cec-80ac1f015672
+Instance: ChEkmConditionExample-Sepsis
 InstanceOf: Condition
 Usage: #example
-* category = $condition-category#problem-list-item 
+Description: "Example for a CH EKM Condition: Sepsis"
+* category = $condition-category#problem-list-item
 * code = $sct#91302008 "Sepsis (disorder)"
-* subject = Reference(http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample)
+* subject = Reference(ChEkmPatientInitialsExample)
 
 
 
