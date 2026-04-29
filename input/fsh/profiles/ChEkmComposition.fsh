@@ -16,10 +16,10 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * encounter ..1
 * encounter only Reference(Encounter)
 
-* section 2.. 
+* section 1..*
   * ^slicing.discriminator.type = #value
   * ^slicing.discriminator.path = "code"
-  * ^slicing.rules = #closed
+  * ^slicing.rules = #open 
 
 * section contains
     diagnosis 1..1 and
@@ -40,7 +40,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 // "Relevant diagnostic tests/laboratory data Narrative"
 * section[laboratory].code = $loinc#30954-2
 * section[laboratory].section ^slicing.discriminator.type = #profile
-* section[laboratory].section ^slicing.discriminator.path = "$"
+* section[laboratory].section ^slicing.discriminator.path = "entry.resolve()"
 * section[laboratory].section ^slicing.rules = #open 
 * section[laboratory].section contains
     lab-order 1..1 and
@@ -74,7 +74,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * section[social-history].code = $loinc#29762-2 
 * section[social-history].section 2..2 
 * section[social-history].section ^slicing.discriminator.type = #profile
-* section[social-history].section ^slicing.discriminator.path = "$"
+* section[social-history].section ^slicing.discriminator.path = "entry.resolve()"
 * section[social-history].section ^slicing.rules = #open 
 * section[social-history].section contains
     exposure-to-infectious-disease 1..1 and

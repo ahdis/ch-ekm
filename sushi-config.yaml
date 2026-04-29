@@ -37,6 +37,8 @@ pages:
     title: Use Case 
   guidance.md:
     title: Guidance
+  profiles.md:
+    title: Profiles
   terminology.md:
     title: Terminology
 
@@ -45,6 +47,7 @@ menu:
   Table of Contents: toc.html
   Home: index.html
   Use Case: usecase.html
+  Profiles: profiles.html
   Guidance: guidance.html
   Terminology: terminology.html
   Artifacts: artifacts.html
