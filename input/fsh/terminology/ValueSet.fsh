@@ -57,6 +57,17 @@ Description: "This CH EKM value set includes the codes for specimen types."
 
 * include codes from valueset $ch-elm-results-complete-spec
 
+ValueSet: ChEkmOtherNoneUnknown
+Title: "CH EKM OtherNoneUnknown"
+Description: "This CH EKM value set includes the codes for specimen types."
+* ^status = #active
+* ^experimental = false
+
+* $sct#74964007   "Other (qualifier value)"
+* $sct#373572006  "Clinical finding absent (situation)"
+* $sct#261665006  "Unknown (qualifier value)"
+
+
 ValueSet: ChEkmPneumococcalDiseaseManifestation
 Title: "CH EKM Pneumococcal Disease Manifestation"
 Description: "This CH EKM value set includes the codes for the manifestation of pneumococcal disease."
@@ -74,10 +85,34 @@ Description: "This CH EKM value set includes the codes for the manifestation of 
 * ^status = #active
 * ^experimental = false
 
+* include codes from valueset ChEkmOtherNoneUnknown
 * $sct#18165001   "Jaundice"
 * $sct#707724006  "Liver enzymes level above reference range"
 * $sct#409673008  "Alanine aminotransferase above reference range"
 * $sct#166669000  "Aspartate aminotransferase serum level above reference range"
+
+ValueSet: ChEkmHepatitisCCourseOfDisease
+Title: "CH EKM HepatitisC CourseOfDisease"
+Description: "This CH EKM value set includes the codes for the course of the disease of HepatitisC."
+* ^status = #active
+* ^experimental = false
+
+* $sct#235866006 "Acute hepatitis C (disorder)" 
+* $sct#76783007 "Chronic hepatitis (disorder)"
+* $sct#831000119103 "Cirrhosis of liver due to chronic hepatitis C (disorder)"
+* $sct#109841003 "Liver cell carcinoma (disorder)"
+* $sct#363800008 "General wellbeing"
+
+ValueSet: ChEkmInvasiveStreptococcusPneumoniaeManifestation
+Title: "CH EKM InvasiveStreptococcusPneumoniae Manifestation"
+Description: "This CH EKM value set includes the codes for the manifestation of InvasiveStreptococcusPneumoniae."
+* ^status = #active
+* ^experimental = false
+
+* include codes from valueset ChEkmOtherNoneUnknown
+* $sct#233604007 "Pneumonia (disorder)"
+* $sct#91302008 "Sepsis (disorder)"
+* $sct#7180009 "Meningitis (disorder)"
 
 ValueSet: ChEkmHIVManifestation
 Title: "CH EKM HIV Manifestation"

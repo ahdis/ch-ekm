@@ -1,6 +1,6 @@
 
 Instance: ChEkmBundleInvasiveStreptococcusPneumoniae 
-InstanceOf: ChEkmDocument
+InstanceOf: ChEkmDocumentInvasiveStreptococcusPneumoniae
 Usage: #example
 Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * identifier.system = "urn:ietf:rfc:3986"
@@ -35,7 +35,7 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * entry[=].resource = ChEkmConditionExample-Immunosuppression
 
 Instance: ChEkmCompositionExample-InvasiveStreptococcusPneumoniae
-InstanceOf: ChEkmComposition
+InstanceOf: ChEkmCompositionInvasiveStreptococcusPneumoniae
 Usage: #example
 Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumoniae"
 * status = #final
@@ -84,8 +84,6 @@ Description: "Example for a CH EKM Condition: Invasive Streptococcus Pneumoniae"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)"
 * onsetDateTime = "2026-01-27"
 * evidence[0].code = $sct#91302008 "Sepsis (disorder)"
-
-
 
 Instance: ChEkmEncounterExample-InvasiveStreptococcusPneumoniae
 InstanceOf: Encounter

@@ -33,6 +33,8 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * entry[=].resource = ChEkmObservationExample-ExposureViralDisease
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-Occupation" // Observation
 * entry[=].resource = ChEkmObservationExample-Occupation
+* entry[+].fullUrl = "http://test.fhir.ch/r4/QuestionnaireResponse/ChEkmQuestionnaireResponseHepatitisCCourseOfDisease" // QuestionnaireResponse
+* entry[=].resource = ChEkmQuestionnaireResponseHepatitisCCourseOfDisease
 
 
 Instance: ChEkmCompositionExample-HepatitisC
@@ -53,6 +55,7 @@ Description: "Example for a CH EKM Composition: Hepatitis C"
 * section[diagnosis].title = "Diagnosis section"
 * section[diagnosis].code = $loinc#29308-4
 * section[diagnosis].entry[0] = Reference(ChEkmConditionExample-HepatitisC)
+* section[diagnosis].entry[1] = Reference(ChEkmQuestionnaireResponseHepatitisCCourseOfDisease)
 
 // Laboratory section
 * section[laboratory].title = "Laboratory Results section"
@@ -71,6 +74,16 @@ Description: "Example for a CH EKM Composition: Hepatitis C"
 * section[social-history].entry[0] = Reference(ChEkmObservationExample-ExposureViralDisease)
 * section[social-history].entry[1] = Reference(ChEkmObservationExample-Occupation)
 
+Instance: ChEkmQuestionnaireResponseHepatitisCCourseOfDisease
+InstanceOf: QuestionnaireResponse
+Usage: #example
+Title: "CH EKM QuestionnaireResponse: HepatitisC - Course of Disease"
+Description: "Example QuestionnaireResponse for the course of disease for Hepatitis C."
+* questionnaire = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCCourseOfDisease"
+* status = #completed
+* subject = Reference(ChEkmPatientExample)
+* item[+].linkId = "course-of-disease"
+* item[=].answer[+].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
 
 Instance: ChEkmConditionExample-HepatitisC
 InstanceOf: Condition

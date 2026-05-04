@@ -42,8 +42,14 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 
 // "Diagnosis"
 * section[diagnosis].code = $loinc#29308-4
-* section[diagnosis].entry 1..1
-* section[diagnosis].entry only Reference(Condition)
+* section[diagnosis].entry ^slicing.discriminator.type = #profile
+* section[diagnosis].entry ^slicing.discriminator.path = "$this.resolve()"
+* section[diagnosis].entry ^slicing.rules = #open
+* section[diagnosis].entry contains
+    condition 1..1 and
+    questionnaire-response 0..1
+* section[diagnosis].entry[condition] only Reference(ChEkmCondition)
+* section[diagnosis].entry[questionnaire-response] only Reference(QuestionnaireResponse)
 
 
 // "Relevant diagnostic tests/laboratory data Narrative"
@@ -60,7 +66,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 // "History of hospitalizations+History of outpatient visits Narrative"
 * section[hospitalization].code = $loinc#46240-8
 * section[hospitalization].entry 1..1
-* section[hospitalization].entry only Reference(Encounter)
+* section[hospitalization].entry only Reference(CHCoreEncounter)
 
 // "History of immunization Narrative"
 * section[immunization].code = $loinc#11369-6 
