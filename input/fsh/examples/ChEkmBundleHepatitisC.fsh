@@ -27,10 +27,6 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * entry[=].resource = ChEkmConditionExample-HepatitisC
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-HepatitisCVirusAb" // Observation
 * entry[=].resource = ChEkmObservationExample-HepatitisCVirusAb
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-AcuteHepatitisC" // Condition
-* entry[=].resource = ChEkmConditionExample-AcuteHepatitisC
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-ElevatedTransaminases" // Observation
-* entry[=].resource = ChEkmObservationExample-ElevatedTransaminases
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-AntiviralTherapy" // Observation
 * entry[=].resource = ChEkmObservationExample-AntiviralTherapy
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-ExposureViralDisease" // Observation
@@ -86,10 +82,9 @@ Description: "Example for a CH EKM Condition: Hepatitis C"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)"
 * onsetDateTime.extension[+].url = "http://hl7.org/fhir/StructureDefinition/data-absent-reason"
 * onsetDateTime.extension[=].valueCode = #asked-unknown
-* evidence[0].detail = Reference(ChEkmConditionExample-AcuteHepatitisC)
-* evidence[1].detail = Reference(ChEkmObservationExample-ElevatedTransaminases)
+* evidence[0].code = $sct#707724006 "Liver enzymes level above reference range"
+// * evidence[0].code.text = "Transaminase ≥ 2.5x"
 * recorder = Reference(ChEkmPractitionerRoleTreatingPhysicianExample)
-
 
 Instance: ChEkmObservationExample-HepatitisCVirusAb
 InstanceOf: Observation
@@ -140,23 +135,6 @@ Description: "Example for a CH EKM Observation: Occupation"
 * code = $loinc#21843-8 "History of Usual occupation"
 * subject = Reference(ChEkmPatientExample)
 * valueString = "Ärztin"
-
-Instance: ChEkmConditionExample-AcuteHepatitisC
-InstanceOf: Condition
-Usage: #example
-Description: "Example for a CH EKM Condition: Acute Hepatitis C"
-* code =  $sct#235866006 "Acute hepatitis C (disorder)"
-* subject = Reference(ChEkmPatientExample)
-
-Instance: ChEkmObservationExample-ElevatedTransaminases
-InstanceOf: Observation
-Usage: #example
-Description: "Example for a CH EKM Observation: Elevated Transaminases"
-* status = #final
-* code = $sct#166642001 "Elevated transaminases (finding)"
-* code.text = "Transaminase ≥ 2.5x"
-* subject = Reference(ChEkmPatientExample)
-
 
 
 

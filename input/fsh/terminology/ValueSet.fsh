@@ -57,3 +57,47 @@ Description: "This CH EKM value set includes the codes for specimen types."
 
 * include codes from valueset $ch-elm-results-complete-spec
 
+ValueSet: ChEkmPneumococcalDiseaseManifestation
+Title: "CH EKM Pneumococcal Disease Manifestation"
+Description: "This CH EKM value set includes the codes for the manifestation of pneumococcal disease."
+* ^status = #active
+* ^experimental = false
+
+* $sct#448421008 "Sepsis caused by Streptococcus pneumoniae"
+* $sct#51169003   "Pneumococcal meningitis"
+* $sct#36309003   "Pneumococcal arthritis"
+* $sct#233607000  "Pneumococcal pneumonia"
+
+ValueSet: ChEkmHepatitisCManifestation
+Title: "CH EKM Hepatitis C Manifestation"
+Description: "This CH EKM value set includes the codes for the manifestation of Hepatitis C."
+* ^status = #active
+* ^experimental = false
+
+* $sct#18165001   "Jaundice"
+* $sct#707724006  "Liver enzymes level above reference range"
+* $sct#409673008  "Alanine aminotransferase above reference range"
+* $sct#166669000  "Aspartate aminotransferase serum level above reference range"
+
+ValueSet: ChEkmHIVManifestation
+Title: "CH EKM HIV Manifestation"
+Description: "This CH EKM value set includes the codes for the manifestation of HIV."
+* ^status = #active
+* ^experimental = false
+
+* $sct#111880001  "Acute human immunodeficiency virus infection"
+* $sct#1003683009 "Human immunodeficiency virus Centers for Disease Control and Prevention stage 2"
+* $sct#1003684003 "Human immunodeficiency virus Centers for Disease Control and Prevention stage 3"
+
+ValueSet: ChEkmGonorrhoeaManifestation
+Title: "CH EKM Gonorrhoea Manifestation"
+Description: "This CH EKM value set includes the codes for the manifestation of gonorrhoea."
+* ^status = #active
+* ^experimental = false
+
+* $sct#74372003   "Gonorrhea of pharynx"
+* include codes from system $sct where concept is-a #236772009
+* include codes from system $sct where concept is-a #17305005
+* include codes from system $sct where concept is-a #186931002
+* $sct#42746002   "Infection of rectum caused by Neisseria gonorrhoeae"
+* $sct#762257007  "Disseminated infection caused by Neisseria gonorrhoeae"

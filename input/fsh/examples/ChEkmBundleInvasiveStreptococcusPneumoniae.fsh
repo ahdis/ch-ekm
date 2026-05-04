@@ -33,8 +33,6 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * entry[=].resource = ChEkmImmunizationExample-Pneumococcal2
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-Immunosuppression" // Condition
 * entry[=].resource = ChEkmConditionExample-Immunosuppression
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-Sepsis" // Condition
-* entry[=].resource = ChEkmConditionExample-Sepsis
 
 Instance: ChEkmCompositionExample-InvasiveStreptococcusPneumoniae
 InstanceOf: ChEkmComposition
@@ -85,8 +83,7 @@ Description: "Example for a CH EKM Condition: Invasive Streptococcus Pneumoniae"
 * code = $sct#406617004 "Invasive Streptococcus pneumoniae disease (disorder)"
 //* verificationStatus = $sct#410605003 "Confirmed present (qualifier value)"
 * onsetDateTime = "2026-01-27"
-* evidence[0].detail = Reference (ChEkmConditionExample-Sepsis)
-//* encounter = Reference(Encounter/ChEkmEncounterExample-InvasiveStreptococcusPneumoniae)
+* evidence[0].code = $sct#91302008 "Sepsis (disorder)"
 
 
 
@@ -132,18 +129,6 @@ Description: "Example for a CH EKM Condition: Immunosuppression"
 * category = $condition-category#problem-list-item
 * code = $sct#38013005 "Immunosuppression (finding)"
 * subject = Reference(ChEkmPatientInitialsExample)
-
-Instance: ChEkmConditionExample-Sepsis
-InstanceOf: Condition
-Usage: #example
-Description: "Example for a CH EKM Condition: Sepsis"
-* category = $condition-category#problem-list-item
-* code = $sct#91302008 "Sepsis (disorder)"
-* subject = Reference(ChEkmPatientInitialsExample)
-
-
-
-
 
 
 // Instance: QuestionnairePneumoInvasive
