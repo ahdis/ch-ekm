@@ -1,5 +1,14 @@
+Profile: ChEkmDocument
+Parent: CHCoreDocument
+Id: ch-ekm-document
+Title: "CH EKM-Document: Clinical findings of Communicable Infectious Diseases Report "
+Description: "This profile constrains the Bundle resource for the purpose of clinical findings of communicable infectious diseases reports."
+* . ^short = "CH EKM Document: Clinical findings report"
+
+* entry[Composition].resource only ChEkmComposition
+
 Profile: ChEkmComposition
-Parent: Composition
+Parent: CHCoreComposition
 Id: ch-ekm-composition
 Title: "CH EKM Composition: Clinical Findings of Communicable Infectious Diseases Report"
 Description: "This CH EKM base profile constrains the Composition resource for the purpose of clinical findings of communicable infectious diseases reports."
@@ -9,12 +18,12 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * type = $sct#722143004 "Infectious disease diagnostic study note"
 * date 1..
 * subject 1..
-* subject only Reference(Patient)
+* subject only Reference(ChEkmPatient)
 * author 1..
 * author only Reference(ChEkmPractitionerRole)
 * author ^short = "Author of the report. This can be either the treating physician or a private service provider (so-called broker) who transmits the report to the reporting system of the Federal Office of Public Health on behalf of the treating physician."
 * encounter ..1
-* encounter only Reference(Encounter)
+* encounter only Reference(CHCoreEncounter)
 
 * section 1..*
   * ^slicing.discriminator.type = #value

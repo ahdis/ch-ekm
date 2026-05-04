@@ -1,6 +1,6 @@
 
 Instance: ChEkmBundleHepatitisC
-InstanceOf: Bundle
+InstanceOf: ChEkmDocumentHepatitisC
 Usage: #example
 Description: "Example for a CH EKM Bundle: Hepatitis C"
 * identifier.system = "urn:ietf:rfc:3986"
@@ -36,7 +36,7 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 
 
 Instance: ChEkmCompositionExample-HepatitisC
-InstanceOf: ChEkmComposition
+InstanceOf: ChEkmCompositionHepatitisC
 Usage: #example
 Description: "Example for a CH EKM Composition: Hepatitis C"
 * identifier.system = "urn:ietf:rfc:3986"

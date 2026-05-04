@@ -1,6 +1,6 @@
 
 Instance: ChEkmBundleInvasiveStreptococcusPneumoniae 
-InstanceOf: Bundle
+InstanceOf: ChEkmDocument
 Usage: #example
 Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * identifier.system = "urn:ietf:rfc:3986"
