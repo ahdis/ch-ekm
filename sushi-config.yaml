@@ -11,7 +11,7 @@ description: FHIR® Implementation Guide for the Electronic Clinical Report (Ele
 status: draft # draft | active | retired | unknown
 license: CC0-1.0
 copyright: CC0-1.0
-jurisdiction: urn:iso:std:iso:3166#CHE
+jurisdiction: urn:iso:std:iso:3166#CH
 date: 2026-01-27
 version: 0.0.1 
 fhirVersion: 4.0.1
