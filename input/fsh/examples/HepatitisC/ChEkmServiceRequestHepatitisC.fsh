@@ -1,4 +1,4 @@
-Instance: ChEkmServiceRequestExample-HepatitisC
+Instance: ChEkmServiceRequestExampleHepatitisC
 InstanceOf: ChEkmServiceRequest
 Usage: #example
 * intent = #order
@@ -6,5 +6,5 @@ Usage: #example
 * reasonCode =  $sct#171112000 "Screening due (finding)" 
 * reasonCode.text = "Screening due (finding)" 
 * subject = Reference(ChEkmPatientExample)
-* specimen = Reference(ChEkmSpecimenExample-HepatitisC)
+* specimen = Reference(ChEkmSpecimenExampleHepatitisC)
 * performer = Reference(ChEkmOrganizationLabExample)

@@ -1,4 +1,4 @@
-Instance: ChEkmSpecimenExample-HepatitisC
+Instance: ChEkmSpecimenExampleHepatitisC
 InstanceOf: ChEkmSpecimen
 Usage: #example
 * subject = Reference(ChEkmPatientExample)

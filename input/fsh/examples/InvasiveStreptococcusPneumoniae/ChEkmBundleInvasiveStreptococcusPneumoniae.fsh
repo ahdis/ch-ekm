@@ -1,14 +1,14 @@
 
-Instance: ChEkmBundleInvasiveStreptococcusPneumoniae 
-InstanceOf: ChEkmDocumentInvasiveStreptococcusPneumoniae
+Instance: ChEkmBundleInvasivePneumococcalDisease 
+InstanceOf: ChEkmDocumentInvasivePneumococcalDisease
 Usage: #example
 Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:1301332d-6012-443f-9690-929132b2e155"
 * type = #document
 * timestamp = "2026-01-27T11:30:00+02:00"
-* entry[0].fullUrl = "http://test.fhir.ch/r4/Composition/ChEkmCompositionExample-InvasiveStreptococcusPneumoniae" // Composition
-* entry[=].resource = ChEkmCompositionExample-InvasiveStreptococcusPneumoniae
+* entry[0].fullUrl = "http://test.fhir.ch/r4/Composition/ChEkmCompositionExample-InvasivePneumococcalDisease" // Composition
+* entry[=].resource = ChEkmCompositionExample-InvasivePneumococcalDisease
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ChEkmPatientInitialsExample" // Patient
 * entry[=].resource = ChEkmPatientInitialsExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleBrokerExample" // PractitionerRole - Broker
@@ -17,14 +17,14 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * entry[=].resource = ChEkmPractitionerBrokerExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationBrokerExample" // Organization - Broker
 * entry[=].resource = ChEkmOrganizationBrokerExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-InvasiveStreptococcusPneumoniae" // Condition
-* entry[=].resource = ChEkmConditionExample-InvasiveStreptococcusPneumoniae
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Encounter/ChEkmEncounterExample-InvasiveStreptococcusPneumoniae" // Encounter
-* entry[=].resource = ChEkmEncounterExample-InvasiveStreptococcusPneumoniae
-* entry[+].fullUrl = "http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae" // ServiceRequest
-* entry[=].resource = ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Specimen/ChEkmSpecimenExample-InvasiveStreptococcusPneumoniae" // Specimen
-* entry[=].resource = ChEkmSpecimenExample-InvasiveStreptococcusPneumoniae
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-InvasivePneumococcalDisease" // Condition
+* entry[=].resource = ChEkmConditionExample-InvasivePneumococcalDisease
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Encounter/ChEkmEncounterExample-InvasivePneumococcalDisease" // Encounter
+* entry[=].resource = ChEkmEncounterExample-InvasivePneumococcalDisease
+* entry[+].fullUrl = "http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExampleInvasivePneumococcalDisease" // ServiceRequest
+* entry[=].resource = ChEkmServiceRequestExampleInvasivePneumococcalDisease
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Specimen/ChEkmSpecimenExampleInvasivePneumococcalDisease" // Specimen
+* entry[=].resource = ChEkmSpecimenExampleInvasivePneumococcalDisease
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationLabExample" // Organization - Lab
 * entry[=].resource = ChEkmOrganizationLabExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Immunization/ChEkmImmunizationExample-Pneumococcal1" // Immunization
@@ -34,8 +34,8 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-Immunosuppression" // Condition
 * entry[=].resource = ChEkmConditionExample-Immunosuppression
 
-Instance: ChEkmCompositionExample-InvasiveStreptococcusPneumoniae
-InstanceOf: ChEkmCompositionInvasiveStreptococcusPneumoniae
+Instance: ChEkmCompositionExample-InvasivePneumococcalDisease
+InstanceOf: ChEkmCompositionInvasivePneumococcalDisease
 Usage: #example
 Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumoniae"
 * status = #final
@@ -44,23 +44,23 @@ Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumonia
 * subject = Reference(ChEkmPatientInitialsExample)
 * date = "2026-01-27"
 * author = Reference(ChEkmPractitionerRoleBrokerExample)
-* encounter = Reference(ChEkmEncounterExample-InvasiveStreptococcusPneumoniae)
+* encounter = Reference(ChEkmEncounterExample-InvasivePneumococcalDisease)
 * title = "Meldung zum klinischen Befund Infektionskrankheit"
 
 // Diagnosis Section
 * section[diagnosis].title = "Diagnosis section"
 * section[diagnosis].code = $loinc#29308-4
-* section[diagnosis].entry[0] = Reference(ChEkmConditionExample-InvasiveStreptococcusPneumoniae)
+* section[diagnosis].entry[0] = Reference(ChEkmConditionExample-InvasivePneumococcalDisease)
 
 // Laboratory Section
 * section[laboratory].title = "Laboratory section"
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].entry[0] = Reference(ChEkmServiceRequestExample-InvasiveStreptococcusPneumoniae)
+* section[laboratory].entry[0] = Reference(ChEkmServiceRequestExampleInvasivePneumococcalDisease)
 
 // Hospitalization Section
 * section[hospitalization].title = "Hospitalisation section"
 * section[hospitalization].code = $loinc#46240-8
-* section[hospitalization].entry[0] = Reference(ChEkmEncounterExample-InvasiveStreptococcusPneumoniae)
+* section[hospitalization].entry[0] = Reference(ChEkmEncounterExample-InvasivePneumococcalDisease)
 
 // Immunization Section
 * section[immunization].title = "Immunization section"
@@ -74,7 +74,7 @@ Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumonia
 * section[risk-factors].entry[0] = Reference(ChEkmConditionExample-Immunosuppression)
 
 
-Instance: ChEkmConditionExample-InvasiveStreptococcusPneumoniae
+Instance: ChEkmConditionExample-InvasivePneumococcalDisease
 InstanceOf: Condition
 Usage: #example
 Description: "Example for a CH EKM Condition: Invasive Streptococcus Pneumoniae"
@@ -85,7 +85,7 @@ Description: "Example for a CH EKM Condition: Invasive Streptococcus Pneumoniae"
 * onsetDateTime = "2026-01-27"
 * evidence[0].code = $sct#91302008 "Sepsis (disorder)"
 
-Instance: ChEkmEncounterExample-InvasiveStreptococcusPneumoniae
+Instance: ChEkmEncounterExample-InvasivePneumococcalDisease
 InstanceOf: Encounter
 Usage: #example
 Description: "Example for a CH EKM Encounter: Invasive Streptococcus Pneumoniae"
@@ -93,9 +93,7 @@ Description: "Example for a CH EKM Encounter: Invasive Streptococcus Pneumoniae"
 * class = #IMP
 * status = #unknown
 * period.start = "2026-01-19"
-* reasonReference = Reference(ChEkmConditionExample-InvasiveStreptococcusPneumoniae)
-
-
+* reasonReference = Reference(ChEkmConditionExample-InvasivePneumococcalDisease)
 
 Instance: ChEkmImmunizationExample-Pneumococcal1
 InstanceOf: Immunization

@@ -17,12 +17,12 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * entry[=].resource = ChEkmPractitionerTreatingPhysicianExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationTreatingPhysicianExample" // Organization - Treating Physician
 * entry[=].resource = ChEkmOrganizationTreatingPhysicianExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExample-HepatitisC" // ServiceRequest
-* entry[=].resource = ChEkmServiceRequestExample-HepatitisC
+* entry[+].fullUrl = "http://test.fhir.ch/r4/ServiceRequest/ChEkmServiceRequestExampleHepatitisC" // ServiceRequest
+* entry[=].resource = ChEkmServiceRequestExampleHepatitisC
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationLabExample" // Organization - Lab
 * entry[=].resource = ChEkmOrganizationLabExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Specimen/ChEkmSpecimenExample-HepatitisC" // Specimen
-* entry[=].resource = ChEkmSpecimenExample-HepatitisC
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Specimen/ChEkmSpecimenExampleHepatitisC" // Specimen
+* entry[=].resource = ChEkmSpecimenExampleHepatitisC
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-HepatitisC" // Condition
 * entry[=].resource = ChEkmConditionExample-HepatitisC
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-HepatitisCVirusAb" // Observation
@@ -60,7 +60,7 @@ Description: "Example for a CH EKM Composition: Hepatitis C"
 // Laboratory section
 * section[laboratory].title = "Laboratory Results section"
 * section[laboratory].code = $loinc#30954-2
-* section[laboratory].entry[0] = Reference(ChEkmServiceRequestExample-HepatitisC)
+* section[laboratory].entry[0] = Reference(ChEkmServiceRequestExampleHepatitisC)
 * section[laboratory].entry[1] = Reference(ChEkmObservationExample-HepatitisCVirusAb)
 
 // Medication section

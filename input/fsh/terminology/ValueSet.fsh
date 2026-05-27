@@ -103,9 +103,9 @@ Description: "This CH EKM value set includes the codes for the course of the dis
 * $sct#109841003 "Liver cell carcinoma (disorder)"
 * $sct#363800008 "General wellbeing"
 
-ValueSet: ChEkmInvasiveStreptococcusPneumoniaeManifestation
-Title: "CH EKM InvasiveStreptococcusPneumoniae Manifestation"
-Description: "This CH EKM value set includes the codes for the manifestation of InvasiveStreptococcusPneumoniae."
+ValueSet: ChEkmInvasivePneumococcalDiseaseManifestation
+Title: "CH EKM InvasivePneumococcalDisease Manifestation"
+Description: "This CH EKM value set includes the codes for the manifestation of InvasivePneumococcalDisease."
 * ^status = #active
 * ^experimental = false
 
@@ -130,9 +130,14 @@ Description: "This CH EKM value set includes the codes for the manifestation of 
 * ^status = #active
 * ^experimental = false
 
-* $sct#74372003   "Gonorrhea of pharynx"
-* include codes from system $sct where concept is-a #236772009
-* include codes from system $sct where concept is-a #17305005
-* include codes from system $sct where concept is-a #186931002
-* $sct#42746002   "Infection of rectum caused by Neisseria gonorrhoeae"
-* $sct#762257007  "Disseminated infection caused by Neisseria gonorrhoeae"
+* $sct#15628003 "Gonorrhea (disorder)"
+* $sct#84387000 "Asymptomatic (finding)"
+
+//* $sct#264931009 "Symptomatic (qualifier value)"
+
+// * $sct#74372003   "Gonorrhea of pharynx"
+// * include codes from system $sct where concept is-a #236772009
+// * include codes from system $sct where concept is-a #17305005
+// * include codes from system $sct where concept is-a #186931002
+// * $sct#42746002   "Infection of rectum caused by Neisseria gonorrhoeae"
+// * $sct#762257007  "Disseminated infection caused by Neisseria gonorrhoeae"

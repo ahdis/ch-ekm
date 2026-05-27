@@ -1,21 +1,22 @@
-Profile: ChEkmDocumentInvasiveStreptococcusPneumoniae
+Profile: ChEkmDocumentInvasivePneumococcalDisease
 Parent: ChEkmDocument
-Id: ch-ekm-document-invasivestreptococcuspneumoniae
-Title: "CH EKM-Document: Clinical findings InvasiveStreptococcusPneumoniae"
+Id: ch-ekm-document-invasivepneumococcaldisease
+Title: "CH EKM-Document: Clinical findings InvasivePneumococcalDisease"
 Description: "This profile constrains the Bundle resource for the purpose of clinical findings for Hepatitis C."
-* entry[Composition].resource only ChEkmCompositionInvasiveStreptococcusPneumoniae
+* entry[Composition].resource only ChEkmCompositionInvasivePneumococcalDisease
 
-Profile: ChEkmCompositionInvasiveStreptococcusPneumoniae
+Profile: ChEkmCompositionInvasivePneumococcalDisease
 Parent: ChEkmComposition
-Id: ch-ekm-composition-invasivestreptococcuspneumoniae
-Title: "CH EKM Composition: Clinical Findings InvasiveStreptococcusPneumoniae"
+Id: ch-ekm-composition-invasivepneumococcaldisease
+Title: "CH EKM Composition: Clinical Findings InvasivePneumococcalDisease"
 Description: "This CH EKM base profile constrains the Composition resource for the purpose of clinical findings for Hepatitis C."
 * subject only Reference(ChEkmPatientInitials)
+* section[diagnosis].entry[condition] only Reference(ChEkmConditionInvasivePneumococcalDisease)
 
-Profile: ChEkmConditionInvasiveStreptococcusPneumoniae
+Profile: ChEkmConditionInvasivePneumococcalDisease
 Parent: ChEkmCondition
-Id: ch-ekm-condition-invasivestreptococcuspneumoniae
-Title: "CH EKM Condition: InvasiveStreptococcusPneumoniae"
+Id: ch-ekm-condition-invasivepneumococcaldisease
+Title: "CH EKM Condition: InvasivePneumococcalDisease"
 Description: "This CH EKM base profile constrains the Condition resource for the purpose of clinical findings for Hepatitis C."
 * code = $sct#406617004 "Invasive Streptococcus pneumoniae disease (disorder)"
-* evidence.code from ChEkmInvasiveStreptococcusPneumoniaeManifestation (required)
+* evidence.code from ChEkmInvasivePneumococcalDiseaseManifestation (required)

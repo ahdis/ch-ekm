@@ -1,4 +1,4 @@
-Instance: ChEkmSpecimenExample-InvasiveStreptococcusPneumoniae
+Instance: ChEkmSpecimenExampleInvasivePneumococcalDisease
 InstanceOf: ChEkmSpecimen
 Usage: #example
 * subject = Reference(ChEkmPatientInitialsExample)

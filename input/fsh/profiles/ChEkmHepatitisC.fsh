@@ -10,6 +10,16 @@ Parent: ChEkmComposition
 Id: ch-ekm-composition-hepatitisc
 Title: "CH EKM Composition: Clinical Findings HepatitisC"
 Description: "This CH EKM base profile constrains the Composition resource for the purpose of clinical findings for Hepatitis C."
+* subject only Reference(ChEkmPatient)
+* section[diagnosis].entry[condition] only Reference(ChEkmConditionHepatitisC)
+* section[diagnosis].entry[questionnaire-response] only Reference(ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC) 
+
+Profile: ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC
+Parent: QuestionnaireResponse
+Id: ch-ekm-questionnaireresponse-hepatitisc-courseofdisease
+Title: "CH EKM Questionnaire Response: Course of Disease - HepatitisC"
+Description: "This CH EKM base profile constrains the QuestionnaireResponse resource for the purpose of clinical findings for Hepatitis C."
+* questionnaire = Canonical(ChEkmQuestionnaireHepatitisCCourseOfDisease)
 
 Profile: ChEkmConditionHepatitisC
 Parent: ChEkmCondition
