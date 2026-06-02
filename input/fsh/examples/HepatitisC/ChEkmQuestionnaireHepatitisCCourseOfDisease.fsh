@@ -11,4 +11,4 @@ Description: "Questionnaire for capturing the course of disease for HepatitisC."
 * item[=].text = "Verlauf der Erkrankung"
 * item[=].type = #choice
 * item[=].repeats = true
-* item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmInvasivePneumococcalDiseaseCourseOfDisease"
+* item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmHepatitisCCourseOfDisease"

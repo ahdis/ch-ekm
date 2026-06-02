@@ -92,7 +92,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
     exposure-to-infectious-disease 1..*
 //     and
 //    occupation 1..1
-* section[social-history].entry[exposure-to-infectious-disease] only Reference(Observation)
+* section[social-history].entry[exposure-to-infectious-disease] only Reference(ChEkmExposure)
 // * section[social-history].section[occupation].entry 1..1
 // * section[social-history].section[occupation].entry only Reference(Observation)
 // this doest not work we need ot make the slicing different

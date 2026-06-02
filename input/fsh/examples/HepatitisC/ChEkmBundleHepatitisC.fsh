@@ -119,26 +119,23 @@ Description: "Example for a CH EKM Observation: Antiviral Therapy"
 
 
 Instance: ChEkmObservationExample-ExposureViralDisease
-InstanceOf: Observation
+InstanceOf: ChEkmExposure
 Usage: #example
-Description: "Example for a CH EKM Observation: Exposure to Viral Disease"
-* extension[+].url = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposition-address"
-* extension[=].valueAddress.country = "Nepal"
+Description: "Example for a CH EKM Exposure: Exposure to Viral Disease (Hepatitis C)"
+* extension[expositionAddress].valueAddress.country = "Nepal"
 //* extension[=].valueAddress.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-SC-coding"
 //* extension[=].valueAddress.extension[=].valueCoding = urn:iso:std:iso:3166#CH
 * status = #final
 * category = $v3-ActClass#AEXPOS "acquisition exposure"
-* code = $sct#150781000119103 "Exposure to viral disease (event)"
-* valueCodeableConcept = $sct#223366009 "Healthcare professional (occupation)"
+* code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
+* valueCodeableConcept = $sct#62944002 "Hepatitis C virus (organism)"
 * effectivePeriod.start = "2025-12-01"
 * effectivePeriod.end = "2025-12-01"
 * subject = Reference(ChEkmPatientExample)
-* component.code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
-* component.valueCodeableConcept = $sct#62944002 "Hepatitis C virus (organism)"
-* component.code = $v3-ParticipationType#LOC "Location"
-* component.valueCodeableConcept = $sct#276030007 "Travel abroad (finding)"
-* component.code = $v3-ParticipationType#PART "Participant"
-* component.valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
+* component[+].code = $v3-ParticipationType#LOC "Location"
+* component[=].valueCodeableConcept = $sct#276030007 "Travel abroad (finding)"
+* component[+].code = $v3-ParticipationType#PART "Participant"
+* component[=].valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
 
 Instance: ChEkmObservationExample-Occupation
 InstanceOf: Observation

@@ -34,7 +34,9 @@ pages:
   index.md:
     title: Home
   usecase.md:
-    title: Use Case 
+    title: Use Case
+  examples.md:
+    title: Examples
   guidance.md:
     title: Guidance
   profiles.md:
@@ -47,6 +49,7 @@ menu:
   Table of Contents: toc.html
   Home: index.html
   Use Case: usecase.html
+  Examples: examples.html
   Profiles: profiles.html
   Guidance: guidance.html
   Terminology: terminology.html

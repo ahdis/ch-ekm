@@ -2,7 +2,7 @@
 Instance: ChEkmBundleGonorrhoea 
 InstanceOf: ChEkmDocumentGonorrhoea
 Usage: #example
-Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
+Description: "Example for a CH EKM Bundle: Gonorrhoea"
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
 * type = #document
@@ -21,11 +21,13 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * entry[=].resource = ChEkmConditionExample-Gonorrhoea
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Encounter/ChEkmEncounterExample-Gonorrhoea" // Encounter
 * entry[=].resource = ChEkmEncounterExample-Gonorrhoea
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmExposureExample-Gonorrhoea" // Exposure
+* entry[=].resource = ChEkmExposureExample-Gonorrhoea
 
 Instance: ChEkmCompositionExample-Gonorrhoea
 InstanceOf: ChEkmCompositionGonorrhoea
 Usage: #example
-Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumoniae"
+Description: "Example for a CH EKM Composition: Gonorrhoea"
 * status = #final
 * category = $sct#423876004 "Clinical report"
 * type = $sct#722143004 "Infectious disease diagnostic study note"
@@ -46,13 +48,18 @@ Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumonia
 
 // Immunization Section
 
+// Social History Section (Exposure)
+* section[social-history].title = "Social history section"
+* section[social-history].code = $loinc#29762-2
+* section[social-history].entry[exposure-to-infectious-disease] = Reference(ChEkmExposureExample-Gonorrhoea)
+
 // Risk Factors Section (Direct Entry)
 
 
 Instance: ChEkmConditionExample-Gonorrhoea
 InstanceOf: Condition
 Usage: #example
-Description: "Example for a CH EKM Condition: Invasive Streptococcus Pneumoniae"
+Description: "Example for a CH EKM Condition: Invasive Streptococcus Gonorrhoea"
 * subject = Reference(ChEkmPatientInitialsExample)
 * category = $condition-category#encounter-diagnosis
 * code = $sct#15628003 "Gonorrhea (disorder)"
@@ -60,6 +67,23 @@ Description: "Example for a CH EKM Condition: Invasive Streptococcus Pneumoniae"
 * onsetDateTime.extension[=].valueCode = #asked-unknown
 * evidence.code[0] = $sct#15628003 "Gonorrhea (disorder)"
 // * evidence[0].code.text = "Symptomatisch"
+
+Instance: ChEkmExposureExample-Gonorrhoea
+InstanceOf: ChEkmExposureGonorrhoea
+Usage: #example
+Description: "Example for a CH EKM Exposure: Gonorrhoea - sexual contact with a man, offered paid sex"
+* status = #final
+* category = $v3-ActClass#AEXPOS "acquisition exposure"
+* code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
+* subject = Reference(ChEkmPatientInitialsExample)
+// Wie - Sexualkontakt mit Mann
+* component[transmissionRoute].code = $sct#409496000 "Mode of transmission (observable entity)"
+* component[transmissionRoute].valueCodeableConcept = $sct#417564009 "Sexual transmission (qualifier value)"
+* component[sexualContactPartner].code = ChEkmExposureComponent#sexual-contact-partner
+* component[sexualContactPartner].valueCodeableConcept = $administrative-gender#male
+// Art der Beziehung - Angebot von bezahltem Sex
+* component[relationshipType].code = $sct#228465009 "Sexual relationship details (observable entity)"
+* component[relationshipType].valueCodeableConcept = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
 
 Instance: ChEkmEncounterExample-Gonorrhoea
 InstanceOf: Encounter

@@ -1,3 +1,29 @@
+ValueSet: ChEkmExposureClass
+Title: "CH EKM Exposure Class"
+Description: "This CH EKM value set includes the HL7 v3 ActClass codes that classify an exposure (mirrors the ActClassExposure value set used by HL7 Europe HDR and US eCR)."
+* ^status = #active
+* ^experimental = false
+* $v3-ActClass#EXPOS "exposure"
+* $v3-ActClass#AEXPOS "acquisition exposure"
+* $v3-ActClass#TEXPOS "transmission exposure"
+
+ValueSet: ChEkmExposureTransmissionRoute
+Title: "CH EKM Exposure Transmission Route"
+Description: "This CH EKM value set includes the codes for the likely transmission route (Übertragungsweg)."
+* ^status = #active
+* ^experimental = false
+
+* $sct#417564009 "Sexual transmission (qualifier value)" // #sexual-contact "Sexual contact with infected person" "Sexualkontakt mit infizierter Person."
+* $sct#74964007   "Other (qualifier value)" // #other "Other transmission route" "Anderer Übertragungsweg."
+* $sct#261665006  "Unknown (qualifier value)" // #unknown "Unknown" "Unbekannt."
+
+ValueSet: ChEkmExposureRelationshipType
+Title: "CH EKM Exposure Relationship Type"
+Description: "This CH EKM value set includes the codes for the type of relationship to a sexual contact partner (Art der Beziehung)."
+* ^status = #active
+* ^experimental = false
+* include codes from system ChEkmRelationshipType
+
 ValueSet: ChEkmBiologicalSex
 Title: "CH EKM Biological Sex"
 Description: "This CH EKM value set includes the codes for biological sex."
@@ -130,11 +156,10 @@ Description: "This CH EKM value set includes the codes for the manifestation of 
 * ^status = #active
 * ^experimental = false
 
-* $sct#15628003 "Gonorrhea (disorder)"
+* include codes from system $sct where concept is-a #15628003
 * $sct#84387000 "Asymptomatic (finding)"
 
 //* $sct#264931009 "Symptomatic (qualifier value)"
-
 // * $sct#74372003   "Gonorrhea of pharynx"
 // * include codes from system $sct where concept is-a #236772009
 // * include codes from system $sct where concept is-a #17305005
