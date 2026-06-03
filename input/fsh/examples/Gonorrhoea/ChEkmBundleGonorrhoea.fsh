@@ -90,7 +90,7 @@ InstanceOf: Encounter
 Usage: #example
 Description: "Example for a CH EKM Encounter: Invasive Streptococcus Pneumoniae"
 * subject = Reference(ChEkmPatientInitialsExample)
-* class = #IMP
+* class = $v3-ActCode#IMP "inpatient encounter"
 * status = #unknown
 * period.start = "2026-01-19"
 * reasonReference = Reference(ChEkmConditionExample-Gonorrhoea)

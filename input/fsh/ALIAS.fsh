@@ -10,6 +10,7 @@ Alias: $condition-category =            http://terminology.hl7.org/CodeSystem/co
 Alias: $observation-category =          http://terminology.hl7.org/CodeSystem/observation-category
 Alias: $v3-ObservationInterpretation =  http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation
 Alias: $v3-ActClass =                   http://terminology.hl7.org/CodeSystem/v3-ActClass
+Alias: $v3-ActCode =                                http://terminology.hl7.org/CodeSystem/v3-ActCode
 Alias: $v3-ParticipationType =          http://terminology.hl7.org/CodeSystem/v3-ParticipationType
 Alias: $v2-0203 = http://terminology.hl7.org/CodeSystem/v2-0203
 
