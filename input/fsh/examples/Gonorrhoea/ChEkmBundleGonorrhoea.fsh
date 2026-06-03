@@ -76,9 +76,9 @@ Description: "Example for a CH EKM Exposure: Gonorrhoea - sexual contact with a 
 * category = $v3-ActClass#AEXPOS "acquisition exposure"
 * code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
 * subject = Reference(ChEkmPatientInitialsExample)
-// Wie - Sexualkontakt mit Mann
-* component[transmissionRoute].code = $sct#409496000 "Mode of transmission (observable entity)"
-* component[transmissionRoute].valueCodeableConcept = $sct#417564009 "Sexual transmission (qualifier value)"
+// Wie - Sexualkontakt mit Mann (only if unknown or other)
+// * component[transmissionRoute].code = $sct#409496000 "Mode of transmission (observable entity)"
+// * component[transmissionRoute].valueCodeableConcept = $sct#417564009 "Sexual transmission (qualifier value)"
 * component[sexualContactPartner].code = ChEkmExposureComponent#sexual-contact-partner
 * component[sexualContactPartner].valueCodeableConcept = $administrative-gender#male
 // Art der Beziehung - Angebot von bezahltem Sex

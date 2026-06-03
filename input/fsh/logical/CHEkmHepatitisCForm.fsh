@@ -1,15 +1,15 @@
-Logical: ChEkmGonorrhoeaPersonForm
+Logical: ChEkmHepatitisCPersonForm
 Parent: ChEkmPersonForm
-Id: ch-ekm-gonorrhoea-person-form
-Title: "CH EKM Form: Gonorrhoea - Angaben zur betroffenen Person"
-Description: "Logical model for the form section 'Angaben zur betroffenen Person' of the Gonorrhoea clinical findings report. One element per form item."
+Id: ch-ekm-hepatitisc-person-form
+Title: "CH EKM Form: HepatitisC - Angaben zur betroffenen Person"
+Description: "Logical model for the form section 'Angaben zur betroffenen Person' of the HepatitisC clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
-* initialName 1..1
-* Name 0..0 
-* initialFirstName 1..1 
-* FirstName 0..0 
-* birthDate 1..1
+* initialName 0..0
+* Name 0..1
+* initialFirstName 0..0 
+* FirstName 0..1 
+* birthDate 1..1 
 * nationality 0..1
 * postalCodeResidence 0..1 
 * country 0..1 
@@ -17,11 +17,11 @@ Characteristics: #can-be-target
 * administrativeGender 1..1
 * genderIdentity 0..1 
 
-Logical: ChEkmGonorrhoeaExpositionForm
+Logical: ChEkmHepatitisCExpositionForm
 Parent: ChEkmExpositionForm
-Id: ch-ekm-gonorrhoea-exposition-form
-Title: "CH EKM Form: Gonorrhoea - Exposition"
-Description: "Logical model for the form section 'Exposition' of the Gonorrhoea clinical findings report. One element per form item."
+Id: ch-ekm-hepatitisc-exposition-form
+Title: "CH EKM Form: HepatitisC - Exposition"
+Description: "Logical model for the form section 'Exposition' of the HepatitisC clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
 // Wo on the structured level we will not have inland/ausland as separate items (discussed June 1st)
@@ -37,12 +37,12 @@ Characteristics: #can-be-target
   * otherTransmission 0..1 string "anderer Übertragungsweg (Freitext)"
   * unknown 0..1 boolean "unbekannt"
 
-Mapping: GonorrhoeaExpositionToExposure
-Source: ChEkmGonorrhoeaExpositionForm
-Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-exposure-gonorrhoea"
-Id: gonorrhoea-exposition-to-exposure
+Mapping: HepatitisCExpositionToExposure
+Source: ChEkmHepatitisCExpositionForm
+Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-exposure-hepatitisc"
+Id: hepatitisc-exposition-to-exposure
 Title: "Exposition Form to CH EKM Exposure"
-* -> "Observation" "Maps the form section to the ChEkmExposureGonorrhoea profile"
+* -> "Observation" "Maps the form section to the ChEkmExposureHepatitisC profile"
 * transmission.sexualContactPartner -> "Observation.component[sexualContactPartner].valueCodeableConcept"
 * transmission.relationshipType -> "Observation.component[relationshipType].valueCodeableConcept"
 * transmission.unknown -> "Observation.component[transmissionRoute]" "unbekannt -> component[transmissionRoute].dataAbsentReason #unknown"

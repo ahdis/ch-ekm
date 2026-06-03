@@ -9,16 +9,17 @@ Characteristics: #can-be-target
 * Name 0..1 string "Name"
 * initialFirstName 0..1 string "Initiale Vorname"
 * FirstName 0..1 string "Vorname"
-* birthDate 0..1 date "Geburtsdatum"
+* birthDate 1..1 date "Geburtsdatum"
 * nationality 0..1 CodeableConcept "Nationalität"
 * nationality from $bfs-country-codes (required)
 * postalCodeResidence 0..1 string "PLZ/Wohnort"
 * country 0..1 CodeableConcept "Land"
 * country from $bfs-country-codes (required)
 * canton 0..1 string "Kanton"
-* gender 0..1 CodeableConcept "Gender (Mann, Frau, anderes)"
-* gender from http://hl7.org/fhir/ValueSet/administrative-gender (required)
-* pregnancy 0..1 boolean "Besteht eine Schwangerschaft? (ja / nein)"
+* administrativeGender 1..1 CodeableConcept "Gender (Mann, Frau, anderes)"
+* administrativeGender from http://hl7.org/fhir/ValueSet/administrative-gender (required)
+* genderIdentity 0..1 CodeableConcept "Zugehörigkeit zur Transgender-Community"
+* genderIdentity from ChEkmGenderIdentity (required)
 
 Mapping: PersonToPatient
 Source: ChEkmPersonForm
@@ -35,5 +36,5 @@ Title: "Person Form to CH EKM Patient Initials"
 * postalCodeResidence -> "Patient.address[home].postalCode" "PLZ; the 'Wohnort' part maps to Patient.address[home].city"
 * country -> "Patient.address[home].country"
 * canton -> "Patient.address[home].state" "Canton abbreviation"
-* gender -> "Patient.gender" "Administrative gender"
-// pregnancy has no target in ChEkmPatient; it would be modelled as a separate Condition/Observation
+* administrativeGender -> "Patient.gender" "Administrative gender"
+* genderIdentity -> "Patient.extension[genderIdentity]" "Gender identity"

@@ -72,6 +72,8 @@ parameters:
   excludettl: true
 #  apply-version: false
 #  default-version: true
+  path-expansion-params: '../../expansion-params.json'  # for using SNOMED CT Swiss Extension
+
 
 instanceOptions:
   # Determines for which types of Instances SUSHI will automatically set meta.profile

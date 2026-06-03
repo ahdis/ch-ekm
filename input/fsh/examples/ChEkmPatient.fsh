@@ -7,8 +7,6 @@ Description: "Example for a CH EKM Patient: Full Name"
 * name.family = "Muster"
 * name.given = "Beispielin"
 * birthDate = "2000-01-01"
-* extension[biologicalSexAtBirth].extension[type].valueCodeableConcept = $loinc#76689-9 "Sex Assigned At Birth"
-* extension[biologicalSexAtBirth].extension[value].valueCodeableConcept = $sct#248153007 "Male (finding)"
 * gender = #male
 * address[home].use = #home
 * address[home].line = "Tannenstrasse 10a"

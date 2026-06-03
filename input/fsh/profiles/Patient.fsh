@@ -25,12 +25,7 @@ Description: "This CH EKM base profile constrains the Patient resource."
 * extension[placeOfBirth] ..1  
 * extension[citizenship] ..1 MS 
 * extension contains $individual-genderIdentity named genderIdentity 0..1 
-* extension[genderIdentity].extension[value].valueCodeableConcept from $gender-identity (required)
-* extension contains $individual-recordedSexOrGender named biologicalSexAtBirth 0..1 
-* extension[biologicalSexAtBirth].extension[type].valueCodeableConcept = $loinc#76689-9 "Sex Assigned At Birth"
-* extension[biologicalSexAtBirth].extension[value].valueCodeableConcept from $biological-sex (required)
-* extension contains $individual-recordedSexOrGender named biologicalSex 0..1 
-* extension[biologicalSex].extension[type].valueCodeableConcept = $loinc#46098-0 "Sex"
+* extension[genderIdentity].extension[value].valueCodeableConcept from ChEkmGenderIdentity (required)
 * identifier MS
 * identifier[AHVN13] ..1 MS
 * identifier[AHVN13] ^short = "OASI Number Switzerland"
@@ -72,9 +67,6 @@ Id: ch-ekm-patient-initials
 Title: "CH Ekm Patient Initials"
 Description: "This CH EKM base profile constrains the Patient resource for patient representation via Initials."
 * name obeys name-initials
-* extension[genderIdentity] 0..0
-* extension[biologicalSexAtBirth] 0..0
-* extension[biologicalSex] 0..0
 * identifier[LocalPid] 0..0
 * address[home].line ..0
 * telecom ..0
@@ -85,9 +77,6 @@ Parent: ChEkmPatient
 Title: "CH EKM Patient HIV"
 Description: "This CH EKM base profile constrains the Patient resource for patient representation via HIV code."
 * . ^short = "CH EKM Patient HIV"
-* extension[genderIdentity] 0..0
-* extension[biologicalSexAtBirth] 0..0
-* extension[biologicalSex] 0..0
 * identifier[LocalPid] 0..0
 * name.extension[hivcode] 1..
 * name.family.extension[dataabsentreason] 1..
@@ -113,9 +102,6 @@ Title: "CH EKM Patient VCT"
 Description: "This CH EKM base profile constrains the Patient resource for patient representation via VCT code."
 * . ^short = "CH EKM Patient VCT"
 * identifier[AHVN13] 0..0
-* extension[genderIdentity] 0..0
-* extension[biologicalSexAtBirth] 0..0
-* extension[biologicalSex] 0..0
 * identifier[LocalPid] 1..1 
 * identifier[LocalPid] only VCTIdentifier
 * identifier[LocalPid] ^short = "VCT identifier"

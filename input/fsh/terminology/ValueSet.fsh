@@ -93,6 +93,13 @@ Description: "This CH EKM value set includes the codes for specimen types."
 * $sct#373572006  "Clinical finding absent (situation)"
 * $sct#261665006  "Unknown (qualifier value)"
 
+ValueSet: ChEkmGenderIdentity
+Title: "CH EKM Gender Identity"
+Description: "This CH EKM value set includes the codes for gender identity."
+* ^status = #active
+* ^experimental = false
+
+* $sct#1384187000  "Identifies as transgender (finding)"
 
 ValueSet: ChEkmPneumococcalDiseaseManifestation
 Title: "CH EKM Pneumococcal Disease Manifestation"
