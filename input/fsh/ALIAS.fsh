@@ -14,7 +14,14 @@ Alias: $v3-ActCode =                                http://terminology.hl7.org/C
 Alias: $v3-ParticipationType =          http://terminology.hl7.org/CodeSystem/v3-ParticipationType
 Alias: $v2-0203 = http://terminology.hl7.org/CodeSystem/v2-0203
 
-//External Extensions 
+// SDC (Structured Data Capture) - Questionnaire
+Alias: $sdc-modular =               http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular
+Alias: $sdc-assemble-expectation =  http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation
+Alias: $sdc-subQuestionnaire =      http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire
+Alias: $questionnaire-itemControl = http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl
+Alias: $item-control =              http://hl7.org/fhir/questionnaire-item-control
+
+//External Extensions
 Alias: $individual-genderIdentity =      http://hl7.org/fhir/StructureDefinition/individual-genderIdentity
 Alias: $individual-recordedSexOrGender = http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender
 Alias: $patient-citizenship =            http://hl7.org/fhir/StructureDefinition/patient-citizenship
