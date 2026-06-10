@@ -1,0 +1,382 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "ChEkmQuestionnaireGonorrhoeaAssembled",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp"
+    ],
+    "source": "https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-gonorrhoea.sh"
+  },
+  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaAssembled",
+  "version": "0.0.1",
+  "name": "ChEkmQuestionnaireGonorrhoeaAssembled",
+  "status": "active",
+  "experimental": false,
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "code": "semver",
+        "system": "http://hl7.org/fhir/version-algorithm"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "patient",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "Patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient to pre-populate the form with"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaPerson|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaManifestation|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaExposition|0.0.1"
+    }
+  ],
+  "item": [
+    {
+      "linkId": "gonorrhoea-form",
+      "type": "group",
+      "text": "Meldung zum klinischen Befund: Gonorrhoea",
+      "item": [
+        {
+          "linkId": "person",
+          "text": "Angaben zur betroffenen Person",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.first().family.substring(0,1)"
+                  }
+                }
+              ],
+              "linkId": "surnameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.surnameInitial",
+              "text": "Initiale Name",
+              "type": "string",
+              "required": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.first().given.first().substring(0,1)"
+                  }
+                }
+              ],
+              "linkId": "givennameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.givennameInitial",
+              "text": "Initiale Vorname",
+              "type": "string",
+              "required": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.birthDate"
+                  }
+                }
+              ],
+              "linkId": "dateOfBirth",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.dateOfBirth",
+              "text": "Geburtsdatum",
+              "type": "date",
+              "required": true
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "autocomplete"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "nationality",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.nationality",
+              "text": "Nationalität",
+              "type": "choice",
+              "answerValueSet": "http://fhir.ch/ig/ch-term/ValueSet/bfs-country-codes"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.address.where(use='home').first().postalCode"
+                  }
+                }
+              ],
+              "linkId": "zipCode",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.zipCode",
+              "text": "PLZ",
+              "type": "string"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.address.where(use='home').first().city"
+                  }
+                }
+              ],
+              "linkId": "city",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.city",
+              "text": "Wohnort",
+              "type": "string"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "autocomplete"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "country",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.country",
+              "text": "Land",
+              "type": "choice",
+              "answerValueSet": "http://fhir.ch/ig/ch-term/ValueSet/bfs-country-codes"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.address.where(use='home').first().state"
+                  }
+                }
+              ],
+              "linkId": "canton",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.canton",
+              "text": "Kanton",
+              "type": "string"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "radio-button"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.gender"
+                  }
+                }
+              ],
+              "linkId": "administrativeGender",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.administrativeGender",
+              "text": "Gender",
+              "type": "choice",
+              "required": true,
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender"
+            },
+            {
+              "linkId": "genderIdentity",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.genderIdentity",
+              "text": "Geschlechtsidentität (transgender)",
+              "type": "choice",
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGenderIdentity"
+            }
+          ]
+        },
+        {
+          "linkId": "manifestation-group",
+          "text": "Diagnose und Manifestation",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "radio-button"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "manifestation",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
+              "text": "Manifestationen",
+              "type": "choice",
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGonorrhoeaManifestationFormChoice"
+            },
+            {
+              "linkId": "manifestationBeginUnknown",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestationBeginUnknown",
+              "text": "Manifestationsbeginn unbekannt",
+              "type": "boolean",
+              "initial": [
+                {
+                  "valueBoolean": false
+                }
+              ]
+            },
+            {
+              "linkId": "manifestationBeginDate",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestationBeginDate",
+              "text": "Manifestationsbeginn (Datum)",
+              "type": "date",
+              "enableWhen": [
+                {
+                  "question": "manifestationBeginUnknown",
+                  "operator": "=",
+                  "answerBoolean": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "transmission",
+          "text": "Wie (Übertragungsweg)",
+          "type": "group",
+          "item": [
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "radio-button"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "sexualContactPartner",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner",
+              "text": "Sexualkontakt mit infizierter Person (Geschlecht)",
+              "type": "choice",
+              "enableWhen": [
+                {
+                  "question": "unknown",
+                  "operator": "=",
+                  "answerBoolean": false
+                }
+              ],
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender"
+            },
+            {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/questionnaire-item-control",
+                        "code": "radio-button"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "linkId": "relationshipType",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType",
+              "text": "Art der Beziehung",
+              "type": "choice",
+              "enableWhen": [
+                {
+                  "question": "unknown",
+                  "operator": "=",
+                  "answerBoolean": false
+                }
+              ],
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureRelationshipType"
+            },
+            {
+              "linkId": "otherTransmission",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.otherTransmission",
+              "text": "Anderer Übertragungsweg (Freitext)",
+              "type": "string",
+              "enableWhen": [
+                {
+                  "question": "unknown",
+                  "operator": "=",
+                  "answerBoolean": false
+                }
+              ]
+            },
+            {
+              "linkId": "unknown",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown",
+              "text": "Übertragungsweg unbekannt",
+              "type": "boolean",
+              "initial": [
+                {
+                  "valueBoolean": false
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "title": "CH EKM Questionnaire: Gonorrhoea (assembled)",
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (tests/assemble-gonorrhoea.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+}

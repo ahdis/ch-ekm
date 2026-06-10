@@ -20,6 +20,13 @@ Alias: $sdc-assemble-expectation =  http://hl7.org/fhir/uv/sdc/StructureDefiniti
 Alias: $sdc-subQuestionnaire =      http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire
 Alias: $questionnaire-itemControl = http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl
 Alias: $item-control =              http://hl7.org/fhir/questionnaire-item-control
+Alias: $artifact-versionAlgorithm = http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm
+Alias: $version-algorithm =         http://hl7.org/fhir/version-algorithm
+// SDC pre-population (expression-based)
+Alias: $sdc-pop-exp =               http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp
+Alias: $sdc-launchContext =         http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext
+Alias: $sdc-launchContext-cs =      http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext
+Alias: $sdc-initialExpression =     http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression
 
 //External Extensions
 Alias: $individual-genderIdentity =      http://hl7.org/fhir/StructureDefinition/individual-genderIdentity
@@ -31,8 +38,6 @@ Alias: $iso21090-ADXP-houseNumber =      http://hl7.org/fhir/StructureDefinition
 //External Value Sets
 Alias: $gender-identity =               http://terminology.hl7.org/ValueSet/gender-identity
 Alias: $administrative-gender =         http://hl7.org/fhir/administrative-gender
-//Internal Value Sets
-Alias: $biological-sex =                http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmBiologicalSex 
 
 // CH Core & CH EPR Term
 Alias: $bfs-country-codes = http://fhir.ch/ig/ch-term/ValueSet/bfs-country-codes
