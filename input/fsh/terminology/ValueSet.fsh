@@ -166,7 +166,15 @@ Description: "This CH EKM value set includes the codes for the manifestation of 
 * include codes from system $sct where concept is-a #15628003
 * $sct#84387000 "Asymptomatic (finding)"
 
-//* $sct#264931009 "Symptomatic (qualifier value)"
+ValueSet: ChEkmGonorrhoeaManifestationFormChoice
+Title: "CH EKM Gonorrhoea Manifestation (Form)"
+Description: "Simplified two-option manifestation value set for the Gonorrhoea reporting form: symptomatic / asymptomatic. These codes are a subset of ChEkmGonorrhoeaManifestation, so a form answer is written directly to Condition.evidence.code (no ConceptMap required)."
+* ^status = #active
+* ^experimental = false
+* $sct#264931009 "Symptomatic (qualifier value)"
+* $sct#84387000  "Asymptomatic (finding)"
+
+// --- broad clinical manifestation value set (continued) ---
 // * $sct#74372003   "Gonorrhea of pharynx"
 // * include codes from system $sct where concept is-a #236772009
 // * include codes from system $sct where concept is-a #17305005
