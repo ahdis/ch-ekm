@@ -29,6 +29,8 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' part of
 * item[=].item[=].answerValueSet = "http://hl7.org/fhir/ValueSet/administrative-gender"
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
+* item[=].item[=].extension[+].url = $choiceOrientation
+* item[=].item[=].extension[=].valueCode = #horizontal
 * item[=].item[=].enableWhen[+].question = "unknown"
 * item[=].item[=].enableWhen[=].operator = #=
 * item[=].item[=].enableWhen[=].answerBoolean = false
@@ -41,6 +43,8 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' part of
 * item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureRelationshipType"
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
+* item[=].item[=].extension[+].url = $choiceOrientation
+* item[=].item[=].extension[=].valueCode = #horizontal
 * item[=].item[=].enableWhen[+].question = "unknown"
 * item[=].item[=].enableWhen[=].operator = #=
 * item[=].item[=].enableWhen[=].answerBoolean = false

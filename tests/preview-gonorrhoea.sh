@@ -40,6 +40,16 @@ echo
 echo "Copying preview questionnaire -> $PUBLIC"
 cp "$PREVIEW" "$PUBLIC"
 
+# Optional: if a populated QuestionnaireResponse exists (from tests/populate-gonorrhoea.sh),
+# serve it too so the renderer shows the form pre-filled via the app's `?response=` loader.
+POPULATED="fsh-generated/QuestionnaireResponse-ChEkmQuestionnaireGonorrhoea-populated.json"
+OPEN_URL="http://localhost:5173/?url=/gonorrhoea-preview.json"
+if [ -f "$POPULATED" ]; then
+  echo "Copying populated QuestionnaireResponse -> $APP_DIR/public/gonorrhoea-populated.json"
+  cp "$POPULATED" "$APP_DIR/public/gonorrhoea-populated.json"
+  OPEN_URL="$OPEN_URL&response=/gonorrhoea-populated.json"
+fi
+
 if [ ! -d "$APP_DIR/node_modules" ]; then
   echo "Installing demo-renderer-app dependencies (first run)..."
   ( cd "$APP_DIR" && npm install )
@@ -47,6 +57,6 @@ fi
 
 echo
 echo "Starting Smart Forms demo renderer..."
-echo "Open:  http://localhost:5173/?url=/gonorrhoea-preview.json"
+echo "Open:  $OPEN_URL"
 echo
 exec sh -c "cd '$APP_DIR' && npm run dev"

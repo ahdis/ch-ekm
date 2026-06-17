@@ -8,11 +8,18 @@ by canonical on a public tx, so for a dependency-free local preview we pre-expan
 every value set and replace `answerValueSet` with inline `answerOption`s.
 
 Expansion strategy (terminology server: tx.fhir.ch, which hosts ch-term + SNOMED CH):
-  - ch-ekm value sets  -> POST $expand with the local fsh-generated ValueSet inline,
-                          supplying all local CodeSystems as `tx-resource`.
-  - everything else     -> GET $expand?url=<canonical>.
+  - Every value set is expanded via POST with `displayLanguage` (default de-CH) and all local
+    fsh-generated CodeSystems supplied as `tx-resource` (so their de/fr/it designations, and any
+    `content=supplement` CodeSystem, are available to tx.fhir.ch).
+  - ch-ekm value sets  -> the local ValueSet is supplied inline as the `valueSet` parameter;
+    everything else     -> the canonical is passed as the `url` parameter.
+  - Language supplements (e.g. ChEkmAdministrativeGenderLanguageSupplement, which adds de/fr/it to
+    the external administrative-gender code system) are NOT auto-applied by tx — they must be
+    activated with `useSupplement`. The script expands once to discover the systems in the value
+    set, then re-expands with `useSupplement` for any local supplement whose base system is present.
+    This bakes the localized option labels into the inline `answerOption` displays.
 
-Usage:  python3 tests/build-preview-questionnaire.py
+Usage:  python3 tests/build-preview-questionnaire.py      (PREVIEW_LANG=fr-CH to override language)
 Output: fsh-generated/Questionnaire-ChEkmQuestionnaireGonorrhoea-preview.json
 """
 import json, os, sys, urllib.request, urllib.parse, glob
@@ -20,14 +27,30 @@ import json, os, sys, urllib.request, urllib.parse, glob
 # Run from the repo root regardless of where the script is invoked from.
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
+# Target display language for the baked-in option labels.
+LANG = os.environ.get("PREVIEW_LANG", "de-CH")
 TX = "https://tx.fhir.ch/r4"
 RES = "fsh-generated/resources"
-SRC = "fsh-generated/Questionnaire-ChEkmQuestionnaireGonorrhoea-assembled.json"
-OUT = "fsh-generated/Questionnaire-ChEkmQuestionnaireGonorrhoea-preview.json"
+SRC = "input/resources/Questionnaire-ChEkmQuestionnaireGonorrhoeaAssembled.json"
+# Distinct identity for the preview so it does not collide with the assembled questionnaire's
+# id/url when the IG Publisher scans input/resources.
+PREVIEW_ID = f"ChEkmQuestionnaireGonorrhoeaPreview-{LANG}"
+PREVIEW_URL = f"http://fhir.ch/ig/ch-ekm/Questionnaire/{PREVIEW_ID}"
+PREVIEW_NAME = "ChEkmQuestionnaireGonorrhoeaPreview" + LANG.replace("-", "")  # FHIR name: no hyphens
+OUT = f"input/resources/Questionnaire-{PREVIEW_ID}.json"
 HEADERS = {"Content-Type": "application/fhir+json", "Accept": "application/fhir+json"}
 
-# Preload local CodeSystems so internal-code value sets can be expanded by tx.
+# Preload local CodeSystems so internal-code value sets (and language supplements) can be
+# supplied to tx as `tx-resource`.
 LOCAL_CODESYSTEMS = [json.load(open(f)) for f in glob.glob(f"{RES}/CodeSystem-*.json")]
+
+# Local language supplements as (base_system_without_version, supplement_canonical) pairs.
+# A supplement is only applied (via useSupplement) when its base system appears in the value set.
+LOCAL_SUPPLEMENTS = [
+    (cs["supplements"].split("|", 1)[0], cs["url"])
+    for cs in LOCAL_CODESYSTEMS
+    if cs.get("content") == "supplement" and cs.get("supplements") and cs.get("url")
+]
 
 
 def post(url, body):
@@ -36,46 +59,69 @@ def post(url, body):
         return json.load(r)
 
 
-def get(url):
-    req = urllib.request.Request(url, headers=HEADERS, method="GET")
-    with urllib.request.urlopen(req, timeout=60) as r:
-        return json.load(r)
+# Value sets live either in fsh-generated (FSH-authored) or input/resources (predefined,
+# e.g. ValueSet-ChEkmCountryCodes.json), so search both.
+VS_DIRS = [RES, "input/resources"]
 
 
 def local_valueset_file(canonical):
     name = canonical.rsplit("/", 1)[-1]                      # ChEkmGenderIdentity
-    for cand in (f"{RES}/ValueSet-{name}.json", f"{RES}/ValueSet-ch-ekm-{name}.json"):
-        if os.path.exists(cand):
-            return cand
+    for d in VS_DIRS:
+        for cand in (f"{d}/ValueSet-{name}.json", f"{d}/ValueSet-ch-ekm-{name}.json"):
+            if os.path.exists(cand):
+                return cand
     # fall back: match by .url inside the files
-    for f in glob.glob(f"{RES}/ValueSet-*.json"):
-        try:
-            if json.load(open(f)).get("url") == canonical:
-                return f
-        except Exception:
-            pass
+    for d in VS_DIRS:
+        for f in glob.glob(f"{d}/ValueSet-*.json"):
+            try:
+                if json.load(open(f)).get("url") == canonical:
+                    return f
+            except Exception:
+                pass
     return None
 
 
 def expand(canonical):
-    """Return list of answerOption from a value set canonical."""
-    if "fhir.ch/ig/ch-ekm/ValueSet" in canonical:
+    """Return list of answerOption (with displayLanguage-localized displays) for a value set."""
+    is_chekm = "fhir.ch/ig/ch-ekm/ValueSet" in canonical
+    vs_resource = None
+    if is_chekm:
         vsfile = local_valueset_file(canonical)
         if not vsfile:
             raise RuntimeError(f"no local ValueSet for {canonical}")
-        params = {"resourceType": "Parameters",
-                  "parameter": [{"name": "valueSet", "resource": json.load(open(vsfile))}]
-                  + [{"name": "tx-resource", "resource": cs} for cs in LOCAL_CODESYSTEMS]}
-        vs = post(f"{TX}/ValueSet/$expand", params)
-    else:
-        vs = get(f"{TX}/ValueSet/$expand?url={urllib.parse.quote(canonical, safe='')}")
-    if vs.get("resourceType") != "ValueSet":
-        raise RuntimeError(f"expand failed for {canonical}: {vs.get('issue')}")
+        vs_resource = json.load(open(vsfile))
+
+    def do_expand(display_language, use_supplement_urls):
+        param = [{"name": "valueSet", "resource": vs_resource}] if is_chekm \
+            else [{"name": "url", "valueUri": canonical}]
+        if display_language:
+            param.append({"name": "displayLanguage", "valueCode": display_language})
+        param += [{"name": "tx-resource", "resource": cs} for cs in LOCAL_CODESYSTEMS]
+        param += [{"name": "useSupplement", "valueCanonical": u} for u in use_supplement_urls]
+        vs = post(f"{TX}/ValueSet/$expand", {"resourceType": "Parameters", "parameter": param})
+        if vs.get("resourceType") != "ValueSet":
+            raise RuntimeError(f"expand failed for {canonical}: {vs.get('issue')}")
+        return vs
+
+    # Base pass (no displayLanguage): default displays + the code systems present in the value set.
+    base = do_expand(None, [])
+    base_display = {(c["system"], c["code"]): c.get("display")
+                    for c in base.get("expansion", {}).get("contains", [])}
+    systems = {s for s, _ in base_display}
+
+    # Localized pass: displayLanguage + any local language supplement whose base system is present
+    # (a supplement is not auto-applied — it must be activated with useSupplement).
+    applicable = [url for sys_base, url in LOCAL_SUPPLEMENTS if sys_base in systems]
+    localized = do_expand(LANG, applicable)
+
+    # Merge: prefer the localized display, fall back to the default display (e.g. eCH-7 cantons
+    # have no de-CH designation, so displayLanguage returns no display for them).
     out = []
-    for c in vs.get("expansion", {}).get("contains", []):
+    for c in localized.get("expansion", {}).get("contains", []):
         coding = {"system": c["system"], "code": c["code"]}
-        if c.get("display"):
-            coding["display"] = c["display"]
+        display = c.get("display") or base_display.get((c["system"], c["code"]))
+        if display:
+            coding["display"] = display
         out.append({"valueCoding": coding})
     return out
 
@@ -109,9 +155,13 @@ def main():
     q = json.load(open(SRC))
     print(f"Expanding answerValueSets via {TX} ...")
     walk(q.get("item", []))
-    q["title"] = q.get("title", "") + " (preview, pre-expanded)"
+    # Re-identify as a distinct preview resource (avoid id/url collision with the assembled one).
+    q["id"] = PREVIEW_ID
+    q["url"] = PREVIEW_URL
+    q["name"] = PREVIEW_NAME
+    q["title"] = q.get("title", "") + f" (preview {LANG}, pre-expanded)"
     json.dump(q, open(OUT, "w"), indent=2, ensure_ascii=False)
-    print(f"\nWrote {OUT}")
+    print(f"\nWrote {OUT}  (id: {PREVIEW_ID})")
 
 
 if __name__ == "__main__":

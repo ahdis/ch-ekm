@@ -24,7 +24,19 @@ Description: "Modular sub-questionnaire for the 'Manifestationen' part of the 'D
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation"
 * item[=].item[=].text = "Manifestationen"
 * item[=].item[=].type = #choice
+* item[=].item[=].extension[+].url = $choiceOrientation
+* item[=].item[=].extension[=].valueCode = #horizontal
 * item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGonorrhoeaManifestationFormChoice"
+* item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
+* item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
+* item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "displayLanguage"
+* item[=].item[=].answerValueSet.extension[=].extension[+].url = "expression"
+* item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "de-CH"
+* item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
+* item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
+* item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "useSupplement"
+* item[=].item[=].answerValueSet.extension[=].extension[+].url = "expression"
+* item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
 

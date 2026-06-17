@@ -37,7 +37,15 @@ resources:
     name: "CH EKM Questionnaire: Gonorrhoea (assembled)"
     description: "Assembled (flattened) Gonorrhoea questionnaire, generated from the modular questionnaire ChEkmQuestionnaireGonorrhoea via Questionnaire/$assemble (tests/assemble-gonorrhoea.sh). Do not edit by hand."
     exampleBoolean: false
-
+  Questionnaire/ChEkmQuestionnaireGonorrhoeaPreview-de-CH:
+    name: "CH EKM Questionnaire: Gonorrhoea (preview, de-CH)"
+    description: "Preview of the assembled Gonorrhoea questionnaire with option labels in German (de-CH). Do not edit by hand."
+    exampleBoolean: false
+  ValueSet/ChEkmCountryCodes:
+    name: "CH EKM ValueSet: Country Codes"
+    description: "ValueSet for country codes, used in the CH EKM IG."
+    exampleBoolean: false
+  
 
 pages:
   index.md:
@@ -75,9 +83,9 @@ parameters:
     - fsh-generated/resources
 #  no-narrative: 
 #    - Bundle/*
-#  special-url:
-#    - urn:oid:2.16.840.1.113883.6.316
-  pin-canonicals: pin-multiples  
+  special-url:
+    - http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-administrative-gender-language-supplement
+  pin-canonicals: pin-none  
   excludettl: true
 #  apply-version: false
 #  default-version: true

@@ -10,11 +10,11 @@ Characteristics: #can-be-target
 * givenname 0..1 string "Given name"
 * dateOfBirth 1..1 date "Date of birth"
 * nationality 0..1 CodeableConcept "Nationality"
-* nationality from $bfs-country-codes (required)
+* nationality from ChEkmCountryCodes (required)
 * zipCode 0..1 string "Zip code"
 * city 0..1 string "City"
 * country 0..1 CodeableConcept "Country"
-* country from $bfs-country-codes (required)
+* country from ChEkmCountryCodes (required)
 * canton 0..1 string "Canton"
 * administrativeGender 1..1 CodeableConcept "Gender (male, female, other)"
 * administrativeGender from http://hl7.org/fhir/ValueSet/administrative-gender (required)

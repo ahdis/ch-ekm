@@ -19,6 +19,15 @@ Alias: $sdc-modular =               http://hl7.org/fhir/uv/sdc/StructureDefiniti
 Alias: $sdc-assemble-expectation =  http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation
 Alias: $sdc-subQuestionnaire =      http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire
 Alias: $questionnaire-itemControl = http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl
+Alias: $choiceOrientation =         http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation
+Alias: $binding-parameter =         http://hl7.org/fhir/tools/StructureDefinition/binding-parameter
+Alias: $minLength =                 http://hl7.org/fhir/StructureDefinition/minLength
+Alias: $minValue =                  http://hl7.org/fhir/StructureDefinition/minValue
+Alias: $maxValue =                  http://hl7.org/fhir/StructureDefinition/maxValue
+Alias: $cqf-expression =            http://hl7.org/fhir/StructureDefinition/cqf-expression
+// Cross-version targetConstraint (the URL the Smart Forms renderer recognises; NOT the
+// uv/sdc sdc-questionnaire-targetConstraint variant).
+Alias: $targetConstraint =          http://hl7.org/fhir/StructureDefinition/targetConstraint
 Alias: $item-control =              http://hl7.org/fhir/questionnaire-item-control
 Alias: $artifact-versionAlgorithm = http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm
 Alias: $version-algorithm =         http://hl7.org/fhir/version-algorithm
@@ -27,6 +36,12 @@ Alias: $sdc-pop-exp =               http://hl7.org/fhir/uv/sdc/StructureDefiniti
 Alias: $sdc-launchContext =         http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext
 Alias: $sdc-launchContext-cs =      http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext
 Alias: $sdc-initialExpression =     http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression
+Alias: $variable =                  http://hl7.org/fhir/StructureDefinition/variable
+// SDC template-based extraction
+Alias: $sdc-extr-template =          http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template
+Alias: $sdc-templateExtract =        http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract
+Alias: $sdc-templateExtractValue =   http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue
+Alias: $sdc-templateExtractContext = http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext
 
 //External Extensions
 Alias: $individual-genderIdentity =      http://hl7.org/fhir/StructureDefinition/individual-genderIdentity
@@ -41,6 +56,7 @@ Alias: $administrative-gender =         http://hl7.org/fhir/administrative-gende
 
 // CH Core & CH EPR Term
 Alias: $bfs-country-codes = http://fhir.ch/ig/ch-term/ValueSet/bfs-country-codes
+Alias: $iso3166 = urn:iso:std:iso:3166
 Alias: $data-absent-reason = http://hl7.org/fhir/StructureDefinition/data-absent-reason
 Alias: $ch-core-organization = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-organization
 Alias: $ch-core-practitioner = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-practitioner

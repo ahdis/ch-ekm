@@ -1,0 +1,10 @@
+{
+  "name": "ch-ekm-extract",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Command-line SDC template-based $extract for the CH EKM Gonorrhoea testcase.",
+  "dependencies": {
+    "@aehrc/sdc-template-extract": "^1.0.15"
+  }
+}

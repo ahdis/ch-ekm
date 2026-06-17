@@ -141,3 +141,31 @@ Description: "Simplified two-option manifestation value set for the Gonorrhoea r
 // * include codes from system $sct where concept is-a #186931002
 // * $sct#42746002   "Infection of rectum caused by Neisseria gonorrhoeae"
 // * $sct#762257007  "Disseminated infection caused by Neisseria gonorrhoeae"
+
+// Form-facing country value set (Gonorrhoea/CH EKM reporting questionnaires).
+// Restricts ch-term bfs-country-codes to the ISO 3166 three-letter (alpha-3) codes via a
+// server-side regex filter, removing the alpha-2/alpha-3 duplicate display entries (e.g. CH + CHE
+// both render as "Schweiz"). Used only for the nationality/country FORM items; the data profiles
+// (e.g. ChEkmPatientInitials address.country countrycode) keep bfs-country-codes unchanged.
+// This approach does not work, because the terminology server cannot then filter on the valuesets by text, which is required by the form viewer:
+// https://thct8dxx-3000.euw.devtunnels.ms/r4/ValueSet/$expand?url=http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodes&filter=Schwei&count=10
+// 
+// {
+//     "resourceType": "OperationOutcome",
+//     "issue": [
+//         {
+//             "severity": "error",
+//             "code": "exception",
+//             "details": {
+//                 "text": "Text Search is not supported"
+//             },
+//             "diagnostics": "Text Search is not supported"
+//         }
+//     ]
+// }
+// ValueSet: ChEkmCountryCodes
+// Title: "CH EKM Country Codes (form)"
+// Description: "Country value set for CH EKM reporting form items. The ch-term bfs-country-codes value set, restricted to the ISO 3166 alpha-3 (three-letter) codes so each country appears once in the form dropdown."
+// * ^status = #active
+// * ^experimental = false
+// * include codes from system $iso3166 and valueset $bfs-country-codes where code regex "^[A-Za-z]{3}$"

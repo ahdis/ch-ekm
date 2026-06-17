@@ -6,7 +6,7 @@ Description: "Logical model for the form section 'Exposition'. One element per f
 // Wo on the structured level we will not have inland/ausland as separate checkbox items (discussed June 1st)
 * where 0..1 Base "Wo"
   * country 0..1 CodeableConcept "Land"
-  * country from $bfs-country-codes (required)
+  * country from ChEkmCountryCodes (required)
   * preciseLocation 0..1 string "Precise location (Switzerland/Liechtenstein and abroad)"
   * unknown 0..1 boolean "Unknown"
 

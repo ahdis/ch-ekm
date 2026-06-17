@@ -16,5 +16,6 @@ Description: "Example for a CH EKM Patient: Full Name"
 * address[home].country = "CH"
 * address[home].country.extension[countrycode].valueCoding = urn:iso:std:iso:3166#CH
 * extension[citizenship].extension[code].valueCodeableConcept = urn:iso:std:iso:3166#CH
+* extension[genderIdentity].extension[value].valueCodeableConcept = $sct#1384187000 "Identifies as transgender (finding)"
 * telecom[phone].system = #phone
 * telecom[phone].value = "+41 79 222 33 44"

@@ -3,7 +3,8 @@
   "id": "ChEkmQuestionnaireGonorrhoeaAssembled",
   "meta": {
     "profile": [
-      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp"
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp",
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template"
     ],
     "source": "https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-gonorrhoea.sh"
   },
@@ -22,6 +23,34 @@
         "code": "semver",
         "system": "http://hl7.org/fhir/version-algorithm"
       }
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/targetConstraint",
+      "extension": [
+        {
+          "url": "key",
+          "valueId": "dateOfBirthRange"
+        },
+        {
+          "url": "severity",
+          "valueCode": "error"
+        },
+        {
+          "url": "expression",
+          "valueExpression": {
+            "language": "text/fhirpath",
+            "expression": "%resource.descendants().where(linkId='dateOfBirth').answer.value.where($this < @1900-01-01 or $this > today()).exists()"
+          }
+        },
+        {
+          "url": "human",
+          "valueString": "Geburtsdatum muss zwischen dem 01.01.1900 und heute liegen."
+        },
+        {
+          "url": "location",
+          "valueString": "Questionnaire.descendants().where(linkId='dateOfBirth')"
+        }
+      ]
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
@@ -64,6 +93,16 @@
       "text": "Meldung zum klinischen Befund: Gonorrhoea",
       "item": [
         {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "homeOrFirstAddress",
+                "language": "text/fhirpath",
+                "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
+              }
+            }
+          ],
           "linkId": "person",
           "text": "Angaben zur betroffenen Person",
           "type": "group",
@@ -82,7 +121,8 @@
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.surnameInitial",
               "text": "Initiale Name",
               "type": "string",
-              "required": true
+              "required": true,
+              "maxLength": 1
             },
             {
               "extension": [
@@ -98,7 +138,8 @@
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.givennameInitial",
               "text": "Initiale Vorname",
               "type": "string",
-              "required": true
+              "required": true,
+              "maxLength": 1
             },
             {
               "extension": [
@@ -128,13 +169,37 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/patient-citizenship').extension.where(url = 'code').valueCodeableConcept.coding.first()"
+                  }
                 }
               ],
               "linkId": "nationality",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.nationality",
               "text": "Nationalität",
               "type": "choice",
-              "answerValueSet": "http://fhir.ch/ig/ch-term/ValueSet/bfs-country-codes"
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodes",
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "displayLanguage"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "de-CH"
+                      }
+                    ]
+                  }
+                ]
+              }
             },
             {
               "extension": [
@@ -142,7 +207,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.address.where(use='home').first().postalCode"
+                    "expression": "%homeOrFirstAddress.postalCode"
                   }
                 }
               ],
@@ -157,7 +222,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.address.where(use='home').first().city"
+                    "expression": "%homeOrFirstAddress.city"
                   }
                 }
               ],
@@ -178,13 +243,37 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%homeOrFirstAddress.country"
+                  }
                 }
               ],
               "linkId": "country",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.country",
               "text": "Land",
               "type": "choice",
-              "answerValueSet": "http://fhir.ch/ig/ch-term/ValueSet/bfs-country-codes"
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodes",
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "displayLanguage"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "de-CH"
+                      }
+                    ]
+                  }
+                ]
+              }
             },
             {
               "extension": [
@@ -192,14 +281,15 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.address.where(use='home').first().state"
+                    "expression": "%homeOrFirstAddress.state"
                   }
                 }
               ],
               "linkId": "canton",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.canton",
               "text": "Kanton",
-              "type": "string"
+              "type": "open-choice",
+              "answerValueSet": "http://fhir.ch/ig/ch-core/ValueSet/ech-7-cantonabbreviation"
             },
             {
               "extension": [
@@ -215,6 +305,10 @@
                   }
                 },
                 {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                },
+                {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
@@ -227,14 +321,83 @@
               "text": "Gender",
               "type": "choice",
               "required": true,
-              "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender"
+              "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender",
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "displayLanguage"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "de-CH"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "useSupplement"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-administrative-gender-language-supplement"
+                      }
+                    ]
+                  }
+                ]
+              }
             },
             {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
+                  }
+                }
+              ],
               "linkId": "genderIdentity",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.genderIdentity",
               "text": "Geschlechtsidentität (transgender)",
               "type": "choice",
-              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGenderIdentity"
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGenderIdentity",
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "displayLanguage"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "de-CH"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "useSupplement"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                      }
+                    ]
+                  }
+                ]
+              }
             }
           ]
         },
@@ -245,6 +408,10 @@
           "item": [
             {
               "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
@@ -261,7 +428,37 @@
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
               "text": "Manifestationen",
               "type": "choice",
-              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGonorrhoeaManifestationFormChoice"
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGonorrhoeaManifestationFormChoice",
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "displayLanguage"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "de-CH"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "useSupplement"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                      }
+                    ]
+                  }
+                ]
+              }
             },
             {
               "linkId": "manifestationBeginUnknown",
@@ -306,6 +503,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "linkId": "sexualContactPartner",
@@ -333,6 +534,10 @@
                       }
                     ]
                   }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
                 }
               ],
               "linkId": "relationshipType",
@@ -374,7 +579,493 @@
             }
           ]
         }
+      ],
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract",
+          "extension": [
+            {
+              "url": "template",
+              "valueReference": {
+                "reference": "#ChEkmDocumentGonorrhoeaTemplate"
+              }
+            }
+          ]
+        }
       ]
+    }
+  ],
+  "contained": [
+    {
+      "resourceType": "Bundle",
+      "id": "ChEkmDocumentGonorrhoeaTemplate",
+      "type": "document",
+      "identifier": {
+        "system": "urn:ietf:rfc:3986",
+        "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
+      },
+      "entry": [
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Composition/GonExtractComposition",
+          "resource": {
+            "resourceType": "Composition",
+            "id": "GonExtractComposition",
+            "status": "final",
+            "type": {
+              "coding": [
+                {
+                  "code": "722143004",
+                  "system": "http://snomed.info/sct",
+                  "display": "Infectious disease diagnostic study note"
+                }
+              ]
+            },
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "423876004",
+                    "system": "http://snomed.info/sct",
+                    "display": "Clinical report"
+                  }
+                ]
+              }
+            ],
+            "subject": {
+              "reference": "Patient/GonExtractPatient"
+            },
+            "author": [
+              {
+                "reference": "PractitionerRole/ChEkmPractitionerRoleBrokerExample"
+              }
+            ],
+            "title": "Meldung zum klinischen Befund Infektionskrankheit",
+            "section": [
+              {
+                "title": "Diagnosis section",
+                "code": {
+                  "coding": [
+                    {
+                      "code": "29308-4",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "entry": [
+                  {
+                    "reference": "Condition/GonExtractCondition"
+                  }
+                ]
+              },
+              {
+                "title": "Social history section",
+                "code": {
+                  "coding": [
+                    {
+                      "code": "29762-2",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "entry": [
+                  {
+                    "reference": "Observation/GonExtractExposure"
+                  }
+                ]
+              }
+            ],
+            "_date": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.authored"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Patient/GonExtractPatient",
+          "resource": {
+            "resourceType": "Patient",
+            "id": "GonExtractPatient",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship",
+                "extension": [
+                  {
+                    "url": "code",
+                    "valueCodeableConcept": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                          "valueString": "%resource.descendants().where(linkId='nationality').answer.value"
+                        }
+                      ],
+                      "coding": [
+                        {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                              "valueString": "ofType(Coding)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity",
+                "extension": [
+                  {
+                    "url": "value",
+                    "valueCodeableConcept": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                          "valueString": "%resource.descendants().where(linkId='genderIdentity').answer.value"
+                        }
+                      ],
+                      "coding": [
+                        {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                              "valueString": "ofType(Coding)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "name": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='person')"
+                  }
+                ],
+                "_family": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='surnameInitial').answer.value.first()"
+                    }
+                  ]
+                },
+                "_given": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "item.where(linkId='givennameInitial').answer.value"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "address": [
+              {
+                "use": "home",
+                "_postalCode": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='zipCode').answer.value.first()"
+                    }
+                  ]
+                },
+                "_city": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='city').answer.value.first()"
+                    }
+                  ]
+                },
+                "_state": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='canton').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "_gender": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='administrativeGender').answer.value.code.first()"
+                }
+              ]
+            },
+            "_birthDate": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='dateOfBirth').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleBrokerExample",
+          "resource": {
+            "resourceType": "PractitionerRole",
+            "id": "ChEkmPractitionerRoleBrokerExample",
+            "practitioner": {
+              "reference": "Practitioner/ChEkmPractitionerBrokerExample"
+            },
+            "organization": {
+              "reference": "Organization/ChEkmOrganizationBrokerExample"
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Practitioner/ChEkmPractitionerBrokerExample",
+          "resource": {
+            "resourceType": "Practitioner",
+            "id": "ChEkmPractitionerBrokerExample",
+            "telecom": [
+              {
+                "system": "email",
+                "value": "input@output.org"
+              }
+            ],
+            "name": [
+              {
+                "family": "Giacometti",
+                "given": [
+                  "Monika"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Organization/ChEkmOrganizationBrokerExample",
+          "resource": {
+            "resourceType": "Organization",
+            "id": "ChEkmOrganizationBrokerExample",
+            "identifier": [
+              {
+                "system": "urn:oid:2.51.1.3",
+                "value": "7601000435333"
+              },
+              {
+                "system": "urn:oid:2.16.756.5.45",
+                "value": "A99085500"
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "value": "+35 43 654 43 32"
+              },
+              {
+                "system": "email",
+                "value": "input@output.org"
+              }
+            ],
+            "name": "DataSan AG",
+            "address": [
+              {
+                "line": [
+                  "Bitstrasse 128"
+                ],
+                "city": "Gatiburg",
+                "postalCode": "1010"
+              }
+            ]
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Condition/GonExtractCondition",
+          "resource": {
+            "resourceType": "Condition",
+            "id": "GonExtractCondition",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "encounter-diagnosis",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "code": "15628003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Gonorrhea (disorder)"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/GonExtractPatient"
+            },
+            "evidence": [
+              {
+                "code": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                        "valueString": "%resource.descendants().where(linkId='manifestation').answer.value"
+                      }
+                    ],
+                    "coding": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                            "valueString": "ofType(Coding)"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "_onsetDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                      "valueString": "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
+                    }
+                  ],
+                  "_valueCode": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "'asked-unknown'"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Observation/GonExtractExposure",
+          "resource": {
+            "resourceType": "Observation",
+            "id": "GonExtractExposure",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "AEXPOS",
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActClass",
+                    "display": "acquisition exposure"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "code": "EXPAGNT",
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                  "display": "Exposure Agent"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/GonExtractPatient"
+            },
+            "component": [
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "sexual-contact-partner",
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                    }
+                  ]
+                },
+                "valueCodeableConcept": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                      "valueString": "%resource.descendants().where(linkId='sexualContactPartner').answer.value"
+                    }
+                  ],
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "228465009",
+                      "system": "http://snomed.info/sct",
+                      "display": "Sexual relationship details (observable entity)"
+                    }
+                  ]
+                },
+                "valueCodeableConcept": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                      "valueString": "%resource.descendants().where(linkId='relationshipType').answer.value"
+                    }
+                  ],
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "_timestamp": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+            "valueString": "%resource.authored"
+          }
+        ]
+      }
     }
   ],
   "title": "CH EKM Questionnaire: Gonorrhoea (assembled)",
