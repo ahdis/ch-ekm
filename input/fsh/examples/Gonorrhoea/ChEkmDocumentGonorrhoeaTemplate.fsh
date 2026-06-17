@@ -33,10 +33,17 @@ InstanceOf: Patient
 Usage: #inline
 // * meta.profile = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-patient-initials"
 // Nationalität -> patient-citizenship.code (identity pass-through of the answered Coding).
-// Same Coding idiom as evidence.code: templateExtractContext on the value CodeableConcept sets the
-// answer.value scope, templateExtractValue `ofType(Coding)` on coding[0] writes the Coding. If
-// nationality is unanswered the context is empty and the CodeableConcept (hence the citizenship
-// extension) is omitted.
+// Coding idiom: templateExtractContext on the value CodeableConcept sets the answer.value scope,
+// templateExtractValue `ofType(Coding)` on coding[0] writes the Coding.
+//
+// NB: the gate is at the valueCodeableConcept level, NOT the whole patient-citizenship extension.
+// Gating the whole extension (context as a sibling of the static `code` sub-extension) DOES drop it
+// cleanly when unanswered, but the extract engine's sibling-strip bug then loses `code`'s `url` in
+// the ANSWERED case (it corrupts the data-bearing sibling left behind in the same `extension` array
+// — see forms-summary §8/§11). The identifier above CAN be fully gated only because system/value
+// are plain Identifier fields, not sibling extensions. Consequence here: if nationality is
+// unanswered the engine still emits an empty `{url: patient-citizenship, extension:[{url: code}]}`
+// shell (the parent is not pruned). Acceptable for now; the form normally answers nationality.
 * extension[0].url = $patient-citizenship
 * extension[0].extension[0].url = "code"
 * extension[0].extension[0].valueCodeableConcept.extension[+].url = $sdc-templateExtractContext
@@ -64,13 +71,26 @@ Usage: #inline
 * gender.extension[=].valueString = "%resource.descendants().where(linkId='administrativeGender').answer.value.code.first()"
 * birthDate.extension[+].url = $sdc-templateExtractValue
 * birthDate.extension[=].valueString = "%resource.descendants().where(linkId='dateOfBirth').answer.value.first()"
+// AHVN13 / OASI number -> identifier[AHVN13]. The WHOLE identifier is context-gated on the ahvn13
+// answer: templateExtractContext on identifier[0] is non-empty only when answered, so when ahvn13 is
+// blank the entire element (incl. the static system) is omitted — not just the value. Same gating
+// idiom as the onsetDateTime data-absent extension below (empty context -> element excluded).
+* identifier[0].extension[0].url = $sdc-templateExtractContext
+* identifier[0].extension[0].valueString = "%resource.descendants().where(linkId='ahvn13').answer.value"
+* identifier[0].system = $ahvn13-system
+// value (the `_value` sibling, NOT identifier[0] itself, else the string becomes the array element).
+// Inside the context scope $this is the answer string.
+* identifier[0].value.extension[0].url = $sdc-templateExtractValue
+* identifier[0].value.extension[0].valueString = "$this"
 * address[0].use = #home
 * address[0].postalCode.extension[+].url = $sdc-templateExtractValue
 * address[0].postalCode.extension[=].valueString = "%resource.descendants().where(linkId='zipCode').answer.value.first()"
 * address[0].city.extension[+].url = $sdc-templateExtractValue
 * address[0].city.extension[=].valueString = "%resource.descendants().where(linkId='city').answer.value.first()"
+// canton is open-choice -> the answer is either a valueString (free text) or a valueCoding (eCH-7).
+// address.state is a string, so pull the Coding's .code when it's a Coding, else the string as-is.
 * address[0].state.extension[+].url = $sdc-templateExtractValue
-* address[0].state.extension[=].valueString = "%resource.descendants().where(linkId='canton').answer.value.first()"
+* address[0].state.extension[=].valueString = "iif(%resource.descendants().where(linkId='canton').answer.value.first() is Coding, %resource.descendants().where(linkId='canton').answer.value.first().code, %resource.descendants().where(linkId='canton').answer.value.first())"
 
 // ---------------------------------------------------------------------------
 // Condition (ChEkmConditionGonorrhoea) — fixed disease code; manifestation -> evidence.code;
@@ -121,18 +141,70 @@ Usage: #inline
 * subject.reference = "Patient/GonExtractPatient"
 // Sexualkontakt mit infizierter Person (Geschlecht)
 * component[0].code = ChEkmExposureComponent#sexual-contact-partner
-* component[0].valueCodeableConcept.extension[+].url = $sdc-templateExtractContext
-* component[0].valueCodeableConcept.extension[=].valueString = "%resource.descendants().where(linkId='sexualContactPartner').answer.value"
+* component[0].extension[+].url = $sdc-templateExtractContext
+* component[0].extension[=].valueString = "%resource.descendants().where(linkId='sexualContactPartner').answer.value"
 * component[0].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
 * component[0].valueCodeableConcept.coding[0].extension[=].valueString = "ofType(Coding)"
 // Art der Beziehung
 * component[1].code = $sct#228465009 "Sexual relationship details (observable entity)"
-* component[1].valueCodeableConcept.extension[+].url = $sdc-templateExtractContext
-* component[1].valueCodeableConcept.extension[=].valueString = "%resource.descendants().where(linkId='relationshipType').answer.value"
+* component[1].extension[+].url = $sdc-templateExtractContext
+* component[1].extension[=].valueString = "%resource.descendants().where(linkId='relationshipType').answer.value"
 * component[1].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
 * component[1].valueCodeableConcept.coding[0].extension[=].valueString = "ofType(Coding)"
+// Anderer Übertragungsweg (Freitext) -> component[2] (no code, just a text value). This is a free-text field, so no context gating or coding idiom — just write the string directly, and if it's blank the component is omitted.
+* component[2].code = $sct#74964007  "Other (qualifier value)"
+* component[2].extension[+].url = $sdc-templateExtractContext
+* component[2].extension[=].valueString = "%resource.descendants().where(linkId='otherTransmission').answer.value"
+* component[2].valueString.extension[+].url = $sdc-templateExtractValue
+* component[2].valueString.extension[=].valueString = "$this"
+
+
+// TransmissionRoute: a single component recording "unknown transmission route", emitted ONLY when the
+// "unknown" checkbox is ticked.
+//
+// The component is gated by a templateExtractContext on component[3] scoped to `…unknown… = true`
+// (empty when unticked/unanswered -> the whole component is omitted). CRUCIAL: the engine DELETES any
+// array element carrying a templateExtractContext and only re-inserts it while iterating that element's
+// templateExtractValue paths — so a context WITHOUT any nested templateExtractValue is dropped and
+// never restored (that is why a static-only `valueCodeableConcept` produced no component at all).
+//
+// The value is a FIXED Coding. fhirpath.js has no object literals, and assembling a Coding from
+// several primitive templateExtractValues fails (multiple value-paths deepmerge-concat the coding
+// array; a single one shallow-overwrites valueCodeableConcept and loses system/display). The clean
+// way is one value-path on coding[0] whose result is already a full Coding — built with the FHIR
+// Type Factory API `%factory.Coding(system, code, display)` (fhirpath.js 4.11, r4 model loaded by
+// the engine). This both materialises the element and yields a complete Coding; the static
+// `component[3].code` survives (it is a different key from the shallow-merged valueCodeableConcept).
+// See forms-summary §8.
+* component[3].code = $sct#409496000  "Mode of transmission (observable entity)"
+* component[3].extension[+].url = $sdc-templateExtractContext
+* component[3].extension[=].valueString = "%resource.descendants().where(linkId='unknown').answer.value.where($this = true)"
+* component[3].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
+* component[3].valueCodeableConcept.coding[0].extension[=].valueString = "%factory.Coding('http://snomed.info/sct', '261665006', 'Unknown (qualifier value)')"
+
+// Emit only when "unknown" is NOT ticked AND otherTransmission has a value. The iif gates on unknown
+// (empty -> component omitted when unknown=true); otherwise it yields the otherTransmission answer,
+// which is itself empty when blank, so the component is also omitted when there is no free text.
+// Note: a plain `.where($this != true)` negation would miss the unanswered/absent case (empty
+// collection), so the iif form is required — see forms-summary §8.
+* component[4].code = $sct#409496000  "Mode of transmission (observable entity)"
+* component[4].extension[+].url = $sdc-templateExtractContext
+* component[4].extension[=].valueString = "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, %resource.descendants().where(linkId='otherTransmission').answer.value)"
+* component[4].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
+* component[4].valueCodeableConcept.coding[0].extension[=].valueString = "%factory.Coding('http://snomed.info/sct', '74964007', 'Other (qualifier value)')"
+
+* component[5].code = $sct#409496000  "Mode of transmission (observable entity)"
+* component[5].extension[+].url = $sdc-templateExtractContext
+// Fallback: emit sexualContactPartner only when unknown is NOT true AND otherTransmission has no
+// value. NB the inner iif criterion must be a Boolean — a bare `…otherTransmission…answer.value`
+// (a string) is not treated as truthy by FHIRPath, so it falls through to the else branch and the
+// component fires even when other-transmission IS present. Use `.exists()` to make it a Boolean.
+* component[5].extension[=].valueString = "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='otherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='sexualContactPartner').answer.value))"
+* component[5].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
+* component[5].valueCodeableConcept.coding[0].extension[=].valueString = "%factory.Coding('http://snomed.info/sct', '417564009', 'Sexual transmission (qualifier value)')"
 
 // ---------------------------------------------------------------------------
+
 // Composition (ChEkmCompositionGonorrhoea) — static structure, references the entries above,
 // author = Broker, date taken from QR.authored
 // ---------------------------------------------------------------------------

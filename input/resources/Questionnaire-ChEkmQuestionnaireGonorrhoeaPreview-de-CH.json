@@ -160,6 +160,26 @@
             {
               "extension": [
                 {
+                  "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                  "valueString": "^756[0-9]{10}$"
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.first()"
+                  }
+                }
+              ],
+              "linkId": "ahvn13",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.ahvn13",
+              "text": "AHV-Nummer (OASI)",
+              "type": "string",
+              "maxLength": 13
+            },
+            {
+              "extension": [
+                {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
                     "coding": [
@@ -1615,6 +1635,13 @@
                         "code": "drop-down"
                       }
                     ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%homeOrFirstAddress.country"
                   }
                 }
               ],
@@ -3292,6 +3319,36 @@
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.genderIdentity",
               "text": "Geschlechtsidentität (transgender)",
               "type": "choice",
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "displayLanguage"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "de-CH"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "useSupplement"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                      }
+                    ]
+                  }
+                ]
+              },
               "answerOption": [
                 {
                   "valueCoding": {
@@ -3331,6 +3388,36 @@
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
               "text": "Manifestationen",
               "type": "choice",
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "displayLanguage"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "de-CH"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "useSupplement"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                      }
+                    ]
+                  }
+                ]
+              },
               "answerOption": [
                 {
                   "valueCoding": {
@@ -3516,12 +3603,7 @@
               "linkId": "unknown",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown",
               "text": "Übertragungsweg unbekannt",
-              "type": "boolean",
-              "initial": [
-                {
-                  "valueBoolean": false
-                }
-              ]
+              "type": "boolean"
             }
           ]
         }
@@ -3717,6 +3799,25 @@
                 ]
               }
             ],
+            "identifier": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='ahvn13').answer.value"
+                  }
+                ],
+                "system": "urn:oid:2.16.756.5.32",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
             "address": [
               {
                 "use": "home",
@@ -3740,7 +3841,7 @@
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%resource.descendants().where(linkId='canton').answer.value.first()"
+                      "valueString": "iif(%resource.descendants().where(linkId='canton').answer.value.first() is Coding, %resource.descendants().where(linkId='canton').answer.value.first().code, %resource.descendants().where(linkId='canton').answer.value.first())"
                     }
                   ]
                 }
@@ -3952,13 +4053,13 @@
                     }
                   ]
                 },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='sexualContactPartner').answer.value"
+                  }
+                ],
                 "valueCodeableConcept": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                      "valueString": "%resource.descendants().where(linkId='sexualContactPartner').answer.value"
-                    }
-                  ],
                   "coding": [
                     {
                       "extension": [
@@ -3981,19 +4082,131 @@
                     }
                   ]
                 },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='relationshipType').answer.value"
+                  }
+                ],
                 "valueCodeableConcept": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                      "valueString": "%resource.descendants().where(linkId='relationshipType').answer.value"
-                    }
-                  ],
                   "coding": [
                     {
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                           "valueString": "ofType(Coding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "74964007",
+                      "system": "http://snomed.info/sct",
+                      "display": "Other (qualifier value)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='otherTransmission').answer.value"
+                  }
+                ],
+                "_valueString": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "409496000",
+                      "system": "http://snomed.info/sct",
+                      "display": "Mode of transmission (observable entity)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='unknown').answer.value.where($this = true)"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "%factory.Coding('http://snomed.info/sct', '261665006', 'Unknown (qualifier value)')"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "409496000",
+                      "system": "http://snomed.info/sct",
+                      "display": "Mode of transmission (observable entity)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, %resource.descendants().where(linkId='otherTransmission').answer.value)"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "%factory.Coding('http://snomed.info/sct', '74964007', 'Other (qualifier value)')"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "409496000",
+                      "system": "http://snomed.info/sct",
+                      "display": "Mode of transmission (observable entity)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='otherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='sexualContactPartner').answer.value))"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "%factory.Coding('http://snomed.info/sct', '417564009', 'Sexual transmission (qualifier value)')"
                         }
                       ]
                     }

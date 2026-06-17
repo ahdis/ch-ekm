@@ -22,6 +22,7 @@ Characteristics: #can-be-target
 * givennameInitial 1..1
 * givenname 0..0
 * dateOfBirth 1..1
+* ahvn13 0..1
 * nationality 0..1
 * zipCode 0..1
 * city 0..1

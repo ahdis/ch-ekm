@@ -47,6 +47,10 @@ Alias: $sdc-templateExtractContext = http://hl7.org/fhir/uv/sdc/StructureDefinit
 Alias: $individual-genderIdentity =      http://hl7.org/fhir/StructureDefinition/individual-genderIdentity
 Alias: $individual-recordedSexOrGender = http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender
 Alias: $patient-citizenship =            http://hl7.org/fhir/StructureDefinition/patient-citizenship
+Alias: $regex =                          http://hl7.org/fhir/StructureDefinition/regex
+
+//Identifier systems
+Alias: $ahvn13-system =                  urn:oid:2.16.756.5.32
 Alias: $iso21090-ADXP-streetName =       http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName
 Alias: $iso21090-ADXP-houseNumber =      http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber
 

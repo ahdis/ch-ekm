@@ -85,6 +85,24 @@ Description: "Modular sub-questionnaire for the 'Angaben zur betroffenen Person'
 * item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
 * item[=].item[=].extension[=].valueExpression.expression = "%patient.birthDate"
 
+// AHV-Nummer (OASI / AHVN13) - optional free-text string.
+// Pre-populated from the patient's AHV identifier (system urn:oid:2.16.756.5.32 ->
+// ChEkmPatient identifier[AHVN13]). Per §10, read it with extension/identifier .where(...)
+// rather than a slice name, since slices have no runtime FHIRPath representation.
+* item[=].item[+].linkId = "ahvn13"
+* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.ahvn13"
+* item[=].item[=].text = "AHV-Nummer (OASI)"
+* item[=].item[=].type = #string
+// Format validation via the standard `regex` extension (Smart Forms reads valueString and
+// surfaces it as inline validation). Mirrors the ch-core ahvn13-length invariant
+// (matches('^756[0-9]{10}$') -> 756 followed by 10 digits). 13 chars total -> maxLength 13.
+* item[=].item[=].maxLength = 13
+* item[=].item[=].extension[+].url = $regex
+* item[=].item[=].extension[=].valueString = "^756[0-9]{10}$"
+* item[=].item[=].extension[+].url = $sdc-initialExpression
+* item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
+* item[=].item[=].extension[=].valueExpression.expression = "%patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.first()"
+
 // Nationalität - choice (BFS country codes), autocomplete
 // Pre-populated from the patient-citizenship extension's `code` Coding
 // (http://hl7.org/fhir/StructureDefinition/patient-citizenship -> extension.where(url='code')).

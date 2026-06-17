@@ -39,6 +39,8 @@ Description: "Example Gonorrhoea QuestionnaireResponse used as input to SDC temp
 * item[0].item[0].item[7].answer.valueCoding = $iso3166#CH "Switzerland"
 * item[0].item[0].item[8].linkId = "genderIdentity"
 * item[0].item[0].item[8].answer.valueCoding = $sct#1384187000 "Identifies as transgender (finding)"
+* item[0].item[0].item[9].linkId = "ahvn13"
+* item[0].item[0].item[9].answer.valueString = "7560000000000"
 
 // --- Diagnose und Manifestation ---
 * item[0].item[1].linkId = "manifestation-group"

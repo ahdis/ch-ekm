@@ -541,6 +541,83 @@ excluded); the `valueCode` is set by a `templateExtractValue` inside that contex
 > 2. FHIRPath *can* navigate the `_onsetDateTime` primitive-extension element (fhirpath.js maps it),
 >    so context gating under a primitive does work — it was only the ordering above that tripped it.
 
+### Context-gating to omit an element entirely — works for plain complex types, NOT for complex extensions
+To drop a whole element when an answer is blank, put a `templateExtractContext` (scoped to the
+answer) **on the element itself**: empty context → the element is excluded. This works cleanly for a
+plain complex type whose other fields are **normal elements**, e.g. `Patient.identifier[AHVN13]`:
+
+```
+* identifier[0].extension[0].url = templateExtractContext   // = …where(linkId='ahvn13').answer.value
+* identifier[0].system = "urn:oid:2.16.756.5.32"            // static, survives the strip
+* identifier[0].value.extension[0] = templateExtractValue ($this)   // value on the _value sibling
+```
+
+When `ahvn13` is blank the entire identifier (incl. the static `system`) is omitted.
+
+**It does NOT work for a complex extension** (e.g. `patient-citizenship`) whose payload is a required
+**sub-extension** (`code`). There the gating context must be a *sibling* of `code` in the same
+`extension` array, and the engine's array index-bookkeeping (gotcha 1 above) **corrupts the sibling
+when it strips the context** — the answered output loses `code`'s `url` (`{valueCodeableConcept:…}`
+with no `"url":"code"`), regardless of sibling order. So complex extensions keep the **value-level**
+gate (context on the inner `valueCodeableConcept`): correct when answered, but the parent is **not**
+pruned when unanswered — it emits an empty `{url: patient-citizenship, extension:[{url: code}]}`
+shell. Acceptable because the form normally answers nationality; revisit if the engine fixes the
+sibling-strip bug. (`genderIdentity` has the identical shape and the same caveat.)
+
+### Emitting a FIXED Coding / CodeableConcept — use the FHIRPath Type Factory (`%factory`)
+When a template field must carry a **constant** coded value not present in any answer (e.g. the
+Gonorrhoea exposition `component[transmissionRoute]` = `$sct#261665006 "Unknown (qualifier value)"`,
+emitted only when the boolean `unknown` is ticked), you cannot assemble it field-by-field:
+
+- **fhirpath.js has no object/complex literals** — `{system:…, code:…}`, `Coding{…}`, `select({…})`
+  all fail to parse; a value expression can only return a **primitive** (or pass through an existing
+  node, e.g. `ofType(Coding)` on a coded answer).
+- **Field-by-field fails two ways** (confirmed in `sdc-template-extract`): *multiple* value-paths
+  under one Coding get **deepmerge-concatenated** (→ `coding: [{system},{code},{display}]`, and the
+  static `component.code` duplicated); a *single* value-path under `valueCodeableConcept`
+  **shallow-overwrites** the whole element (`{...static, ...value}`), dropping the static
+  `system`/`display`.
+
+The clean solution is the **FHIR Type Factory API** (`%factory`,
+https://hl7.org/fhir/fhirpath.html#factory), implemented in **fhirpath.js ≥ 4.11** and available
+because the extract engine evaluates with the r4 model loaded:
+
+```
+%factory.Coding(system, code, display [, version])
+%factory.CodeableConcept(codingCollection [, text])
+```
+
+Use **one** `templateExtractValue` on `coding[0]` whose expression is `%factory.Coding(...)`. It
+returns a *complete* Coding in a single result, so the engine places it whole (no concat, no
+overwrite of siblings) — exactly like the `ofType(Coding)` idiom but for a constant. The element is
+still gated by a `templateExtractContext` on the component (`…unknown… = true`); the value-path both
+materialises the deleted element and supplies the full Coding, while the static `component.code`
+survives (different key from the shallow-merged `valueCodeableConcept`). Verified: ticking `unknown`
+yields `component[transmissionRoute].valueCodeableConcept.coding[0] = {system, code, display}`,
+unticked omits the component.
+
+### Conditional gating with `iif` — negation and the Boolean-criterion trap
+Two recurring patterns when gating a templated element (empty context → element omitted):
+
+- **Negating a boolean answer must cover the absent case.** A naïve
+  `…answer.value.where($this != true)` only matches an explicit `false` and stays **empty** when the
+  answer is unanswered — so the element wrongly stays omitted for "not selected". And you cannot wrap
+  in `.not()`, because a boolean result (`true`/`false`) is *always* non-empty, so the context never
+  gates. Use `iif` returning empty only for the true case:
+  `iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, true)` — emits for
+  `false` **and** absent (criterion empty → `iif` falls to the otherwise branch), omits only for
+  `true`. (The returned `true` is just a non-empty sentinel to materialise the element; a constant
+  `%factory.Coding(...)` value-path ignores the context scope.) Chain `iif`s for fallbacks, e.g.
+  *emit sexualContactPartner only when not-unknown and no otherTransmission*:
+  `iif(…unknown…value = true, {}, iif(…otherTransmission…value.exists(), {}, …sexualContactPartner…value))`.
+
+- **An `iif` criterion must be a Boolean — a bare path is NOT "truthy".** `iif(…otherTransmission…answer.value, {}, X)`
+  with a *string* answer does **not** treat the present string as true; FHIRPath only honours a Boolean
+  criterion, so a non-boolean falls through to the **else** branch (the component fires even when the
+  value is present). Wrap presence checks in `.exists()` (or `.empty()`, `= true`, …). The asymmetry to
+  remember: a bare path is fine as an `iif` **value** branch (empty path → field omitted), but as a
+  **criterion** it must be Boolean.
+
 > ⚠️ The template artifacts (`ChEkmDocumentGonorrhoeaTemplate` and the modular root's contained
 > copy) will surface **IG Publisher validation warnings** — expected, since the template's
 > resources intentionally lack values and carry `templateExtract` extensions.
@@ -619,3 +696,37 @@ extension" is:
 ```
 %patient.extension.where(url = '<outer-extension-url>').extension.where(url = '<sub-name>').valueCodeableConcept.coding.first()
 ```
+
+---
+
+## 11. Item validation — `regex` vs. `targetConstraint` (Smart Forms reads targetConstraint at the ROOT only)
+
+Two ways to validate an answer in these forms; the choice is forced by what the renderer reads.
+
+**`regex` extension (`http://hl7.org/fhir/StructureDefinition/regex`) — genuinely item-scoped.**
+Smart Forms reads it directly off the item (`getRegexString` in
+`packages/smart-forms-renderer/src/utils/extensions.ts`, applied in `validate.ts`) and surfaces
+inline validation. It even unwraps a `matches('…')` wrapper, but a bare pattern works too. Use it
+for pure **format/length** checks. Example — `ahvn13` (OASI / AHVN13) in
+`ChEkmQuestionnaireGonorrhoeaPerson.fsh` carries `regex = "^756[0-9]{10}$"` (+ `maxLength = 13`),
+mirroring the ch-core `ahvn13-length` invariant. A regex **cannot** express the AHV digit-check
+(`ahvn13-digit-check`) — that, and the length invariant, are still enforced by the IG Publisher on
+the extracted Patient; the form regex is only a UX guard.
+
+**`targetConstraint` (`…/sdc-questionnaire-targetConstraint`) — must live on the modular ROOT.**
+Per the SDC extension definition its `Context` is `Questionnaire` **and** `Questionnaire.item`, so an
+item-level targetConstraint is spec-valid. **But Smart Forms ignores it on items** —
+`extractTargetConstraints()`
+(`packages/smart-forms-renderer/src/utils/questionnaireStoreUtils/extractTargetConstraint.ts`) only
+iterates `questionnaire.extension` and **never recurses into `questionnaire.item[*].extension`**. An
+item-level targetConstraint is silently dropped (no error, no validation). So a targetConstraint must
+sit on the **root** and bind to its item via the `location` FHIRPath (e.g.
+`Questionnaire.descendants().where(linkId='dateOfBirth')`), which `readTargetConstraintLocationLinkIds`
+resolves back to a linkId for *where* the error renders — the constraint still *lives* at the root.
+This is exactly how the `dateOfBirthRange` constraint in `ChEkmQuestionnaireGonorrhoea.fsh` is
+authored. (`$assemble` keeps the modular root's extensions, drops a child's root extensions — §10 —
+which is another reason root-level placement is the working pattern.)
+
+**Rule of thumb:** item-local format/length → **`regex`** on the item; cross-field or
+expression/range validation, or anything needing a German `human` message → **`targetConstraint` on
+the root** with a `location`.

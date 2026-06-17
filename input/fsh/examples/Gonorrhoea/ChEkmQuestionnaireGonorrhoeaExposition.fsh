@@ -63,5 +63,5 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' part of
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown"
 * item[=].item[=].text = "Übertragungsweg unbekannt"
 * item[=].item[=].type = #boolean
-* item[=].item[=].initial.valueBoolean = false
+//* item[=].item[=].initial.valueBoolean = false
 
