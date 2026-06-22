@@ -103,6 +103,10 @@ Usage: #inline
 * category = $condition-category#encounter-diagnosis
 * code = $sct#15628003 "Gonorrhea (disorder)"
 * subject.reference = "Patient/GonExtractPatient"
+// recorder -> the treating physician PractitionerRole (static reference; the role bundles the
+// treating Practitioner + sending Organization, both populated from the form below). This is the
+// navigation the report consumer follows: Condition.recorder.practitioner / .organization.
+* recorder.reference = "PractitionerRole/GonExtractTreatingPractitionerRole"
 // Manifestationsbeginn:
 //  - known   -> onsetDateTime = the answered date.
 //  - unbekannt -> no value; onsetDateTime.extension[data-absent-reason] = asked-unknown.
@@ -204,6 +208,113 @@ Usage: #inline
 * component[5].valueCodeableConcept.coding[0].extension[=].valueString = "%factory.Coding('http://snomed.info/sct', '417564009', 'Sexual transmission (qualifier value)')"
 
 // ---------------------------------------------------------------------------
+// Treating physician — Practitioner (ChEkmPractitionerTreatingPhysician) from the
+// `treatingPhysicianPractitioner` group. Array primitives (name.given, address.line) use the
+// parent-context idiom (templateExtractContext on name[0]/address[0] scoped to the group, then
+// relative `item.where(linkId=…)` paths) — a standalone value path mis-targets the `_x` sibling
+// (forms-summary §8). Optional fields (GLN, email) are whole-element context-gated so they are
+// omitted when blank (same idiom as the Patient AHVN13 identifier; static system survives).
+// ---------------------------------------------------------------------------
+Instance: GonExtractTreatingPractitioner
+InstanceOf: Practitioner
+Usage: #inline
+// * meta.profile = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-practitioner-treating-physician"
+// GLN (optional) -> identifier[GLN], gated on physicianGln
+* identifier[0].extension[0].url = $sdc-templateExtractContext
+* identifier[0].extension[0].valueString = "%resource.descendants().where(linkId='physicianGln').answer.value"
+* identifier[0].system = "urn:oid:2.51.1.3"
+* identifier[0].value.extension[0].url = $sdc-templateExtractValue
+* identifier[0].value.extension[0].valueString = "$this"
+// name (given is array -> context on name[0], relative paths)
+* name[0].extension[+].url = $sdc-templateExtractContext
+* name[0].extension[=].valueString = "%resource.descendants().where(linkId='treatingPhysicianPractitioner')"
+* name[0].family.extension[+].url = $sdc-templateExtractValue
+* name[0].family.extension[=].valueString = "item.where(linkId='physicianSurname').answer.value.first()"
+* name[0].given[0].extension[+].url = $sdc-templateExtractValue
+* name[0].given[0].extension[=].valueString = "item.where(linkId='physicianGivenname').answer.value"
+// address (line is array -> context on address[0], relative paths)
+* address[0].use = #work
+* address[0].extension[+].url = $sdc-templateExtractContext
+* address[0].extension[=].valueString = "%resource.descendants().where(linkId='treatingPhysicianPractitioner')"
+* address[0].line[0].extension[+].url = $sdc-templateExtractValue
+* address[0].line[0].extension[=].valueString = "item.where(linkId='physicianStreetLine').answer.value"
+* address[0].postalCode.extension[+].url = $sdc-templateExtractValue
+* address[0].postalCode.extension[=].valueString = "item.where(linkId='physicianZipCode').answer.value.first()"
+* address[0].city.extension[+].url = $sdc-templateExtractValue
+* address[0].city.extension[=].valueString = "item.where(linkId='physicianCity').answer.value.first()"
+// telecom phone (required, ungated)
+* telecom[0].system = #phone
+* telecom[0].value.extension[+].url = $sdc-templateExtractValue
+* telecom[0].value.extension[=].valueString = "%resource.descendants().where(linkId='physicianPhone').answer.value.first()"
+// telecom email (optional) -> gated on physicianEmail
+* telecom[1].extension[+].url = $sdc-templateExtractContext
+* telecom[1].extension[=].valueString = "%resource.descendants().where(linkId='physicianEmail').answer.value"
+* telecom[1].system = #email
+* telecom[1].value.extension[+].url = $sdc-templateExtractValue
+* telecom[1].value.extension[=].valueString = "$this"
+
+// ---------------------------------------------------------------------------
+// Treating physician — Organization (ChEkmOrganizationTreatingPhysician) from the
+// `treatingPhysicianOrganization` group. Department (ch-ekm-ext-department, a SIMPLE valueString
+// extension) is gated by a context sub-extension on the extension itself: empty -> the whole
+// extension is omitted; answered -> {url, valueString}. (Safe here because the payload is a value,
+// not a sibling sub-extension — so the §8 complex-extension sibling-strip bug does not apply.)
+// ---------------------------------------------------------------------------
+Instance: GonExtractTreatingOrganization
+InstanceOf: Organization
+Usage: #inline
+// * meta.profile = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-organization-treating-physician"
+// GLN (optional) -> identifier[GLN], gated on orgGln
+* identifier[0].extension[0].url = $sdc-templateExtractContext
+* identifier[0].extension[0].valueString = "%resource.descendants().where(linkId='orgGln').answer.value"
+* identifier[0].system = "urn:oid:2.51.1.3"
+* identifier[0].value.extension[0].url = $sdc-templateExtractValue
+* identifier[0].value.extension[0].valueString = "$this"
+// BER/BUR (optional) -> identifier[BER], gated on orgBer
+* identifier[1].extension[0].url = $sdc-templateExtractContext
+* identifier[1].extension[0].valueString = "%resource.descendants().where(linkId='orgBer').answer.value"
+* identifier[1].system = "urn:oid:2.16.756.5.45"
+* identifier[1].value.extension[0].url = $sdc-templateExtractValue
+* identifier[1].value.extension[0].valueString = "$this"
+// Department (optional, ch-ekm-ext-department) -> gated on orgDepartment
+* extension[0].url = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department"
+* extension[0].extension[0].url = $sdc-templateExtractContext
+* extension[0].extension[0].valueString = "%resource.descendants().where(linkId='orgDepartment').answer.value"
+* extension[0].valueString.extension[0].url = $sdc-templateExtractValue
+* extension[0].valueString.extension[0].valueString = "$this"
+// name (required, single)
+* name.extension[+].url = $sdc-templateExtractValue
+* name.extension[=].valueString = "%resource.descendants().where(linkId='orgName').answer.value.first()"
+// address (line is array -> context on address[0], relative paths)
+* address[0].extension[+].url = $sdc-templateExtractContext
+* address[0].extension[=].valueString = "%resource.descendants().where(linkId='treatingPhysicianOrganization')"
+* address[0].line[0].extension[+].url = $sdc-templateExtractValue
+* address[0].line[0].extension[=].valueString = "item.where(linkId='orgStreetLine').answer.value"
+* address[0].postalCode.extension[+].url = $sdc-templateExtractValue
+* address[0].postalCode.extension[=].valueString = "item.where(linkId='orgZipCode').answer.value.first()"
+* address[0].city.extension[+].url = $sdc-templateExtractValue
+* address[0].city.extension[=].valueString = "item.where(linkId='orgCity').answer.value.first()"
+// telecom phone (required, ungated)
+* telecom[0].system = #phone
+* telecom[0].value.extension[+].url = $sdc-templateExtractValue
+* telecom[0].value.extension[=].valueString = "%resource.descendants().where(linkId='orgPhone').answer.value.first()"
+// telecom email (optional) -> gated on orgEmail
+* telecom[1].extension[+].url = $sdc-templateExtractContext
+* telecom[1].extension[=].valueString = "%resource.descendants().where(linkId='orgEmail').answer.value"
+* telecom[1].system = #email
+* telecom[1].value.extension[+].url = $sdc-templateExtractValue
+* telecom[1].value.extension[=].valueString = "$this"
+
+// ---------------------------------------------------------------------------
+// Treating physician — PractitionerRole linking the two above (static, fully owned by the template)
+// ---------------------------------------------------------------------------
+Instance: GonExtractTreatingPractitionerRole
+InstanceOf: PractitionerRole
+Usage: #inline
+* practitioner.reference = "Practitioner/GonExtractTreatingPractitioner"
+* organization.reference = "Organization/GonExtractTreatingOrganization"
+
+// ---------------------------------------------------------------------------
 
 // Composition (ChEkmCompositionGonorrhoea) — static structure, references the entries above,
 // author = Broker, date taken from QR.authored
@@ -218,7 +329,7 @@ Usage: #inline
 * subject.reference = "Patient/GonExtractPatient"
 * date.extension[+].url = $sdc-templateExtractValue
 * date.extension[=].valueString = "%resource.authored"
-* author.reference = "PractitionerRole/ChEkmPractitionerRoleBrokerExample"
+* author.reference = "PractitionerRole/GonExtractTreatingPractitionerRole"
 * title = "Meldung zum klinischen Befund Infektionskrankheit"
 * section[0].title = "Diagnosis section"
 * section[0].code = $loinc#29308-4
@@ -245,13 +356,14 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentG
 * entry[=].resource = GonExtractComposition
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/GonExtractPatient"
 * entry[=].resource = GonExtractPatient
-* entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleBrokerExample"
-* entry[=].resource = ChEkmPractitionerRoleBrokerExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Practitioner/ChEkmPractitionerBrokerExample"
-* entry[=].resource = ChEkmPractitionerBrokerExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationBrokerExample"
-* entry[=].resource = ChEkmOrganizationBrokerExample
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/GonExtractCondition"
 * entry[=].resource = GonExtractCondition
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/GonExtractExposure"
 * entry[=].resource = GonExtractExposure
+// Treating physician: PractitionerRole -> Practitioner + Organization (populated from the form)
+* entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/GonExtractTreatingPractitionerRole"
+* entry[=].resource = GonExtractTreatingPractitionerRole
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Practitioner/GonExtractTreatingPractitioner"
+* entry[=].resource = GonExtractTreatingPractitioner
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/GonExtractTreatingOrganization"
+* entry[=].resource = GonExtractTreatingOrganization

@@ -1,0 +1,9 @@
+{
+  "name": "ch-ekm-populate",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Command-line SDC reference $populate (@aehrc/sdc-populate) for the CH EKM Gonorrhoea testcase.",
+  "dependencies": {
+    "@aehrc/sdc-populate": "^4.7.0"
+  }
+}

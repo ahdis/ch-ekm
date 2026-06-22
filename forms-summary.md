@@ -134,6 +134,8 @@ disease-specific value-set bindings).
 | `ChEkmGonorrhoeaPersonForm` (← `ChEkmPersonForm`) | `ChEkmPatientInitials` |
 | `ChEkmGonorrhoeaManifestationForm` (← `ChEkmManifestationForm`) | `ChEkmConditionGonorrhoea` |
 | `ChEkmGonorrhoeaExpositionForm.transmission` (← `ChEkmExpositionForm`) | `ChEkmExposureGonorrhoea` |
+| `ChEkmTreatingPhysicianPractitionerForm` | `ChEkmPractitionerTreatingPhysician` |
+| `ChEkmTreatingPhysicianOrganizationForm` | `ChEkmOrganizationTreatingPhysician` |
 
 ### Field-by-field mapping (Gonorrhoea green sections)
 
@@ -180,6 +182,31 @@ disease-specific value-set bindings).
 | anderer Übertragungsweg | `otherTransmission` | string | |
 | unbekannt | `unknown` | boolean | |
 
+**Treating Physician** (`ChEkmQuestionnaireGonorrhoeaTreatingPhysician`, two sub-groups). linkIds are
+prefixed `physician*` / `org*` so they stay unique across the assembled form (the Person section
+already uses `zipCode`/`city`; `$assemble` rejects duplicate linkIds). All items are `string`.
+Pre-population reads `%user` (Practitioner) and `%organization` (Organization) — see §10.
+
+| Sub-group | Item | linkId | card. | initialExpression source |
+| --- | --- | --- | --- | --- |
+| Practitioner | Vorname | `physicianGivenname` | 1..1 | `%user.name.first().given.first()` |
+| Practitioner | Name | `physicianSurname` | 1..1 | `%user.name.first().family` |
+| Practitioner | Adresse | `physicianStreetLine` | 0..1 | `%user.address.where(use='work').combine(%user.address).first().line.first()` |
+| Practitioner | PLZ | `physicianZipCode` | 1..1 | …`.first().postalCode` |
+| Practitioner | Ort | `physicianCity` | 1..1 | …`.first().city` |
+| Practitioner | Telefon | `physicianPhone` | 1..1 | `%user.telecom.where(system='phone').value.first()` |
+| Practitioner | E-Mail | `physicianEmail` | 0..1 | `%user.telecom.where(system='email').value.first()` |
+| Practitioner | GLN | `physicianGln` | 0..1 | `%user.identifier.where(system='urn:oid:2.51.1.3').value.first()` |
+| Organization | Name | `orgName` | 1..1 | `%organization.name` |
+| Organization | Abteilung | `orgDepartment` | 0..1 | `%organization.extension.where(url='…/ch-ekm-ext-department').valueString` |
+| Organization | Adresse | `orgStreetLine` | 0..1 | `%organization.address.first().line.first()` |
+| Organization | PLZ | `orgZipCode` | 1..1 | `%organization.address.first().postalCode` |
+| Organization | Ort | `orgCity` | 1..1 | `%organization.address.first().city` |
+| Organization | Telefon | `orgPhone` | 1..1 | `%organization.telecom.where(system='phone').value.first()` |
+| Organization | E-Mail | `orgEmail` | 0..1 | `%organization.telecom.where(system='email').value.first()` |
+| Organization | BUR (BER) | `orgBer` | 0..1 | `%organization.identifier.where(system='urn:oid:2.16.756.5.45').value.first()` |
+| Organization | GLN | `orgGln` | 0..1 | `%organization.identifier.where(system='urn:oid:2.51.1.3').value.first()` |
+
 ---
 
 ## 4. Proposed modular structure for CH EKM
@@ -190,8 +217,12 @@ Reusable **sub-questionnaires** (one per report section, generic where possible)
 ChEkmQuestionnairePerson            (assemble-child)  ← ChEkmPersonForm
 ChEkmQuestionnaireManifestation     (assemble-child)  ← ChEkmManifestationForm
 ChEkmQuestionnaireExposition        (assemble-child)  ← ChEkmExpositionForm
-ChEkmQuestionnaireTreatingPhysician (assemble-child)  ← ChEkmTreatingPhysicianForm   (later)
+ChEkmQuestionnaireTreatingPhysician (assemble-child)  ← ChEkmTreatingPhysician{Practitioner,Organization}Form
 ```
+
+> For Gonorrhoea these are realised as disease-specific children
+> `ChEkmQuestionnaireGonorrhoea{Person,Manifestation,Exposition,TreatingPhysician}` (option (a)).
+> The TreatingPhysician child holds two sub-groups (Practitioner + Organization, §3) and is built.
 
 Disease-specific bindings (manifestation value set, relationship types) differ per organism.
 Two options:
@@ -204,9 +235,10 @@ Two options:
 
 ```
 ChEkmQuestionnaireGonorrhoea  (meta.profile = sdc-questionnaire-modular)
-  ├─ display → subQuestionnaire ChEkmQuestionnairePerson
-  ├─ display → subQuestionnaire ChEkmQuestionnaireManifestationGonorrhoea
-  └─ display → subQuestionnaire ChEkmQuestionnaireExpositionGonorrhoea
+  ├─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaPerson
+  ├─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaManifestation
+  ├─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaExposition
+  └─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaTreatingPhysician
 ```
 
 `$assemble` → `ChEkmQuestionnaireGonorrhoea-assembled` → render in Smart Forms.
@@ -280,7 +312,9 @@ Title: "CH EKM Questionnaire: Gonorrhoea (modular)"
    questionnaire to `input/resources/` (see note below); check for duplicate `linkId`s.
 5. Run **`tests/preview-gonorrhoea.sh`** to pre-expand the value sets and render in
    **Smart Forms** (un-launched, local).
-6. `$populate` pre-fill (`launchContext` patient) via `tests/populate-gonorrhoea.sh`.
+6. `$populate` pre-fill via `tests/populate-gonorrhoea.sh` — runs the **SDC reference**
+   `@aehrc/sdc-populate` in-process (not hosted HAPI), feeding `%patient`/`%user` and
+   `%organization` (the last via SMART `fhirContext`). See §10.
 7. **`$extract`** the filled `QuestionnaireResponse` into a `ChEkmDocumentGonorrhoea` Bundle
    via `tests/extract-gonorrhoea.sh` — see §8.
 
@@ -492,6 +526,28 @@ hand-written JSON), as `#inline` instances assembled into the Bundle template:
 - **static system metadata** (Broker `PractitionerRole`/`Practitioner`/`Organization`) is reused
   verbatim from the existing examples — it is supplied by the transmitting system, not the form.
 
+### Treating physician — `recorder` → PractitionerRole → Practitioner + Organization
+The `treatingPhysician` section (§3) extracts into three resources the template fully owns:
+`GonExtractTreatingPractitionerRole` (static refs to the other two), `GonExtractTreatingPractitioner`
+(`ChEkmPractitionerTreatingPhysician`), `GonExtractTreatingOrganization`
+(`ChEkmOrganizationTreatingPhysician`). `Condition.recorder` is a **static** reference to the role,
+so the consumer navigation `Condition.recorder.practitioner / .organization` resolves. Idioms used:
+- **array primitives** (`name.given`, `address.line`) → `templateExtractContext` on the **parent**
+  (`name[0]` / `address[0]`) scoped to the group (e.g. `…where(linkId='treatingPhysicianPractitioner')`)
+  + relative `item.where(linkId=…).answer.value` paths (a standalone value path mis-targets the `_x`
+  sibling). Single-valued siblings (`postalCode`, `city`, `family`) take `.first()`.
+- **optional fields** (`identifier[GLN]`/`[BER]`, `telecom[email]`) → **whole-element** context-gated
+  on the answer (same as the Patient AHVN13 identifier): omitted when blank, and the static `system`
+  survives when answered.
+- **department** (`ch-ekm-ext-department`, a **simple `valueString` extension**) → gated by a context
+  **sub-extension on the extension itself**; empty ⇒ the whole extension is omitted, answered ⇒
+  `{url, valueString}`. This is safe (unlike the §8 complex-extension caveat) precisely because the
+  payload is a *value*, not a sibling sub-extension, so the sibling-strip bug does not apply.
+
+Verified (all fields answered): the extracted Practitioner/Organization carry the right
+identifiers, name (`given`/`family`), `work` address, phone+email, and a clean department extension;
+0 extraction warnings.
+
 ### The link lives on the questionnaire (required for the renderer)
 For a renderer to offer `$extract`, the **questionnaire it loads** must carry the template. So
 the modular root **`ChEkmQuestionnaireGonorrhoea`** (FSH source of truth) declares:
@@ -517,8 +573,9 @@ library's ESM build trips Node's loader on a `fhirpath` directory import) uses t
 **as-is**, exactly like Smart Forms.
 
 ### Result and known deviations
-Produces a `type=document` Bundle (Composition, Patient, Condition, Observation, Broker ×3),
-0 extraction warnings, all template extensions stripped. One intentional difference from the
+Produces a `type=document` Bundle (Composition, Patient, Condition, Observation, Broker ×3, and the
+treating-physician PractitionerRole + Practitioner + Organization — 10 entries), 0 extraction
+warnings, all template extensions stripped. One intentional difference from the
 hand-written `ChEkmBundleGonorrhoea`: `evidence.code` = `$sct#264931009` ("Symptomatic", the form
 code per the §3 decision) rather than the disease code `15628003`. The `onsetDateTime` /
 data-absent handling (next) matches the example bundle.
@@ -668,16 +725,62 @@ HAPI accepts it (unresolved — the current shape is what the §8 reference engi
 
 ---
 
-## 10. Pre-population (`$populate`) — initialExpression FHIRPath gotchas
+## 10. Pre-population (`$populate`) — engine choice, launch contexts, FHIRPath gotchas
 
 Pre-population is wired with `sdc-questionnaire-initialExpression` (text/fhirpath) on the items,
-reading from `%patient` (declared via the modular root's `launchContext`, propagated onto the
-assembled questionnaire). `tests/populate-gonorrhoea.sh` POSTs the assembled questionnaire + an
-example Patient to the hosted `Questionnaire/$populate` and writes back the QuestionnaireResponse.
+reading from launch-context variables (`%patient`, `%user`, `%organization`) declared via the
+modular root's `launchContext` extensions and propagated onto the assembled questionnaire.
 
-Per §1, the deployed endpoint is **HAPI 8.10.0**, so its FHIRPath engine — not the TS
-`sdc-populate` library — evaluates the initialExpressions. Two non-obvious rules emerged getting
-`nationality` and `genderIdentity` (both read from Patient **extensions**) to populate:
+### Engine: the SDC reference library (in-process), NOT hosted HAPI
+`tests/populate-gonorrhoea.sh` runs the **SDC reference `$populate`** (`@aehrc/sdc-populate`, the
+same engine Smart Forms runs in-app) through a small local CommonJS wrapper
+**`tests/populate/populate.cjs`** (mirrors `tests/extract/`; CJS for the same `fhirpath` directory-import
+reason — §8). It runs **in-process**, resolving the example resources from local files — no FHIR
+server. We **switched off the hosted HAPI `Questionnaire/$populate`** (smartforms.csiro.au, HAPI
+8.10.0 per §1) because:
+
+- **HAPI does not resolve item/group-level `variable` extensions.** The Person section's
+  `zipCode`/`city`/`country`/`canton` read a `person`-group `variable` (`%homeOrFirstAddress` =
+  `%patient.address.where(use='home').combine(%patient.address).first()`); on HAPI these came back
+  **empty even though the Patient has an address** (no error). The reference engine resolves them.
+  Two ways to cope: keep the group `variable` (works on the reference engine, what the renderer
+  uses) **or** inline the full path per item (portable across both engines). The treating-physician
+  address fields inline the path (`%user.address.where(use='work').combine(%user.address).first().…`)
+  for portability; the Person section keeps its group `variable`.
+- It matches what the **Smart Forms renderer** actually does, including resolving non-patient/user
+  launch contexts from the SMART App Launch **`fhirContext`** (below).
+
+> The HAPI-specific gotchas below are kept because a *deployed* host may still use HAPI; the
+> initialExpressions are written to work on both engines.
+
+### Launch contexts and SMART `fhirContext` (how `%organization` is delivered)
+The modular root declares **three** launch contexts (propagated onto the assembled questionnaire):
+
+| `launchContext` name | type | variable | how the test feeds it | SMART launch delivery |
+| --- | --- | --- | --- | --- |
+| `patient` | Patient | `%patient` | `patient` param | top-level launch context |
+| `user` | Practitioner | `%user` (treating physician) | `user` param | `fhirUser` / `user` |
+| `organization` (custom code `ch-ekm-launch-context#organization`) | Organization | `%organization` | **`fhirContext`** entry | token-response `fhirContext` |
+
+**`fhirContext` does not replace the SDC `launchContext` — they are different layers.** The SDC
+`launchContext` extension (on the questionnaire) *declares* the variable name the FHIRPath engine
+exposes; without it `%organization` does not exist and `$populate` has nothing to bind. SMART App
+Launch `fhirContext` (token response,
+https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp) is
+the *runtime transport* that delivers the extra resource. SDC's launchContext value set
+(`patient|encounter|location|user|study`) has **no** Organization code and is **extensible**, so the
+custom `#organization` code (new CodeSystem `ChEkmLaunchContext`) is spec-justified.
+
+Confirmed in the reference library (`packages/sdc-populate/src/inAppPopulation/utils/`): it binds
+`patient`/`user`/`encounter` from their own params, and resolves **any other launchContext from
+`fhirContext`, keyed by `resourceType`** (`createLaunchContextParam` →
+`resolvedFhirContextReferences[resourceType]`), then sets `%<name>` to it. So passing the
+Organization as a `fhirContext` entry (`{role, type:'Organization', reference:'Organization/…'}`)
+and letting the `fetchResourceCallback` resolve the reference is exactly the real SMART flow.
+
+### FHIRPath gotchas (HAPI-specific, but the expressions satisfy both engines)
+Two non-obvious rules emerged getting `nationality` and `genderIdentity` (both read from Patient
+**extensions**) to populate against HAPI:
 
 - **Use `extension.where(url = 'xyz')`, NOT the `extension('xyz')` shortcut.** HAPI's FHIRPath
   engine does **not** implement the `extension(url)` shortcut function. With `%patient.extension('…
@@ -685,7 +788,8 @@ Per §1, the deployed endpoint is **HAPI 8.10.0**, so its FHIRPath engine — no
   `%patient.extension.where(url = '…patient-citizenship')…` populates it. (Both forms are
   equivalent and both work in fhirpath.js with the R4 model — this is HAPI-specific.) The
   `nationality` / `genderIdentity` initialExpressions in `ChEkmQuestionnaireGonorrhoeaPerson.fsh`
-  use the `.where(url=)` form for this reason.
+  use the `.where(url=)` form for this reason; the organization `department` extension is read the
+  same way.
 - **Use the explicit typed accessor `.valueCodeableConcept`, not polymorphic `.value`.** The
   polymorphic `value` accessor only resolves when the FHIR model is loaded; `.valueCodeableConcept`
   works with or without it, so it is the safer choice in an initialExpression.

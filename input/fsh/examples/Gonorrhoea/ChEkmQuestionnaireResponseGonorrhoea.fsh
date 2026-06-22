@@ -13,7 +13,12 @@ InstanceOf: QuestionnaireResponse
 Usage: #example
 Title: "CH EKM QuestionnaireResponse: Gonorrhoea (test input for $extract)"
 Description: "Example Gonorrhoea QuestionnaireResponse used as input to SDC template-based $extract (ChEkmDocumentGonorrhoeaTemplate)."
-* questionnaire = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea"
+// Point at the ASSEMBLED questionnaire (flattened groups + real items), not the modular root:
+// the root's section items are `display` subQuestionnaire placeholders, so validating this QR
+// (which has the actual nested group/item structure) against the root errors with
+// "LinkId not found" / "Items not of type DISPLAY should not have items". The assembled
+// questionnaire is the artifact a renderer loads and the QR is filled against.
+* questionnaire = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaAssembled"
 * status = #completed
 * authored = "2026-05-27T11:30:00+02:00"
 
@@ -57,3 +62,45 @@ Description: "Example Gonorrhoea QuestionnaireResponse used as input to SDC temp
 * item[0].item[2].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
 * item[0].item[2].item[2].linkId = "unknown"
 * item[0].item[2].item[2].answer.valueBoolean = false
+
+// --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---
+// Answers taken from ChEkmPractitionerTreatingPhysicianExample / ChEkmOrganizationTreatingPhysicianExample.
+* item[0].item[3].linkId = "treatingPhysician"
+// Practitioner
+* item[0].item[3].item[0].linkId = "treatingPhysicianPractitioner"
+* item[0].item[3].item[0].item[0].linkId = "physicianGivenname"
+* item[0].item[3].item[0].item[0].answer.valueString = "Potagon"
+* item[0].item[3].item[0].item[1].linkId = "physicianSurname"
+* item[0].item[3].item[0].item[1].answer.valueString = "Brachialis"
+* item[0].item[3].item[0].item[2].linkId = "physicianStreetLine"
+* item[0].item[3].item[0].item[2].answer.valueString = "Sodaweg 55"
+* item[0].item[3].item[0].item[3].linkId = "physicianZipCode"
+* item[0].item[3].item[0].item[3].answer.valueString = "3921"
+* item[0].item[3].item[0].item[4].linkId = "physicianCity"
+* item[0].item[3].item[0].item[4].answer.valueString = "Flammingen"
+* item[0].item[3].item[0].item[5].linkId = "physicianPhone"
+* item[0].item[3].item[0].item[5].answer.valueString = "+24 74 200 88 77"
+* item[0].item[3].item[0].item[6].linkId = "physicianEmail"
+* item[0].item[3].item[0].item[6].answer.valueString = "p.brach@sampledoc.com"
+* item[0].item[3].item[0].item[7].linkId = "physicianGln"
+* item[0].item[3].item[0].item[7].answer.valueString = "7601000435666"
+// Organization
+* item[0].item[3].item[1].linkId = "treatingPhysicianOrganization"
+* item[0].item[3].item[1].item[0].linkId = "orgName"
+* item[0].item[3].item[1].item[0].answer.valueString = "Regionalspital Genesis"
+* item[0].item[3].item[1].item[1].linkId = "orgDepartment"
+* item[0].item[3].item[1].item[1].answer.valueString = "Immunologie"
+* item[0].item[3].item[1].item[2].linkId = "orgStreetLine"
+* item[0].item[3].item[1].item[2].answer.valueString = "Radixstrasse 88"
+* item[0].item[3].item[1].item[3].linkId = "orgZipCode"
+* item[0].item[3].item[1].item[3].answer.valueString = "4088"
+* item[0].item[3].item[1].item[4].linkId = "orgCity"
+* item[0].item[3].item[1].item[4].answer.valueString = "Pankreas"
+* item[0].item[3].item[1].item[5].linkId = "orgPhone"
+* item[0].item[3].item[1].item[5].answer.valueString = "+26 34 876 54 33"
+* item[0].item[3].item[1].item[6].linkId = "orgEmail"
+* item[0].item[3].item[1].item[6].answer.valueString = "immuno@hospidoc.com"
+* item[0].item[3].item[1].item[7].linkId = "orgBer"
+* item[0].item[3].item[1].item[7].answer.valueString = "A99086600"
+* item[0].item[3].item[1].item[8].linkId = "orgGln"
+* item[0].item[3].item[1].item[8].answer.valueString = "7601000435777"

@@ -45,6 +45,10 @@ resources:
     name: "CH EKM ValueSet: Country Codes"
     description: "ValueSet for country codes, used in the CH EKM IG."
     exampleBoolean: false
+  Bundle/ChEkmDocumentGonorrhoea-extracted:
+    name: "CH EKM Bundle: Gonorrhoea document (extracted)"
+    description: "Gonorrhoea document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentGonorrhoeaTemplate (tests/extract-gonorrhoea.sh). Do not edit by hand."
+    exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-gonorrhoea
   
 
 pages:

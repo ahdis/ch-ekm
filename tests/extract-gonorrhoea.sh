@@ -30,7 +30,7 @@ DEFAULT_Q="$ROOT"
 
 Q="${1:-$DEFAULT_Q}"
 QR="${2:-fsh-generated/resources/QuestionnaireResponse-ChEkmQuestionnaireResponseGonorrhoea.json}"
-OUT="${3:-fsh-generated/Bundle-ChEkmDocumentGonorrhoea-extracted.json}"
+OUT="${3:-input/resources/Bundle-ChEkmDocumentGonorrhoea-extracted.json}"
 
 for f in "$Q" "$QR"; do
   [ -f "$f" ] || { echo "ERROR: $f not found. Run 'sushi .' first."; exit 1; }
@@ -47,6 +47,16 @@ echo "QuestionnaireResponse: $QR"
 echo
 
 node tests/extract/extract.cjs "$Q" "$QR" "$OUT"
+
+# The extract engine emits the document Bundle without an `id`. Since $OUT is a predefined IG
+# resource (input/resources/), the IG Publisher needs a stable logical id — add one derived from
+# the output filename (Bundle-<id>.json -> <id>, e.g. ChEkmDocumentGonorrhoea-extracted), placed
+# right after resourceType.
+if command -v jq >/dev/null 2>&1; then
+  BUNDLE_ID="$(basename "$OUT" .json)"; BUNDLE_ID="${BUNDLE_ID#Bundle-}"
+  tmp="$(mktemp)"
+  jq --arg id "$BUNDLE_ID" '{resourceType, id: $id} + del(.id)' "$OUT" > "$tmp" && mv "$tmp" "$OUT"
+fi
 
 echo
 echo "Extracted document Bundle: $OUT"

@@ -1,0 +1,395 @@
+{
+  "resourceType": "Bundle",
+  "id": "ChEkmDocumentGonorrhoea-extracted",
+  "type": "document",
+  "identifier": {
+    "system": "urn:ietf:rfc:3986",
+    "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
+  },
+  "entry": [
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Composition/GonExtractComposition",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "GonExtractComposition",
+        "status": "final",
+        "type": {
+          "coding": [
+            {
+              "code": "722143004",
+              "system": "http://snomed.info/sct",
+              "display": "Infectious disease diagnostic study note"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "423876004",
+                "system": "http://snomed.info/sct",
+                "display": "Clinical report"
+              }
+            ]
+          }
+        ],
+        "subject": {
+          "reference": "Patient/GonExtractPatient"
+        },
+        "author": [
+          {
+            "reference": "PractitionerRole/GonExtractTreatingPractitionerRole"
+          }
+        ],
+        "title": "Meldung zum klinischen Befund Infektionskrankheit",
+        "section": [
+          {
+            "title": "Diagnosis section",
+            "code": {
+              "coding": [
+                {
+                  "code": "29308-4",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "Condition/GonExtractCondition"
+              }
+            ]
+          },
+          {
+            "title": "Social history section",
+            "code": {
+              "coding": [
+                {
+                  "code": "29762-2",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "Observation/GonExtractExposure"
+              }
+            ]
+          }
+        ],
+        "date": "2026-05-27T11:30:00+02:00"
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Patient/GonExtractPatient",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "GonExtractPatient",
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship",
+            "extension": [
+              {
+                "url": "code",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "urn:iso:std:iso:3166",
+                      "code": "CH",
+                      "display": "Switzerland"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity",
+            "extension": [
+              {
+                "url": "value",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "http://snomed.info/sct",
+                      "code": "1384187000",
+                      "display": "Identifies as transgender (finding)"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "name": [
+          {
+            "family": "M",
+            "given": [
+              "B"
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "system": "urn:oid:2.16.756.5.32",
+            "value": "7560000000000"
+          }
+        ],
+        "address": [
+          {
+            "use": "home",
+            "postalCode": "3097",
+            "city": "Liebefeld",
+            "state": "BE"
+          }
+        ],
+        "gender": "male",
+        "birthDate": "2000-01-01"
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Condition/GonExtractCondition",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "GonExtractCondition",
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "encounter-diagnosis",
+                "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "15628003",
+              "system": "http://snomed.info/sct",
+              "display": "Gonorrhea (disorder)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/GonExtractPatient"
+        },
+        "recorder": {
+          "reference": "PractitionerRole/GonExtractTreatingPractitionerRole"
+        },
+        "evidence": [
+          {
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "264931009",
+                    "display": "Symptomatic (qualifier value)"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "_onsetDateTime": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+              "valueCode": "asked-unknown"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Observation/GonExtractExposure",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "GonExtractExposure",
+        "status": "final",
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "AEXPOS",
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActClass",
+                "display": "acquisition exposure"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "code": "EXPAGNT",
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+              "display": "Exposure Agent"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/GonExtractPatient"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "sexual-contact-partner",
+                  "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/administrative-gender",
+                  "code": "male",
+                  "display": "Male"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "228465009",
+                  "system": "http://snomed.info/sct",
+                  "display": "Sexual relationship details (observable entity)"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                  "code": "offered-paid-sex",
+                  "display": "Offered paid sex"
+                }
+              ]
+            }
+          },
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "409496000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Mode of transmission (observable entity)"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "417564009",
+                  "display": "Sexual transmission (qualifier value)"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/PractitionerRole/GonExtractTreatingPractitionerRole",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "GonExtractTreatingPractitionerRole",
+        "practitioner": {
+          "reference": "Practitioner/GonExtractTreatingPractitioner"
+        },
+        "organization": {
+          "reference": "Organization/GonExtractTreatingOrganization"
+        }
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Practitioner/GonExtractTreatingPractitioner",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "GonExtractTreatingPractitioner",
+        "identifier": [
+          {
+            "system": "urn:oid:2.51.1.3",
+            "value": "7601000435666"
+          }
+        ],
+        "name": [
+          {
+            "family": "Brachialis",
+            "given": [
+              "Potagon"
+            ]
+          }
+        ],
+        "address": [
+          {
+            "use": "work",
+            "line": [
+              "Sodaweg 55"
+            ],
+            "postalCode": "3921",
+            "city": "Flammingen"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+24 74 200 88 77"
+          },
+          {
+            "system": "email",
+            "value": "p.brach@sampledoc.com"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Organization/GonExtractTreatingOrganization",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "GonExtractTreatingOrganization",
+        "identifier": [
+          {
+            "system": "urn:oid:2.51.1.3",
+            "value": "7601000435777"
+          },
+          {
+            "system": "urn:oid:2.16.756.5.45",
+            "value": "A99086600"
+          }
+        ],
+        "extension": [
+          {
+            "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department",
+            "valueString": "Immunologie"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Radixstrasse 88"
+            ],
+            "postalCode": "4088",
+            "city": "Pankreas"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+26 34 876 54 33"
+          },
+          {
+            "system": "email",
+            "value": "immuno@hospidoc.com"
+          }
+        ],
+        "name": "Regionalspital Genesis"
+      }
+    }
+  ],
+  "timestamp": "2026-05-27T11:30:00+02:00"
+}

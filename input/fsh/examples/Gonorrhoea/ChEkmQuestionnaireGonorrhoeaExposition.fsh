@@ -31,9 +31,9 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' part of
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
 * item[=].item[=].extension[+].url = $choiceOrientation
 * item[=].item[=].extension[=].valueCode = #horizontal
-* item[=].item[=].enableWhen[+].question = "unknown"
-* item[=].item[=].enableWhen[=].operator = #=
-* item[=].item[=].enableWhen[=].answerBoolean = false
+// * item[=].item[=].enableWhen[+].question = "unknown"
+// * item[=].item[=].enableWhen[=].operator = #=
+// * item[=].item[=].enableWhen[=].answerBoolean = false
 
 // Art der Beziehung (fester / nicht fester Partner / Angebot bzw. Inanspruchnahme von bezahltem Sex)
 * item[=].item[+].linkId = "relationshipType"
@@ -45,18 +45,18 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' part of
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
 * item[=].item[=].extension[+].url = $choiceOrientation
 * item[=].item[=].extension[=].valueCode = #horizontal
-* item[=].item[=].enableWhen[+].question = "unknown"
-* item[=].item[=].enableWhen[=].operator = #=
-* item[=].item[=].enableWhen[=].answerBoolean = false
+// * item[=].item[=].enableWhen[+].question = "unknown"
+// * item[=].item[=].enableWhen[=].operator = #=
+// * item[=].item[=].enableWhen[=].answerBoolean = false
 
 // Anderer Übertragungsweg (Freitext)
 * item[=].item[+].linkId = "otherTransmission"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.otherTransmission"
 * item[=].item[=].text = "Anderer Übertragungsweg (Freitext)"
 * item[=].item[=].type = #string
-* item[=].item[=].enableWhen[+].question = "unknown"
-* item[=].item[=].enableWhen[=].operator = #=
-* item[=].item[=].enableWhen[=].answerBoolean = false
+// * item[=].item[=].enableWhen[+].question = "unknown"
+// * item[=].item[=].enableWhen[=].operator = #=
+// * item[=].item[=].enableWhen[=].answerBoolean = false
 
 // Übertragungsweg unbekannt - default false; when checked it disables the details below
 * item[=].item[+].linkId = "unknown"

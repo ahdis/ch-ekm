@@ -57,6 +57,7 @@ CHILDREN=(
   "ChEkmQuestionnaireGonorrhoeaPerson"
   "ChEkmQuestionnaireGonorrhoeaManifestation"
   "ChEkmQuestionnaireGonorrhoeaExposition"
+  "ChEkmQuestionnaireGonorrhoeaTreatingPhysician"
 )
 
 echo "FHIR base: $BASE"
