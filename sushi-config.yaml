@@ -27,7 +27,7 @@ contact:
 
 dependencies:
  ch.fhir.ig.ch-term: 3.4.x
- ch.fhir.ig.ch-core: current
+ ch.fhir.ig.ch-core: 7.0.0-ballot
  hl7.fhir.uv.sdc: 4.0.0
 
 
@@ -48,7 +48,7 @@ resources:
   Bundle/ChEkmDocumentGonorrhoea-extracted:
     name: "CH EKM Bundle: Gonorrhoea document (extracted)"
     description: "Gonorrhoea document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentGonorrhoeaTemplate (tests/extract-gonorrhoea.sh). Do not edit by hand."
-    exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-gonorrhoea
+    exampleBoolean: true
   
 
 pages:
@@ -85,8 +85,8 @@ parameters:
   path-resource:
     - input/resources
     - fsh-generated/resources
-#  no-narrative: 
-#    - Bundle/*
+  no-narrative: 
+    - Bundle/*
   special-url:
     - http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-administrative-gender-language-supplement
   pin-canonicals: pin-none  
@@ -94,7 +94,12 @@ parameters:
 #  apply-version: false
 #  default-version: true
   path-expansion-params: '../../expansion-params.json'  # for using SNOMED CT Swiss Extension
-
+  logging:
+    - init
+    - progress
+    - context
+    - html
+    - tx
 
 instanceOptions:
   # Determines for which types of Instances SUSHI will automatically set meta.profile
@@ -104,4 +109,3 @@ instanceOptions:
   # - inline-only: Set meta.profile for only Instances of profiles with Usage set to #inline
   # - standalone-only: Set meta.profile for only Instances of profiles where Usage is any value other than #inline
   setMetaProfile: never
-
