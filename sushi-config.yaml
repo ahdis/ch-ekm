@@ -48,12 +48,13 @@ resources:
   Bundle/ChEkmDocumentGonorrhoea-extracted:
     name: "CH EKM Bundle: Gonorrhoea document (extracted)"
     description: "Gonorrhoea document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentGonorrhoeaTemplate (tests/extract-gonorrhoea.sh). Do not edit by hand."
-    exampleBoolean: true
-  
+    exampleCanonical: false  
 
 pages:
   index.md:
     title: Home
+  document.md:
+    title: FHIR Document (Bundle)
   usecase.md:
     title: Use Case
   examples.md:
@@ -69,6 +70,7 @@ pages:
 menu:
   Table of Contents: toc.html
   Home: index.html
+  FHIR Document: document.html
   Use Case: usecase.html
   Examples: examples.html
   Profiles: profiles.html

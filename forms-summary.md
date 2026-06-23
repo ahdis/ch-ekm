@@ -185,27 +185,28 @@ disease-specific value-set bindings).
 **Treating Physician** (`ChEkmQuestionnaireGonorrhoeaTreatingPhysician`, two sub-groups). linkIds are
 prefixed `physician*` / `org*` so they stay unique across the assembled form (the Person section
 already uses `zipCode`/`city`; `$assemble` rejects duplicate linkIds). All items are `string`.
-Pre-population reads `%user` (Practitioner) and `%organization` (Organization) — see §10.
+Pre-population reads a single `%user` launch context — the treating physician's
+**PractitionerRole** — and resolves its `practitioner`/`organization` references; see §10.
 
 | Sub-group | Item | linkId | card. | initialExpression source |
 | --- | --- | --- | --- | --- |
-| Practitioner | Vorname | `physicianGivenname` | 1..1 | `%user.name.first().given.first()` |
-| Practitioner | Name | `physicianSurname` | 1..1 | `%user.name.first().family` |
-| Practitioner | Adresse | `physicianStreetLine` | 0..1 | `%user.address.where(use='work').combine(%user.address).first().line.first()` |
+| Practitioner | Vorname | `physicianGivenname` | 1..1 | `%user.practitioner.resolve().name.first().given.first()` |
+| Practitioner | Name | `physicianSurname` | 1..1 | `%user.practitioner.resolve().name.first().family` |
+| Practitioner | Adresse | `physicianStreetLine` | 0..1 | `%user.practitioner.resolve().address.where(use='work').combine(…).first().line.first()` |
 | Practitioner | PLZ | `physicianZipCode` | 1..1 | …`.first().postalCode` |
 | Practitioner | Ort | `physicianCity` | 1..1 | …`.first().city` |
-| Practitioner | Telefon | `physicianPhone` | 1..1 | `%user.telecom.where(system='phone').value.first()` |
-| Practitioner | E-Mail | `physicianEmail` | 0..1 | `%user.telecom.where(system='email').value.first()` |
-| Practitioner | GLN | `physicianGln` | 0..1 | `%user.identifier.where(system='urn:oid:2.51.1.3').value.first()` |
-| Organization | Name | `orgName` | 1..1 | `%organization.name` |
-| Organization | Abteilung | `orgDepartment` | 0..1 | `%organization.extension.where(url='…/ch-ekm-ext-department').valueString` |
-| Organization | Adresse | `orgStreetLine` | 0..1 | `%organization.address.first().line.first()` |
-| Organization | PLZ | `orgZipCode` | 1..1 | `%organization.address.first().postalCode` |
-| Organization | Ort | `orgCity` | 1..1 | `%organization.address.first().city` |
-| Organization | Telefon | `orgPhone` | 1..1 | `%organization.telecom.where(system='phone').value.first()` |
-| Organization | E-Mail | `orgEmail` | 0..1 | `%organization.telecom.where(system='email').value.first()` |
-| Organization | BUR (BER) | `orgBer` | 0..1 | `%organization.identifier.where(system='urn:oid:2.16.756.5.45').value.first()` |
-| Organization | GLN | `orgGln` | 0..1 | `%organization.identifier.where(system='urn:oid:2.51.1.3').value.first()` |
+| Practitioner | Telefon | `physicianPhone` | 1..1 | `%user.practitioner.resolve().telecom.where(system='phone').value.first()` |
+| Practitioner | E-Mail | `physicianEmail` | 0..1 | `%user.practitioner.resolve().telecom.where(system='email').value.first()` |
+| Practitioner | GLN | `physicianGln` | 0..1 | `%user.practitioner.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()` |
+| Organization | Name | `orgName` | 1..1 | `%user.organization.resolve().name` |
+| Organization | Abteilung | `orgDepartment` | 0..1 | `%user.organization.resolve().extension.where(url='…/ch-ekm-ext-department').valueString` |
+| Organization | Adresse | `orgStreetLine` | 0..1 | `%user.organization.resolve().address.first().line.first()` |
+| Organization | PLZ | `orgZipCode` | 1..1 | `%user.organization.resolve().address.first().postalCode` |
+| Organization | Ort | `orgCity` | 1..1 | `%user.organization.resolve().address.first().city` |
+| Organization | Telefon | `orgPhone` | 1..1 | `%user.organization.resolve().telecom.where(system='phone').value.first()` |
+| Organization | E-Mail | `orgEmail` | 0..1 | `%user.organization.resolve().telecom.where(system='email').value.first()` |
+| Organization | BUR (BER) | `orgBer` | 0..1 | `%user.organization.resolve().identifier.where(system='urn:oid:2.16.756.5.45').value.first()` |
+| Organization | GLN | `orgGln` | 0..1 | `%user.organization.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()` |
 
 ---
 
@@ -728,16 +729,15 @@ HAPI accepts it (unresolved — the current shape is what the §8 reference engi
 ## 10. Pre-population (`$populate`) — engine choice, launch contexts, FHIRPath gotchas
 
 Pre-population is wired with `sdc-questionnaire-initialExpression` (text/fhirpath) on the items,
-reading from launch-context variables (`%patient`, `%user`, `%organization`) declared via the
-modular root's `launchContext` extensions and propagated onto the assembled questionnaire.
+reading from launch-context variables (`%patient`, `%user`) declared via the modular root's
+`launchContext` extensions and propagated onto the assembled questionnaire.
 
 ### Engine: the SDC reference library (in-process), NOT hosted HAPI
 `tests/populate-gonorrhoea.sh` runs the **SDC reference `$populate`** (`@aehrc/sdc-populate`, the
 same engine Smart Forms runs in-app) through a small local CommonJS wrapper
 **`tests/populate/populate.cjs`** (mirrors `tests/extract/`; CJS for the same `fhirpath` directory-import
-reason — §8). It runs **in-process**, resolving the example resources from local files — no FHIR
-server. We **switched off the hosted HAPI `Questionnaire/$populate`** (smartforms.csiro.au, HAPI
-8.10.0 per §1) because:
+reason — §8). We **switched off the hosted HAPI `Questionnaire/$populate`** (smartforms.csiro.au,
+HAPI 8.10.0 per §1) because:
 
 - **HAPI does not resolve item/group-level `variable` extensions.** The Person section's
   `zipCode`/`city`/`country`/`canton` read a `person`-group `variable` (`%homeOrFirstAddress` =
@@ -745,38 +745,76 @@ server. We **switched off the hosted HAPI `Questionnaire/$populate`** (smartform
   **empty even though the Patient has an address** (no error). The reference engine resolves them.
   Two ways to cope: keep the group `variable` (works on the reference engine, what the renderer
   uses) **or** inline the full path per item (portable across both engines). The treating-physician
-  address fields inline the path (`%user.address.where(use='work').combine(%user.address).first().…`)
-  for portability; the Person section keeps its group `variable`.
-- It matches what the **Smart Forms renderer** actually does, including resolving non-patient/user
-  launch contexts from the SMART App Launch **`fhirContext`** (below).
+  Practitioner/Organization fields inline the path (`%user.practitioner.resolve().…`,
+  `%user.organization.resolve().…`) for the same reason; the Person section keeps its group
+  `variable`.
+- It matches what the **Smart Forms renderer** actually does.
 
 > The HAPI-specific gotchas below are kept because a *deployed* host may still use HAPI; the
 > initialExpressions are written to work on both engines.
 
-### Launch contexts and SMART `fhirContext` (how `%organization` is delivered)
-The modular root declares **three** launch contexts (propagated onto the assembled questionnaire):
+### `%user` is a PractitionerRole, delivered via `fhirContext` — Organization is derived via `resolve()`
+The modular root declares **two** launch contexts (propagated onto the assembled questionnaire):
 
 | `launchContext` name | type | variable | how the test feeds it | SMART launch delivery |
 | --- | --- | --- | --- | --- |
 | `patient` | Patient | `%patient` | `patient` param | top-level launch context |
-| `user` | Practitioner | `%user` (treating physician) | `user` param | `fhirUser` / `user` |
-| `organization` (custom code `ch-ekm-launch-context#organization`) | Organization | `%organization` | **`fhirContext`** entry | token-response `fhirContext` |
+| `user` | **PractitionerRole** | `%user` (treating physician's role) | **`fhirContext`** entry (see below — NOT the `user` param) | token-response `fhirContext` (or `fhirUser` resolved to one) |
 
-**`fhirContext` does not replace the SDC `launchContext` — they are different layers.** The SDC
-`launchContext` extension (on the questionnaire) *declares* the variable name the FHIRPath engine
-exposes; without it `%organization` does not exist and `$populate` has nothing to bind. SMART App
-Launch `fhirContext` (token response,
-https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp) is
-the *runtime transport* that delivers the extra resource. SDC's launchContext value set
-(`patient|encounter|location|user|study`) has **no** Organization code and is **extensible**, so the
-custom `#organization` code (new CodeSystem `ChEkmLaunchContext`) is spec-justified.
+**First attempt vs. current design.** The first version declared a *third*, custom launch context
+(`organization`, via a new CodeSystem `ChEkmLaunchContext`) delivered through SMART App Launch's
+**`fhirContext`** (token-response mechanism,
+https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhircontext-exp) —
+spec-justified since SDC's launchContext value set (`patient|encounter|location|user|study`) has no
+Organization code and is extensible, but it meant wiring (and keeping in sync) two separate resources
+for "the physician" and "their organization", plus a bespoke CodeSystem.
 
-Confirmed in the reference library (`packages/sdc-populate/src/inAppPopulation/utils/`): it binds
-`patient`/`user`/`encounter` from their own params, and resolves **any other launchContext from
-`fhirContext`, keyed by `resourceType`** (`createLaunchContextParam` →
-`resolvedFhirContextReferences[resourceType]`), then sets `%<name>` to it. So passing the
-Organization as a `fhirContext` entry (`{role, type:'Organization', reference:'Organization/…'}`)
-and letting the `fetchResourceCallback` resolve the reference is exactly the real SMART flow.
+The current design instead types `%user` as a **PractitionerRole** — which is also what a real SMART
+launch commonly hands back as `fhirUser`/`user` for clinical users — and lets the Practitioner and
+Organization fields **resolve** `PractitionerRole.practitioner` / `PractitionerRole.organization`
+themselves (`%user.practitioner.resolve()…`, `%user.organization.resolve()…`, see §3). One launch
+context instead of two; the Organization can never drift from the physician's actual affiliation; no
+custom CodeSystem.
+
+**Gotcha: the PractitionerRole must still go through `fhirContext`, not the engine's `user`
+parameter.** `@aehrc/sdc-populate`'s `createLaunchContextParam()` only binds its dedicated `user`
+input to `%user` when the launchContext's declared type is **literally `Practitioner`** (hardcoded
+check; confirmed in `inAppPopulation/utils/inputParameters.ts`, and the demo app's own copy is even
+marked `// FIXME need to eventually extend this to other resources`). For any other declared type —
+our `PractitionerRole` — that path is skipped, and `%user` is instead populated from a **`fhirContext`
+entry**, looked up by `resourceType` (`resolvedFhirContextReferences[resourceType]`) but bound to the
+FHIRPath variable under the launchContext's **`name`** (`user`). This is exactly the pattern documented
+in the real renderer's `packages/smart-forms-renderer/src/stores/smartConfigStore.ts` (comment:
+*"resolvedFhirContextReferences, keyed by resource type e.g. `{ "PractitionerRole": <PractitionerRole> }`"*)
+— so it is not a workaround specific to our test harness. `tests/populate/populate.cjs` therefore
+passes `fhirContext: [{ role: 'launch', type: 'PractitionerRole', reference: 'PractitionerRole/<id>' }]`
+and nothing on `user`; `fetchResourceCallback` resolves that reference (fetched from the local HAPI
+instance), and `%user` ends up bound to the PractitionerRole exactly as the renderer would deliver it.
+
+**The trade-off: `resolve()` needs a real, reachable FHIR server — it bypasses `fetchResourceCallback`
+entirely.** Confirmed by reading the reference engine source: FHIRPath's `resolve()` is implemented
+natively in `fhirpath.js` (`additional.js engine.resolveFn` → `requestResourceByUrl`), which does a
+plain HTTP `fetch` against `<fhirServerUrl>/<type>/<id>` using `ctx.processedVars.fhirServerUrl`. That
+value comes from `fetchResourceRequestConfig.sourceServerUrl`, which `@aehrc/sdc-populate` threads
+into **every** FHIRPath evaluation (questionnaire-level `variable`s, `initialExpression`s,
+`itemPopulationContext` — see `createFhirPathContext.ts` / `evaluateExpressions.ts`). It does **not**
+go through the library's own `fetchResourceCallback` hook (that hook only resolves `fhirContext`
+entries and reference/batch-context launch parameters — the old Organization-via-`fhirContext`
+mechanism). Consequences:
+- **In production** (Smart Forms, real SMART launch): `sourceServerUrl` is set to the launch `iss`
+  (see `apps/demo-renderer-app/src/components/PrePopButton.tsx`), a FHIR server the app already has
+  token-scoped read access to — so `resolve()` just works, no extra wiring.
+- **In our offline CLI test**: there is no FHIR server unless we run one. `tests/populate.cjs` now
+  takes a `fhirServerUrl` (default `http://localhost:8080/fhir`) and passes it as
+  `fetchResourceRequestConfig.sourceServerUrl`; `tests/populate-gonorrhoea.sh` requires the **local
+  HAPI instance** to be running first:
+  ```
+  ./start_hapi.sh      # HAPI FHIR at http://localhost:8080/fhir
+  ./load_examples.sh   # PUTs Practitioner/Organization/PractitionerRole/Patient examples into it
+  ```
+  `load_examples.sh` loads the resources in dependency order (Practitioner, Organization, then the
+  `ChEkmPractitionerRoleTreatingPhysicianExample` that references both) so `resolve()` can find them
+  by relative reference.
 
 ### FHIRPath gotchas (HAPI-specific, but the expressions satisfy both engines)
 Two non-obvious rules emerged getting `nationality` and `genderIdentity` (both read from Patient

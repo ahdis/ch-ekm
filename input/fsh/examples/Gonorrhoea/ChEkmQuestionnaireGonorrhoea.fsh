@@ -44,27 +44,19 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * extension[=].extension[+].url = "description"
 * extension[=].extension[=].valueString = "The patient to pre-populate the form with"
 
-// Treating physician (Practitioner) launch context — the standard SDC `user` context
-// (the clinician authoring/using the form = the treating physician). Consumed by the
-// initialExpression extensions (%user) in ChEkmQuestionnaireGonorrhoeaTreatingPhysician.
+// Treating physician launch context — the standard SDC `user` context, typed as
+// PractitionerRole rather than Practitioner: the clinician authoring/using the form is
+// represented by their role at the sending organization, so %user.practitioner.resolve()
+// and %user.organization.resolve() both come from this single context (see
+// ChEkmQuestionnaireGonorrhoeaTreatingPhysician). This also matches what a real SMART
+// launch typically hands back as `fhirUser`/`user` for clinical users.
 * extension[+].url = $sdc-launchContext
 * extension[=].extension[+].url = "name"
 * extension[=].extension[=].valueCoding = $sdc-launchContext-cs#user "User"
 * extension[=].extension[+].url = "type"
-* extension[=].extension[=].valueCode = #Practitioner
+* extension[=].extension[=].valueCode = #PractitionerRole
 * extension[=].extension[+].url = "description"
-* extension[=].extension[=].valueString = "The treating physician (practitioner) to pre-populate the form with"
-
-// Sending organization launch context — custom name (#organization), since no standard
-// SDC launchContext code covers Organization. Consumed by the initialExpression
-// extensions (%organization) in ChEkmQuestionnaireGonorrhoeaTreatingPhysician.
-* extension[+].url = $sdc-launchContext
-* extension[=].extension[+].url = "name"
-* extension[=].extension[=].valueCoding = $ch-ekm-launch-context#organization "Organization"
-* extension[=].extension[+].url = "type"
-* extension[=].extension[=].valueCode = #Organization
-* extension[=].extension[+].url = "description"
-* extension[=].extension[=].valueString = "The sending organization to pre-populate the form with"
+* extension[=].extension[=].valueString = "The treating physician's PractitionerRole (practitioner + sending organization) to pre-populate the form with"
 
 // Birthdate validation: dateOfBirth (defined in the Person sub-questionnaire) must be in
 // [1900-01-01, today()]. Authored as a Questionnaire-level targetConstraint here on the modular

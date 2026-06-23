@@ -58,32 +58,11 @@
         },
         {
           "url": "type",
-          "valueCode": "Practitioner"
+          "valueCode": "PractitionerRole"
         },
         {
           "url": "description",
-          "valueString": "The treating physician (practitioner) to pre-populate the form with"
-        }
-      ]
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
-      "extension": [
-        {
-          "url": "name",
-          "valueCoding": {
-            "code": "organization",
-            "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-launch-context",
-            "display": "Organization"
-          }
-        },
-        {
-          "url": "type",
-          "valueCode": "Organization"
-        },
-        {
-          "url": "description",
-          "valueString": "The sending organization to pre-populate the form with"
+          "valueString": "The treating physician's PractitionerRole (practitioner + sending organization) to pre-populate the form with"
         }
       ]
     },
@@ -607,7 +586,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%user.name.first().given.first()"
+                        "expression": "%user.practitioner.resolve().name.first().given.first()"
                       }
                     }
                   ],
@@ -623,7 +602,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%user.name.first().family"
+                        "expression": "%user.practitioner.resolve().name.first().family"
                       }
                     }
                   ],
@@ -639,7 +618,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%user.address.where(use='work').combine(%user.address).first().line.first()"
+                        "expression": "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().line.first()"
                       }
                     }
                   ],
@@ -654,7 +633,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%user.address.where(use='work').combine(%user.address).first().postalCode"
+                        "expression": "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().postalCode"
                       }
                     }
                   ],
@@ -670,7 +649,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%user.address.where(use='work').combine(%user.address).first().city"
+                        "expression": "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().city"
                       }
                     }
                   ],
@@ -686,7 +665,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%user.telecom.where(system='phone').value.first()"
+                        "expression": "%user.practitioner.resolve().telecom.where(system='phone').value.first()"
                       }
                     }
                   ],
@@ -702,7 +681,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%user.telecom.where(system='email').value.first()"
+                        "expression": "%user.practitioner.resolve().telecom.where(system='email').value.first()"
                       }
                     }
                   ],
@@ -717,7 +696,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%user.identifier.where(system='urn:oid:2.51.1.3').value.first()"
+                        "expression": "%user.practitioner.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"
                       }
                     }
                   ],
@@ -739,7 +718,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%organization.name"
+                        "expression": "%user.organization.resolve().name"
                       }
                     }
                   ],
@@ -755,7 +734,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%organization.extension.where(url='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString"
+                        "expression": "%user.organization.resolve().extension.where(url='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString"
                       }
                     }
                   ],
@@ -770,7 +749,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%organization.address.first().line.first()"
+                        "expression": "%user.organization.resolve().address.first().line.first()"
                       }
                     }
                   ],
@@ -785,7 +764,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%organization.address.first().postalCode"
+                        "expression": "%user.organization.resolve().address.first().postalCode"
                       }
                     }
                   ],
@@ -801,7 +780,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%organization.address.first().city"
+                        "expression": "%user.organization.resolve().address.first().city"
                       }
                     }
                   ],
@@ -817,7 +796,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%organization.telecom.where(system='phone').value.first()"
+                        "expression": "%user.organization.resolve().telecom.where(system='phone').value.first()"
                       }
                     }
                   ],
@@ -833,7 +812,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%organization.telecom.where(system='email').value.first()"
+                        "expression": "%user.organization.resolve().telecom.where(system='email').value.first()"
                       }
                     }
                   ],
@@ -848,7 +827,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%organization.identifier.where(system='urn:oid:2.16.756.5.45').value.first()"
+                        "expression": "%user.organization.resolve().identifier.where(system='urn:oid:2.16.756.5.45').value.first()"
                       }
                     }
                   ],
@@ -863,7 +842,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%organization.identifier.where(system='urn:oid:2.51.1.3').value.first()"
+                        "expression": "%user.organization.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"
                       }
                     }
                   ],

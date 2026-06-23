@@ -11,3 +11,4 @@ fsh-generated/**
 # editing files and folders
 .vscode/**
 .DS_Store
+hapifhir/package.tgz

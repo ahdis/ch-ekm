@@ -7,17 +7,21 @@
 // stay unique across the assembled form — the Person sub-questionnaire already uses zipCode/city,
 // and $assemble rejects duplicate linkIds.
 //
-// SDC pre-population: each item carries an initialExpression that reads from %user (the treating
-// physician Practitioner) or %organization (the sending Organization). Both launch contexts are
-// declared on the modular root ChEkmQuestionnaireGonorrhoea and propagated onto the assembled
-// questionnaire; the host resolves them (e.g. $populate / SMART launch) before rendering.
-// Per §10 (forms-summary), extensions are read with .where(url=...) and HAPI-safe accessors.
+// SDC pre-population: %user is the treating physician's PractitionerRole (the single `user`
+// launch context declared on the modular root ChEkmQuestionnaireGonorrhoea, propagated onto the
+// assembled questionnaire). Practitioner fields read %user.practitioner.resolve()...; Organization
+// fields read %user.organization.resolve()... — both via the FHIRPath resolve() function, which
+// requires the populate engine to be configured with a reachable FHIR server (fhirServerUrl /
+// fetchResourceRequestConfig.sourceServerUrl) that can serve those references, e.g. the SMART
+// launch `iss` in production, or the local HAPI instance (start_hapi.sh + load_examples.sh) for
+// tests/populate-gonorrhoea.sh. Per §10 (forms-summary), extensions are read with .where(url=...)
+// and HAPI-safe accessors.
 
 Instance: ChEkmQuestionnaireGonorrhoeaTreatingPhysician
 InstanceOf: Questionnaire
 Usage: #definition
 Title: "CH EKM Questionnaire: Gonorrhoea - Behandelnde Ärztin / behandelnder Arzt"
-Description: "Modular sub-questionnaire for the 'Treating Physician' section (Practitioner + Organization) of the Gonorrhoea clinical findings report. Reusable as an SDC assemble-child; supports expression-based pre-population from a practitioner (%user) and organization (%organization) launch context."
+Description: "Modular sub-questionnaire for the 'Treating Physician' section (Practitioner + Organization) of the Gonorrhoea clinical findings report. Reusable as an SDC assemble-child; supports expression-based pre-population from a single PractitionerRole (%user) launch context, resolving the practitioner and organization references it carries."
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaTreatingPhysician"
 * version = "0.0.1"
 * name = "ChEkmQuestionnaireGonorrhoeaTreatingPhysician"
@@ -37,10 +41,10 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].type = #group
 // Address to pre-populate from: prefer the work address, else fall back to the first address.
 // `combine` preserves order (unlike `|`), so the work entry, when present, is first. The full
-// expression is inlined per-item below rather than hoisted into a group `variable`: the hosted
-// HAPI $populate does NOT resolve item/group-level `variable` extensions (verified — the
-// analogous %homeOrFirstAddress group variable in the Person form fails to populate too), so
-// referencing %user directly in each initialExpression is the reliable pattern.
+// expression (incl. %user.practitioner.resolve()) is inlined per-item below rather than hoisted
+// into a group `variable`: the hosted HAPI $populate does NOT resolve item/group-level `variable`
+// extensions (verified — the analogous %homeOrFirstAddress group variable in the Person form
+// fails to populate too), so repeating the resolve() per item is the reliable pattern.
 
 // Vorname
 * item[=].item[=].item[+].linkId = "physicianGivenname"
@@ -50,7 +54,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.name.first().given.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.resolve().name.first().given.first()"
 
 // Name
 * item[=].item[=].item[+].linkId = "physicianSurname"
@@ -60,7 +64,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.name.first().family"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.resolve().name.first().family"
 
 // Adresse (Strasse, Hausnummer)
 * item[=].item[=].item[+].linkId = "physicianStreetLine"
@@ -69,7 +73,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.address.where(use='work').combine(%user.address).first().line.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().line.first()"
 
 // PLZ
 * item[=].item[=].item[+].linkId = "physicianZipCode"
@@ -79,7 +83,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.address.where(use='work').combine(%user.address).first().postalCode"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().postalCode"
 
 // Ort
 * item[=].item[=].item[+].linkId = "physicianCity"
@@ -89,7 +93,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.address.where(use='work').combine(%user.address).first().city"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().city"
 
 // Telefonnummer
 * item[=].item[=].item[+].linkId = "physicianPhone"
@@ -99,7 +103,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.telecom.where(system='phone').value.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.resolve().telecom.where(system='phone').value.first()"
 
 // E-Mail
 * item[=].item[=].item[+].linkId = "physicianEmail"
@@ -108,7 +112,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.telecom.where(system='email').value.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.resolve().telecom.where(system='email').value.first()"
 
 // GLN
 * item[=].item[=].item[+].linkId = "physicianGln"
@@ -117,7 +121,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.identifier.where(system='urn:oid:2.51.1.3').value.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"
 
 // --- Organization -----------------------------------------------------------
 * item[=].item[+].linkId = "treatingPhysicianOrganization"
@@ -132,7 +136,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%organization.name"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().name"
 
 // Abteilung
 * item[=].item[=].item[+].linkId = "orgDepartment"
@@ -141,7 +145,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%organization.extension.where(url='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().extension.where(url='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString"
 
 // Adresse (Strasse, Hausnummer)
 * item[=].item[=].item[+].linkId = "orgStreetLine"
@@ -150,7 +154,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%organization.address.first().line.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().address.first().line.first()"
 
 // PLZ
 * item[=].item[=].item[+].linkId = "orgZipCode"
@@ -160,7 +164,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%organization.address.first().postalCode"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().address.first().postalCode"
 
 // Ort
 * item[=].item[=].item[+].linkId = "orgCity"
@@ -170,7 +174,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%organization.address.first().city"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().address.first().city"
 
 // Telefonnummer
 * item[=].item[=].item[+].linkId = "orgPhone"
@@ -180,7 +184,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%organization.telecom.where(system='phone').value.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().telecom.where(system='phone').value.first()"
 
 // E-Mail
 * item[=].item[=].item[+].linkId = "orgEmail"
@@ -189,7 +193,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%organization.telecom.where(system='email').value.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().telecom.where(system='email').value.first()"
 
 // BUR (Betriebs- und Unternehmensregister / BER)
 * item[=].item[=].item[+].linkId = "orgBer"
@@ -198,7 +202,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%organization.identifier.where(system='urn:oid:2.16.756.5.45').value.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().identifier.where(system='urn:oid:2.16.756.5.45').value.first()"
 
 // GLN
 * item[=].item[=].item[+].linkId = "orgGln"
@@ -207,4 +211,4 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%organization.identifier.where(system='urn:oid:2.51.1.3').value.first()"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"

@@ -76,7 +76,7 @@
             ]
           }
         ],
-        "date": "2026-05-27T11:30:00+02:00"
+        "date": "2026-06-23T16:35:27.714Z"
       }
     },
     {
@@ -95,7 +95,7 @@
                     {
                       "system": "urn:iso:std:iso:3166",
                       "code": "CH",
-                      "display": "Switzerland"
+                      "display": "Schweiz"
                     }
                   ]
                 }
@@ -112,7 +112,7 @@
                     {
                       "system": "http://snomed.info/sct",
                       "code": "1384187000",
-                      "display": "Identifies as transgender (finding)"
+                      "display": "Identifiziert sich als Transgender"
                     }
                   ]
                 }
@@ -122,16 +122,16 @@
         ],
         "name": [
           {
-            "family": "M",
+            "family": "F",
             "given": [
-              "B"
+              "D"
             ]
           }
         ],
         "identifier": [
           {
             "system": "urn:oid:2.16.756.5.32",
-            "value": "7560000000000"
+            "value": "7561234567897"
           }
         ],
         "address": [
@@ -142,7 +142,7 @@
             "state": "BE"
           }
         ],
-        "gender": "male",
+        "gender": "female",
         "birthDate": "2000-01-01"
       }
     },
@@ -184,21 +184,14 @@
                   {
                     "system": "http://snomed.info/sct",
                     "code": "264931009",
-                    "display": "Symptomatic (qualifier value)"
+                    "display": "Symptomatisch"
                   }
                 ]
               }
             ]
           }
         ],
-        "_onsetDateTime": {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-              "valueCode": "asked-unknown"
-            }
-          ]
-        }
+        "onsetDateTime": "2026-06-10"
       }
     },
     {
@@ -245,7 +238,7 @@
                 {
                   "system": "http://hl7.org/fhir/administrative-gender",
                   "code": "male",
-                  "display": "Male"
+                  "display": "männlich"
                 }
               ]
             }
@@ -264,8 +257,8 @@
               "coding": [
                 {
                   "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                  "code": "offered-paid-sex",
-                  "display": "Offered paid sex"
+                  "code": "non-steady-partner",
+                  "display": "Nicht fester Partner"
                 }
               ]
             }
@@ -391,5 +384,5 @@
       }
     }
   ],
-  "timestamp": "2026-05-27T11:30:00+02:00"
+  "timestamp": "2026-06-23T16:35:27.714Z"
 }

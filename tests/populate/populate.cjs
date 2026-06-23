@@ -8,58 +8,64 @@
 // (dist/index.cjs) resolves it fine, so we require() it here.
 //
 // Usage:
-//   node populate.cjs <questionnaire.json> <patient.json> <practitioner.json> <organization.json> <out.json>
+//   node populate.cjs <questionnaire.json> <patient.json> <practitionerRole.json> <out.json> [fhirServerUrl]
 //
 // Launch contexts (declared on the modular root, propagated onto the assembled questionnaire):
-//   patient      (Patient)      -> %patient        passed as `patient`
-//   user         (Practitioner) -> %user           passed as `user`
-//   organization (Organization) -> %organization   passed via `fhirContext` (SMART App Launch
-//                                                   mechanism), resolved by the fetch callback.
+//   patient (Patient)         -> %patient  passed as `patient`
+//   user    (PractitionerRole)-> %user     delivered via `fhirContext` (NOT the `user` param)
 //
-// The reference populate binds any non-patient/user launchContext from fhirContext by
-// resourceType, which is exactly how a real SMART launch would deliver the Organization.
+// Why fhirContext and not the dedicated `user` parameter: @aehrc/sdc-populate's
+// createLaunchContextParam() only binds the named `user` parameter when the launchContext's
+// declared type is literally 'Practitioner' (hardcoded check); for any other type (incl. our
+// PractitionerRole) it falls through to resolving the resource from `fhirContext`, keyed by
+// resourceType, and binds it to %user via the launchContext's `name` regardless. This matches how
+// the actual Smart Forms renderer expects it too — see the `resolvedFhirContextReferences` comment
+// in packages/smart-forms-renderer/src/stores/smartConfigStore.ts ("keyed by resource type e.g.
+// { PractitionerRole: <PractitionerRole> }").
+//
+// %user is the treating physician's PractitionerRole. The Practitioner and Organization fields
+// in ChEkmQuestionnaireGonorrhoeaTreatingPhysician read %user.practitioner.resolve() and
+// %user.organization.resolve() respectively — fhirpath.js's resolve() function fetches those
+// references over HTTP from `fhirServerUrl` (it does NOT go through our fetchResourceCallback),
+// so a reachable FHIR server holding the Practitioner/Organization by id is required. We point it
+// at the local HAPI instance (./start_hapi.sh + ./load_examples.sh), defaulting to
+// http://localhost:8080/fhir.
 
 const { readFileSync, writeFileSync } = require('node:fs');
 const { populateQuestionnaire } = require('@aehrc/sdc-populate');
 
-const [, , qPath, patPath, practPath, orgPath, outPath] = process.argv;
-if (!qPath || !patPath || !practPath || !orgPath || !outPath) {
+const [, , qPath, patPath, rolePath, outPath, fhirServerUrlArg] = process.argv;
+if (!qPath || !patPath || !rolePath || !outPath) {
   console.error(
-    'Usage: node populate.cjs <questionnaire.json> <patient.json> <practitioner.json> <organization.json> <out.json>'
+    'Usage: node populate.cjs <questionnaire.json> <patient.json> <practitionerRole.json> <out.json> [fhirServerUrl]'
   );
   process.exit(2);
 }
 
+const fhirServerUrl = fhirServerUrlArg || process.env.CH_EKM_FHIR_BASE || 'http://localhost:8080/fhir';
+
 const questionnaire = JSON.parse(readFileSync(qPath, 'utf8'));
 const patient = JSON.parse(readFileSync(patPath, 'utf8'));
-const user = JSON.parse(readFileSync(practPath, 'utf8'));
-const organization = JSON.parse(readFileSync(orgPath, 'utf8'));
+const practitionerRole = JSON.parse(readFileSync(rolePath, 'utf8'));
 
-// Resolve fhirContext (and any other) references locally — no FHIR server involved.
-const localResources = {
-  [`Organization/${organization.id}`]: organization,
-  [`Practitioner/${user.id}`]: user,
-  [`Patient/${patient.id}`]: patient
-};
-const fetchResourceCallback = (query) => {
-  const ref = String(query).split('?')[0];
-  const resource = localResources[ref];
-  if (!resource) {
-    return Promise.reject(new Error(`No local resource for reference "${query}"`));
+// Resolves fhirContext references (the PractitionerRole) by fetching from the local HAPI instance.
+const fetchResourceCallback = async (query) => {
+  const url = `${fhirServerUrl.replace(/\/$/, '')}/${String(query).replace(/^\//, '')}`;
+  const res = await fetch(url, { headers: { Accept: 'application/fhir+json' } });
+  if (!res.ok) {
+    throw new Error(`GET ${url} -> HTTP ${res.status}`);
   }
-  return Promise.resolve(resource);
+  return res.json();
 };
 
 (async () => {
   const { populateSuccess, populateResult } = await populateQuestionnaire({
     questionnaire,
     fetchResourceCallback,
-    fetchResourceRequestConfig: {},
+    fetchResourceRequestConfig: { sourceServerUrl: fhirServerUrl },
     patient,
-    user,
-    // The Organization is delivered the SMART App Launch way: as a fhirContext entry.
     fhirContext: [
-      { role: 'launch', type: 'Organization', reference: `Organization/${organization.id}` }
+      { role: 'launch', type: 'PractitionerRole', reference: `PractitionerRole/${practitionerRole.id}` }
     ]
   });
 

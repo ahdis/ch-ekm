@@ -50,12 +50,3 @@ Description: "Type of relationship to a sexual contact partner (Art der Beziehun
 * #used-paid-sex ^designation[=].value = "Recours à du sexe rémunéré"
 * #used-paid-sex ^designation[+].language = #it-CH
 * #used-paid-sex ^designation[=].value = "Ricorso a sesso a pagamento"
-
-CodeSystem: ChEkmLaunchContext
-Id: ch-ekm-launch-context
-Title: "CH EKM Launch Context"
-Description: "Custom SDC launch-context names used by CH EKM questionnaires where no standard SDC launchContext code applies. Currently only the sending/treating Organization (no standard SDC launchContext code covers Organization)."
-* ^status = #active
-* ^experimental = false
-* ^caseSensitive = true
-* #organization "Organization" "The sending/treating organization to pre-populate the form with."

@@ -1,0 +1,27 @@
+# -------------------------------------------------------------------------------------
+
+hapi:
+  fhir:
+    ig_runtime_upload_enabled: false
+    validate_resource_status_for_package_upload: false   # default true
+    install_transitive_ig_dependencies: false
+    # implementationguides:
+      # swiss:
+      #   packageUrl: file:///configs/package.tgz
+      #   name: ch.fhir.ig.ch-ekm
+      #   version: 0.0.1
+      #   reloadExisting: true
+      #   installMode: STORE_AND_INSTALL
+      #   additionalResourceFolders:
+      #     - example
+      # emed:
+      #   name: ch.fhir.ig.ch-emed
+      #   version: 6.0.0
+      #   reloadExisting: false
+      #   installMode: STORE_AND_INSTALL
+      # vacd:
+      #   name: ch.fhir.ig.ch-vacd
+      #   version: 6.0.0
+      #   reloadExisting: false
+      #   installMode: STORE_AND_INSTALL          
+    upliftedRefchains_enabled: true

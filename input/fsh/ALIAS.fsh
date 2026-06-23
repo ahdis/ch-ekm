@@ -37,7 +37,6 @@ Alias: $sdc-launchContext =         http://hl7.org/fhir/uv/sdc/StructureDefiniti
 Alias: $sdc-launchContext-cs =      http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext
 Alias: $sdc-initialExpression =     http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression
 Alias: $variable =                  http://hl7.org/fhir/StructureDefinition/variable
-Alias: $ch-ekm-launch-context =     http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-launch-context
 // SDC template-based extraction
 Alias: $sdc-extr-template =          http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template
 Alias: $sdc-templateExtract =        http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract
