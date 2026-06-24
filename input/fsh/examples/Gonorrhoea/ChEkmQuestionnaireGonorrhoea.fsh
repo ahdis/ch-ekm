@@ -24,7 +24,8 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 // renderer (e.g. Smart Forms) can run $extract on the filled QuestionnaireResponse to
 // produce a ChEkmDocumentGonorrhoea Bundle. tests/assemble-gonorrhoea.sh re-attaches both
 // onto the assembled questionnaire (the artifact the renderer loads).
-* contained[0] = ChEkmDocumentGonorrhoeaTemplate
+// FIXME: readd
+// * contained[0] = ChEkmDocumentGonorrhoeaTemplate
 
 // Required by sdc-questionnaire-modular 4.0.0: the root must declare assemble-root.
 * extension[+].url = $sdc-assemble-expectation
@@ -86,9 +87,10 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].text = "Meldung zum klinischen Befund: Gonorrhoea"
 // Drives template-based $extract: one instance of the contained Bundle template per
 // gonorrhoea-form group (i.e. one document Bundle per filled form).
-* item[=].extension[+].url = $sdc-templateExtract
-* item[=].extension[=].extension[+].url = "template"
-* item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentGonorrhoeaTemplate)
+// FIXME
+// * item[=].extension[+].url = $sdc-templateExtract
+// * item[=].extension[=].extension[+].url = "template"
+// * item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentGonorrhoeaTemplate)
 
 // Angaben zur betroffenen Person
 * item[=].item[+].linkId = "person"

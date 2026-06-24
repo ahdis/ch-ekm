@@ -119,13 +119,17 @@ Usage: #inline
 // ORDER MATTERS: the context-gated extension MUST come before the plain onset value extension.
 // The reference engine's array index bookkeeping mis-handles the reverse order (the gated element
 // is not deleted and the valueCode splits into a stray entry). See forms-summary.md §8.
-* onsetDateTime.extension[0].url = $data-absent-reason
-* onsetDateTime.extension[0].extension[0].url = $sdc-templateExtractContext
-* onsetDateTime.extension[0].extension[0].valueString = "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
-* onsetDateTime.extension[0].valueCode.extension[0].url = $sdc-templateExtractValue
-* onsetDateTime.extension[0].valueCode.extension[0].valueString = "'asked-unknown'"
-* onsetDateTime.extension[1].url = $sdc-templateExtractValue
-* onsetDateTime.extension[1].valueString = "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
+// error [processing]:
+// HAPI-1811: Extension (URL='http://hl7.org/fhir/StructureDefinition/data-absent-reason') must not have both a value and other contained extensions
+// * onsetDateTime.extension[0].url = $data-absent-reason
+// * onsetDateTime.extension[0].extension[0].url = $sdc-templateExtractContext
+// * onsetDateTime.extension[0].extension[0].valueString = "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
+// * onsetDateTime.extension[0].valueCode.extension[0].url = $sdc-templateExtractValue
+// * onsetDateTime.extension[0].valueCode.extension[0].valueString = "'asked-unknown'"
+// * onsetDateTime.extension[1].url = $sdc-templateExtractValue
+// * onsetDateTime.extension[1].valueString = "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
+* onsetDateTime.extension[0].url = $sdc-templateExtractValue
+* onsetDateTime.extension[0].valueString = "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
 // Manifestation -> evidence.code (identity pass-through of the answered Coding)
 * evidence[0].code[0].extension[+].url = $sdc-templateExtractContext
 * evidence[0].code[0].extension[=].valueString = "%resource.descendants().where(linkId='manifestation').answer.value"
@@ -277,11 +281,13 @@ Usage: #inline
 * identifier[1].value.extension[0].url = $sdc-templateExtractValue
 * identifier[1].value.extension[0].valueString = "$this"
 // Department (optional, ch-ekm-ext-department) -> gated on orgDepartment
-* extension[0].url = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department"
-* extension[0].extension[0].url = $sdc-templateExtractContext
-* extension[0].extension[0].valueString = "%resource.descendants().where(linkId='orgDepartment').answer.value"
-* extension[0].valueString.extension[0].url = $sdc-templateExtractValue
-* extension[0].valueString.extension[0].valueString = "$this"
+// error [processing]:
+// HAPI-1811: Extension (URL='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department') must not have both a value and other contained extensions
+// * extension[0].url = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department"
+// * extension[0].extension[0].url = $sdc-templateExtractContext
+// * extension[0].extension[0].valueString = "%resource.descendants().where(linkId='orgDepartment').answer.value"
+// * extension[0].valueString.extension[0].url = $sdc-templateExtractValue
+// * extension[0].valueString.extension[0].valueString = "$this"
 // name (required, single)
 * name.extension[+].url = $sdc-templateExtractValue
 * name.extension[=].valueString = "%resource.descendants().where(linkId='orgName').answer.value.first()"
