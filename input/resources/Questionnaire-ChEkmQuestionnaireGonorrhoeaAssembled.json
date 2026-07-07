@@ -6,7 +6,7 @@
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp",
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template"
     ],
-    "source": "https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-gonorrhoea.sh"
+    "source": "https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-questionnaire.sh"
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaAssembled",
   "version": "0.0.1",
@@ -1678,5 +1678,5 @@
     }
   ],
   "title": "CH EKM Questionnaire: Gonorrhoea (assembled)",
-  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (tests/assemble-gonorrhoea.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (tests/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

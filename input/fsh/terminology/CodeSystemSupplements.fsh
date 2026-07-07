@@ -293,3 +293,90 @@ Description: "CodeSystem supplement adding draft German, French and Italian (Swi
 * #84387000 ^designation[=].value = "Asymptomatique"
 * #84387000 ^designation[+].language = #it-CH
 * #84387000 ^designation[=].value = "Asintomatico"
+
+// --- Mpox manifestation (ValueSet ChEkmMpoxManifestation, issue #24) — DEMIS-aligned ----------
+// Skin-lesion sites are post-coordinated expressions (Skin lesion : Finding site = <skin structure>).
+// NOTE: tx does NOT apply supplement designations to post-coordinated expressions on $expand — it
+// returns the normal-form display instead. These de/fr/it values are applied client-side by
+// tests/build-preview-questionnaire.py; a live renderer using server $expand shows the
+// untranslated expression. See issue #24.
+
+* #"95324001:{363698007=280158000}" "Skin lesion of anogenital region"
+* #"95324001:{363698007=280158000}" ^designation[+].language = #de-CH
+* #"95324001:{363698007=280158000}" ^designation[=].value = "Hautläsion im Anogenitalbereich"
+* #"95324001:{363698007=280158000}" ^designation[+].language = #fr-CH
+* #"95324001:{363698007=280158000}" ^designation[=].value = "Lésion cutanée de la région anogénitale"
+* #"95324001:{363698007=280158000}" ^designation[+].language = #it-CH
+* #"95324001:{363698007=280158000}" ^designation[=].value = "Lesione cutanea della regione anogenitale"
+
+* #"95324001:{363698007=73897004}" "Skin lesion of face"
+* #"95324001:{363698007=73897004}" ^designation[+].language = #de-CH
+* #"95324001:{363698007=73897004}" ^designation[=].value = "Hautläsion im Gesicht"
+* #"95324001:{363698007=73897004}" ^designation[+].language = #fr-CH
+* #"95324001:{363698007=73897004}" ^designation[=].value = "Lésion cutanée du visage"
+* #"95324001:{363698007=73897004}" ^designation[+].language = #it-CH
+* #"95324001:{363698007=73897004}" ^designation[=].value = "Lesione cutanea del viso"
+
+* #"95324001:{363698007=116370005}" "Skin lesion of extremity"
+* #"95324001:{363698007=116370005}" ^designation[+].language = #de-CH
+* #"95324001:{363698007=116370005}" ^designation[=].value = "Hautläsion an den Extremitäten"
+* #"95324001:{363698007=116370005}" ^designation[+].language = #fr-CH
+* #"95324001:{363698007=116370005}" ^designation[=].value = "Lésion cutanée des extrémités"
+* #"95324001:{363698007=116370005}" ^designation[+].language = #it-CH
+* #"95324001:{363698007=116370005}" ^designation[=].value = "Lesione cutanea degli arti"
+
+* #95324001 "Skin lesion (disorder)"
+* #95324001 ^designation[+].language = #de-CH
+* #95324001 ^designation[=].value = "Hautläsion"
+* #95324001 ^designation[+].language = #fr-CH
+* #95324001 ^designation[=].value = "Lésion cutanée"
+* #95324001 ^designation[+].language = #it-CH
+* #95324001 ^designation[=].value = "Lesione cutanea"
+
+* #30746006 "Enlargement of lymph nodes (disorder)"
+* #30746006 ^designation[+].language = #de-CH
+* #30746006 ^designation[=].value = "Lymphadenopathie"
+* #30746006 ^designation[+].language = #fr-CH
+* #30746006 ^designation[=].value = "Lymphadénopathie"
+* #30746006 ^designation[+].language = #it-CH
+* #30746006 ^designation[=].value = "Linfoadenopatia"
+
+* #68962001 "Myalgia (finding)"
+* #68962001 ^designation[+].language = #de-CH
+* #68962001 ^designation[=].value = "Myalgie"
+* #68962001 ^designation[+].language = #fr-CH
+* #68962001 ^designation[=].value = "Myalgie"
+* #68962001 ^designation[+].language = #it-CH
+* #68962001 ^designation[=].value = "Mialgia"
+
+* #25064002 "Headache (finding)"
+* #25064002 ^designation[+].language = #de-CH
+* #25064002 ^designation[=].value = "Kopfschmerzen"
+* #25064002 ^designation[+].language = #fr-CH
+* #25064002 ^designation[=].value = "Céphalée"
+* #25064002 ^designation[+].language = #it-CH
+* #25064002 ^designation[=].value = "Cefalea"
+
+* #161891005 "Backache"
+* #161891005 ^designation[+].language = #de-CH
+* #161891005 ^designation[=].value = "Rückenschmerzen"
+* #161891005 ^designation[+].language = #fr-CH
+* #161891005 ^designation[=].value = "Dorsalgie"
+* #161891005 ^designation[+].language = #it-CH
+* #161891005 ^designation[=].value = "Mal di schiena"
+
+* #13791008 "Asthenia (finding)"
+* #13791008 ^designation[+].language = #de-CH
+* #13791008 ^designation[=].value = "Asthenie"
+* #13791008 ^designation[+].language = #fr-CH
+* #13791008 ^designation[=].value = "Asthénie"
+* #13791008 ^designation[+].language = #it-CH
+* #13791008 ^designation[=].value = "Astenia"
+
+* #386661006 "Fever (finding)"
+* #386661006 ^designation[+].language = #de-CH
+* #386661006 ^designation[=].value = "Fieber"
+* #386661006 ^designation[+].language = #fr-CH
+* #386661006 ^designation[=].value = "Fièvre"
+* #386661006 ^designation[+].language = #it-CH
+* #386661006 ^designation[=].value = "Febbre"

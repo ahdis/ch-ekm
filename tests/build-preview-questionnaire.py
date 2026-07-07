@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Build a self-contained PREVIEW of the assembled Gonorrhoea questionnaire.
+Build a self-contained PREVIEW of an assembled CH EKM questionnaire (disease-agnostic).
 
 The Smart Forms renderer expands `answerValueSet`s against a live terminology
 server. The CH-specific value sets (bfs-country-codes, ChEkm*) are not resolvable
@@ -19,8 +19,12 @@ Expansion strategy (terminology server: tx.fhir.ch, which hosts ch-term + SNOMED
     set, then re-expands with `useSupplement` for any local supplement whose base system is present.
     This bakes the localized option labels into the inline `answerOption` displays.
 
-Usage:  python3 tests/build-preview-questionnaire.py      (PREVIEW_LANG=fr-CH to override language)
-Output: fsh-generated/Questionnaire-ChEkmQuestionnaireGonorrhoea-preview.json
+Usage:  python3 tests/build-preview-questionnaire.py [AssembledIdOrPath]
+          - no arg          -> ChEkmQuestionnaireGonorrhoeaAssembled (default)
+          - an id           -> e.g. ChEkmQuestionnaireMpoxAssembled
+          - a path to *.json
+        PREVIEW_LANG=fr-CH to override the display language (default de-CH).
+Output: input/resources/Questionnaire-<Base>Preview-<LANG>.json
 """
 import json, os, sys, urllib.request, urllib.parse, glob
 
@@ -31,12 +35,26 @@ os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 LANG = os.environ.get("PREVIEW_LANG", "de-CH")
 TX = "https://tx.fhir.ch/r4"
 RES = "fsh-generated/resources"
-SRC = "input/resources/Questionnaire-ChEkmQuestionnaireGonorrhoeaAssembled.json"
+
+# Which assembled questionnaire to preview: positional arg is either an id
+# (e.g. ChEkmQuestionnaireMpoxAssembled) or a path to the assembled Questionnaire JSON.
+# Defaults to the Gonorrhoea assembled questionnaire.
+_arg = sys.argv[1] if len(sys.argv) > 1 else "ChEkmQuestionnaireGonorrhoeaAssembled"
+if _arg.endswith(".json") or "/" in _arg:
+    SRC = _arg
+    _base = os.path.basename(_arg)[:-len(".json")]
+    ASSEMBLED_ID = _base[len("Questionnaire-"):] if _base.startswith("Questionnaire-") else _base
+else:
+    ASSEMBLED_ID = _arg
+    SRC = f"input/resources/Questionnaire-{ASSEMBLED_ID}.json"
+
 # Distinct identity for the preview so it does not collide with the assembled questionnaire's
-# id/url when the IG Publisher scans input/resources.
-PREVIEW_ID = f"ChEkmQuestionnaireGonorrhoeaPreview-{LANG}"
+# id/url when the IG Publisher scans input/resources. Derived from the assembled id (strip a
+# trailing "Assembled"): ChEkmQuestionnaireMpoxAssembled -> ChEkmQuestionnaireMpoxPreview-<LANG>.
+BASE_ID = ASSEMBLED_ID[:-len("Assembled")] if ASSEMBLED_ID.endswith("Assembled") else ASSEMBLED_ID
+PREVIEW_ID = f"{BASE_ID}Preview-{LANG}"
 PREVIEW_URL = f"http://fhir.ch/ig/ch-ekm/Questionnaire/{PREVIEW_ID}"
-PREVIEW_NAME = "ChEkmQuestionnaireGonorrhoeaPreview" + LANG.replace("-", "")  # FHIR name: no hyphens
+PREVIEW_NAME = f"{BASE_ID}Preview" + LANG.replace("-", "")  # FHIR name: no hyphens
 OUT = f"input/resources/Questionnaire-{PREVIEW_ID}.json"
 HEADERS = {"Content-Type": "application/fhir+json", "Accept": "application/fhir+json"}
 
@@ -51,6 +69,19 @@ LOCAL_SUPPLEMENTS = [
     for cs in LOCAL_CODESYSTEMS
     if cs.get("content") == "supplement" and cs.get("supplements") and cs.get("url")
 ]
+
+# Supplement designations keyed by (base_system, code, language). tx does NOT apply supplement
+# designations to post-coordinated SNOMED expressions (e.g. "271807003:363698007=66019005") — for
+# those it returns the source-language concept.display. We override the baked display client-side
+# from the supplement so an expression option is localized like every pre-coordinated code.
+SUPPLEMENT_DESIGNATIONS = {}
+for _cs in LOCAL_CODESYSTEMS:
+    if _cs.get("content") == "supplement" and _cs.get("supplements"):
+        _base = _cs["supplements"].split("|", 1)[0]
+        for _concept in _cs.get("concept", []):
+            for _d in _concept.get("designation", []):
+                if _d.get("language") and _d.get("value"):
+                    SUPPLEMENT_DESIGNATIONS[(_base, _concept["code"], _d["language"])] = _d["value"]
 
 
 def post(url, body):
@@ -120,6 +151,12 @@ def expand(canonical):
     for c in localized.get("expansion", {}).get("contains", []):
         coding = {"system": c["system"], "code": c["code"]}
         display = c.get("display") or base_display.get((c["system"], c["code"]))
+        # Post-coordinated expressions do not get the supplement designation from tx; override
+        # from the local supplement so the expression option is localized (see SUPPLEMENT_DESIGNATIONS).
+        if ":" in c["code"]:
+            supp = SUPPLEMENT_DESIGNATIONS.get((c["system"], c["code"], LANG))
+            if supp:
+                display = supp
         if display:
             coding["display"] = display
         out.append({"valueCoding": coding})
@@ -151,7 +188,7 @@ def walk(item):
 
 def main():
     if not os.path.exists(SRC):
-        sys.exit(f"ERROR: {SRC} not found. Run tests/assemble-gonorrhoea.sh first.")
+        sys.exit(f"ERROR: {SRC} not found. Run tests/assemble-questionnaire.sh <RootId> first.")
     q = json.load(open(SRC))
     print(f"Expanding answerValueSets via {TX} ...")
     walk(q.get("item", []))

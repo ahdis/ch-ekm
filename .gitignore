@@ -12,3 +12,5 @@ fsh-generated/**
 .vscode/**
 .DS_Store
 hapifhir/package.tgz
+Mpox.csv
+TODO.md
