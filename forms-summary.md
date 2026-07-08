@@ -419,6 +419,24 @@ Still open:
    `#definition` for the reusable children so they publish as artifacts.
 4. **Canton & nationality** rendering: `Kanton` as free string or eCH-0007 choice;
    `nationality`/`country` likely autocomplete (large `bfs-country-codes`).
+5. **TODO (deferred) — inline a `subQuestionnaire` group directly in the modular root.** We would
+   like to drop the separate aggregator `ChEkmQuestionnaireGonorrhoeaPerson` and instead put its
+   `person` group (with the three person `subQuestionnaire` placeholders inside it) **directly** in
+   `ChEkmQuestionnaireGonorrhoea`. **This does not work today**, even with our recursion patch
+   (§1/§2) — verified empirically: the `person` group is dropped and its placeholders never resolve.
+   Two *further* `@aehrc/sdc-assemble` limitations remain (the patch only fixed recursion into a
+   modular **child** — a separate sub-questionnaire):
+   - `getCanonicalUrls` scans only `item[0].item` and does **not descend** into a nested group, so
+     placeholders inside a `person` group are never discovered; and
+   - `propagateProperties` replaces `item[0].item` **by position** assuming every entry is a
+     placeholder, so a real (non-placeholder) group interleaved among placeholders is clobbered.
+
+   Fixing this needs recursive placeholder **discovery** + **match-based** (not positional)
+   replacement — a bigger, riskier divergence from upstream. **For now we accept the limitation**
+   and keep the aggregator pattern (root → `ChEkmQuestionnaireGonorrhoeaPerson` → three leaves),
+   which already yields the single `person` group we want. Revisit if/when upstream supports
+   arbitrary-depth `subQuestionnaire` placement (would extend PR
+   [#1998](https://github.com/aehrc/smart-forms/pull/1998)).
 
 ---
 
