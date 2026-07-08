@@ -6,7 +6,7 @@
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp",
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template"
     ],
-    "source": "https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-gonorrhoea.sh"
+    "source": "https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-questionnaire.sh"
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaPreview-de-CH",
   "version": "0.0.1",
@@ -68,7 +68,7 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaPerson|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaPerson|0.0.1-assembled"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -90,21 +90,17 @@
       "text": "Meldung zum klinischen Befund: Gonorrhoea",
       "item": [
         {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/variable",
-              "valueExpression": {
-                "name": "homeOrFirstAddress",
-                "language": "text/fhirpath",
-                "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
-              }
-            }
-          ],
           "linkId": "person",
-          "text": "Angaben zur betroffenen Person",
           "type": "group",
+          "text": "Angaben zur betroffenen Person",
           "item": [
             {
+              "linkId": "surnameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.surnameInitial",
+              "text": "Initiale Name",
+              "type": "string",
+              "required": true,
+              "maxLength": 1,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -113,15 +109,15 @@
                     "expression": "%patient.name.first().family.substring(0,1)"
                   }
                 }
-              ],
-              "linkId": "surnameInitial",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.surnameInitial",
-              "text": "Initiale Name",
-              "type": "string",
-              "required": true,
-              "maxLength": 1
+              ]
             },
             {
+              "linkId": "givennameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.givennameInitial",
+              "text": "Initiale Vorname",
+              "type": "string",
+              "required": true,
+              "maxLength": 1,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -130,15 +126,14 @@
                     "expression": "%patient.name.first().given.first().substring(0,1)"
                   }
                 }
-              ],
-              "linkId": "givennameInitial",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.givennameInitial",
-              "text": "Initiale Vorname",
-              "type": "string",
-              "required": true,
-              "maxLength": 1
+              ]
             },
             {
+              "linkId": "dateOfBirth",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.dateOfBirth",
+              "text": "Geburtsdatum",
+              "type": "date",
+              "required": true,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -147,14 +142,14 @@
                     "expression": "%patient.birthDate"
                   }
                 }
-              ],
-              "linkId": "dateOfBirth",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.dateOfBirth",
-              "text": "Geburtsdatum",
-              "type": "date",
-              "required": true
+              ]
             },
             {
+              "linkId": "ahvn13",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.ahvn13",
+              "text": "AHV-Nummer (OASI)",
+              "type": "string",
+              "maxLength": 13,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/regex",
@@ -167,34 +162,9 @@
                     "expression": "%patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.first()"
                   }
                 }
-              ],
-              "linkId": "ahvn13",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.ahvn13",
-              "text": "AHV-Nummer (OASI)",
-              "type": "string",
-              "maxLength": 13
+              ]
             },
             {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/questionnaire-item-control",
-                        "code": "drop-down"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                  "valueExpression": {
-                    "language": "text/fhirpath",
-                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/patient-citizenship').extension.where(url = 'code').valueCodeableConcept.coding.first()"
-                  }
-                }
-              ],
               "linkId": "nationality",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.nationality",
               "text": "Nationalität",
@@ -216,6 +186,26 @@
                   }
                 ]
               },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "drop-down",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/patient-citizenship').extension.where(url = 'code').valueCodeableConcept.coding.first()"
+                  }
+                }
+              ],
               "answerOption": [
                 {
                   "valueCoding": {
@@ -1592,6 +1582,10 @@
               ]
             },
             {
+              "linkId": "zipCode",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.zipCode",
+              "text": "PLZ",
+              "type": "string",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -1600,13 +1594,13 @@
                     "expression": "%homeOrFirstAddress.postalCode"
                   }
                 }
-              ],
-              "linkId": "zipCode",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.zipCode",
-              "text": "PLZ",
-              "type": "string"
+              ]
             },
             {
+              "linkId": "city",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.city",
+              "text": "Wohnort",
+              "type": "string",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -1615,33 +1609,9 @@
                     "expression": "%homeOrFirstAddress.city"
                   }
                 }
-              ],
-              "linkId": "city",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.city",
-              "text": "Wohnort",
-              "type": "string"
+              ]
             },
             {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/questionnaire-item-control",
-                        "code": "drop-down"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                  "valueExpression": {
-                    "language": "text/fhirpath",
-                    "expression": "%homeOrFirstAddress.country"
-                  }
-                }
-              ],
               "linkId": "country",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.country",
               "text": "Land",
@@ -1663,6 +1633,26 @@
                   }
                 ]
               },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "drop-down",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%homeOrFirstAddress.country"
+                  }
+                }
+              ],
               "answerOption": [
                 {
                   "valueCoding": {
@@ -3039,6 +3029,10 @@
               ]
             },
             {
+              "linkId": "canton",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.canton",
+              "text": "Kanton",
+              "type": "open-choice",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3048,10 +3042,6 @@
                   }
                 }
               ],
-              "linkId": "canton",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.canton",
-              "text": "Kanton",
-              "type": "open-choice",
               "answerOption": [
                 {
                   "valueCoding": {
@@ -3212,30 +3202,6 @@
               ]
             },
             {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "system": "http://hl7.org/fhir/questionnaire-item-control",
-                        "code": "radio-button"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                  "valueCode": "horizontal"
-                },
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                  "valueExpression": {
-                    "language": "text/fhirpath",
-                    "expression": "%patient.gender"
-                  }
-                }
-              ],
               "linkId": "administrativeGender",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.administrativeGender",
               "text": "Gender",
@@ -3271,6 +3237,30 @@
                   }
                 ]
               },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.gender"
+                  }
+                }
+              ],
               "answerOption": [
                 {
                   "valueCoding": {
@@ -3303,15 +3293,6 @@
               ]
             },
             {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                  "valueExpression": {
-                    "language": "text/fhirpath",
-                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
-                  }
-                }
-              ],
               "linkId": "genderIdentity",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.genderIdentity",
               "text": "Geschlechtsidentität (transgender)",
@@ -3346,6 +3327,15 @@
                   }
                 ]
               },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
+                  }
+                }
+              ],
               "answerOption": [
                 {
                   "valueCoding": {
@@ -3356,6 +3346,16 @@
                 }
               ]
             }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "homeOrFirstAddress",
+                "language": "text/fhirpath",
+                "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
+              }
+            }
           ]
         },
         {
@@ -3364,6 +3364,10 @@
           "type": "group",
           "item": [
             {
+              "linkId": "manifestation",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
+              "text": "Manifestationen",
+              "type": "choice",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
@@ -3374,17 +3378,13 @@
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "system": "http://hl7.org/fhir/questionnaire-item-control",
-                        "code": "radio-button"
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
                       }
                     ]
                   }
                 }
               ],
-              "linkId": "manifestation",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
-              "text": "Manifestationen",
-              "type": "choice",
               "_answerValueSet": {
                 "extension": [
                   {
@@ -3464,14 +3464,18 @@
           "type": "group",
           "item": [
             {
+              "linkId": "sexualContactPartner",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner",
+              "text": "Sexualkontakt mit infizierter Person (Geschlecht)",
+              "type": "choice",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "system": "http://hl7.org/fhir/questionnaire-item-control",
-                        "code": "radio-button"
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
                       }
                     ]
                   }
@@ -3481,10 +3485,6 @@
                   "valueCode": "horizontal"
                 }
               ],
-              "linkId": "sexualContactPartner",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner",
-              "text": "Sexualkontakt mit infizierter Person (Geschlecht)",
-              "type": "choice",
               "answerOption": [
                 {
                   "valueCoding": {
@@ -3517,14 +3517,18 @@
               ]
             },
             {
+              "linkId": "relationshipType",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType",
+              "text": "Art der Beziehung",
+              "type": "choice",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "system": "http://hl7.org/fhir/questionnaire-item-control",
-                        "code": "radio-button"
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
                       }
                     ]
                   }
@@ -3534,10 +3538,6 @@
                   "valueCode": "horizontal"
                 }
               ],
-              "linkId": "relationshipType",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType",
-              "text": "Art der Beziehung",
-              "type": "choice",
               "answerOption": [
                 {
                   "valueCoding": {
@@ -3594,6 +3594,11 @@
               "type": "group",
               "item": [
                 {
+                  "linkId": "physicianGivenname",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.givenname",
+                  "text": "Vorname",
+                  "type": "string",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3602,14 +3607,14 @@
                         "expression": "%user.practitioner.resolve().name.first().given.first()"
                       }
                     }
-                  ],
-                  "linkId": "physicianGivenname",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.givenname",
-                  "text": "Vorname",
-                  "type": "string",
-                  "required": true
+                  ]
                 },
                 {
+                  "linkId": "physicianSurname",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.surname",
+                  "text": "Name",
+                  "type": "string",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3618,14 +3623,13 @@
                         "expression": "%user.practitioner.resolve().name.first().family"
                       }
                     }
-                  ],
-                  "linkId": "physicianSurname",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.surname",
-                  "text": "Name",
-                  "type": "string",
-                  "required": true
+                  ]
                 },
                 {
+                  "linkId": "physicianStreetLine",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.streetLine",
+                  "text": "Adresse (Strasse, Hausnummer)",
+                  "type": "string",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3634,13 +3638,14 @@
                         "expression": "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().line.first()"
                       }
                     }
-                  ],
-                  "linkId": "physicianStreetLine",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.streetLine",
-                  "text": "Adresse (Strasse, Hausnummer)",
-                  "type": "string"
+                  ]
                 },
                 {
+                  "linkId": "physicianZipCode",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.zipCode",
+                  "text": "PLZ",
+                  "type": "string",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3649,14 +3654,14 @@
                         "expression": "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().postalCode"
                       }
                     }
-                  ],
-                  "linkId": "physicianZipCode",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.zipCode",
-                  "text": "PLZ",
-                  "type": "string",
-                  "required": true
+                  ]
                 },
                 {
+                  "linkId": "physicianCity",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.city",
+                  "text": "Ort",
+                  "type": "string",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3665,14 +3670,14 @@
                         "expression": "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().city"
                       }
                     }
-                  ],
-                  "linkId": "physicianCity",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.city",
-                  "text": "Ort",
-                  "type": "string",
-                  "required": true
+                  ]
                 },
                 {
+                  "linkId": "physicianPhone",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.phone",
+                  "text": "Telefonnummer",
+                  "type": "string",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3681,14 +3686,13 @@
                         "expression": "%user.practitioner.resolve().telecom.where(system='phone').value.first()"
                       }
                     }
-                  ],
-                  "linkId": "physicianPhone",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.phone",
-                  "text": "Telefonnummer",
-                  "type": "string",
-                  "required": true
+                  ]
                 },
                 {
+                  "linkId": "physicianEmail",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.email",
+                  "text": "E-Mail",
+                  "type": "string",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3697,13 +3701,13 @@
                         "expression": "%user.practitioner.resolve().telecom.where(system='email').value.first()"
                       }
                     }
-                  ],
-                  "linkId": "physicianEmail",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.email",
-                  "text": "E-Mail",
-                  "type": "string"
+                  ]
                 },
                 {
+                  "linkId": "physicianGln",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.gln",
+                  "text": "GLN",
+                  "type": "string",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3712,11 +3716,7 @@
                         "expression": "%user.practitioner.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"
                       }
                     }
-                  ],
-                  "linkId": "physicianGln",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.gln",
-                  "text": "GLN",
-                  "type": "string"
+                  ]
                 }
               ]
             },
@@ -3726,6 +3726,11 @@
               "type": "group",
               "item": [
                 {
+                  "linkId": "orgName",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.name",
+                  "text": "Name",
+                  "type": "string",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3734,14 +3739,13 @@
                         "expression": "%user.organization.resolve().name"
                       }
                     }
-                  ],
-                  "linkId": "orgName",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.name",
-                  "text": "Name",
-                  "type": "string",
-                  "required": true
+                  ]
                 },
                 {
+                  "linkId": "orgDepartment",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.department",
+                  "text": "Abteilung",
+                  "type": "string",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3750,13 +3754,13 @@
                         "expression": "%user.organization.resolve().extension.where(url='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString"
                       }
                     }
-                  ],
-                  "linkId": "orgDepartment",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.department",
-                  "text": "Abteilung",
-                  "type": "string"
+                  ]
                 },
                 {
+                  "linkId": "orgStreetLine",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.streetLine",
+                  "text": "Adresse (Strasse, Hausnummer)",
+                  "type": "string",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3765,13 +3769,14 @@
                         "expression": "%user.organization.resolve().address.first().line.first()"
                       }
                     }
-                  ],
-                  "linkId": "orgStreetLine",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.streetLine",
-                  "text": "Adresse (Strasse, Hausnummer)",
-                  "type": "string"
+                  ]
                 },
                 {
+                  "linkId": "orgZipCode",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.zipCode",
+                  "text": "PLZ",
+                  "type": "string",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3780,14 +3785,14 @@
                         "expression": "%user.organization.resolve().address.first().postalCode"
                       }
                     }
-                  ],
-                  "linkId": "orgZipCode",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.zipCode",
-                  "text": "PLZ",
-                  "type": "string",
-                  "required": true
+                  ]
                 },
                 {
+                  "linkId": "orgCity",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.city",
+                  "text": "Ort",
+                  "type": "string",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3796,14 +3801,14 @@
                         "expression": "%user.organization.resolve().address.first().city"
                       }
                     }
-                  ],
-                  "linkId": "orgCity",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.city",
-                  "text": "Ort",
-                  "type": "string",
-                  "required": true
+                  ]
                 },
                 {
+                  "linkId": "orgPhone",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.phone",
+                  "text": "Telefonnummer",
+                  "type": "string",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3812,14 +3817,13 @@
                         "expression": "%user.organization.resolve().telecom.where(system='phone').value.first()"
                       }
                     }
-                  ],
-                  "linkId": "orgPhone",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.phone",
-                  "text": "Telefonnummer",
-                  "type": "string",
-                  "required": true
+                  ]
                 },
                 {
+                  "linkId": "orgEmail",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.email",
+                  "text": "E-Mail",
+                  "type": "string",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3828,13 +3832,13 @@
                         "expression": "%user.organization.resolve().telecom.where(system='email').value.first()"
                       }
                     }
-                  ],
-                  "linkId": "orgEmail",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.email",
-                  "text": "E-Mail",
-                  "type": "string"
+                  ]
                 },
                 {
+                  "linkId": "orgBer",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.ber",
+                  "text": "BUR",
+                  "type": "string",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3843,13 +3847,13 @@
                         "expression": "%user.organization.resolve().identifier.where(system='urn:oid:2.16.756.5.45').value.first()"
                       }
                     }
-                  ],
-                  "linkId": "orgBer",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.ber",
-                  "text": "BUR",
-                  "type": "string"
+                  ]
                 },
                 {
+                  "linkId": "orgGln",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.gln",
+                  "text": "GLN",
+                  "type": "string",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -3858,11 +3862,7 @@
                         "expression": "%user.organization.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"
                       }
                     }
-                  ],
-                  "linkId": "orgGln",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.gln",
-                  "text": "GLN",
-                  "type": "string"
+                  ]
                 }
               ]
             }
@@ -4691,5 +4691,5 @@
     }
   ],
   "title": "CH EKM Questionnaire: Gonorrhoea (assembled) (preview de-CH, pre-expanded)",
-  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (tests/assemble-gonorrhoea.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (tests/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

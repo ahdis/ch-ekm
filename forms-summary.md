@@ -31,7 +31,8 @@ What it gives us:
 > runs in-app — there is no hosted `$extract` endpoint.
 
 Hosted endpoints (for prototyping):
-- Assemble: `https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble`
+- Assemble: `https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble` — **no longer used
+  by our build** (see the switch below); kept here as a reference/fallback endpoint.
 
 > **`/api/fhir` is the FHIR server, `/fhir` is the web app.** The HAPI Forms Server the
 > renderer reads from (and that `$assemble`/`$populate` live on) is at
@@ -43,23 +44,54 @@ Hosted endpoints (for prototyping):
 > **The deployed endpoint is HAPI, not the TS microservices.** `/api/fhir/metadata` reports
 > **HAPI FHIR Server 8.10.0**, so the hosted `$assemble`/`$populate` are HAPI's operations, not
 > the `sdc-assemble`/`sdc-populate` Express services in the table above (those are the *reference*
-> implementations / what Smart Forms runs in-app). This matters for `$populate` FHIRPath support —
-> see §10.
+> implementations / what Smart Forms runs in-app). This matters for both `$assemble` (see next)
+> and `$populate` FHIRPath support (see §10).
 
-**Calling the hosted Smart Forms `$assemble`** (used by `tests/assemble-gonorrhoea.sh`).
-Upload the sub-questionnaires to the server first (it resolves `subQuestionnaire`
-canonicals from its own store), then POST the modular root. Two non-obvious requirements:
-- **`Content-Type: application/json`** — the Express service uses `express.json()`, which
-  does *not* parse `application/fhir+json`; a fhir+json body arrives empty and returns
-  *"Parameters provided is invalid against the $assemble specification"*.
-- The root's `subQuestionnaire` placeholders must be **nested under a top-level group**
-  (`item[0].item[x]`) — the reference assembler reads `parentQuestionnaire.item[0].item`.
+**We assemble LOCALLY with the SDC reference library `@aehrc/sdc-assemble`** (via
+`tests/assemble/assemble.cjs`, wrapped by `tests/assemble-gonorrhoea.sh`) — the same engine the
+Smart Forms renderer runs in-app, and a sibling of the local `$populate` / `$extract` wrappers
+(`tests/populate/`, `tests/extract/`; all CJS for the same `fhirpath` directory-import reason,
+§8/§10). The wrapper builds a `canonical → Questionnaire` index from `fsh-generated/resources` and
+supplies it through the library's `fetchQuestionnaireCallback` (returning a searchset `Bundle`
+whose `entry[0].resource` is the child), so **no FHIR server and no upload step are needed**.
 
-> **matchbox alternative.** matchbox (`test.ahdis.ch/matchbox/fhir`) also implements
-> `Questionnaire/$assemble` and accepts the same nested-group root, but wants
-> `Content-Type: application/fhir+json` and an SDC `Parameters{questionnaire}` body. Both
-> servers produce an equivalent assembled `Questionnaire`. We default to the Smart Forms
-> service since that is also the renderer.
+> **Why we moved off the hosted HAPI `$assemble` (2026-07).** HAPI requires **every**
+> questionnaire it processes — the root **and every child** — to carry the `item[0].item` group
+> nesting; a **groupless leaf** sub-questionnaire (top-level items not wrapped in a group) is
+> rejected with `HTTP 400 — "Root questionnaire does not have a valid item."` The `@aehrc/sdc-assemble`
+> reference engine is more lenient: `getCanonicalUrls` returns `[]` (no error) for a child without
+> `item[0].item`, so a groupless leaf just contributes its items directly. We rely on this so the
+> **person leaves stay flat** (no wrapping group) and merge into one flat group in the assembled
+> form. Trade-off: the committed assembled artifact is produced offline by the reference engine
+> rather than the hosted server (equivalent output, and it is the engine the renderer uses anyway).
+>
+> **Recursion fix (patch-package).** Stock `@aehrc/sdc-assemble` has a bug: in `assembleQuestionnaire`
+> the recursive result is discarded (`for (let subquestionnaire of subquestionnaires) { … subquestionnaire = assembled }`
+> reassigns the loop variable, not the array element), so a child that is itself modular is spliced in
+> **un-assembled** — nested/recursive modular never flattens. We fix it with a one-line change
+> (index loop → `subquestionnaires[i] = assembled`), applied to `dist/index.cjs` + `dist/index.js`
+> via **patch-package** (`tests/assemble/patches/@aehrc+sdc-assemble+2.0.2.patch`, replayed by the
+> `postinstall` hook). With the patch, **nested/recursive `subQuestionnaire` works per spec** — a
+> disease root can reference an aggregator (e.g. `ChEkmQuestionnaireGonorrhoeaPerson`) that itself
+> references leaf children, and it flattens fully (see §4).
+>
+> **Upstreamed** as aehrc/smart-forms PR **[#1998](https://github.com/aehrc/smart-forms/pull/1998)**
+> (same one-line fix + a strengthened `assemble.test.ts` regression test that fails on `main`). Once
+> it ships in a released `@aehrc/sdc-assemble`, bump the version and drop the local patch.
+>
+> **Requirement that still holds at each level:** within any one questionnaire the `subQuestionnaire`
+> placeholders must be **direct children of `item[0]`** (`item[0].item[x]`) — `getCanonicalUrls` reads
+> `parentQuestionnaire.item[0].item` and does not descend into deeper groups. And `propagateProperties`
+> replaces `item[0].item` **by position**, so `item[0].item` should be **all placeholders**: real
+> (non-placeholder) content interleaved *before* a placeholder misaligns the indices (real content
+> only survives if it comes after all placeholders). All our modular roots keep `item[0].item`
+> all-placeholders, so this is a non-issue in practice.
+
+> **matchbox / hosted HAPI as fallbacks.** matchbox (`test.ahdis.ch/matchbox/fhir`) and the hosted
+> HAPI both implement `Questionnaire/$assemble` and accept a nested-group root (matchbox wants
+> `Content-Type: application/fhir+json` + an SDC `Parameters{questionnaire}` body; the CSIRO Express
+> service wants `application/json` + a bare/wrapped `Questionnaire`). Both share HAPI's stricter
+> group requirement above, so neither assembles our groupless leaves — use the local engine.
 
 ### Supported building blocks (relevant to us)
 - **Item types**: `group`, `display`, `string`, `text`, `boolean`, `date`, `dateTime`,
@@ -114,11 +146,17 @@ http://hl7.org/fhir/uv/sdc/modular.html):
 - Calling **`$assemble`** on the root replaces each placeholder with the child's `item`s
   (and merges contained resources, extensions, launchContexts), producing one flat
   **assembled** questionnaire that Smart Forms renders. The assembler fetches children via
-  a `fetchQuestionnaireCallback` (`Questionnaire?url=<canonical>`), checks for duplicate
-  `linkId`s / `enableWhen` collisions, and propagates properties.
+  a `fetchQuestionnaireCallback` (our local wrapper resolves them from `fsh-generated/resources`;
+  see §1), checks for duplicate `linkId`s / `enableWhen` collisions, and propagates properties —
+  including a child's questionnaire-level `variable` (e.g. the Person `homeOrFirstAddress` address
+  variable is moved onto the assembled form group, staying in scope for `zipCode`/`city`/`canton`).
 
 Reference behaviour is in `packages/sdc-assemble/src/test/assemble.test.ts` and
-`fetchSubquestionnaires.test.ts` — good fixtures to copy when shaping our resources.
+`fetchSubquestionnaires.test.ts` — good fixtures to copy when shaping our resources. Engine notes
+(see §1 for detail): within each questionnaire, placeholders must be **direct children of `item[0]`**
+and `item[0].item` should be **all placeholders** (positional replacement); **nested/recursive**
+modular now flattens correctly thanks to our patch-package fix of the reference engine's discarded
+recursion.
 
 **Why modular for CH EKM**: the report sections (Person, Manifestation, Exposition,
 Treating physician, Laboratory) recur across organisms. Each becomes a reusable
@@ -222,8 +260,25 @@ ChEkmQuestionnaireTreatingPhysician (assemble-child)  ← ChEkmTreatingPhysician
 ```
 
 > For Gonorrhoea these are realised as disease-specific children
-> `ChEkmQuestionnaireGonorrhoea{Person,Manifestation,Exposition,TreatingPhysician}` (option (a)).
+> `ChEkmQuestionnaireGonorrhoea{Manifestation,Exposition,TreatingPhysician}` (option (a)).
 > The TreatingPhysician child holds two sub-groups (Practitioner + Organization, §3) and is built.
+
+> **Person is split into three generic LEAF sub-questionnaires (2026-07):**
+> `ChEkmQuestionnairePersonInitials` (surname/given initials), `ChEkmQuestionnairePersonGeneral`
+> (birth date, AHVN13, nationality, address, canton, administrative gender — carries the
+> questionnaire-level `homeOrFirstAddress` variable) and `ChEkmQuestionnairePersonGenderIdentity`.
+> Each leaf's items are **top-level (no wrapping group)**, so on assembly they merge into their
+> referencing group as one flat block.
+>
+> These three leaves are gathered by **`ChEkmQuestionnaireGonorrhoeaPerson`** — an aggregator with
+> one `person` group whose three children are `subQuestionnaire` placeholders to the leaves. It is
+> `assemble-root-or-child`: the disease root **`ChEkmQuestionnaireGonorrhoea` references it as a
+> single `person` placeholder** and the engine **recurses** (root → aggregator → three leaves),
+> producing one flat `person` group of all fields — this depends on the recursion patch in §1.
+> The aggregator also assembles **standalone** for reuse. (We do not commit a separate
+> `…GonorrhoeaPersonAssembled.json`; assemble it on demand.) Groupless leaves + nested recursion are
+> both why we assemble with the local (patched) `@aehrc/sdc-assemble` reference engine, not hosted
+> HAPI (§1).
 
 Disease-specific bindings (manifestation value set, relationship types) differ per organism.
 Two options:
@@ -309,8 +364,10 @@ Title: "CH EKM Questionnaire: Gonorrhoea (modular)"
    binding to existing value sets and `item.definition` → logical model.
 2. Build the **root modular** `ChEkmQuestionnaireGonorrhoea`.
 3. `sushi .` to compile, then **validate with the IG Publisher** (not matchbox MCP).
-4. Run **`tests/assemble-gonorrhoea.sh`** (Smart Forms `$assemble`) → writes the assembled
-   questionnaire to `input/resources/` (see note below); check for duplicate `linkId`s.
+4. Run **`tests/assemble-gonorrhoea.sh`** → runs the **local** `@aehrc/sdc-assemble` reference
+   engine (`tests/assemble/assemble.cjs`; `cd tests/assemble && npm install` once) and writes the
+   assembled questionnaire to `input/resources/` (see note below); check for duplicate `linkId`s.
+   No FHIR server / upload needed (see §1).
 5. Run **`tests/preview-gonorrhoea.sh`** to pre-expand the value sets and render in
    **Smart Forms** (un-launched, local).
 6. `$populate` pre-fill via `tests/populate-gonorrhoea.sh` — runs the **SDC reference**
@@ -557,8 +614,10 @@ the modular root **`ChEkmQuestionnaireGonorrhoea`** (FSH source of truth) declar
 - `sdc-questionnaire-templateExtract` → `#ChEkmDocumentGonorrhoeaTemplate` on the `gonorrhoea-form` group.
 
 `$assemble` does not propagate these (and can choke on them), so
-**`tests/assemble-gonorrhoea.sh`** strips them from the POST body and **re-attaches** all three
-onto the assembled artifact — the one the renderer actually loads.
+**`tests/assemble-gonorrhoea.sh`** strips them from the assembler input and **re-attaches** all
+three onto the assembled artifact — the one the renderer actually loads. (It re-adds the
+`extr-template` profile claim only when a template was actually present, so the template-less
+standalone Person assembly stays valid.)
 
 ### Running it
 ```

@@ -1,39 +1,25 @@
 #!/usr/bin/env bash
 #
-# Assemble a modular CH EKM questionnaire using the Smart Forms (aehrc/CSIRO) SDC
-# $assemble service. Disease-agnostic: pass the modular ROOT questionnaire id.
+# Assemble a modular CH EKM questionnaire using the Smart Forms (aehrc/CSIRO) SDC reference
+# $assemble library, run LOCALLY in-process. Disease-agnostic: pass the modular ROOT id.
 #
-# Hosted endpoint: https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble
-# (TypeScript sdc-assemble microservice, see ../smart-forms/packages/sdc-assemble).
+# Engine: @aehrc/sdc-assemble via tests/assemble/assemble.cjs — the same reference engine the
+# Smart Forms renderer runs in-app, and a sibling of the $populate / $extract wrappers we already
+# run locally (tests/populate/, tests/extract/). We moved OFF the hosted HAPI $assemble
+# (smartforms.csiro.au) because HAPI requires every questionnaire it processes (root and every
+# child) to carry the item[0].item group nesting and rejects a groupless leaf sub-questionnaire
+# with "Root questionnaire does not have a valid item." The reference engine tolerates groupless
+# leaves, so our person leaves can stay flat and merge directly into the root's group.
 #
-# The service resolves the `subQuestionnaire` canonicals from the Questionnaires stored
-# on its own FHIR server, so this script:
-#   1. discovers the assemble-child sub-questionnaires from the root (subQuestionnaire
-#      extensions), uploads (PUT) them + the modular root,
-#   2. POSTs the modular root to Questionnaire/$assemble,
-#   3. writes the assembled (flattened) questionnaire to disk.
-#
-# Two server-specific details (learned the hard way):
-#   * Content-Type MUST be application/json — the Express service uses express.json(),
-#     which does not parse application/fhir+json, so a fhir+json body arrives empty and
-#     yields "Parameters provided is invalid against the $assemble specification".
-#   * The root's subQuestionnaire placeholders must be nested under a top-level group
-#     (item[0].item[x]); the reference assembler reads parentQuestionnaire.item[0].item.
-#
-# The service accepts either a bare Questionnaire body (wrapped automatically) or an
-# SDC Parameters{questionnaire} body; this script POSTs the bare Questionnaire.
+# The child sub-questionnaires are resolved by canonical url from local fsh-generated/resources
+# (no FHIR server, no upload step).
 #
 # Usage:
-#   ./tests/assemble-questionnaire.sh <RootQuestionnaireId> [FHIR_BASE_URL]
+#   ./tests/assemble-questionnaire.sh <RootQuestionnaireId>
 #   ./tests/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea
 #   ./tests/assemble-questionnaire.sh ChEkmQuestionnaireMpox
 #
-# Defaults to the hosted Smart Forms server. Runs `sushi .` first so fsh-generated/ is
-# up to date.
-#
-# Matchbox note: matchbox (https://test.ahdis.ch/matchbox/fhir) also implements
-# Questionnaire/$assemble and accepts the same nested-group root, but expects
-# Content-Type application/fhir+json and a Parameters{questionnaire} body.
+# Runs `sushi .` first so fsh-generated/ is up to date.
 
 set -euo pipefail
 
@@ -43,14 +29,13 @@ cd "$(dirname "$0")/.."
 ROOT_ID="${1:-}"
 if [ -z "$ROOT_ID" ]; then
   echo "ERROR: missing root questionnaire id."
-  echo "Usage: $0 <RootQuestionnaireId> [FHIR_BASE_URL]   (e.g. ChEkmQuestionnaireGonorrhoea)"
+  echo "Usage: $0 <RootQuestionnaireId>   (e.g. ChEkmQuestionnaireGonorrhoea)"
   exit 2
 fi
 
-# run `sushi .` first to ensure fsh-generated/ is up to date, then upload + assemble.
+# run `sushi .` first to ensure fsh-generated/ is up to date, then assemble locally.
 sushi .
 
-BASE="${2:-https://smartforms.csiro.au/api/fhir}"
 DIR="fsh-generated/resources"
 ROOT_FILE="$DIR/Questionnaire-$ROOT_ID.json"
 [ -f "$ROOT_FILE" ] || { echo "ERROR: missing $ROOT_FILE (run 'sushi .' first / check the id)"; exit 1; }
@@ -62,60 +47,19 @@ ASSEMBLED_ID="${ROOT_ID}Assembled"
 OUT="input/resources/Questionnaire-$ASSEMBLED_ID.json"
 # Human-readable disease label, derived from the root id (ChEkmQuestionnaire<Disease>).
 DISEASE="${ROOT_ID#ChEkmQuestionnaire}"
-CT="Content-Type: application/json"
-ACCEPT="Accept: application/json"
 SCRIPT_URL="https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-questionnaire.sh"
+WRAPPER="tests/assemble/assemble.cjs"
+[ -f "$WRAPPER" ] || { echo "ERROR: missing $WRAPPER"; exit 1; }
+[ -d "tests/assemble/node_modules" ] || { echo "ERROR: run 'npm install' in tests/assemble first"; exit 1; }
 
-# Discover the assemble-child sub-questionnaires from the root's subQuestionnaire canonicals
-# (last path segment of each canonical), rather than a hardcoded per-disease list.
-# (read loop instead of `mapfile` for macOS bash 3.2 compatibility)
-CHILDREN=()
-while IFS= read -r _child; do
-  [ -n "$_child" ] && CHILDREN+=("$_child")
-done < <(python3 - "$ROOT_FILE" <<'PY'
-import json, sys
-q = json.load(open(sys.argv[1]))
-ids = []
-def walk(items):
-    for it in items or []:
-        for e in it.get("extension", []) or []:
-            if "subQuestionnaire" in e.get("url", "") and e.get("valueCanonical"):
-                ids.append(e["valueCanonical"].rsplit("/", 1)[-1])
-        walk(it.get("item"))
-walk(q.get("item"))
-# de-duplicate, preserve order
-seen = set()
-for i in ids:
-    if i not in seen:
-        seen.add(i); print(i)
-PY
-)
-
-echo "FHIR base:  $BASE"
-echo "Root:       $ROOT_ID  (disease: $DISEASE)"
-echo "Children:   ${CHILDREN[*]:-<none>}"
+echo "Engine:  @aehrc/sdc-assemble (local, $WRAPPER)"
+echo "Root:    $ROOT_ID  (disease: $DISEASE)"
 echo
 
-# --- 1. upload the sub-questionnaires and the root ----------------------------
-upload() {
-  local id="$1"
-  local file="$DIR/Questionnaire-$id.json"
-  [ -f "$file" ] || { echo "ERROR: missing $file (run 'sushi .' first)"; exit 1; }
-  echo "PUT Questionnaire/$id"
-  curl -sS -X PUT "$BASE/Questionnaire/$id" \
-    -H "$CT" -H "$ACCEPT" \
-    --data-binary "@$file" \
-    -o /tmp/ekm-put-$id.json -w "  -> HTTP %{http_code}\n"
-}
-
-for id in "${CHILDREN[@]}"; do upload "$id"; done
-upload "$ROOT_ID"
-echo
-
-# --- 2. call $assemble on the root --------------------------------------------
+# --- 1. strip the extraction template, then assemble --------------------------
 # The extraction template (contained Bundle + sdc-questionnaire-templateExtract) is not needed
-# for assembly and the assembler does not propagate it, so strip it from the POST body and
-# re-attach it to the result in step 3.
+# for assembly and the assembler does not propagate it, so strip it from the input and re-attach
+# it to the result in step 3.
 TE_URL="http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract"
 python3 - "$ROOT_FILE" "$TE_URL" > /tmp/ekm-assemble-root.json <<'PY'
 import json, sys
@@ -133,24 +77,20 @@ strip(q.get("item"))
 json.dump(q, sys.stdout)
 PY
 
-echo "POST Questionnaire/\$assemble"
-HTTP=$(curl -sS -X POST "$BASE/Questionnaire/\$assemble" \
-  -H "$CT" -H "$ACCEPT" \
-  --data-binary "@/tmp/ekm-assemble-root.json" \
-  -o /tmp/ekm-assemble-out.json -w "%{http_code}")
-echo "  -> HTTP $HTTP"
+echo "Assembling (Questionnaire/\$assemble)"
+node "$WRAPPER" /tmp/ekm-assemble-root.json /tmp/ekm-assemble-out.json "$DIR"
 echo
 
-# --- 3. publish as an IG resource ---------------------------------------------
+# --- 2. publish as an IG resource ---------------------------------------------
 RTYPE=$(jq -r '.resourceType // "?"' /tmp/ekm-assemble-out.json)
 if [ "$RTYPE" != "Questionnaire" ]; then
-  echo "Assemble did not return a Questionnaire (got: $RTYPE). Server response:"
+  echo "Assemble did not return a Questionnaire (got: $RTYPE). Output:"
   jq '.' /tmp/ekm-assemble-out.json || cat /tmp/ekm-assemble-out.json
   exit 1
 fi
 
 mkdir -p "$(dirname "$OUT")"
-# Give the flattened result a distinct identity (the server returns it with the root's
+# Give the flattened result a distinct identity (the assembler returns it with the root's
 # id/url, which would collide with the modular root example in the IG).
 python3 - /tmp/ekm-assemble-out.json "$ASSEMBLED_ID" "$ROOT_FILE" "$TE_URL" "$DISEASE" "$SCRIPT_URL" > "$OUT" <<'PY'
 import json, sys
@@ -185,9 +125,13 @@ if te_ext and q.get("item"):
     top.setdefault("extension", [])
     if not any(e.get("url") == te_url for e in top["extension"]):
         top["extension"].append(te_ext)
-profiles = q.setdefault("meta", {}).setdefault("profile", [])
-if extr_template not in profiles:
-    profiles.append(extr_template)
+# Only claim the extr-template profile if a template was actually re-attached; a template-less
+# modular root (e.g. the standalone Person questionnaire) must not claim it, or the IG Publisher
+# errors on the unsatisfied `contained 1..*` requirement.
+if root.get("contained"):
+    profiles = q.setdefault("meta", {}).setdefault("profile", [])
+    if extr_template not in profiles:
+        profiles.append(extr_template)
 # Provenance + "do not edit" guard (FHIR-valid; survives regeneration since it is set here)
 q.setdefault("meta", {})["source"] = script_url
 q["description"] = (
@@ -197,7 +141,7 @@ q["description"] = (
     "questionnaire to keep this resource in sync."
 )
 
-# The $assemble service emits empty arrays (e.g. "contained": [], item[0] "extension": []).
+# The $assemble engine may emit empty arrays (e.g. "contained": [], item[0] "extension": []).
 # FHIR forbids empty arrays, so the IG Publisher errors on them — prune them (depth-first).
 def prune(x):
     if isinstance(x, dict):

@@ -1,0 +1,15 @@
+{
+  "name": "ch-ekm-assemble",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CLI wrapper around @aehrc/sdc-assemble (the SDC reference $assemble) for CH EKM modular questionnaires.",
+  "scripts": {
+    "postinstall": "patch-package"
+  },
+  "dependencies": {
+    "@aehrc/sdc-assemble": "^2.0.2"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1"
+  }
+}

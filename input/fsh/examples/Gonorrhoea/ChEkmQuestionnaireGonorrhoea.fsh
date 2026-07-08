@@ -90,7 +90,14 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].extension[=].extension[+].url = "template"
 * item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentGonorrhoeaTemplate)
 
-// Angaben zur betroffenen Person
+// Angaben zur betroffenen Person — a single subQuestionnaire placeholder to the aggregator
+// ChEkmQuestionnaireGonorrhoeaPerson, which itself references the three person leaf
+// sub-questionnaires (Namensinitialen / allgemeine Angaben / Geschlechtsidentität). $assemble
+// recurses (root -> aggregator -> three leaves) into one flat `person` group. NB: each
+// questionnaire's subQuestionnaire placeholders must be direct children of item[0]; nested
+// recursion relies on the patched @aehrc/sdc-assemble (see tests/assemble/patches, forms-summary §1).
+
+// Person
 * item[=].item[+].linkId = "person"
 * item[=].item[=].type = #display
 * item[=].item[=].text = "Angaben zur betroffenen Person"
