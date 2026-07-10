@@ -48,6 +48,7 @@ Alias: $individual-genderIdentity =      http://hl7.org/fhir/StructureDefinition
 Alias: $individual-recordedSexOrGender = http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender
 Alias: $patient-citizenship =            http://hl7.org/fhir/StructureDefinition/patient-citizenship
 Alias: $regex =                          http://hl7.org/fhir/StructureDefinition/regex
+Alias: $translation =                    http://hl7.org/fhir/StructureDefinition/translation
 
 //Identifier systems
 Alias: $ahvn13-system =                  urn:oid:2.16.756.5.32

@@ -7,6 +7,11 @@ server. The CH-specific value sets (bfs-country-codes, ChEkm*) are not resolvabl
 by canonical on a public tx, so for a dependency-free local preview we pre-expand
 every value set and replace `answerValueSet` with inline `answerOption`s.
 
+Item LABELS carry the English default in `item.text` plus de-CH/fr-CH/it-CH variants as
+http://hl7.org/fhir/StructureDefinition/translation extensions (under `_text`). We bake the
+target-language label into `item.text` for the preview (see localize_text), the same way the
+answerOption displays are baked in.
+
 Expansion strategy (terminology server: tx.fhir.ch, which hosts ch-term + SNOMED CH):
   - Every value set is expanded via POST with `displayLanguage` (default de-CH) and all local
     fsh-generated CodeSystems supplied as `tx-resource` (so their de/fr/it designations, and any
@@ -19,20 +24,23 @@ Expansion strategy (terminology server: tx.fhir.ch, which hosts ch-term + SNOMED
     set, then re-expands with `useSupplement` for any local supplement whose base system is present.
     This bakes the localized option labels into the inline `answerOption` displays.
 
-Usage:  python3 tests/build-preview-questionnaire.py [AssembledIdOrPath]
+Usage:  python3 tests/build-lang-questionnaire.py [AssembledIdOrPath]
           - no arg          -> ChEkmQuestionnaireGonorrhoeaAssembled (default)
           - an id           -> e.g. ChEkmQuestionnaireMpoxAssembled
           - a path to *.json
-        PREVIEW_LANG=fr-CH to override the display language (default de-CH).
-Output: input/resources/Questionnaire-<Base>Preview-<LANG>.json
+        By default a preview is built for every Swiss language (de-CH, fr-CH, it-CH).
+        Set PREVIEW_LANG=fr-CH to build just one language.
+Output: input/resources/Questionnaire-<Base>-<LANG>.json  (one file per language)
 """
 import json, os, sys, urllib.request, urllib.parse, glob
 
 # Run from the repo root regardless of where the script is invoked from.
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
-# Target display language for the baked-in option labels.
-LANG = os.environ.get("PREVIEW_LANG", "de-CH")
+# Target display language(s) for the baked-in option labels. By default we build all three
+# Swiss languages; set PREVIEW_LANG to build just one (e.g. PREVIEW_LANG=fr-CH).
+LANGS = [os.environ["PREVIEW_LANG"]] if os.environ.get("PREVIEW_LANG") else ["de-CH", "fr-CH", "it-CH"]
+LANG = LANGS[0]  # display language of the current build; reassigned per language in main()
 TX = "https://tx.fhir.ch/r4"
 RES = "fsh-generated/resources"
 
@@ -50,13 +58,20 @@ else:
 
 # Distinct identity for the preview so it does not collide with the assembled questionnaire's
 # id/url when the IG Publisher scans input/resources. Derived from the assembled id (strip a
-# trailing "Assembled"): ChEkmQuestionnaireMpoxAssembled -> ChEkmQuestionnaireMpoxPreview-<LANG>.
+# trailing "Assembled"): ChEkmQuestionnaireMpoxAssembled -> ChEkmQuestionnaireMpox-<LANG>.
 BASE_ID = ASSEMBLED_ID[:-len("Assembled")] if ASSEMBLED_ID.endswith("Assembled") else ASSEMBLED_ID
-PREVIEW_ID = f"{BASE_ID}Preview-{LANG}"
-PREVIEW_URL = f"http://fhir.ch/ig/ch-ekm/Questionnaire/{PREVIEW_ID}"
-PREVIEW_NAME = f"{BASE_ID}Preview" + LANG.replace("-", "")  # FHIR name: no hyphens
-OUT = f"input/resources/Questionnaire-{PREVIEW_ID}.json"
 HEADERS = {"Content-Type": "application/fhir+json", "Accept": "application/fhir+json"}
+
+
+def preview_identity(lang):
+    """Per-language preview identity: (preview_id, url, name, out_path)."""
+    preview_id = f"{BASE_ID}-{lang}"
+    return (
+        preview_id,
+        f"http://fhir.ch/ig/ch-ekm/Questionnaire/{preview_id}",
+        f"{BASE_ID}" + lang.replace("-", ""),  # FHIR name: no hyphens
+        f"input/resources/Questionnaire-{preview_id}.json",
+    )
 
 # Preload local CodeSystems so internal-code value sets (and language supplements) can be
 # supplied to tx as `tx-resource`.
@@ -174,8 +189,29 @@ def downgrade_autocomplete(it):
                     coding.pop("display", None)
 
 
+def localize_text(it):
+    """Bake the LANG label into item.text from its `translation` extensions.
+
+    Item labels carry the English default in `text` plus de-CH/fr-CH/it-CH variants as
+    http://.../translation extensions under `_text` (FHIR primitive-element extension). The
+    Smart Forms preview has no live label-translation step, so we replace `text` with the
+    LANG content and drop `_text` (same 'bake it in' approach as the answerOption expansion)."""
+    ext = it.get("_text")
+    if not ext:
+        return
+    for e in ext.get("extension", []):
+        if e.get("url", "").endswith("/translation"):
+            sub = {x.get("url"): x for x in e.get("extension", [])}
+            if sub.get("lang", {}).get("valueCode") == LANG:
+                content = sub.get("content", {}).get("valueString")
+                if content:
+                    it["text"] = content
+    it.pop("_text", None)
+
+
 def walk(item):
     for it in item:
+        localize_text(it)
         if "answerValueSet" in it:
             canonical = it.pop("answerValueSet")
             opts = expand(canonical)
@@ -187,18 +223,24 @@ def walk(item):
 
 
 def main():
+    global LANG
     if not os.path.exists(SRC):
         sys.exit(f"ERROR: {SRC} not found. Run tests/assemble-questionnaire.sh <RootId> first.")
-    q = json.load(open(SRC))
-    print(f"Expanding answerValueSets via {TX} ...")
-    walk(q.get("item", []))
-    # Re-identify as a distinct preview resource (avoid id/url collision with the assembled one).
-    q["id"] = PREVIEW_ID
-    q["url"] = PREVIEW_URL
-    q["name"] = PREVIEW_NAME
-    q["title"] = q.get("title", "") + f" (preview {LANG}, pre-expanded)"
-    json.dump(q, open(OUT, "w"), indent=2, ensure_ascii=False)
-    print(f"\nWrote {OUT}  (id: {PREVIEW_ID})")
+    for LANG in LANGS:
+        preview_id, preview_url, preview_name, out = preview_identity(LANG)
+        # Reload the source for each language: walk() mutates the questionnaire in place
+        # (pops answerValueSet, injects answerOption), so each build needs a fresh copy.
+        q = json.load(open(SRC))
+        print(f"\n[{LANG}] Expanding answerValueSets via {TX} ...")
+        walk(q.get("item", []))
+        # Re-identify as a distinct preview resource (avoid id/url collision with the assembled one).
+        q["id"] = preview_id
+        q["url"] = preview_url
+        q["name"] = preview_name
+        q["title"] = q.get("title", "") + f" (preview {LANG}, pre-expanded)"
+        q["language"] = LANG
+        json.dump(q, open(out, "w"), indent=2, ensure_ascii=False)
+        print(f"Wrote {out}  (id: {preview_id})")
 
 
 if __name__ == "__main__":

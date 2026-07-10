@@ -23,6 +23,7 @@ Description: "Standalone modular questionnaire for the 'Angaben zur betroffenen 
 * version = "0.0.1"
 * name = "ChEkmQuestionnaireGonorrhoeaPerson"
 * status = #active
+* language = #en
 * experimental = false
 * meta.profile[+] = $sdc-modular
 * meta.profile[+] = $sdc-pop-exp
@@ -50,25 +51,85 @@ Description: "Standalone modular questionnaire for the 'Angaben zur betroffenen 
 // (item[0].item[x]), as required by the reference assembler.
 * item[+].linkId = "person"
 * item[=].type = #group
-* item[=].text = "Angaben zur betroffenen Person"
+* item[=].text = "Affected person's details"
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = "Angaben zur betroffenen Person"
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = "Données relatives à la personne concernée"
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = "Dati relativi alla persona interessata"
 
 // Namensinitialen
 * item[=].item[+].linkId = "personInitials"
 * item[=].item[=].type = #display
-* item[=].item[=].text = "Namensinitialen"
+* item[=].item[=].text = "Name initials"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Namensinitialen"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Initiales du nom"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Iniziali del nome"
 * item[=].item[=].extension[+].url = $sdc-subQuestionnaire
 * item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials"
 
 // Allgemeine Angaben
 * item[=].item[+].linkId = "personGeneral"
 * item[=].item[=].type = #display
-* item[=].item[=].text = "Allgemeine Angaben"
+* item[=].item[=].text = "General information"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Allgemeine Angaben"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Informations générales"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Informazioni generali"
 * item[=].item[=].extension[+].url = $sdc-subQuestionnaire
 * item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral"
 
 // Geschlechtsidentität
 * item[=].item[+].linkId = "personGenderIdentity"
 * item[=].item[=].type = #display
-* item[=].item[=].text = "Geschlechtsidentität"
+* item[=].item[=].text = "Gender identity"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Geschlechtsidentität"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Identité de genre"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Identità di genere"
 * item[=].item[=].extension[+].url = $sdc-subQuestionnaire
 * item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity"

@@ -388,7 +388,7 @@ root example, and carries a *"GENERATED FILE — do not edit by hand"* `descript
 > ⚠️ **It does not regenerate during `sushi`.** Whenever a child sub-questionnaire (or the
 > modular root) changes, **re-run `tests/assemble-gonorrhoea.sh`** to refresh the committed
 > assembled resource, otherwise the published artifact drifts out of sync. The render-only
-> `…-preview.json` (built by `tests/build-preview-questionnaire.py` from the assembled
+> `…-preview.json` (built by `tests/build-lang-questionnaire.py` from the assembled
 > resource) stays in `fsh-generated/` and is **not** part of the IG.
 
 ---
@@ -466,7 +466,7 @@ The build therefore produces two artifacts (see `tests/`):
 | `…-assembled.json` | `answerValueSet` references (unchanged) | **Production** / spec-conformant. Render against a tx that hosts the CH value sets (ch-term + SNOMED CH + the ch-ekm package). |
 | `…-preview.json` | every `answerValueSet` **pre-expanded** into inline `answerOption`s | **Render-only** local preview in Smart Forms — fully self-contained, needs **no** live tx. |
 
-### How the preview is built (`tests/build-preview-questionnaire.py`)
+### How the preview is built (`tests/build-lang-questionnaire.py`)
 Walks the assembled questionnaire and, for each item with an `answerValueSet`, expands it
 against **`tx.fhir.ch`** and replaces it with the resulting `answerOption`s. Every value set is
 expanded via **`POST ValueSet/$expand`** with **`displayLanguage`** (default `de-CH`; override

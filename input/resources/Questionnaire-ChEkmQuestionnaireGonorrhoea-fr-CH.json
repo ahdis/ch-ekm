@@ -1,0 +1,4623 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "ChEkmQuestionnaireGonorrhoea-fr-CH",
+  "meta": {
+    "profile": [
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp",
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template"
+    ],
+    "source": "https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-questionnaire.sh"
+  },
+  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea-fr-CH",
+  "version": "0.0.1",
+  "name": "ChEkmQuestionnaireGonorrhoeafrCH",
+  "status": "active",
+  "language": "fr-CH",
+  "experimental": false,
+  "subjectType": [
+    "Patient"
+  ],
+  "contained": [
+    {
+      "resourceType": "Bundle",
+      "id": "ChEkmDocumentGonorrhoeaTemplate",
+      "type": "document",
+      "identifier": {
+        "system": "urn:ietf:rfc:3986",
+        "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
+      },
+      "entry": [
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Composition/GonExtractComposition",
+          "resource": {
+            "resourceType": "Composition",
+            "id": "GonExtractComposition",
+            "status": "final",
+            "type": {
+              "coding": [
+                {
+                  "code": "722143004",
+                  "system": "http://snomed.info/sct",
+                  "display": "Infectious disease diagnostic study note"
+                }
+              ]
+            },
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "423876004",
+                    "system": "http://snomed.info/sct",
+                    "display": "Clinical report"
+                  }
+                ]
+              }
+            ],
+            "subject": {
+              "reference": "Patient/GonExtractPatient"
+            },
+            "author": [
+              {
+                "reference": "PractitionerRole/GonExtractTreatingPractitionerRole"
+              }
+            ],
+            "title": "Meldung zum klinischen Befund Infektionskrankheit",
+            "section": [
+              {
+                "title": "Diagnosis section",
+                "code": {
+                  "coding": [
+                    {
+                      "code": "29308-4",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "entry": [
+                  {
+                    "reference": "Condition/GonExtractCondition"
+                  }
+                ]
+              },
+              {
+                "title": "Social history section",
+                "code": {
+                  "coding": [
+                    {
+                      "code": "29762-2",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "entry": [
+                  {
+                    "reference": "Observation/GonExtractExposure"
+                  }
+                ]
+              }
+            ],
+            "_date": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.authored"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Patient/GonExtractPatient",
+          "resource": {
+            "resourceType": "Patient",
+            "id": "GonExtractPatient",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship",
+                "extension": [
+                  {
+                    "url": "code",
+                    "valueCodeableConcept": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                          "valueString": "%resource.descendants().where(linkId='nationality').answer.value"
+                        }
+                      ],
+                      "coding": [
+                        {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                              "valueString": "ofType(Coding)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity",
+                "extension": [
+                  {
+                    "url": "value",
+                    "valueCodeableConcept": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                          "valueString": "%resource.descendants().where(linkId='genderIdentity').answer.value"
+                        }
+                      ],
+                      "coding": [
+                        {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                              "valueString": "ofType(Coding)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "name": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='person')"
+                  }
+                ],
+                "_family": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='surnameInitial').answer.value.first()"
+                    }
+                  ]
+                },
+                "_given": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "item.where(linkId='givennameInitial').answer.value"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "identifier": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='ahvn13').answer.value"
+                  }
+                ],
+                "system": "urn:oid:2.16.756.5.32",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "address": [
+              {
+                "use": "home",
+                "_postalCode": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='zipCode').answer.value.first()"
+                    }
+                  ]
+                },
+                "_city": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='city').answer.value.first()"
+                    }
+                  ]
+                },
+                "_state": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "iif(%resource.descendants().where(linkId='canton').answer.value.first() is Coding, %resource.descendants().where(linkId='canton').answer.value.first().code, %resource.descendants().where(linkId='canton').answer.value.first())"
+                    }
+                  ]
+                }
+              }
+            ],
+            "_gender": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='administrativeGender').answer.value.code.first()"
+                }
+              ]
+            },
+            "_birthDate": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='dateOfBirth').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Condition/GonExtractCondition",
+          "resource": {
+            "resourceType": "Condition",
+            "id": "GonExtractCondition",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "encounter-diagnosis",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "code": "15628003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Gonorrhea (disorder)"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/GonExtractPatient"
+            },
+            "recorder": {
+              "reference": "PractitionerRole/GonExtractTreatingPractitionerRole"
+            },
+            "evidence": [
+              {
+                "code": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                        "valueString": "%resource.descendants().where(linkId='manifestation').answer.value"
+                      }
+                    ],
+                    "coding": [
+                      {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                            "valueString": "ofType(Coding)"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "_onsetDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                      "valueString": "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
+                    }
+                  ],
+                  "_valueCode": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "'asked-unknown'"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Observation/GonExtractExposure",
+          "resource": {
+            "resourceType": "Observation",
+            "id": "GonExtractExposure",
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "AEXPOS",
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActClass",
+                    "display": "acquisition exposure"
+                  }
+                ]
+              }
+            ],
+            "code": {
+              "coding": [
+                {
+                  "code": "EXPAGNT",
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                  "display": "Exposure Agent"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/GonExtractPatient"
+            },
+            "component": [
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "sexual-contact-partner",
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='sexualContactPartner').answer.value"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "228465009",
+                      "system": "http://snomed.info/sct",
+                      "display": "Sexual relationship details (observable entity)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='relationshipType').answer.value"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "74964007",
+                      "system": "http://snomed.info/sct",
+                      "display": "Other (qualifier value)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='otherTransmission').answer.value"
+                  }
+                ],
+                "_valueString": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "409496000",
+                      "system": "http://snomed.info/sct",
+                      "display": "Mode of transmission (observable entity)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='unknown').answer.value.where($this = true)"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "%factory.Coding('http://snomed.info/sct', '261665006', 'Unknown (qualifier value)')"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "409496000",
+                      "system": "http://snomed.info/sct",
+                      "display": "Mode of transmission (observable entity)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, %resource.descendants().where(linkId='otherTransmission').answer.value)"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "%factory.Coding('http://snomed.info/sct', '74964007', 'Other (qualifier value)')"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "409496000",
+                      "system": "http://snomed.info/sct",
+                      "display": "Mode of transmission (observable entity)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='otherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='sexualContactPartner').answer.value))"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "%factory.Coding('http://snomed.info/sct', '417564009', 'Sexual transmission (qualifier value)')"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/PractitionerRole/GonExtractTreatingPractitionerRole",
+          "resource": {
+            "resourceType": "PractitionerRole",
+            "id": "GonExtractTreatingPractitionerRole",
+            "practitioner": {
+              "reference": "Practitioner/GonExtractTreatingPractitioner"
+            },
+            "organization": {
+              "reference": "Organization/GonExtractTreatingOrganization"
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Practitioner/GonExtractTreatingPractitioner",
+          "resource": {
+            "resourceType": "Practitioner",
+            "id": "GonExtractTreatingPractitioner",
+            "identifier": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='physicianGln').answer.value"
+                  }
+                ],
+                "system": "urn:oid:2.51.1.3",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "name": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='treatingPhysicianPractitioner')"
+                  }
+                ],
+                "_family": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='physicianSurname').answer.value.first()"
+                    }
+                  ]
+                },
+                "_given": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "item.where(linkId='physicianGivenname').answer.value"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "address": [
+              {
+                "use": "work",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='treatingPhysicianPractitioner')"
+                  }
+                ],
+                "_line": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "item.where(linkId='physicianStreetLine').answer.value"
+                      }
+                    ]
+                  }
+                ],
+                "_postalCode": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='physicianZipCode').answer.value.first()"
+                    }
+                  ]
+                },
+                "_city": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='physicianCity').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='physicianPhone').answer.value.first()"
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='physicianEmail').answer.value"
+                  }
+                ],
+                "system": "email",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Organization/GonExtractTreatingOrganization",
+          "resource": {
+            "resourceType": "Organization",
+            "id": "GonExtractTreatingOrganization",
+            "identifier": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='orgGln').answer.value"
+                  }
+                ],
+                "system": "urn:oid:2.51.1.3",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='orgBer').answer.value"
+                  }
+                ],
+                "system": "urn:oid:2.16.756.5.45",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "extension": [
+              {
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='orgDepartment').answer.value"
+                  }
+                ],
+                "_valueString": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "address": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='treatingPhysicianOrganization')"
+                  }
+                ],
+                "_line": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "item.where(linkId='orgStreetLine').answer.value"
+                      }
+                    ]
+                  }
+                ],
+                "_postalCode": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='orgZipCode').answer.value.first()"
+                    }
+                  ]
+                },
+                "_city": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='orgCity').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='orgPhone').answer.value.first()"
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='orgEmail').answer.value"
+                  }
+                ],
+                "system": "email",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "_name": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='orgName').answer.value.first()"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "_timestamp": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+            "valueString": "%resource.authored"
+          }
+        ]
+      }
+    }
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "code": "semver",
+        "system": "http://hl7.org/fhir/version-algorithm"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "patient",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "Patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient to pre-populate the form with"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "user",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "User"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "PractitionerRole"
+        },
+        {
+          "url": "description",
+          "valueString": "The treating physician's PractitionerRole (practitioner + sending organization) to pre-populate the form with"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaPerson|0.0.1-assembled"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaManifestation|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaExposition|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaTreatingPhysician|0.0.1"
+    }
+  ],
+  "item": [
+    {
+      "linkId": "gonorrhoea-form",
+      "type": "group",
+      "text": "Déclaration de résultat clinique : gonorrhée",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract",
+          "extension": [
+            {
+              "url": "template",
+              "valueReference": {
+                "reference": "#ChEkmDocumentGonorrhoeaTemplate"
+              }
+            }
+          ]
+        }
+      ],
+      "item": [
+        {
+          "linkId": "person",
+          "type": "group",
+          "text": "Données relatives à la personne concernée",
+          "item": [
+            {
+              "linkId": "surnameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.surnameInitial",
+              "text": "Initiale du nom",
+              "type": "string",
+              "required": true,
+              "maxLength": 1,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.first().family.substring(0,1)"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "givennameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.givennameInitial",
+              "text": "Initiale du prénom",
+              "type": "string",
+              "required": true,
+              "maxLength": 1,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.first().given.first().substring(0,1)"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "dateOfBirth",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.dateOfBirth",
+              "text": "Date de naissance",
+              "type": "date",
+              "required": true,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.birthDate"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "ahvn13",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.ahvn13",
+              "text": "Numéro AVS (OASI)",
+              "type": "string",
+              "maxLength": 13,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/regex",
+                  "valueString": "^756[0-9]{10}$"
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.first()"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "nationality",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.nationality",
+              "text": "Nationalité",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "drop-down",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/patient-citizenship').extension.where(url = 'code').valueCodeableConcept.coding.first()"
+                  }
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CH",
+                    "display": "Suisse"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AL",
+                    "display": "Albanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AD",
+                    "display": "Andorre"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BE",
+                    "display": "Belgique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BG",
+                    "display": "Bulgarie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DK",
+                    "display": "Danemark"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DE",
+                    "display": "Allemagne"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "FI",
+                    "display": "Finlande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "FR",
+                    "display": "France"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GR",
+                    "display": "Grèce"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GB",
+                    "display": "Royaume-Uni"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IE",
+                    "display": "Irlande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IS",
+                    "display": "Islande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IT",
+                    "display": "Italie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LI",
+                    "display": "Liechtenstein"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LU",
+                    "display": "Luxembourg"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MT",
+                    "display": "Malte"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MC",
+                    "display": "Monaco"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NL",
+                    "display": "Pays-Bas"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NO",
+                    "display": "Norvège"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AT",
+                    "display": "Autriche"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PL",
+                    "display": "Pologne"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PT",
+                    "display": "Portugal"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "RO",
+                    "display": "Roumanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SM",
+                    "display": "Saint-Marin"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SE",
+                    "display": "Suède"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ES",
+                    "display": "Espagne"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TR",
+                    "display": "Türkiye"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "HU",
+                    "display": "Hongrie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VA",
+                    "display": "Cité du Vatican"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CY",
+                    "display": "Chypre"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SK",
+                    "display": "Slovaquie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CZ",
+                    "display": "Tchéquie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "RS",
+                    "display": "Serbie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "HR",
+                    "display": "Croatie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SI",
+                    "display": "Slovénie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BA",
+                    "display": "Bosnie et Herzégovine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ME",
+                    "display": "Monténégro"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MK",
+                    "display": "Macédoine du Nord"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "XK",
+                    "display": "Kosovo"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "EE",
+                    "display": "Estonie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LV",
+                    "display": "Lettonie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LT",
+                    "display": "Lituanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MD",
+                    "display": "Moldova"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "RU",
+                    "display": "Russie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "UA",
+                    "display": "Ukraine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BY",
+                    "display": "Bélarus"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GQ",
+                    "display": "Guinée équatoriale"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ET",
+                    "display": "Éthiopie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DJ",
+                    "display": "Djibouti"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DZ",
+                    "display": "Algérie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AO",
+                    "display": "Angola"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BW",
+                    "display": "Botswana"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BI",
+                    "display": "Burundi"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BJ",
+                    "display": "Bénin"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CI",
+                    "display": "Côte d'Ivoire"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GA",
+                    "display": "Gabon"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GM",
+                    "display": "Gambie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GH",
+                    "display": "Ghana"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GW",
+                    "display": "Guinée-Bissau"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GN",
+                    "display": "Guinée"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CM",
+                    "display": "Cameroun"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CV",
+                    "display": "Cabo Verde"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KE",
+                    "display": "Kenya"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KM",
+                    "display": "Comores"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CG",
+                    "display": "Congo (Brazzaville)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CD",
+                    "display": "Congo (Kinshasa)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LS",
+                    "display": "Lesotho"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LR",
+                    "display": "Libéria"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LY",
+                    "display": "Libye"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MG",
+                    "display": "Madagascar"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MW",
+                    "display": "Malawi"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ML",
+                    "display": "Mali"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MA",
+                    "display": "Maroc"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MR",
+                    "display": "Mauritanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MU",
+                    "display": "Maurice"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MZ",
+                    "display": "Mozambique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NE",
+                    "display": "Niger"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NG",
+                    "display": "Nigéria"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BF",
+                    "display": "Burkina Faso"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ZW",
+                    "display": "Zimbabwe"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "RW",
+                    "display": "Rwanda"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ZM",
+                    "display": "Zambie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ST",
+                    "display": "Sao Tomé-et-Principe"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SN",
+                    "display": "Sénégal"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SC",
+                    "display": "Seychelles"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SL",
+                    "display": "Sierra Leone"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SO",
+                    "display": "Somalie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ZA",
+                    "display": "Afrique du Sud"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SD",
+                    "display": "Soudan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NA",
+                    "display": "Namibie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SZ",
+                    "display": "Eswatini"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TZ",
+                    "display": "Tanzanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TG",
+                    "display": "Togo"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TD",
+                    "display": "Tchad"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TN",
+                    "display": "Tunisie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "UG",
+                    "display": "Ouganda"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "EG",
+                    "display": "Égypte"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CF",
+                    "display": "République centrafricaine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ER",
+                    "display": "Érythrée"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SS",
+                    "display": "Soudan du Sud"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AR",
+                    "display": "Argentine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BS",
+                    "display": "Bahamas"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BB",
+                    "display": "Barbade"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BO",
+                    "display": "Bolivie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BR",
+                    "display": "Brésil"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CL",
+                    "display": "Chili"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CR",
+                    "display": "Costa Rica"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DO",
+                    "display": "République dominicaine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "EC",
+                    "display": "Équateur"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SV",
+                    "display": "El Salvador"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GT",
+                    "display": "Guatemala"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GY",
+                    "display": "Guyana"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "HT",
+                    "display": "Haïti"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BZ",
+                    "display": "Belize"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "HN",
+                    "display": "Honduras"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "JM",
+                    "display": "Jamaïque"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CA",
+                    "display": "Canada"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CO",
+                    "display": "Colombie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CU",
+                    "display": "Cuba"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MX",
+                    "display": "Mexique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NI",
+                    "display": "Nicaragua"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PA",
+                    "display": "Panama"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PY",
+                    "display": "Paraguay"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PE",
+                    "display": "Pérou"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SR",
+                    "display": "Suriname"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TT",
+                    "display": "Trinité-et-Tobago"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "UY",
+                    "display": "Uruguay"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VE",
+                    "display": "Venezuela"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "US",
+                    "display": "États-Unis"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DM",
+                    "display": "Dominique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GD",
+                    "display": "Grenade"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AG",
+                    "display": "Antigua-et-Barbuda"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LC",
+                    "display": "Sainte-Lucie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VC",
+                    "display": "Saint-Vincent-et-les Grenadines"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KN",
+                    "display": "Saint-Kitts-et-Nevis"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AF",
+                    "display": "Afghanistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BH",
+                    "display": "Bahreïn"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BT",
+                    "display": "Bhoutan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BN",
+                    "display": "Brunéi Darussalam"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MM",
+                    "display": "Myanmar"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LK",
+                    "display": "Sri Lanka"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CN",
+                    "display": "Chine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IN",
+                    "display": "Inde"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ID",
+                    "display": "Indonésie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IQ",
+                    "display": "Irak"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IR",
+                    "display": "Iran"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IL",
+                    "display": "Israël"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "JP",
+                    "display": "Japon"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "YE",
+                    "display": "Yémen"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "JO",
+                    "display": "Jordanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KH",
+                    "display": "Cambodge"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "QA",
+                    "display": "Qatar"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KW",
+                    "display": "Koweït"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LA",
+                    "display": "Laos"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LB",
+                    "display": "Liban"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MY",
+                    "display": "Malaisie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MV",
+                    "display": "Maldives"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "OM",
+                    "display": "Oman"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MN",
+                    "display": "Mongolie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NP",
+                    "display": "Népal"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KP",
+                    "display": "Corée (Nord)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AE",
+                    "display": "Émirats arabes unis"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PK",
+                    "display": "Pakistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PH",
+                    "display": "Philippines"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SA",
+                    "display": "Arabie saoudite"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SG",
+                    "display": "Singapour"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KR",
+                    "display": "Corée (Sud)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SY",
+                    "display": "Syrie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TH",
+                    "display": "Thaïlande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VN",
+                    "display": "Vietnam"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BD",
+                    "display": "Bangladesh"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TL",
+                    "display": "Timor-Leste"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AM",
+                    "display": "Arménie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AZ",
+                    "display": "Azerbaïdjan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GE",
+                    "display": "Géorgie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KZ",
+                    "display": "Kazakhstan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KG",
+                    "display": "Kirghizistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TJ",
+                    "display": "Tadjikistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TM",
+                    "display": "Turkménistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "UZ",
+                    "display": "Ouzbékistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AU",
+                    "display": "Australie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "FJ",
+                    "display": "Fidji"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NR",
+                    "display": "Nauru"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VU",
+                    "display": "Vanuatu"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NZ",
+                    "display": "Nouvelle-Zélande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PG",
+                    "display": "Papouasie-Nouvelle-Guinée"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TO",
+                    "display": "Tonga"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "WS",
+                    "display": "Samoa"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SB",
+                    "display": "Îles Salomon"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TV",
+                    "display": "Tuvalu"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KI",
+                    "display": "Kiribati"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MH",
+                    "display": "Îles Marshall"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "FM",
+                    "display": "Micronésie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PW",
+                    "display": "Palaos"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CK",
+                    "display": "Îles Cook"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "zipCode",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.zipCode",
+              "text": "NPA",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%homeOrFirstAddress.postalCode"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "city",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.city",
+              "text": "Localité",
+              "type": "string",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%homeOrFirstAddress.city"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "country",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.country",
+              "text": "Pays",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "drop-down",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%homeOrFirstAddress.country"
+                  }
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CH",
+                    "display": "Suisse"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AL",
+                    "display": "Albanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AD",
+                    "display": "Andorre"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BE",
+                    "display": "Belgique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BG",
+                    "display": "Bulgarie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DK",
+                    "display": "Danemark"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DE",
+                    "display": "Allemagne"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "FI",
+                    "display": "Finlande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "FR",
+                    "display": "France"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GR",
+                    "display": "Grèce"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GB",
+                    "display": "Royaume-Uni"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IE",
+                    "display": "Irlande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IS",
+                    "display": "Islande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IT",
+                    "display": "Italie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LI",
+                    "display": "Liechtenstein"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LU",
+                    "display": "Luxembourg"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MT",
+                    "display": "Malte"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MC",
+                    "display": "Monaco"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NL",
+                    "display": "Pays-Bas"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NO",
+                    "display": "Norvège"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AT",
+                    "display": "Autriche"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PL",
+                    "display": "Pologne"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PT",
+                    "display": "Portugal"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "RO",
+                    "display": "Roumanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SM",
+                    "display": "Saint-Marin"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SE",
+                    "display": "Suède"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ES",
+                    "display": "Espagne"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TR",
+                    "display": "Türkiye"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "HU",
+                    "display": "Hongrie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VA",
+                    "display": "Cité du Vatican"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CY",
+                    "display": "Chypre"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SK",
+                    "display": "Slovaquie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CZ",
+                    "display": "Tchéquie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "RS",
+                    "display": "Serbie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "HR",
+                    "display": "Croatie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SI",
+                    "display": "Slovénie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BA",
+                    "display": "Bosnie et Herzégovine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ME",
+                    "display": "Monténégro"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MK",
+                    "display": "Macédoine du Nord"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "XK",
+                    "display": "Kosovo"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "EE",
+                    "display": "Estonie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LV",
+                    "display": "Lettonie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LT",
+                    "display": "Lituanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MD",
+                    "display": "Moldova"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "RU",
+                    "display": "Russie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "UA",
+                    "display": "Ukraine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BY",
+                    "display": "Bélarus"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GQ",
+                    "display": "Guinée équatoriale"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ET",
+                    "display": "Éthiopie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DJ",
+                    "display": "Djibouti"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DZ",
+                    "display": "Algérie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AO",
+                    "display": "Angola"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BW",
+                    "display": "Botswana"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BI",
+                    "display": "Burundi"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BJ",
+                    "display": "Bénin"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CI",
+                    "display": "Côte d'Ivoire"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GA",
+                    "display": "Gabon"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GM",
+                    "display": "Gambie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GH",
+                    "display": "Ghana"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GW",
+                    "display": "Guinée-Bissau"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GN",
+                    "display": "Guinée"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CM",
+                    "display": "Cameroun"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CV",
+                    "display": "Cabo Verde"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KE",
+                    "display": "Kenya"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KM",
+                    "display": "Comores"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CG",
+                    "display": "Congo (Brazzaville)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CD",
+                    "display": "Congo (Kinshasa)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LS",
+                    "display": "Lesotho"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LR",
+                    "display": "Libéria"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LY",
+                    "display": "Libye"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MG",
+                    "display": "Madagascar"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MW",
+                    "display": "Malawi"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ML",
+                    "display": "Mali"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MA",
+                    "display": "Maroc"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MR",
+                    "display": "Mauritanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MU",
+                    "display": "Maurice"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MZ",
+                    "display": "Mozambique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NE",
+                    "display": "Niger"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NG",
+                    "display": "Nigéria"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BF",
+                    "display": "Burkina Faso"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ZW",
+                    "display": "Zimbabwe"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "RW",
+                    "display": "Rwanda"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ZM",
+                    "display": "Zambie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ST",
+                    "display": "Sao Tomé-et-Principe"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SN",
+                    "display": "Sénégal"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SC",
+                    "display": "Seychelles"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SL",
+                    "display": "Sierra Leone"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SO",
+                    "display": "Somalie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ZA",
+                    "display": "Afrique du Sud"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SD",
+                    "display": "Soudan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NA",
+                    "display": "Namibie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SZ",
+                    "display": "Eswatini"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TZ",
+                    "display": "Tanzanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TG",
+                    "display": "Togo"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TD",
+                    "display": "Tchad"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TN",
+                    "display": "Tunisie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "UG",
+                    "display": "Ouganda"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "EG",
+                    "display": "Égypte"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CF",
+                    "display": "République centrafricaine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ER",
+                    "display": "Érythrée"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SS",
+                    "display": "Soudan du Sud"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AR",
+                    "display": "Argentine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BS",
+                    "display": "Bahamas"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BB",
+                    "display": "Barbade"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BO",
+                    "display": "Bolivie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BR",
+                    "display": "Brésil"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CL",
+                    "display": "Chili"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CR",
+                    "display": "Costa Rica"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DO",
+                    "display": "République dominicaine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "EC",
+                    "display": "Équateur"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SV",
+                    "display": "El Salvador"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GT",
+                    "display": "Guatemala"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GY",
+                    "display": "Guyana"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "HT",
+                    "display": "Haïti"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BZ",
+                    "display": "Belize"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "HN",
+                    "display": "Honduras"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "JM",
+                    "display": "Jamaïque"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CA",
+                    "display": "Canada"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CO",
+                    "display": "Colombie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CU",
+                    "display": "Cuba"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MX",
+                    "display": "Mexique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NI",
+                    "display": "Nicaragua"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PA",
+                    "display": "Panama"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PY",
+                    "display": "Paraguay"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PE",
+                    "display": "Pérou"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SR",
+                    "display": "Suriname"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TT",
+                    "display": "Trinité-et-Tobago"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "UY",
+                    "display": "Uruguay"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VE",
+                    "display": "Venezuela"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "US",
+                    "display": "États-Unis"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "DM",
+                    "display": "Dominique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GD",
+                    "display": "Grenade"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AG",
+                    "display": "Antigua-et-Barbuda"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LC",
+                    "display": "Sainte-Lucie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VC",
+                    "display": "Saint-Vincent-et-les Grenadines"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KN",
+                    "display": "Saint-Kitts-et-Nevis"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AF",
+                    "display": "Afghanistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BH",
+                    "display": "Bahreïn"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BT",
+                    "display": "Bhoutan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BN",
+                    "display": "Brunéi Darussalam"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MM",
+                    "display": "Myanmar"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LK",
+                    "display": "Sri Lanka"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CN",
+                    "display": "Chine"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IN",
+                    "display": "Inde"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "ID",
+                    "display": "Indonésie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IQ",
+                    "display": "Irak"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IR",
+                    "display": "Iran"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "IL",
+                    "display": "Israël"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "JP",
+                    "display": "Japon"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "YE",
+                    "display": "Yémen"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "JO",
+                    "display": "Jordanie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KH",
+                    "display": "Cambodge"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "QA",
+                    "display": "Qatar"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KW",
+                    "display": "Koweït"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LA",
+                    "display": "Laos"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "LB",
+                    "display": "Liban"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MY",
+                    "display": "Malaisie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MV",
+                    "display": "Maldives"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "OM",
+                    "display": "Oman"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MN",
+                    "display": "Mongolie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NP",
+                    "display": "Népal"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KP",
+                    "display": "Corée (Nord)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AE",
+                    "display": "Émirats arabes unis"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PK",
+                    "display": "Pakistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PH",
+                    "display": "Philippines"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SA",
+                    "display": "Arabie saoudite"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SG",
+                    "display": "Singapour"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KR",
+                    "display": "Corée (Sud)"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SY",
+                    "display": "Syrie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TH",
+                    "display": "Thaïlande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VN",
+                    "display": "Vietnam"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "BD",
+                    "display": "Bangladesh"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TL",
+                    "display": "Timor-Leste"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AM",
+                    "display": "Arménie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AZ",
+                    "display": "Azerbaïdjan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "GE",
+                    "display": "Géorgie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KZ",
+                    "display": "Kazakhstan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KG",
+                    "display": "Kirghizistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TJ",
+                    "display": "Tadjikistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TM",
+                    "display": "Turkménistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "UZ",
+                    "display": "Ouzbékistan"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "AU",
+                    "display": "Australie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "FJ",
+                    "display": "Fidji"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NR",
+                    "display": "Nauru"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "VU",
+                    "display": "Vanuatu"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "NZ",
+                    "display": "Nouvelle-Zélande"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PG",
+                    "display": "Papouasie-Nouvelle-Guinée"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TO",
+                    "display": "Tonga"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "WS",
+                    "display": "Samoa"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "SB",
+                    "display": "Îles Salomon"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "TV",
+                    "display": "Tuvalu"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "KI",
+                    "display": "Kiribati"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "MH",
+                    "display": "Îles Marshall"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "FM",
+                    "display": "Micronésie"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "PW",
+                    "display": "Palaos"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
+                    "code": "CK",
+                    "display": "Îles Cook"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "canton",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.canton",
+              "text": "Canton",
+              "type": "open-choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%homeOrFirstAddress.state"
+                  }
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "AG"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "AR"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "AI"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "BL"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "BS"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "BE"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "FR"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "GE"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "GL"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "GR"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "JU"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "LU"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "NE"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "NW"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "OW"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "SH"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "SZ"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "SO"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "SG"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "TI"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "TG"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "UR"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "VD"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "VS"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "ZG"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-core/CodeSystem/ech-7-cantonflabbreviation",
+                    "code": "ZH"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "administrativeGender",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.administrativeGender",
+              "text": "Sexe",
+              "type": "choice",
+              "required": true,
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "useSupplement"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-administrative-gender-language-supplement"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.gender"
+                  }
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://hl7.org/fhir/administrative-gender",
+                    "code": "male",
+                    "display": "masculin"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://hl7.org/fhir/administrative-gender",
+                    "code": "female",
+                    "display": "féminin"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://hl7.org/fhir/administrative-gender",
+                    "code": "other",
+                    "display": "autre"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://hl7.org/fhir/administrative-gender",
+                    "code": "unknown",
+                    "display": "inconnu"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "genderIdentity",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.genderIdentity",
+              "text": "Identité de genre (transgenre)",
+              "type": "choice",
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "useSupplement"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
+                  }
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "1384187000",
+                    "display": "S'identifie comme transgenre"
+                  }
+                }
+              ]
+            }
+          ],
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/variable",
+              "valueExpression": {
+                "name": "homeOrFirstAddress",
+                "language": "text/fhirpath",
+                "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "manifestation-group",
+          "text": "Diagnostic et manifestation",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "manifestation",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
+              "text": "Manifestations",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": "useSupplement"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "264931009",
+                    "display": "Symptomatique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "84387000",
+                    "display": "Asymptomatique"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "manifestationBeginUnknown",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestationBeginUnknown",
+              "text": "Début des manifestations inconnu",
+              "type": "boolean",
+              "initial": [
+                {
+                  "valueBoolean": false
+                }
+              ]
+            },
+            {
+              "linkId": "manifestationBeginDate",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestationBeginDate",
+              "text": "Début des manifestations (date)",
+              "type": "date",
+              "enableWhen": [
+                {
+                  "question": "manifestationBeginUnknown",
+                  "operator": "=",
+                  "answerBoolean": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "transmission",
+          "text": "Comment (voie de transmission)",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "sexualContactPartner",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner",
+              "text": "Rapport sexuel avec une personne infectée (sexe)",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://hl7.org/fhir/administrative-gender",
+                    "code": "male",
+                    "display": "masculin"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://hl7.org/fhir/administrative-gender",
+                    "code": "female",
+                    "display": "féminin"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://hl7.org/fhir/administrative-gender",
+                    "code": "other",
+                    "display": "autre"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://hl7.org/fhir/administrative-gender",
+                    "code": "unknown",
+                    "display": "inconnu"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "relationshipType",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType",
+              "text": "Type de relation",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                    "code": "steady-partner",
+                    "display": "Partenaire stable"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                    "code": "non-steady-partner",
+                    "display": "Partenaire non stable"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                    "code": "offered-paid-sex",
+                    "display": "Offre de sexe rémunéré"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                    "code": "used-paid-sex",
+                    "display": "Recours à du sexe rémunéré"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "otherTransmission",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.otherTransmission",
+              "text": "Autre voie de transmission (texte libre)",
+              "type": "string"
+            },
+            {
+              "linkId": "unknown",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown",
+              "text": "Voie de transmission inconnue",
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "linkId": "treatingPhysician",
+          "text": "Médecin traitant",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "treatingPhysicianPractitioner",
+              "text": "Médecin traitant",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "physicianGivenname",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.givenname",
+                  "text": "Prénom",
+                  "type": "string",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.practitioner.resolve().name.first().given.first()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "physicianSurname",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.surname",
+                  "text": "Nom",
+                  "type": "string",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.practitioner.resolve().name.first().family"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "physicianStreetLine",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.streetLine",
+                  "text": "Adresse (rue, numéro)",
+                  "type": "string",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().line.first()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "physicianZipCode",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.zipCode",
+                  "text": "NPA",
+                  "type": "string",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().postalCode"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "physicianCity",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.city",
+                  "text": "Localité",
+                  "type": "string",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.practitioner.resolve().address.where(use='work').combine(%user.practitioner.resolve().address).first().city"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "physicianPhone",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.phone",
+                  "text": "Numéro de téléphone",
+                  "type": "string",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.practitioner.resolve().telecom.where(system='phone').value.first()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "physicianEmail",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.email",
+                  "text": "E-mail",
+                  "type": "string",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.practitioner.resolve().telecom.where(system='email').value.first()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "physicianGln",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.gln",
+                  "text": "GLN",
+                  "type": "string",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.practitioner.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "treatingPhysicianOrganization",
+              "text": "Organisation émettrice",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "orgName",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.name",
+                  "text": "Nom",
+                  "type": "string",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.organization.resolve().name"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "orgDepartment",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.department",
+                  "text": "Service",
+                  "type": "string",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.organization.resolve().extension.where(url='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "orgStreetLine",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.streetLine",
+                  "text": "Adresse (rue, numéro)",
+                  "type": "string",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.organization.resolve().address.first().line.first()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "orgZipCode",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.zipCode",
+                  "text": "NPA",
+                  "type": "string",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.organization.resolve().address.first().postalCode"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "orgCity",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.city",
+                  "text": "Localité",
+                  "type": "string",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.organization.resolve().address.first().city"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "orgPhone",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.phone",
+                  "text": "Numéro de téléphone",
+                  "type": "string",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.organization.resolve().telecom.where(system='phone').value.first()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "orgEmail",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.email",
+                  "text": "E-mail",
+                  "type": "string",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.organization.resolve().telecom.where(system='email').value.first()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "orgBer",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.ber",
+                  "text": "REE",
+                  "type": "string",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.organization.resolve().identifier.where(system='urn:oid:2.16.756.5.45').value.first()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "orgGln",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.gln",
+                  "text": "GLN",
+                  "type": "string",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.organization.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "title": "CH EKM Questionnaire: Gonorrhoea (assembled) (preview fr-CH, pre-expanded)",
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (tests/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+}

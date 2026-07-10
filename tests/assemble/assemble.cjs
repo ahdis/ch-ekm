@@ -18,8 +18,9 @@
 //   node assemble.cjs <rootQuestionnaire.json> <out.json> [resourcesDir]
 //
 // The child sub-questionnaires are resolved by canonical url from local files in `resourcesDir`
-// (default fsh-generated/resources) — no FHIR server required. The caller (assemble-questionnaire.sh)
-// is responsible for stripping the extraction template before assembly and re-attaching it after.
+// (default fsh-generated/resources) — no FHIR server required. This engine keeps the root's
+// top-level (item[0]) templateExtract extension and drops its contained Bundle; the caller
+// (assemble-questionnaire.sh) re-attaches the contained Bundle to the assembled result.
 
 const { readFileSync, writeFileSync, readdirSync } = require('node:fs');
 const { join } = require('node:path');

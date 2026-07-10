@@ -10,28 +10,54 @@ Description: "Modular sub-questionnaire for the 'Manifestationen' part of the 'D
 * version = "0.0.1"
 * name = "ChEkmQuestionnaireGonorrhoeaManifestation"
 * status = #active
+* language = #en
 * experimental = false
 * subjectType = #Patient
 * extension[+].url = $sdc-assemble-expectation
 * extension[=].valueCode = #assemble-child
 
 * item[+].linkId = "manifestation-group"
-* item[=].text = "Diagnose und Manifestation"
+* item[=].text = "Diagnosis and manifestation"
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = "Diagnose und Manifestation"
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = "Diagnostic et manifestation"
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = "Diagnosi e manifestazione"
 * item[=].type = #group
 
 // Manifestationen - single-choice (symptomatic / asymptomatic), radio buttons
 * item[=].item[+].linkId = "manifestation"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation"
-* item[=].item[=].text = "Manifestationen"
+* item[=].item[=].text = "Manifestations"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Manifestationen"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Manifestations"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Manifestazioni"
 * item[=].item[=].type = #choice
 * item[=].item[=].extension[+].url = $choiceOrientation
 * item[=].item[=].extension[=].valueCode = #horizontal
 * item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGonorrhoeaManifestationFormChoice"
-* item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
-* item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
-* item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "displayLanguage"
-* item[=].item[=].answerValueSet.extension[=].extension[+].url = "expression"
-* item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "de-CH"
 * item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
 * item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
 * item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "useSupplement"
@@ -43,14 +69,44 @@ Description: "Modular sub-questionnaire for the 'Manifestationen' part of the 'D
 // Manifestationsbeginn unbekannt - default false; when checked it disables the date below
 * item[=].item[+].linkId = "manifestationBeginUnknown"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestationBeginUnknown"
-* item[=].item[=].text = "Manifestationsbeginn unbekannt"
+* item[=].item[=].text = "Onset of manifestation unknown"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Manifestationsbeginn unbekannt"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Début des manifestations inconnu"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Inizio delle manifestazioni sconosciuto"
 * item[=].item[=].type = #boolean
 * item[=].item[=].initial.valueBoolean = false
 
 // Manifestationsbeginn (Datum) - only enabled while "unbekannt" is not ticked
 * item[=].item[+].linkId = "manifestationBeginDate"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestationBeginDate"
-* item[=].item[=].text = "Manifestationsbeginn (Datum)"
+* item[=].item[=].text = "Onset of manifestation (date)"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Manifestationsbeginn (Datum)"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Début des manifestations (date)"
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Inizio delle manifestazioni (data)"
 * item[=].item[=].type = #date
 * item[=].item[=].enableWhen[+].question = "manifestationBeginUnknown"
 * item[=].item[=].enableWhen[=].operator = #=

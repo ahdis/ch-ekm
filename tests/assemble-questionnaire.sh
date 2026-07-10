@@ -19,8 +19,6 @@
 #   ./tests/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea
 #   ./tests/assemble-questionnaire.sh ChEkmQuestionnaireMpox
 #
-# Runs `sushi .` first so fsh-generated/ is up to date.
-
 set -euo pipefail
 
 # Run from the repo root regardless of where the script is invoked from.
@@ -56,29 +54,15 @@ echo "Engine:  @aehrc/sdc-assemble (local, $WRAPPER)"
 echo "Root:    $ROOT_ID  (disease: $DISEASE)"
 echo
 
-# --- 1. strip the extraction template, then assemble --------------------------
-# The extraction template (contained Bundle + sdc-questionnaire-templateExtract) is not needed
-# for assembly and the assembler does not propagate it, so strip it from the input and re-attach
-# it to the result in step 3.
+# --- 1. assemble --------------------------------------------------------------
+# The @aehrc/sdc-assemble reference engine preserves the top-level (item[0]) templateExtract
+# extension and drops the contained Bundle regardless, so we feed it the root as-is. Step 2
+# re-attaches the contained Bundle (from the root file) and idempotently re-affirms the
+# extension + extr-template profile on the assembled result.
 TE_URL="http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract"
-python3 - "$ROOT_FILE" "$TE_URL" > /tmp/ekm-assemble-root.json <<'PY'
-import json, sys
-q = json.load(open(sys.argv[1]))
-te_url = sys.argv[2]
-q.pop("contained", None)
-def strip(items):
-    for it in items or []:
-        if "extension" in it:
-            it["extension"] = [e for e in it["extension"] if e.get("url") != te_url]
-            if not it["extension"]:
-                del it["extension"]
-        strip(it.get("item"))
-strip(q.get("item"))
-json.dump(q, sys.stdout)
-PY
 
 echo "Assembling (Questionnaire/\$assemble)"
-node "$WRAPPER" /tmp/ekm-assemble-root.json /tmp/ekm-assemble-out.json "$DIR"
+node "$WRAPPER" "$ROOT_FILE" /tmp/ekm-assemble-out.json "$DIR"
 echo
 
 # --- 2. publish as an IG resource ---------------------------------------------
@@ -106,9 +90,10 @@ q["name"] = new_id
 q["version"] = "0.0.1"
 q["title"] = f"CH EKM Questionnaire: {disease} (assembled)"
 
-# Re-attach the SDC template-based extraction wiring stripped before $assemble:
-#  - the contained Bundle template,
-#  - the sdc-questionnaire-templateExtract extension on the top form group,
+# Re-affirm the SDC template-based extraction wiring on the assembled result:
+#  - the contained Bundle template (dropped by $assemble, so re-attached from the root),
+#  - the sdc-questionnaire-templateExtract extension on the top form group (kept by $assemble;
+#    added here only if missing),
 #  - the extr-template profile claim.
 # (The renderer needs all three on the assembled questionnaire to offer $extract.)
 extr_template = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template"
@@ -162,3 +147,10 @@ PY
 echo "Assembled questionnaire written to: $OUT"
 echo "Items:"
 jq -r '.. | objects | select(.linkId) | "  [\(.type)] \(.linkId): \(.text // "")"' "$OUT"
+
+# --- 3. build the pre-expanded, per-language preview questionnaires ------------
+# Bake the answerValueSet expansions into inline answerOptions (one file per Swiss language)
+# so the assembled questionnaire renders offline in the Smart Forms preview.
+echo
+echo "Building per-language preview questionnaires"
+python3 tests/build-lang-questionnaire.py "$ASSEMBLED_ID"

@@ -16,6 +16,7 @@ Description: "Modular sub-questionnaire for the gender identity of the affected 
 * version = "0.0.1"
 * name = "ChEkmQuestionnairePersonGenderIdentity"
 * status = #active
+* language = #en
 * experimental = false
 * subjectType = #Patient
 * extension[+].url = $sdc-assemble-expectation
@@ -27,14 +28,24 @@ Description: "Modular sub-questionnaire for the gender identity of the affected 
 // Source and form share the ChEkmGenderIdentity value set (SNOMED), so the Coding matches directly.
 * item[+].linkId = "genderIdentity"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.genderIdentity"
-* item[=].text = "Geschlechtsidentität (transgender)"
+* item[=].text = "Gender identity (transgender)"
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = "Geschlechtsidentität (transgender)"
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = "Identité de genre (transgenre)"
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = "Identità di genere (transgender)"
 * item[=].type = #choice
 * item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGenderIdentity"
-* item[=].answerValueSet.extension[+].url = $binding-parameter
-* item[=].answerValueSet.extension[=].extension[+].url = "name"
-* item[=].answerValueSet.extension[=].extension[=].valueString = "displayLanguage"
-* item[=].answerValueSet.extension[=].extension[+].url = "expression"
-* item[=].answerValueSet.extension[=].extension[=].valueString = "de-CH"
 * item[=].answerValueSet.extension[+].url = $binding-parameter
 * item[=].answerValueSet.extension[=].extension[+].url = "name"
 * item[=].answerValueSet.extension[=].extension[=].valueString = "useSupplement"
