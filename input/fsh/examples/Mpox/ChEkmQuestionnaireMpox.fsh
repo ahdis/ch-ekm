@@ -1,15 +1,15 @@
-// Modular ROOT questionnaire for the Gonorrhoea clinical findings report (green form sections).
+// Modular ROOT questionnaire for the Mpox clinical findings report (green form sections).
 // Assembles the Person, Manifestation and Exposition sub-questionnaires via the SDC $assemble operation.
 // Render the assembled output in Smart Forms (../smart-forms).
 
-Instance: ChEkmQuestionnaireGonorrhoea
+Instance: ChEkmQuestionnaireMpox
 InstanceOf: Questionnaire
 Usage: #example
-Title: "CH EKM Questionnaire: Gonorrhoea (modular)"
-Description: "Modular root questionnaire for the Gonorrhoea clinical findings report. References the Person, Manifestation and Exposition sub-questionnaires; run Questionnaire/$assemble to produce the renderable form."
-* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea"
+Title: "CH EKM Questionnaire: Mpox (modular)"
+Description: "Modular root questionnaire for the Mpox clinical findings report. References the Person, Manifestation and Exposition sub-questionnaires; run Questionnaire/$assemble to produce the renderable form."
+* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpox"
 * version = "0.0.1"
-* name = "ChEkmQuestionnaireGonorrhoea"
+* name = "ChEkmQuestionnaireMpox"
 * status = #active
 * language = #en
 * experimental = false
@@ -17,15 +17,15 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * meta.profile[+] = $sdc-pop-exp
 // Declares that this questionnaire supports SDC template-based extraction (contained Bundle
 // template + sdc-questionnaire-templateExtract). Required element: contained 1..* (satisfied).
-* meta.profile[+] = $sdc-extr-template
+// TODO* meta.profile[+] = $sdc-extr-template
 * subjectType = #Patient
 
 // SDC template-based extraction: the document Bundle template is carried as a contained
 // resource and referenced from the form group via sdc-questionnaire-templateExtract, so a
 // renderer (e.g. Smart Forms) can run $extract on the filled QuestionnaireResponse to
-// produce a ChEkmDocumentGonorrhoea Bundle. tests/assemble-gonorrhoea.sh re-attaches both
+// produce a ChEkmDocumentMpox Bundle. tests/assemble-mpox.sh re-attaches both
 // onto the assembled questionnaire (the artifact the renderer loads).
-* contained[0] = ChEkmDocumentGonorrhoeaTemplate
+// TODO * contained[0] = ChEkmDocumentMpoxTemplate
 
 // Required by sdc-questionnaire-modular 4.0.0: the root must declare assemble-root.
 * extension[+].url = $sdc-assemble-expectation
@@ -59,49 +59,29 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * extension[=].extension[+].url = "description"
 * extension[=].extension[=].valueString = "The treating physician's PractitionerRole (practitioner + sending organization) to pre-populate the form with"
 
-// Birthdate validation: dateOfBirth (defined in the Person sub-questionnaire) must be in
-// [1900-01-01, today()]. Authored as a Questionnaire-level targetConstraint here on the modular
-// root so it propagates onto the assembled form the renderer loads ($assemble drops a child's
-// root extensions but keeps the root's). Smart Forms binds it to the item via the `location`
-// FHIRPath; the `expression` evaluates TRUE when the value is INVALID (out of range), so the
-// renderer would show `human` and (severity=error) blocks submission. `today()` is the dynamic bound.
-// see issue https://github.com/aehrc/smart-forms/issues/1971
-// * extension[+].url = $targetConstraint
-// * extension[=].extension[+].url = "key"
-// * extension[=].extension[=].valueId = "dateOfBirthRange"
-// * extension[=].extension[+].url = "severity"
-// * extension[=].extension[=].valueCode = #error
-// * extension[=].extension[+].url = "expression"
-// * extension[=].extension[=].valueExpression.language = #text/fhirpath
-// * extension[=].extension[=].valueExpression.expression = "%resource.descendants().where(linkId='dateOfBirth').answer.value.where($this < @1900-01-01 or $this > today()).exists()"
-// * extension[=].extension[+].url = "human"
-// * extension[=].extension[=].valueString = "Geburtsdatum muss zwischen dem 01.01.1900 und heute liegen."
-// * extension[=].extension[+].url = "location"
-// * extension[=].extension[=].valueString = "Questionnaire.descendants().where(linkId='dateOfBirth')"
-
-* item[+].linkId = "gonorrhoea-form"
+* item[+].linkId = "mpox-form"
 * item[=].type = #group
-* item[=].text = "Clinical findings report: gonorrhoea"
+* item[=].text = "Clinical findings report: mpox"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
 * item[=].text.extension[=].extension[=].valueCode = #de-CH
 * item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Meldung zum klinischen Befund: Gonorrhoea"
+* item[=].text.extension[=].extension[=].valueString = "Meldung zum klinischen Befund: Mpox"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
 * item[=].text.extension[=].extension[=].valueCode = #fr-CH
 * item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Déclaration de résultat clinique : gonorrhée"
+* item[=].text.extension[=].extension[=].valueString = "Déclaration de résultat clinique : Mpox"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
 * item[=].text.extension[=].extension[=].valueCode = #it-CH
 * item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Notifica del referto clinico: gonorrea"
+* item[=].text.extension[=].extension[=].valueString = "Notifica del referto clinico: Mpox"
 // Drives template-based $extract: one instance of the contained Bundle template per
-// gonorrhoea-form group (i.e. one document Bundle per filled form).
-* item[=].extension[+].url = $sdc-templateExtract
-* item[=].extension[=].extension[+].url = "template"
-* item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentGonorrhoeaTemplate)
+// mpox-form group (i.e. one document Bundle per filled form).
+// TODO * item[=].extension[+].url = $sdc-templateExtract
+// * item[=].extension[=].extension[+].url = "template"
+// * item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentMpoxTemplate)
 
 
 * item[=].item[+].linkId = "person"
@@ -124,11 +104,11 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].item[=].text.extension[=].extension[=].valueString = "Dati relativi alla persona interessata"
 
 // Namensinitialen
-* item[=].item[=].item[+].linkId = "personInitials"
+* item[=].item[=].item[+].linkId = "personName"
 * item[=].item[=].item[=].type = #display
-* item[=].item[=].item[=].text = "Name initials"
+* item[=].item[=].item[=].text = "Name"
 * item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
-* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials"
+* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonName"
 
 // Allgemeine Angaben
 * item[=].item[=].item[+].linkId = "personGeneral"
@@ -136,13 +116,6 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].item[=].item[=].text = "General information"
 * item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
 * item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral"
-
-// Geschlechtsidentität
-* item[=].item[=].item[+].linkId = "personGenderIdentity"
-* item[=].item[=].item[=].type = #display
-* item[=].item[=].item[=].text = "Gender identity"
-* item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
-* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity"
 
 // Diagnose und Manifestation
 * item[=].item[+].linkId = "manifestation-group"
@@ -166,7 +139,7 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 
 // Manifestationen - single-choice (symptomatic / asymptomatic), radio buttons
 * item[=].item[=].item[+].linkId = "manifestation"
-* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxManifestationForm#ChEkmMpoxManifestationForm.manifestation"
 * item[=].item[=].item[=].text = "Manifestations"
 * item[=].item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
@@ -186,7 +159,7 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].item[=].item[=].type = #choice
 * item[=].item[=].item[=].extension[+].url = $choiceOrientation
 * item[=].item[=].item[=].extension[=].valueCode = #horizontal
-* item[=].item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGonorrhoeaManifestationFormChoice"
+* item[=].item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmMpoxManifestation"
 * item[=].item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueCode = #useSupplement
@@ -222,6 +195,11 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].item[=].text.extension[=].extension[+].url = "content"
 * item[=].item[=].text.extension[=].extension[=].valueString = "Esposizione"
 * item[=].item[=].type = #group
+
+// TODO Exposition where
+
+// TODO Exposition when
+
 
 // Exposition (Wie / Übertragungsweg) -> subQuestionnaire ChEkmQuestionnaireTransmissionHow
 * item[=].item[=].item[+].linkId = "transmissionhow"

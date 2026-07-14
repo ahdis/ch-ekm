@@ -77,6 +77,12 @@ def preview_identity(lang):
 # supplied to tx as `tx-resource`.
 LOCAL_CODESYSTEMS = [json.load(open(f)) for f in glob.glob(f"{RES}/CodeSystem-*.json")]
 
+# Preload local ValueSets too: a value set may `include codes from valueset <local VS>`
+# (e.g. ChEkmMpoxManifestation includes ChEkmOtherNoneUnknown). tx.fhir.ch has no copy of
+# those, so without supplying them as `tx-resource` the $expand fails with HTTP 422
+# ("Unable to find included value set ...").
+LOCAL_VALUESETS = [json.load(open(f)) for f in glob.glob(f"{RES}/ValueSet-*.json")]
+
 # Local language supplements as (base_system_without_version, supplement_canonical) pairs.
 # A supplement is only applied (via useSupplement) when its base system appears in the value set.
 LOCAL_SUPPLEMENTS = [
@@ -143,6 +149,7 @@ def expand(canonical):
         if display_language:
             param.append({"name": "displayLanguage", "valueCode": display_language})
         param += [{"name": "tx-resource", "resource": cs} for cs in LOCAL_CODESYSTEMS]
+        param += [{"name": "tx-resource", "resource": vs} for vs in LOCAL_VALUESETS]
         param += [{"name": "useSupplement", "valueCanonical": u} for u in use_supplement_urls]
         vs = post(f"{TX}/ValueSet/$expand", {"resourceType": "Parameters", "parameter": param})
         if vs.get("resourceType") != "ValueSet":

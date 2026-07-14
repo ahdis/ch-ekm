@@ -25,6 +25,10 @@ Description: "Example Gonorrhoea QuestionnaireResponse used as input to SDC temp
 * item[0].linkId = "gonorrhoea-form"
 
 // --- Angaben zur betroffenen Person ---
+// Item order must follow the assembled questionnaire's person group
+// (surnameInitial, givennameInitial, dateOfBirth, ahvn13, nationality, zipCode, city,
+// country, canton, administrativeGender, genderIdentity) or QR validation reports
+// "items are out of order". country is omitted (optional).
 * item[0].item[0].linkId = "person"
 * item[0].item[0].item[0].linkId = "surnameInitial"
 * item[0].item[0].item[0].answer.valueString = "M"
@@ -32,20 +36,20 @@ Description: "Example Gonorrhoea QuestionnaireResponse used as input to SDC temp
 * item[0].item[0].item[1].answer.valueString = "B"
 * item[0].item[0].item[2].linkId = "dateOfBirth"
 * item[0].item[0].item[2].answer.valueDate = "2000-01-01"
-* item[0].item[0].item[3].linkId = "zipCode"
-* item[0].item[0].item[3].answer.valueString = "3097"
-* item[0].item[0].item[4].linkId = "city"
-* item[0].item[0].item[4].answer.valueString = "Liebefeld"
-* item[0].item[0].item[5].linkId = "canton"
-* item[0].item[0].item[5].answer.valueString = "BE"
-* item[0].item[0].item[6].linkId = "administrativeGender"
-* item[0].item[0].item[6].answer.valueCoding = $administrative-gender#male "Male"
-* item[0].item[0].item[7].linkId = "nationality"
-* item[0].item[0].item[7].answer.valueCoding = $iso3166#CH "Switzerland"
-* item[0].item[0].item[8].linkId = "genderIdentity"
-* item[0].item[0].item[8].answer.valueCoding = $sct#1384187000 "Identifies as transgender (finding)"
-* item[0].item[0].item[9].linkId = "ahvn13"
-* item[0].item[0].item[9].answer.valueString = "7560000000000"
+* item[0].item[0].item[3].linkId = "ahvn13"
+* item[0].item[0].item[3].answer.valueString = "7560000000000"
+* item[0].item[0].item[4].linkId = "nationality"
+* item[0].item[0].item[4].answer.valueCoding = $iso3166#CH "Switzerland"
+* item[0].item[0].item[5].linkId = "zipCode"
+* item[0].item[0].item[5].answer.valueString = "3097"
+* item[0].item[0].item[6].linkId = "city"
+* item[0].item[0].item[6].answer.valueString = "Liebefeld"
+* item[0].item[0].item[7].linkId = "canton"
+* item[0].item[0].item[7].answer.valueString = "BE"
+* item[0].item[0].item[8].linkId = "administrativeGender"
+* item[0].item[0].item[8].answer.valueCoding = $administrative-gender#male "Male"
+* item[0].item[0].item[9].linkId = "genderIdentity"
+* item[0].item[0].item[9].answer.valueCoding = $sct#1384187000 "Identifies as transgender (finding)"
 
 // --- Diagnose und Manifestation ---
 * item[0].item[1].linkId = "manifestation-group"
@@ -55,13 +59,15 @@ Description: "Example Gonorrhoea QuestionnaireResponse used as input to SDC temp
 * item[0].item[1].item[1].answer.valueBoolean = true
 
 // --- Exposition (Wie / Übertragungsweg) ---
-* item[0].item[2].linkId = "transmission"
-* item[0].item[2].item[0].linkId = "sexualContactPartner"
-* item[0].item[2].item[0].answer.valueCoding = $administrative-gender#male "Male"
-* item[0].item[2].item[1].linkId = "relationshipType"
-* item[0].item[2].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
-* item[0].item[2].item[2].linkId = "unknown"
-* item[0].item[2].item[2].answer.valueBoolean = false
+// exposure = outer wrapper group; transmission = route-of-transmission sub-questionnaire.
+* item[0].item[2].linkId = "exposure"
+* item[0].item[2].item[0].linkId = "transmission"
+* item[0].item[2].item[0].item[0].linkId = "sexualContactPartner"
+* item[0].item[2].item[0].item[0].answer.valueCoding = $administrative-gender#male "Male"
+* item[0].item[2].item[0].item[1].linkId = "relationshipType"
+* item[0].item[2].item[0].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
+* item[0].item[2].item[0].item[2].linkId = "unknown"
+* item[0].item[2].item[0].item[2].answer.valueBoolean = false
 
 // --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---
 // Answers taken from ChEkmPractitionerTreatingPhysicianExample / ChEkmOrganizationTreatingPhysicianExample.
