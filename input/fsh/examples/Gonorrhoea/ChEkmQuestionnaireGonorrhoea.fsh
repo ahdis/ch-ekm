@@ -79,9 +79,6 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 // * extension[=].extension[+].url = "location"
 // * extension[=].extension[=].valueString = "Questionnaire.descendants().where(linkId='dateOfBirth')"
 
-// Top-level form group. The SDC subQuestionnaire placeholders are nested one level
-// under this group (item[0].item[x]) — required by the CSIRO/aehrc sdc-assemble
-// reference implementation, and also accepted by matchbox.
 * item[+].linkId = "gonorrhoea-form"
 * item[=].type = #group
 * item[=].text = "Clinical findings report: gonorrhoea"
@@ -106,16 +103,9 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].extension[=].extension[+].url = "template"
 * item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentGonorrhoeaTemplate)
 
-// Angaben zur betroffenen Person — a single subQuestionnaire placeholder to the aggregator
-// ChEkmQuestionnaireGonorrhoeaPerson, which itself references the three person leaf
-// sub-questionnaires (Namensinitialen / allgemeine Angaben / Geschlechtsidentität). $assemble
-// recurses (root -> aggregator -> three leaves) into one flat `person` group. NB: each
-// questionnaire's subQuestionnaire placeholders must be direct children of item[0]; nested
-// recursion relies on the patched @aehrc/sdc-assemble (see tests/assemble/patches, forms-summary §1).
 
-// Person
 * item[=].item[+].linkId = "person"
-* item[=].item[=].type = #display
+* item[=].item[=].type = #group
 * item[=].item[=].text = "Affected person's details"
 * item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].text.extension[=].extension[+].url = "lang"
@@ -132,12 +122,30 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
 * item[=].item[=].text.extension[=].extension[+].url = "content"
 * item[=].item[=].text.extension[=].extension[=].valueString = "Dati relativi alla persona interessata"
-* item[=].item[=].extension[+].url = $sdc-subQuestionnaire
-* item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaPerson"
+
+// Namensinitialen
+* item[=].item[=].item[+].linkId = "personInitials"
+* item[=].item[=].item[=].type = #display
+* item[=].item[=].item[=].text = "Name initials"
+* item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
+* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials"
+
+// Allgemeine Angaben
+* item[=].item[=].item[+].linkId = "personGeneral"
+* item[=].item[=].item[=].type = #display
+* item[=].item[=].item[=].text = "General information"
+* item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
+* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral"
+
+// Geschlechtsidentität
+* item[=].item[=].item[+].linkId = "personGenderIdentity"
+* item[=].item[=].item[=].type = #display
+* item[=].item[=].item[=].text = "Gender identity"
+* item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
+* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity"
 
 // Diagnose und Manifestation
-* item[=].item[+].linkId = "manifestation"
-* item[=].item[=].type = #display
+* item[=].item[+].linkId = "manifestation-group"
 * item[=].item[=].text = "Diagnosis and manifestation"
 * item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].text.extension[=].extension[+].url = "lang"
@@ -154,49 +162,77 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
 * item[=].item[=].text.extension[=].extension[+].url = "content"
 * item[=].item[=].text.extension[=].extension[=].valueString = "Diagnosi e manifestazione"
-* item[=].item[=].extension[+].url = $sdc-subQuestionnaire
-* item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaManifestation"
+* item[=].item[=].type = #group
 
-// Exposition (Wie / Übertragungsweg)
-* item[=].item[+].linkId = "exposition"
+// Manifestationen - single-choice (symptomatic / asymptomatic), radio buttons
+* item[=].item[=].item[+].linkId = "manifestation"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation"
+* item[=].item[=].item[=].text = "Manifestations"
+* item[=].item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Manifestationen"
+* item[=].item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Manifestations"
+* item[=].item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Manifestazioni"
+* item[=].item[=].item[=].type = #choice
+* item[=].item[=].item[=].extension[+].url = $choiceOrientation
+* item[=].item[=].item[=].extension[=].valueCode = #horizontal
+* item[=].item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGonorrhoeaManifestationFormChoice"
+* item[=].item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueCode = #useSupplement
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "expression"
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+* item[=].item[=].item[=].extension[+].url = $questionnaire-itemControl
+* item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
+
+// Subquestionnaire: Manifestationsbeginn unbekannt (Manifestation begin unknown) - checkbox + date
+* item[=].item[=].item[+].linkId = "manifestationBeginUnknown"
+* item[=].item[=].item[=].type = #display
+* item[=].item[=].item[=].text = "Onset of manifestation unknown"
+* item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
+* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown"
+
+// Exposition 
+* item[=].item[+].linkId = "transmission"
 * item[=].item[=].type = #display
-* item[=].item[=].text = "Exposure (route of transmission)"
+* item[=].item[=].text = "Exposure"
 * item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].text.extension[=].extension[+].url = "lang"
 * item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
 * item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Exposition (Übertragungsweg)"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Exposition"
 * item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].text.extension[=].extension[+].url = "lang"
 * item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
 * item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Exposition (voie de transmission)"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Exposition"
 * item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].text.extension[=].extension[+].url = "lang"
 * item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
 * item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Esposizione (via di trasmissione)"
-* item[=].item[=].extension[+].url = $sdc-subQuestionnaire
-* item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaExposition"
+* item[=].item[=].text.extension[=].extension[=].valueString = "Esposizione"
+* item[=].item[=].type = #group
+
+// Exposition (Wie / Übertragungsweg) -> subQuestionnaire ChEkmQuestionnaireTransmissionHow
+* item[=].item[=].item[+].linkId = "transmissionhow"
+* item[=].item[=].item[=].type = #display
+* item[=].item[=].item[=].text = "Exposition (how)"
+* item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
+* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow"
 
 // Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization)
 * item[=].item[+].linkId = "treatingPhysician"
 * item[=].item[=].type = #display
 * item[=].item[=].text = "Treating physician"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Behandelnde Ärztin / behandelnder Arzt"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Médecin traitant"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Medico curante"
 * item[=].item[=].extension[+].url = $sdc-subQuestionnaire
 * item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician"

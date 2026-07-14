@@ -1,20 +1,173 @@
 diff --git a/node_modules/@aehrc/sdc-assemble/dist/index.cjs b/node_modules/@aehrc/sdc-assemble/dist/index.cjs
-index f1178dd..568563b 100644
+index f1178dd..12bf709 100644
 --- a/node_modules/@aehrc/sdc-assemble/dist/index.cjs
 +++ b/node_modules/@aehrc/sdc-assemble/dist/index.cjs
-@@ -655,9 +655,9 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
+@@ -440,6 +440,59 @@ function getItems(subquestionnaires) {
+   return items;
+ }
+ 
++// src/utils/canonical.ts
++var SUB_QUESTIONNAIRE_EXTENSION_URL = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire";
++function itemIsSubQuestionnaire(item) {
++  var _a, _b;
++  return (_b = (_a = item.extension) == null ? void 0 : _a.some(
++    (extension) => extension.url === SUB_QUESTIONNAIRE_EXTENSION_URL && !!extension.valueCanonical
++  )) != null ? _b : false;
++}
++function getCanonicalUrls(parentQuestionnaire, totalCanonicals, isRoot) {
++  if (!parentQuestionnaire.item || !parentQuestionnaire.item[0] || !parentQuestionnaire.item[0].item) {
++    const questionnaireUrlOrId = parentQuestionnaire.url || parentQuestionnaire.id;
++    return isRoot ? createErrorOutcome(
++      `Root questionnaire ${questionnaireUrlOrId} does not have a valid nested item (parentQuestionnaire.item[x].item) for assembly.`
++    ) : [];
++  }
++  const canonicals = [];
++  const circularDependencyOutcome = collectSubquestionnaireCanonicals(
++    parentQuestionnaire.item[0].item,
++    totalCanonicals,
++    canonicals,
++    parentQuestionnaire
++  );
++  return circularDependencyOutcome != null ? circularDependencyOutcome : canonicals;
++}
++function collectSubquestionnaireCanonicals(items, totalCanonicals, canonicals, parentQuestionnaire) {
++  for (const qItem of items) {
++    if (itemIsSubQuestionnaire(qItem)) {
++      const canonical = qItem.extension.find(
++        (extension) => extension.url === SUB_QUESTIONNAIRE_EXTENSION_URL && extension.valueCanonical
++      ).valueCanonical;
++      if (totalCanonicals.includes(canonical)) {
++        return createErrorOutcome(
++          `${parentQuestionnaire.id} contains a circular dependency on the questionnaire ${canonical}`
++        );
++      }
++      canonicals.push(canonical);
++      continue;
++    }
++    if (qItem.item && qItem.item.length > 0) {
++      const circularDependencyOutcome = collectSubquestionnaireCanonicals(
++        qItem.item,
++        totalCanonicals,
++        canonicals,
++        parentQuestionnaire
++      );
++      if (circularDependencyOutcome) {
++        return circularDependencyOutcome;
++      }
++    }
++  }
++  return null;
++}
++
+ // src/utils/propagate.ts
+ function propagateProperties(parentQuestionnaire, urlsFromSubquestionnaires, itemsFromSubquestionnaires, containedResourcesFromSubquestionnaires, rootLevelExtensions, itemLevelExtensions) {
+   var _a, _b, _c, _d, _e;
+@@ -450,18 +503,12 @@ function propagateProperties(parentQuestionnaire, urlsFromSubquestionnaires, ite
+   if (!(parentQuestionnaireForm == null ? void 0 : parentQuestionnaireForm.item) || ((_a = parentQuestionnaireForm == null ? void 0 : parentQuestionnaireForm.item) == null ? void 0 : _a.length) === 0) {
+     return parentQuestionnaire;
+   }
+-  const questionnaireItems = [];
+-  for (let i = 0; i < parentQuestionnaireForm.item.length; i++) {
+-    const itemFromParent = parentQuestionnaireForm.item[i];
+-    if (!itemFromParent) continue;
+-    const itemsFromSubquestionnaire = itemsFromSubquestionnaires[i];
+-    if (itemsFromSubquestionnaire) {
+-      questionnaireItems.push(...itemsFromSubquestionnaire);
+-    } else {
+-      questionnaireItems.push(itemFromParent);
+-    }
+-  }
+-  parentQuestionnaireForm.item = questionnaireItems;
++  const cursor = { index: 0 };
++  parentQuestionnaireForm.item = propagateSubquestionnaireItems(
++    parentQuestionnaireForm.item,
++    itemsFromSubquestionnaires,
++    cursor
++  );
+   const flattenedItemLevelExtensions = itemLevelExtensions.filter((extensions2) => extensions2 !== null).flatMap((extensions2) => extensions2);
+   const combinedTopLevelItemExtensions = [
+     ...(_b = parentQuestionnaireForm.extension) != null ? _b : [],
+@@ -535,6 +582,26 @@ function propagateProperties(parentQuestionnaire, urlsFromSubquestionnaires, ite
+   }
+   return parentQuestionnaire;
+ }
++function propagateSubquestionnaireItems(items, itemsFromSubquestionnaires, cursor) {
++  const propagatedItems = [];
++  for (const item of items) {
++    if (itemIsSubQuestionnaire(item)) {
++      const itemsFromSubquestionnaire = itemsFromSubquestionnaires[cursor.index];
++      cursor.index++;
++      if (itemsFromSubquestionnaire) {
++        propagatedItems.push(...itemsFromSubquestionnaire);
++      } else {
++        propagatedItems.push(item);
++      }
++      continue;
++    }
++    if (item.item && item.item.length > 0) {
++      item.item = propagateSubquestionnaireItems(item.item, itemsFromSubquestionnaires, cursor);
++    }
++    propagatedItems.push(item);
++  }
++  return propagatedItems;
++}
+ function getLaunchContextExtensions(extensions, mergedLaunchContexts) {
+   const launchContexts = extensions.filter(
+     (extension) => extension.url === "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext"
+@@ -576,39 +643,6 @@ function checkDuplicatesInTopLevelItemVariables(topLevelItemExtensions) {
+ 
+ // src/utils/assemble.ts
+ var import_lodash = __toESM(require("lodash.clonedeep"), 1);
+-
+-// src/utils/canonical.ts
+-function getCanonicalUrls(parentQuestionnaire, totalCanonicals, isRoot) {
+-  if (!parentQuestionnaire.item || !parentQuestionnaire.item[0] || !parentQuestionnaire.item[0].item) {
+-    const questionnaireUrlOrId = parentQuestionnaire.url || parentQuestionnaire.id;
+-    return isRoot ? createErrorOutcome(
+-      `Root questionnaire ${questionnaireUrlOrId} does not have a valid nested item (parentQuestionnaire.item[x].item) for assembly.`
+-    ) : [];
+-  }
+-  const qForm = parentQuestionnaire.item[0].item;
+-  const canonicals = [];
+-  for (const qItem of qForm) {
+-    if (!qItem.extension) {
+-      continue;
+-    }
+-    const subQuestionnaireExtension = qItem.extension.find(
+-      (extension) => extension.url === "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire" && extension.valueCanonical
+-    );
+-    if (!subQuestionnaireExtension) {
+-      continue;
+-    }
+-    const canonical = subQuestionnaireExtension.valueCanonical;
+-    if (totalCanonicals.includes(canonical)) {
+-      return createErrorOutcome(
+-        `${parentQuestionnaire.id} contains a circular dependency on the questionnaire ${canonical}`
+-      );
+-    }
+-    canonicals.push(canonical);
+-  }
+-  return canonicals;
+-}
+-
+-// src/utils/assemble.ts
+ function assemble(parameters, fetchQuestionnaireCallback, fetchQuestionnaireRequestConfig) {
+   return __async(this, null, function* () {
+     const rootQuestionnaire = parameters.parameter[0].resource;
+@@ -655,7 +689,11 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
      if (!Array.isArray(subquestionnaires)) {
        return subquestionnaires;
      }
 -    for (let subquestionnaire of subquestionnaires) {
 +    for (let i = 0; i < subquestionnaires.length; i++) {
++      const subquestionnaire = subquestionnaires[i];
++      if (!subquestionnaire) {
++        continue;
++      }
        const assembled = yield assembleQuestionnaire(
--        subquestionnaire,
-+        subquestionnaires[i],
+         subquestionnaire,
          totalCanonicals,
-         issues,
-         false,
-@@ -668,7 +668,7 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
+@@ -668,7 +706,7 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
        if (assembled.resourceType === "OperationOutcome") {
          return assembled;
        }
@@ -23,46 +176,176 @@ index f1178dd..568563b 100644
      }
      const prohibitedAttributesOutcome = checkProhibitedAttributes(subquestionnaires);
      if (prohibitedAttributesOutcome) {
-@@ -681,7 +681,21 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
-     if (matchingLanguageOutcome) {
-       return matchingLanguageOutcome;
-     }
--    const items = getItems(subquestionnaires);
-+    const __rawItems = getItems(subquestionnaires);
-+    const __parentForm = parentQuestionnaire.item && parentQuestionnaire.item[0] && parentQuestionnaire.item[0].item;
-+    let items;
-+    if (!__parentForm) {
-+      items = __rawItems;
-+    } else {
-+      items = [];
-+      let __subIdx = 0;
-+      for (const __qItem of __parentForm) {
-+        const __isSubQ = __qItem.extension && __qItem.extension.some(
-+          (e) => e.url === "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire" && e.valueCanonical
-+        );
-+        items.push(__isSubQ ? (__rawItems[__subIdx++] ?? null) : null);
-+      }
-+    }
-     const urls = getUrls(subquestionnaires);
-     const containedResources = getContainedResources(subquestionnaires);
-     const extensions = getExtensions(subquestionnaires);
 diff --git a/node_modules/@aehrc/sdc-assemble/dist/index.js b/node_modules/@aehrc/sdc-assemble/dist/index.js
-index 701dceb..b2d7a78 100644
+index 701dceb..7b50ac8 100644
 --- a/node_modules/@aehrc/sdc-assemble/dist/index.js
 +++ b/node_modules/@aehrc/sdc-assemble/dist/index.js
-@@ -619,9 +619,9 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
+@@ -404,6 +404,59 @@ function getItems(subquestionnaires) {
+   return items;
+ }
+ 
++// src/utils/canonical.ts
++var SUB_QUESTIONNAIRE_EXTENSION_URL = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire";
++function itemIsSubQuestionnaire(item) {
++  var _a, _b;
++  return (_b = (_a = item.extension) == null ? void 0 : _a.some(
++    (extension) => extension.url === SUB_QUESTIONNAIRE_EXTENSION_URL && !!extension.valueCanonical
++  )) != null ? _b : false;
++}
++function getCanonicalUrls(parentQuestionnaire, totalCanonicals, isRoot) {
++  if (!parentQuestionnaire.item || !parentQuestionnaire.item[0] || !parentQuestionnaire.item[0].item) {
++    const questionnaireUrlOrId = parentQuestionnaire.url || parentQuestionnaire.id;
++    return isRoot ? createErrorOutcome(
++      `Root questionnaire ${questionnaireUrlOrId} does not have a valid nested item (parentQuestionnaire.item[x].item) for assembly.`
++    ) : [];
++  }
++  const canonicals = [];
++  const circularDependencyOutcome = collectSubquestionnaireCanonicals(
++    parentQuestionnaire.item[0].item,
++    totalCanonicals,
++    canonicals,
++    parentQuestionnaire
++  );
++  return circularDependencyOutcome != null ? circularDependencyOutcome : canonicals;
++}
++function collectSubquestionnaireCanonicals(items, totalCanonicals, canonicals, parentQuestionnaire) {
++  for (const qItem of items) {
++    if (itemIsSubQuestionnaire(qItem)) {
++      const canonical = qItem.extension.find(
++        (extension) => extension.url === SUB_QUESTIONNAIRE_EXTENSION_URL && extension.valueCanonical
++      ).valueCanonical;
++      if (totalCanonicals.includes(canonical)) {
++        return createErrorOutcome(
++          `${parentQuestionnaire.id} contains a circular dependency on the questionnaire ${canonical}`
++        );
++      }
++      canonicals.push(canonical);
++      continue;
++    }
++    if (qItem.item && qItem.item.length > 0) {
++      const circularDependencyOutcome = collectSubquestionnaireCanonicals(
++        qItem.item,
++        totalCanonicals,
++        canonicals,
++        parentQuestionnaire
++      );
++      if (circularDependencyOutcome) {
++        return circularDependencyOutcome;
++      }
++    }
++  }
++  return null;
++}
++
+ // src/utils/propagate.ts
+ function propagateProperties(parentQuestionnaire, urlsFromSubquestionnaires, itemsFromSubquestionnaires, containedResourcesFromSubquestionnaires, rootLevelExtensions, itemLevelExtensions) {
+   var _a, _b, _c, _d, _e;
+@@ -414,18 +467,12 @@ function propagateProperties(parentQuestionnaire, urlsFromSubquestionnaires, ite
+   if (!(parentQuestionnaireForm == null ? void 0 : parentQuestionnaireForm.item) || ((_a = parentQuestionnaireForm == null ? void 0 : parentQuestionnaireForm.item) == null ? void 0 : _a.length) === 0) {
+     return parentQuestionnaire;
+   }
+-  const questionnaireItems = [];
+-  for (let i = 0; i < parentQuestionnaireForm.item.length; i++) {
+-    const itemFromParent = parentQuestionnaireForm.item[i];
+-    if (!itemFromParent) continue;
+-    const itemsFromSubquestionnaire = itemsFromSubquestionnaires[i];
+-    if (itemsFromSubquestionnaire) {
+-      questionnaireItems.push(...itemsFromSubquestionnaire);
+-    } else {
+-      questionnaireItems.push(itemFromParent);
+-    }
+-  }
+-  parentQuestionnaireForm.item = questionnaireItems;
++  const cursor = { index: 0 };
++  parentQuestionnaireForm.item = propagateSubquestionnaireItems(
++    parentQuestionnaireForm.item,
++    itemsFromSubquestionnaires,
++    cursor
++  );
+   const flattenedItemLevelExtensions = itemLevelExtensions.filter((extensions2) => extensions2 !== null).flatMap((extensions2) => extensions2);
+   const combinedTopLevelItemExtensions = [
+     ...(_b = parentQuestionnaireForm.extension) != null ? _b : [],
+@@ -499,6 +546,26 @@ function propagateProperties(parentQuestionnaire, urlsFromSubquestionnaires, ite
+   }
+   return parentQuestionnaire;
+ }
++function propagateSubquestionnaireItems(items, itemsFromSubquestionnaires, cursor) {
++  const propagatedItems = [];
++  for (const item of items) {
++    if (itemIsSubQuestionnaire(item)) {
++      const itemsFromSubquestionnaire = itemsFromSubquestionnaires[cursor.index];
++      cursor.index++;
++      if (itemsFromSubquestionnaire) {
++        propagatedItems.push(...itemsFromSubquestionnaire);
++      } else {
++        propagatedItems.push(item);
++      }
++      continue;
++    }
++    if (item.item && item.item.length > 0) {
++      item.item = propagateSubquestionnaireItems(item.item, itemsFromSubquestionnaires, cursor);
++    }
++    propagatedItems.push(item);
++  }
++  return propagatedItems;
++}
+ function getLaunchContextExtensions(extensions, mergedLaunchContexts) {
+   const launchContexts = extensions.filter(
+     (extension) => extension.url === "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext"
+@@ -540,39 +607,6 @@ function checkDuplicatesInTopLevelItemVariables(topLevelItemExtensions) {
+ 
+ // src/utils/assemble.ts
+ import cloneDeep from "lodash.clonedeep";
+-
+-// src/utils/canonical.ts
+-function getCanonicalUrls(parentQuestionnaire, totalCanonicals, isRoot) {
+-  if (!parentQuestionnaire.item || !parentQuestionnaire.item[0] || !parentQuestionnaire.item[0].item) {
+-    const questionnaireUrlOrId = parentQuestionnaire.url || parentQuestionnaire.id;
+-    return isRoot ? createErrorOutcome(
+-      `Root questionnaire ${questionnaireUrlOrId} does not have a valid nested item (parentQuestionnaire.item[x].item) for assembly.`
+-    ) : [];
+-  }
+-  const qForm = parentQuestionnaire.item[0].item;
+-  const canonicals = [];
+-  for (const qItem of qForm) {
+-    if (!qItem.extension) {
+-      continue;
+-    }
+-    const subQuestionnaireExtension = qItem.extension.find(
+-      (extension) => extension.url === "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire" && extension.valueCanonical
+-    );
+-    if (!subQuestionnaireExtension) {
+-      continue;
+-    }
+-    const canonical = subQuestionnaireExtension.valueCanonical;
+-    if (totalCanonicals.includes(canonical)) {
+-      return createErrorOutcome(
+-        `${parentQuestionnaire.id} contains a circular dependency on the questionnaire ${canonical}`
+-      );
+-    }
+-    canonicals.push(canonical);
+-  }
+-  return canonicals;
+-}
+-
+-// src/utils/assemble.ts
+ function assemble(parameters, fetchQuestionnaireCallback, fetchQuestionnaireRequestConfig) {
+   return __async(this, null, function* () {
+     const rootQuestionnaire = parameters.parameter[0].resource;
+@@ -619,7 +653,11 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
      if (!Array.isArray(subquestionnaires)) {
        return subquestionnaires;
      }
 -    for (let subquestionnaire of subquestionnaires) {
 +    for (let i = 0; i < subquestionnaires.length; i++) {
++      const subquestionnaire = subquestionnaires[i];
++      if (!subquestionnaire) {
++        continue;
++      }
        const assembled = yield assembleQuestionnaire(
--        subquestionnaire,
-+        subquestionnaires[i],
+         subquestionnaire,
          totalCanonicals,
-         issues,
-         false,
-@@ -632,7 +632,7 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
+@@ -632,7 +670,7 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
        if (assembled.resourceType === "OperationOutcome") {
          return assembled;
        }
@@ -71,26 +354,3 @@ index 701dceb..b2d7a78 100644
      }
      const prohibitedAttributesOutcome = checkProhibitedAttributes(subquestionnaires);
      if (prohibitedAttributesOutcome) {
-@@ -645,7 +645,21 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
-     if (matchingLanguageOutcome) {
-       return matchingLanguageOutcome;
-     }
--    const items = getItems(subquestionnaires);
-+    const __rawItems = getItems(subquestionnaires);
-+    const __parentForm = parentQuestionnaire.item && parentQuestionnaire.item[0] && parentQuestionnaire.item[0].item;
-+    let items;
-+    if (!__parentForm) {
-+      items = __rawItems;
-+    } else {
-+      items = [];
-+      let __subIdx = 0;
-+      for (const __qItem of __parentForm) {
-+        const __isSubQ = __qItem.extension && __qItem.extension.some(
-+          (e) => e.url === "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire" && e.valueCanonical
-+        );
-+        items.push(__isSubQ ? (__rawItems[__subIdx++] ?? null) : null);
-+      }
-+    }
-     const urls = getUrls(subquestionnaires);
-     const containedResources = getContainedResources(subquestionnaires);
-     const extensions = getExtensions(subquestionnaires);

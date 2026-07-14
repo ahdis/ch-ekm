@@ -875,15 +875,23 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaPerson|0.0.1-assembled"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaManifestation|0.0.1-assembled"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaExposition|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -949,6 +957,14 @@
               }
             }
           ]
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "homeOrFirstAddress",
+            "language": "text/fhirpath",
+            "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
+          }
         }
       ],
       "item": [
@@ -1725,16 +1741,6 @@
                 }
               ]
             }
-          ],
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/variable",
-              "valueExpression": {
-                "name": "homeOrFirstAddress",
-                "language": "text/fhirpath",
-                "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
-              }
-            }
           ]
         },
         {
@@ -1982,8 +1988,9 @@
           ]
         },
         {
-          "linkId": "transmission",
-          "text": "How (route of transmission)",
+          "linkId": "exposition",
+          "type": "group",
+          "text": "Exposure",
           "_text": {
             "extension": [
               {
@@ -1995,7 +2002,7 @@
                   },
                   {
                     "url": "content",
-                    "valueString": "Wie (Übertragungsweg)"
+                    "valueString": "Exposition"
                   }
                 ]
               },
@@ -2008,7 +2015,7 @@
                   },
                   {
                     "url": "content",
-                    "valueString": "Comment (voie de transmission)"
+                    "valueString": "Exposition"
                   }
                 ]
               },
@@ -2021,18 +2028,16 @@
                   },
                   {
                     "url": "content",
-                    "valueString": "Come (via di trasmissione)"
+                    "valueString": "Esposizione"
                   }
                 ]
               }
             ]
           },
-          "type": "group",
           "item": [
             {
-              "linkId": "sexualContactPartner",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner",
-              "text": "Sexual contact with an infected person (gender)",
+              "linkId": "transmission",
+              "text": "How (route of transmission)",
               "_text": {
                 "extension": [
                   {
@@ -2044,7 +2049,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Sexualkontakt mit infizierter Person (Geschlecht)"
+                        "valueString": "Wie (Übertragungsweg)"
                       }
                     ]
                   },
@@ -2057,7 +2062,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Rapport sexuel avec une personne infectée (sexe)"
+                        "valueString": "Comment (voie de transmission)"
                       }
                     ]
                   },
@@ -2070,196 +2075,247 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Rapporto sessuale con una persona infetta (sesso)"
+                        "valueString": "Come (via di trasmissione)"
                       }
                     ]
                   }
                 ]
               },
-              "type": "choice",
-              "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender",
-              "extension": [
+              "type": "group",
+              "item": [
                 {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
+                  "linkId": "sexualContactPartner",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner",
+                  "text": "Sexual contact with an infected person (gender)",
+                  "_text": {
+                    "extension": [
                       {
-                        "code": "radio-button",
-                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Sexualkontakt mit infizierter Person (Geschlecht)"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Rapport sexuel avec une personne infectée (sexe)"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Rapporto sessuale con una persona infetta (sesso)"
+                          }
+                        ]
                       }
                     ]
-                  }
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ]
                 },
                 {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                  "valueCode": "horizontal"
-                }
-              ]
-            },
-            {
-              "linkId": "relationshipType",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType",
-              "text": "Type of relationship",
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                  "linkId": "relationshipType",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType",
+                  "text": "Type of relationship",
+                  "_text": {
                     "extension": [
                       {
-                        "url": "lang",
-                        "valueCode": "de-CH"
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Art der Beziehung"
+                          }
+                        ]
                       },
                       {
-                        "url": "content",
-                        "valueString": "Art der Beziehung"
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Type de relation"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Tipo di relazione"
+                          }
+                        ]
                       }
                     ]
                   },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "fr-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Type de relation"
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureRelationshipType",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
                       }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "it-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Tipo di relazione"
-                      }
-                    ]
-                  }
-                ]
-              },
-              "type": "choice",
-              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureRelationshipType",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "code": "radio-button",
-                        "system": "http://hl7.org/fhir/questionnaire-item-control"
-                      }
-                    ]
-                  }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ]
                 },
                 {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                  "valueCode": "horizontal"
+                  "linkId": "otherTransmission",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.otherTransmission",
+                  "text": "Other route of transmission (free text)",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Anderer Übertragungsweg (Freitext)"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Autre voie de transmission (texte libre)"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Altra via di trasmissione (testo libero)"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "string"
+                },
+                {
+                  "linkId": "unknown",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown",
+                  "text": "Route of transmission unknown",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Übertragungsweg unbekannt"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Voie de transmission inconnue"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Via di trasmissione sconosciuta"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "boolean"
                 }
               ]
-            },
-            {
-              "linkId": "otherTransmission",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.otherTransmission",
-              "text": "Other route of transmission (free text)",
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "de-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Anderer Übertragungsweg (Freitext)"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "fr-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Autre voie de transmission (texte libre)"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "it-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Altra via di trasmissione (testo libero)"
-                      }
-                    ]
-                  }
-                ]
-              },
-              "type": "string"
-            },
-            {
-              "linkId": "unknown",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown",
-              "text": "Route of transmission unknown",
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "de-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Übertragungsweg unbekannt"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "fr-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Voie de transmission inconnue"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "it-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Via di trasmissione sconosciuta"
-                      }
-                    ]
-                  }
-                ]
-              },
-              "type": "boolean"
             }
           ]
         },

@@ -65,27 +65,43 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
 > form. Trade-off: the committed assembled artifact is produced offline by the reference engine
 > rather than the hosted server (equivalent output, and it is the engine the renderer uses anyway).
 >
-> **Recursion fix (patch-package).** Stock `@aehrc/sdc-assemble` has a bug: in `assembleQuestionnaire`
-> the recursive result is discarded (`for (let subquestionnaire of subquestionnaires) { … subquestionnaire = assembled }`
-> reassigns the loop variable, not the array element), so a child that is itself modular is spliced in
-> **un-assembled** — nested/recursive modular never flattens. We fix it with a one-line change
-> (index loop → `subquestionnaires[i] = assembled`), applied to `dist/index.cjs` + `dist/index.js`
-> via **patch-package** (`tests/assemble/patches/@aehrc+sdc-assemble+2.0.2.patch`, replayed by the
-> `postinstall` hook). With the patch, **nested/recursive `subQuestionnaire` works per spec** — a
-> disease root can reference an aggregator (e.g. `ChEkmQuestionnaireGonorrhoeaPerson`) that itself
-> references leaf children, and it flattens fully (see §4).
+> **Assembler patch (patch-package) — recursion + arbitrary-depth placeholders (2026-07).** The
+> stock `@aehrc/sdc-assemble` reference engine has **three** gaps we patch, applied to `dist/index.cjs`
+> + `dist/index.js` via **patch-package** (`tests/assemble/patches/@aehrc+sdc-assemble+2.0.2.patch`,
+> replayed by the `postinstall` hook) and regenerated from a matching source build in
+> **`../smart-forms/packages/sdc-assemble`** (source + tests changed there too):
+> 1. **Recursion write-back bug.** `assembleQuestionnaire` discarded the recursive result
+>    (`for (let subquestionnaire of subquestionnaires) { … subquestionnaire = assembled }` reassigns
+>    the loop variable, not the array element), so a child that is itself modular was spliced in
+>    **un-assembled** — nested/recursive modular never flattened. Fixed with an index loop
+>    (`subquestionnaires[i] = assembled`).
+> 2. **Recursive placeholder discovery.** `getCanonicalUrls` scanned only `item[0].item` (one level)
+>    and did not descend into nested groups. It now walks the whole form-item tree **depth-first**, so
+>    a `subQuestionnaire` placeholder **inside a wrapper group** (e.g. a `person` group) is discovered.
+> 3. **Match-based (not positional) replacement.** `propagateProperties` replaced `item[0].item`
+>    **by position**, assuming every entry was a placeholder — so real (non-placeholder) content
+>    interleaved among placeholders was clobbered and nested placeholders were never replaced. It now
+>    rebuilds the item tree recursively, replacing **each placeholder wherever it sits (any depth)**
+>    and keeping regular items and wrapper groups in place.
 >
-> **Upstreamed** as aehrc/smart-forms PR **[#1998](https://github.com/aehrc/smart-forms/pull/1998)**
-> (same one-line fix + a strengthened `assemble.test.ts` regression test that fails on `main`). Once
-> it ships in a released `@aehrc/sdc-assemble`, bump the version and drop the local patch.
+> With all three, `subQuestionnaire` placeholders work **at any depth and interleaved with regular
+> content**: a disease root can hold a `person` **group** whose children are placeholders, sibling
+> placeholders next to it, and recurse into modular children — all flatten in one pass. This is why
+> the Gonorrhoea root now **inlines the person group directly** (no separate aggregator — see §4/§6).
 >
-> **Requirement that still holds at each level:** within any one questionnaire the `subQuestionnaire`
-> placeholders must be **direct children of `item[0]`** (`item[0].item[x]`) — `getCanonicalUrls` reads
-> `parentQuestionnaire.item[0].item` and does not descend into deeper groups. And `propagateProperties`
-> replaces `item[0].item` **by position**, so `item[0].item` should be **all placeholders**: real
-> (non-placeholder) content interleaved *before* a placeholder misaligns the indices (real content
-> only survives if it comes after all placeholders). All our modular roots keep `item[0].item`
-> all-placeholders, so this is a non-issue in practice.
+> **Upstream:** the one-line write-back fix (part 1) is aehrc/smart-forms PR
+> **[#1998](https://github.com/aehrc/smart-forms/pull/1998)**. Parts 2–3 (recursive discovery +
+> match-based replacement) are additional changes on the same `sdc-assemble` source, with new
+> coverage — a nested-wrapper-group assemble test, nested-`getCanonicalUrls` tests, and a strengthened
+> recursion test that fails on `main` (`assemble.test.ts` / `canonical.test.ts` / `propagate.test.ts`,
+> 128 passing) — to be folded into / follow that PR. Until it ships in a released
+> `@aehrc/sdc-assemble`, keep the local patch; bump the version and drop it once released.
+>
+> **The one requirement that still holds:** every questionnaire (root and each modular child) must
+> have a **top-level form group at `item[0]` with children** (`item[0].item`) — `getCanonicalUrls`
+> still starts from `parentQuestionnaire.item[0].item` and errors on the root if it is absent (returns
+> `[]` for a child, so a groupless leaf still contributes its items directly, see above). Placeholders
+> may now sit anywhere **under** that group, at any nesting depth, mixed with real content.
 
 > **matchbox / hosted HAPI as fallbacks.** matchbox (`test.ahdis.ch/matchbox/fhir`) and the hosted
 > HAPI both implement `Questionnaire/$assemble` and accept a nested-group root (matchbox wants
@@ -153,10 +169,11 @@ http://hl7.org/fhir/uv/sdc/modular.html):
 
 Reference behaviour is in `packages/sdc-assemble/src/test/assemble.test.ts` and
 `fetchSubquestionnaires.test.ts` — good fixtures to copy when shaping our resources. Engine notes
-(see §1 for detail): within each questionnaire, placeholders must be **direct children of `item[0]`**
-and `item[0].item` should be **all placeholders** (positional replacement); **nested/recursive**
-modular now flattens correctly thanks to our patch-package fix of the reference engine's discarded
-recursion.
+(see §1 for detail): with our patch-package fix, `subQuestionnaire` placeholders may sit **anywhere
+under the `item[0]` form group — at any nesting depth and interleaved with real content** (recursive
+discovery + match-based replacement), and **nested/recursive** modular children flatten correctly
+(the discarded-recursion bug is fixed). The only remaining rule: each questionnaire needs a top-level
+form group at `item[0]` with children.
 
 **Why modular for CH EKM**: the report sections (Person, Manifestation, Exposition,
 Treating physician, Laboratory) recur across organisms. Each becomes a reusable
@@ -253,32 +270,48 @@ Pre-population reads a single `%user` launch context — the treating physician'
 Reusable **sub-questionnaires** (one per report section, generic where possible):
 
 ```
-ChEkmQuestionnairePerson            (assemble-child)  ← ChEkmPersonForm
-ChEkmQuestionnaireManifestation     (assemble-child)  ← ChEkmManifestationForm
-ChEkmQuestionnaireExposition        (assemble-child)  ← ChEkmExpositionForm
-ChEkmQuestionnaireTreatingPhysician (assemble-child)  ← ChEkmTreatingPhysician{Practitioner,Organization}Form
+ChEkmQuestionnairePersonInitials      (assemble-child)  ← ChEkmPersonForm (name initials)
+ChEkmQuestionnairePersonGeneral       (assemble-child)  ← ChEkmPersonForm (birth date, AHVN13, address, …)
+ChEkmQuestionnairePersonGenderIdentity(assemble-child)  ← ChEkmPersonForm (gender identity)
+ChEkmQuestionnaireManifestation       (assemble-child)  ← ChEkmManifestationForm
+ChEkmQuestionnaireTransmissionHow     (assemble-child)  ← ChEkmExpositionForm.transmission  (input/fsh/questionnnaire/)
+ChEkmQuestionnaireTreatingPhysician   (assemble-child)  ← ChEkmTreatingPhysician{Practitioner,Organization}Form
 ```
 
-> For Gonorrhoea these are realised as disease-specific children
-> `ChEkmQuestionnaireGonorrhoea{Manifestation,Exposition,TreatingPhysician}` (option (a)).
-> The TreatingPhysician child holds two sub-groups (Practitioner + Organization, §3) and is built.
+> For Gonorrhoea, TreatingPhysician is the remaining disease-specific child
+> `ChEkmQuestionnaireGonorrhoeaTreatingPhysician` (option (a)); it holds two sub-groups
+> (Practitioner + Organization, §3).
+>
+> **Manifestation is inlined; Exposition/transmission is a generic child (2026-07).** The
+> `manifestation-group` (the `manifestation` choice + a nested `manifestationBeginUnknown`
+> `subQuestionnaire` placeholder) lives **inline** under `gonorrhoea-form` in
+> `ChEkmQuestionnaireGonorrhoea`; the old `ChEkmQuestionnaireGonorrhoeaManifestation` child was
+> **removed**, and assembling the root recurses into the inlined group and resolves the
+> `ChEkmQuestionnaireManifestationBeginUnknown` leaf. The `transmission` group (sexualContactPartner,
+> relationshipType, otherTransmission, unknown) was extracted from the old
+> `ChEkmQuestionnaireGonorrhoeaExposition` into a generic leaf
+> **`ChEkmQuestionnaireTransmissionHow`** under `input/fsh/questionnnaire/`, referenced from the root
+> by an `exposition` `subQuestionnaire` placeholder. Either shape assembles to the same output
+> (identical linkId set) — inline vs. a referenced child is now purely an authoring/reuse choice
+> thanks to the arbitrary-depth-placeholder patch (§1).
+> (`ChEkmQuestionnaireManifestationBeginUnknown` stays a separate leaf.)
 
 > **Person is split into three generic LEAF sub-questionnaires (2026-07):**
 > `ChEkmQuestionnairePersonInitials` (surname/given initials), `ChEkmQuestionnairePersonGeneral`
 > (birth date, AHVN13, nationality, address, canton, administrative gender — carries the
-> questionnaire-level `homeOrFirstAddress` variable) and `ChEkmQuestionnairePersonGenderIdentity`.
-> Each leaf's items are **top-level (no wrapping group)**, so on assembly they merge into their
-> referencing group as one flat block.
+> questionnaire-level `homeOrFirstAddress` variable) and `ChEkmQuestionnairePersonGenderIdentity`
+> (all three under `input/fsh/questionnnaire/`). Each leaf's items are **top-level (no wrapping
+> group)**, so on assembly they merge into their referencing group as one flat block.
 >
-> These three leaves are gathered by **`ChEkmQuestionnaireGonorrhoeaPerson`** — an aggregator with
-> one `person` group whose three children are `subQuestionnaire` placeholders to the leaves. It is
-> `assemble-root-or-child`: the disease root **`ChEkmQuestionnaireGonorrhoea` references it as a
-> single `person` placeholder** and the engine **recurses** (root → aggregator → three leaves),
-> producing one flat `person` group of all fields — this depends on the recursion patch in §1.
-> The aggregator also assembles **standalone** for reuse. (We do not commit a separate
-> `…GonorrhoeaPersonAssembled.json`; assemble it on demand.) Groupless leaves + nested recursion are
-> both why we assemble with the local (patched) `@aehrc/sdc-assemble` reference engine, not hosted
-> HAPI (§1).
+> **The three leaves are inlined directly in the disease root as a `person` group (2026-07).** The
+> root **`ChEkmQuestionnaireGonorrhoea`** carries, under its `gonorrhoea-form` group, a `person`
+> **group** whose three children are `subQuestionnaire` placeholders to the leaves; assembling the
+> root recurses into that group and produces one flat `person` group of all person fields. This
+> replaces the earlier **`ChEkmQuestionnaireGonorrhoeaPerson` aggregator** (a separate
+> root-or-child questionnaire holding the person group), which has been **removed** — the
+> arbitrary-depth-placeholder patch (§1) makes the intermediate questionnaire unnecessary. Groupless
+> leaves + nested-group placeholders + recursion are all why we assemble with the local (patched)
+> `@aehrc/sdc-assemble` reference engine, not hosted HAPI (§1).
 
 Disease-specific bindings (manifestation value set, relationship types) differ per organism.
 Two options:
@@ -291,10 +324,16 @@ Two options:
 
 ```
 ChEkmQuestionnaireGonorrhoea  (meta.profile = sdc-questionnaire-modular)
-  ├─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaPerson
-  ├─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaManifestation
-  ├─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaExposition
-  └─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaTreatingPhysician
+  └─ group gonorrhoea-form
+     ├─ group person                                              (inlined wrapper group)
+     │   ├─ display → subQuestionnaire ChEkmQuestionnairePersonInitials
+     │   ├─ display → subQuestionnaire ChEkmQuestionnairePersonGeneral
+     │   └─ display → subQuestionnaire ChEkmQuestionnairePersonGenderIdentity
+     ├─ group manifestation-group                                 (inlined)
+     │   ├─ choice  manifestation
+     │   └─ display → subQuestionnaire ChEkmQuestionnaireManifestationBeginUnknown
+     ├─ display → subQuestionnaire ChEkmQuestionnaireTransmissionHow   (transmission group)
+     └─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaTreatingPhysician
 ```
 
 `$assemble` → `ChEkmQuestionnaireGonorrhoea-assembled` → render in Smart Forms.
@@ -342,18 +381,23 @@ Title: "CH EKM Questionnaire: Gonorrhoea (modular)"
 * meta.profile = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular"
 * status = #active
 
-// Top-level group; subQuestionnaire placeholders nested one level under it
-// (item[0].item[x]) — required by the reference assembler.
+// Top-level form group at item[0]. Placeholders may sit anywhere under it (any depth,
+// interleaved with real content) thanks to the assembler patch (§1). Here the person section
+// is an inlined wrapper GROUP holding three leaf placeholders; manifestation/exposition/…
+// are placeholder siblings of that group.
 * item[+].linkId = "gonorrhoea-form"
 * item[=].type = #group
 * item[=].text = "Meldung zum klinischen Befund: Gonorrhoea"
 
 * item[=].item[+].linkId = "person"
-* item[=].item[=].type = #display
+* item[=].item[=].type = #group
 * item[=].item[=].text = "Angaben zur betroffenen Person"
-* item[=].item[=].extension[+].url = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire"
-* item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePerson"
-// + manifestation + exposition placeholders (siblings under the group)
+* item[=].item[=].item[+].linkId = "personInitials"
+* item[=].item[=].item[=].type = #display
+* item[=].item[=].item[=].extension[+].url = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire"
+* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials"
+// + personGeneral + personGenderIdentity placeholders (siblings inside the person group)
+// + manifestation + exposition + treatingPhysician placeholders (siblings of the person group)
 ```
 
 ---
@@ -419,24 +463,21 @@ Still open:
    `#definition` for the reusable children so they publish as artifacts.
 4. **Canton & nationality** rendering: `Kanton` as free string or eCH-0007 choice;
    `nationality`/`country` likely autocomplete (large `bfs-country-codes`).
-5. **TODO (deferred) — inline a `subQuestionnaire` group directly in the modular root.** We would
-   like to drop the separate aggregator `ChEkmQuestionnaireGonorrhoeaPerson` and instead put its
-   `person` group (with the three person `subQuestionnaire` placeholders inside it) **directly** in
-   `ChEkmQuestionnaireGonorrhoea`. **This does not work today**, even with our recursion patch
-   (§1/§2) — verified empirically: the `person` group is dropped and its placeholders never resolve.
-   Two *further* `@aehrc/sdc-assemble` limitations remain (the patch only fixed recursion into a
-   modular **child** — a separate sub-questionnaire):
-   - `getCanonicalUrls` scans only `item[0].item` and does **not descend** into a nested group, so
-     placeholders inside a `person` group are never discovered; and
-   - `propagateProperties` replaces `item[0].item` **by position** assuming every entry is a
-     placeholder, so a real (non-placeholder) group interleaved among placeholders is clobbered.
+5. **DONE (2026-07) — inline a `subQuestionnaire` group directly in the modular root.** We now put
+   the `person` group (with the three person `subQuestionnaire` placeholders inside it) **directly**
+   in `ChEkmQuestionnaireGonorrhoea` and dropped the separate aggregator
+   `ChEkmQuestionnaireGonorrhoeaPerson`. This previously failed on two `@aehrc/sdc-assemble`
+   limitations, both now fixed by the extended assembler patch (§1):
+   - `getCanonicalUrls` now **descends recursively** into nested groups, so placeholders inside the
+     `person` group are discovered; and
+   - `propagateProperties` now replaces placeholders by **match** (not position) while rebuilding the
+     item tree, so a real (non-placeholder) group interleaved among placeholders is preserved and
+     nested placeholders are resolved in place.
 
-   Fixing this needs recursive placeholder **discovery** + **match-based** (not positional)
-   replacement — a bigger, riskier divergence from upstream. **For now we accept the limitation**
-   and keep the aggregator pattern (root → `ChEkmQuestionnaireGonorrhoeaPerson` → three leaves),
-   which already yields the single `person` group we want. Revisit if/when upstream supports
-   arbitrary-depth `subQuestionnaire` placement (would extend PR
-   [#1998](https://github.com/aehrc/smart-forms/pull/1998)).
+   Verified end-to-end: `tests/assemble-gonorrhoea.sh` produces the single flat `person` group of all
+   person fields with **zero unresolved placeholders** and an identical linkId set to the previous
+   aggregator-based output. Parts 2–3 of the patch (recursive discovery + match-based replacement)
+   extend PR [#1998](https://github.com/aehrc/smart-forms/pull/1998); see §1.
 
 ---
 
@@ -902,9 +943,9 @@ Two non-obvious rules emerged getting `nationality` and `genderIdentity` (both r
   patient-citizenship')…` the answer comes back **empty** (no error); rewriting to
   `%patient.extension.where(url = '…patient-citizenship')…` populates it. (Both forms are
   equivalent and both work in fhirpath.js with the R4 model — this is HAPI-specific.) The
-  `nationality` / `genderIdentity` initialExpressions in `ChEkmQuestionnaireGonorrhoeaPerson.fsh`
-  use the `.where(url=)` form for this reason; the organization `department` extension is read the
-  same way.
+  `nationality` initialExpression in `ChEkmQuestionnairePersonGeneral.fsh` and `genderIdentity` in
+  `ChEkmQuestionnairePersonGenderIdentity.fsh` use the `.where(url=)` form for this reason; the
+  organization `department` extension is read the same way.
 - **Use the explicit typed accessor `.valueCodeableConcept`, not polymorphic `.value`.** The
   polymorphic `value` accessor only resolves when the FHIR model is loaded; `.valueCodeableConcept`
   works with or without it, so it is the safer choice in an initialExpression.
@@ -927,7 +968,7 @@ Smart Forms reads it directly off the item (`getRegexString` in
 `packages/smart-forms-renderer/src/utils/extensions.ts`, applied in `validate.ts`) and surfaces
 inline validation. It even unwraps a `matches('…')` wrapper, but a bare pattern works too. Use it
 for pure **format/length** checks. Example — `ahvn13` (OASI / AHVN13) in
-`ChEkmQuestionnaireGonorrhoeaPerson.fsh` carries `regex = "^756[0-9]{10}$"` (+ `maxLength = 13`),
+`ChEkmQuestionnairePersonGeneral.fsh` carries `regex = "^756[0-9]{10}$"` (+ `maxLength = 13`),
 mirroring the ch-core `ahvn13-length` invariant. A regex **cannot** express the AHV digit-check
 (`ahvn13-digit-check`) — that, and the length invariant, are still enforced by the IG Publisher on
 the extracted Patient; the form regex is only a UX guard.

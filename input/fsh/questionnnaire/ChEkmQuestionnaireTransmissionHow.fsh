@@ -1,16 +1,17 @@
-// Modular sub-questionnaire: "Exposition" -> Wie (Übertragungsweg) (Gonorrhoea green section)
+// Modular sub-questionnaire: "Wie (Übertragungsweg)" — route-of-transmission group.
+// Extracted from the Gonorrhoea root so the transmission group is a reusable assemble-child.
 // Source of truth: logical model ChEkmGonorrhoeaExpositionForm.transmission (-> ChEkmExposureGonorrhoea)
 // Decisions (2026-06-09): contact-partner sex = administrative-gender (model);
 // Art der Beziehung = ChEkmExposureRelationshipType (model codes).
 
-Instance: ChEkmQuestionnaireGonorrhoeaExposition
+Instance: ChEkmQuestionnaireTransmissionHow
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Gonorrhoea - Exposition (Übertragungsweg)"
-Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' part of the 'Exposition' section of the Gonorrhoea clinical findings report. Reusable as an SDC assemble-child."
-* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaExposition"
+Title: "CH EKM Questionnaire: Transmission - How (route of transmission)"
+Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route of transmission) group. Holds the transmission group (sexual-contact partner sex, relationship type, other route, unknown). Reusable as an SDC assemble-child."
+* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow"
 * version = "0.0.1"
-* name = "ChEkmQuestionnaireGonorrhoeaExposition"
+* name = "ChEkmQuestionnaireTransmissionHow"
 * status = #active
 * language = #en
 * experimental = false

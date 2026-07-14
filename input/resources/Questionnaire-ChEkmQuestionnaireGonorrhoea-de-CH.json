@@ -875,15 +875,23 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaPerson|0.0.1-assembled"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaManifestation|0.0.1-assembled"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaExposition|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -906,6 +914,14 @@
               }
             }
           ]
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "homeOrFirstAddress",
+            "language": "text/fhirpath",
+            "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
+          }
         }
       ],
       "item": [
@@ -4106,16 +4122,6 @@
                 }
               ]
             }
-          ],
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/variable",
-              "valueExpression": {
-                "name": "homeOrFirstAddress",
-                "language": "text/fhirpath",
-                "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
-              }
-            }
           ]
         },
         {
@@ -4206,127 +4212,134 @@
           ]
         },
         {
-          "linkId": "transmission",
-          "text": "Wie (Übertragungsweg)",
+          "linkId": "exposition",
           "type": "group",
+          "text": "Exposition",
           "item": [
             {
-              "linkId": "sexualContactPartner",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner",
-              "text": "Sexualkontakt mit infizierter Person (Geschlecht)",
-              "type": "choice",
-              "extension": [
+              "linkId": "transmission",
+              "text": "Wie (Übertragungsweg)",
+              "type": "group",
+              "item": [
                 {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "code": "radio-button",
-                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                  "linkId": "sexualContactPartner",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner",
+                  "text": "Sexualkontakt mit infizierter Person (Geschlecht)",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
                       }
-                    ]
-                  }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://hl7.org/fhir/administrative-gender",
+                        "code": "male",
+                        "display": "männlich"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://hl7.org/fhir/administrative-gender",
+                        "code": "female",
+                        "display": "weiblich"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://hl7.org/fhir/administrative-gender",
+                        "code": "other",
+                        "display": "anderes"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://hl7.org/fhir/administrative-gender",
+                        "code": "unknown",
+                        "display": "unbekannt"
+                      }
+                    }
+                  ]
                 },
                 {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                  "valueCode": "horizontal"
-                }
-              ],
-              "answerOption": [
-                {
-                  "valueCoding": {
-                    "system": "http://hl7.org/fhir/administrative-gender",
-                    "code": "male",
-                    "display": "männlich"
-                  }
+                  "linkId": "relationshipType",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType",
+                  "text": "Art der Beziehung",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                        "code": "steady-partner",
+                        "display": "Fester Partner"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                        "code": "non-steady-partner",
+                        "display": "Nicht fester Partner"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                        "code": "offered-paid-sex",
+                        "display": "Angebot von bezahltem Sex"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                        "code": "used-paid-sex",
+                        "display": "Inanspruchnahme von bezahltem Sex"
+                      }
+                    }
+                  ]
                 },
                 {
-                  "valueCoding": {
-                    "system": "http://hl7.org/fhir/administrative-gender",
-                    "code": "female",
-                    "display": "weiblich"
-                  }
+                  "linkId": "otherTransmission",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.otherTransmission",
+                  "text": "Anderer Übertragungsweg (Freitext)",
+                  "type": "string"
                 },
                 {
-                  "valueCoding": {
-                    "system": "http://hl7.org/fhir/administrative-gender",
-                    "code": "other",
-                    "display": "anderes"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://hl7.org/fhir/administrative-gender",
-                    "code": "unknown",
-                    "display": "unbekannt"
-                  }
+                  "linkId": "unknown",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown",
+                  "text": "Übertragungsweg unbekannt",
+                  "type": "boolean"
                 }
               ]
-            },
-            {
-              "linkId": "relationshipType",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType",
-              "text": "Art der Beziehung",
-              "type": "choice",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                  "valueCodeableConcept": {
-                    "coding": [
-                      {
-                        "code": "radio-button",
-                        "system": "http://hl7.org/fhir/questionnaire-item-control"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                  "valueCode": "horizontal"
-                }
-              ],
-              "answerOption": [
-                {
-                  "valueCoding": {
-                    "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                    "code": "steady-partner",
-                    "display": "Fester Partner"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                    "code": "non-steady-partner",
-                    "display": "Nicht fester Partner"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                    "code": "offered-paid-sex",
-                    "display": "Angebot von bezahltem Sex"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                    "code": "used-paid-sex",
-                    "display": "Inanspruchnahme von bezahltem Sex"
-                  }
-                }
-              ]
-            },
-            {
-              "linkId": "otherTransmission",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.otherTransmission",
-              "text": "Anderer Übertragungsweg (Freitext)",
-              "type": "string"
-            },
-            {
-              "linkId": "unknown",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown",
-              "text": "Übertragungsweg unbekannt",
-              "type": "boolean"
             }
           ]
         },
