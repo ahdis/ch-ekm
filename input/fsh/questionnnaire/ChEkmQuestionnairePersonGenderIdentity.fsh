@@ -1,7 +1,7 @@
 // Modular sub-questionnaire: "Geschlechtsidentität" (gender identity of the affected person).
 // Split out of the former ChEkmQuestionnaireGonorrhoeaPerson so the gender identity can be
 // assembled (or omitted) independently of the general person data.
-// Source of truth: logical model ChEkmGonorrhoeaPersonForm (-> ChEkmPatientInitials).
+// Source of truth: logical model ChEkmPersonForm (-> ChEkmPatientInitials).
 //
 // SDC pre-population: the item carries an initialExpression that reads from %patient
 // (the launch context declared on the modular root ChEkmQuestionnaireGonorrhoea). The host
@@ -27,7 +27,7 @@ Description: "Modular sub-questionnaire for the gender identity of the affected 
 // (http://hl7.org/fhir/StructureDefinition/individual-genderIdentity -> extension.where(url='value')).
 // Source and form share the ChEkmGenderIdentity value set (SNOMED), so the Coding matches directly.
 * item[+].linkId = "genderIdentity"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.genderIdentity"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity"
 * item[=].text = "Gender identity (transgender)"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -48,7 +48,7 @@ Description: "Modular sub-questionnaire for the gender identity of the affected 
 * item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGenderIdentity"
 * item[=].answerValueSet.extension[+].url = $binding-parameter
 * item[=].answerValueSet.extension[=].extension[+].url = "name"
-* item[=].answerValueSet.extension[=].extension[=].valueString = "useSupplement"
+* item[=].answerValueSet.extension[=].extension[=].valueCode = #useSupplement
 * item[=].answerValueSet.extension[=].extension[+].url = "expression"
 * item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
 * item[=].extension[+].url = $sdc-initialExpression

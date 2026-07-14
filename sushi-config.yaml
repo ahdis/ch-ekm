@@ -37,9 +37,17 @@ resources:
     name: "CH EKM Questionnaire: Gonorrhoea (assembled)"
     description: "Assembled (flattened) Gonorrhoea questionnaire, generated from the modular questionnaire ChEkmQuestionnaireGonorrhoea via Questionnaire/$assemble (tests/assemble-gonorrhoea.sh). Do not edit by hand."
     exampleBoolean: false
-  Questionnaire/ChEkmQuestionnaireGonorrhoeaPreview-de-CH:
-    name: "CH EKM Questionnaire: Gonorrhoea (preview, de-CH)"
+  Questionnaire/ChEkmQuestionnaireGonorrhoea-de-CH:
+    name: "CH EKM Questionnaire: Gonorrhoea (de-CH)"
     description: "Preview of the assembled Gonorrhoea questionnaire with option labels in German (de-CH). Do not edit by hand."
+    exampleBoolean: false
+  Questionnaire/ChEkmQuestionnaireGonorrhoea-fr-CH:
+    name: "CH EKM Questionnaire: Gonorrhoea (fr-CH)"
+    description: "Preview of the assembled Gonorrhoea questionnaire with option labels in French (fr-CH). Do not edit by hand."
+    exampleBoolean: false
+  Questionnaire/ChEkmQuestionnaireGonorrhoea-it-CH:
+    name: "CH EKM Questionnaire: Gonorrhoea (it-CH)"
+    description: "Preview of the assembled Gonorrhoea questionnaire with option labels in Italian (it-CH). Do not edit by hand."
     exampleBoolean: false
   ValueSet/ChEkmCountryCodes:
     name: "CH EKM ValueSet: Country Codes"

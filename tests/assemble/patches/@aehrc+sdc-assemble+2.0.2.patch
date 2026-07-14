@@ -1,5 +1,5 @@
 diff --git a/node_modules/@aehrc/sdc-assemble/dist/index.cjs b/node_modules/@aehrc/sdc-assemble/dist/index.cjs
-index f1178dd..a844c68 100644
+index f1178dd..568563b 100644
 --- a/node_modules/@aehrc/sdc-assemble/dist/index.cjs
 +++ b/node_modules/@aehrc/sdc-assemble/dist/index.cjs
 @@ -655,9 +655,9 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
@@ -23,8 +23,31 @@ index f1178dd..a844c68 100644
      }
      const prohibitedAttributesOutcome = checkProhibitedAttributes(subquestionnaires);
      if (prohibitedAttributesOutcome) {
+@@ -681,7 +681,21 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
+     if (matchingLanguageOutcome) {
+       return matchingLanguageOutcome;
+     }
+-    const items = getItems(subquestionnaires);
++    const __rawItems = getItems(subquestionnaires);
++    const __parentForm = parentQuestionnaire.item && parentQuestionnaire.item[0] && parentQuestionnaire.item[0].item;
++    let items;
++    if (!__parentForm) {
++      items = __rawItems;
++    } else {
++      items = [];
++      let __subIdx = 0;
++      for (const __qItem of __parentForm) {
++        const __isSubQ = __qItem.extension && __qItem.extension.some(
++          (e) => e.url === "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire" && e.valueCanonical
++        );
++        items.push(__isSubQ ? (__rawItems[__subIdx++] ?? null) : null);
++      }
++    }
+     const urls = getUrls(subquestionnaires);
+     const containedResources = getContainedResources(subquestionnaires);
+     const extensions = getExtensions(subquestionnaires);
 diff --git a/node_modules/@aehrc/sdc-assemble/dist/index.js b/node_modules/@aehrc/sdc-assemble/dist/index.js
-index 701dceb..7b2f91d 100644
+index 701dceb..b2d7a78 100644
 --- a/node_modules/@aehrc/sdc-assemble/dist/index.js
 +++ b/node_modules/@aehrc/sdc-assemble/dist/index.js
 @@ -619,9 +619,9 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
@@ -48,3 +71,26 @@ index 701dceb..7b2f91d 100644
      }
      const prohibitedAttributesOutcome = checkProhibitedAttributes(subquestionnaires);
      if (prohibitedAttributesOutcome) {
+@@ -645,7 +645,21 @@ function assembleQuestionnaire(rootQuestionnaire, totalCanonicals, issues, isRoo
+     if (matchingLanguageOutcome) {
+       return matchingLanguageOutcome;
+     }
+-    const items = getItems(subquestionnaires);
++    const __rawItems = getItems(subquestionnaires);
++    const __parentForm = parentQuestionnaire.item && parentQuestionnaire.item[0] && parentQuestionnaire.item[0].item;
++    let items;
++    if (!__parentForm) {
++      items = __rawItems;
++    } else {
++      items = [];
++      let __subIdx = 0;
++      for (const __qItem of __parentForm) {
++        const __isSubQ = __qItem.extension && __qItem.extension.some(
++          (e) => e.url === "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire" && e.valueCanonical
++        );
++        items.push(__isSubQ ? (__rawItems[__subIdx++] ?? null) : null);
++      }
++    }
+     const urls = getUrls(subquestionnaires);
+     const containedResources = getContainedResources(subquestionnaires);
+     const extensions = getExtensions(subquestionnaires);

@@ -879,7 +879,7 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaManifestation|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaManifestation|0.0.1-assembled"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -887,7 +887,7 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaTreatingPhysician|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician|0.0.1"
     }
   ],
   "item": [
@@ -916,7 +916,7 @@
           "item": [
             {
               "linkId": "surnameInitial",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.surnameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surnameInitial",
               "text": "Initiale du nom",
               "type": "string",
               "required": true,
@@ -933,7 +933,7 @@
             },
             {
               "linkId": "givennameInitial",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.givennameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givennameInitial",
               "text": "Initiale du prénom",
               "type": "string",
               "required": true,
@@ -950,7 +950,7 @@
             },
             {
               "linkId": "dateOfBirth",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.dateOfBirth",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.dateOfBirth",
               "text": "Date de naissance",
               "type": "date",
               "required": true,
@@ -966,7 +966,7 @@
             },
             {
               "linkId": "ahvn13",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.ahvn13",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.ahvn13",
               "text": "Numéro AVS (OASI)",
               "type": "string",
               "maxLength": 13,
@@ -986,7 +986,7 @@
             },
             {
               "linkId": "nationality",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.nationality",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.nationality",
               "text": "Nationalité",
               "type": "choice",
               "extension": [
@@ -2386,7 +2386,7 @@
             },
             {
               "linkId": "zipCode",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.zipCode",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.zipCode",
               "text": "NPA",
               "type": "string",
               "extension": [
@@ -2401,7 +2401,7 @@
             },
             {
               "linkId": "city",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.city",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.city",
               "text": "Localité",
               "type": "string",
               "extension": [
@@ -2416,7 +2416,7 @@
             },
             {
               "linkId": "country",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.country",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.country",
               "text": "Pays",
               "type": "choice",
               "extension": [
@@ -3816,7 +3816,7 @@
             },
             {
               "linkId": "canton",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.canton",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.canton",
               "text": "Canton",
               "type": "open-choice",
               "extension": [
@@ -3989,7 +3989,7 @@
             },
             {
               "linkId": "administrativeGender",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.administrativeGender",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.administrativeGender",
               "text": "Sexe",
               "type": "choice",
               "required": true,
@@ -4000,7 +4000,7 @@
                     "extension": [
                       {
                         "url": "name",
-                        "valueString": "useSupplement"
+                        "valueCode": "useSupplement"
                       },
                       {
                         "url": "expression",
@@ -4067,7 +4067,7 @@
             },
             {
               "linkId": "genderIdentity",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.genderIdentity",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
               "text": "Identité de genre (transgenre)",
               "type": "choice",
               "_answerValueSet": {
@@ -4077,7 +4077,7 @@
                     "extension": [
                       {
                         "url": "name",
-                        "valueString": "useSupplement"
+                        "valueCode": "useSupplement"
                       },
                       {
                         "url": "expression",
@@ -4152,7 +4152,7 @@
                     "extension": [
                       {
                         "url": "name",
-                        "valueString": "useSupplement"
+                        "valueCode": "useSupplement"
                       },
                       {
                         "url": "expression",
@@ -4181,7 +4181,7 @@
             },
             {
               "linkId": "manifestationBeginUnknown",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestationBeginUnknown",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationBeginUnknown",
               "text": "Début des manifestations inconnu",
               "type": "boolean",
               "initial": [
@@ -4192,7 +4192,7 @@
             },
             {
               "linkId": "manifestationBeginDate",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestationBeginDate",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationBeginDate",
               "text": "Début des manifestations (date)",
               "type": "date",
               "enableWhen": [

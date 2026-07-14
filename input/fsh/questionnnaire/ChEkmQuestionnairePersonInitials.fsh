@@ -1,7 +1,7 @@
 // Modular sub-questionnaire: "Namensinitialen" (name initials of the affected person).
 // Split out of the former ChEkmQuestionnaireGonorrhoeaPerson so the initials, the general
 // person data and the gender identity can be assembled independently.
-// Source of truth: logical model ChEkmGonorrhoeaPersonForm (-> ChEkmPatientInitials).
+// Source of truth: logical model ChEkmPersonForm (-> ChEkmPatientInitials).
 //
 // The items are top-level (no wrapping group), so on assembly they merge directly into the
 // referencing root's group without an extra nesting level.
@@ -27,7 +27,7 @@ Description: "Modular sub-questionnaire for the name initials (surname / given n
 
 // Initiale Name (surname initial) - required; first letter of the family name
 * item[+].linkId = "surnameInitial"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.surnameInitial"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surnameInitial"
 * item[=].text = "Surname initial"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -55,7 +55,7 @@ Description: "Modular sub-questionnaire for the name initials (surname / given n
 
 // Initiale Vorname (given name initial) - required; first letter of the given name
 * item[+].linkId = "givennameInitial"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.givennameInitial"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givennameInitial"
 * item[=].text = "First name initial"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"

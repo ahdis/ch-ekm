@@ -49,7 +49,7 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 // PractitionerRole rather than Practitioner: the clinician authoring/using the form is
 // represented by their role at the sending organization, so %user.practitioner.resolve()
 // and %user.organization.resolve() both come from this single context (see
-// ChEkmQuestionnaireGonorrhoeaTreatingPhysician). This also matches what a real SMART
+// ChEkmQuestionnaireTreatingPhysician). This also matches what a real SMART
 // launch typically hands back as `fhirUser`/`user` for clinical users.
 * extension[+].url = $sdc-launchContext
 * extension[=].extension[+].url = "name"
@@ -199,4 +199,4 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * item[=].item[=].text.extension[=].extension[+].url = "content"
 * item[=].item[=].text.extension[=].extension[=].valueString = "Medico curante"
 * item[=].item[=].extension[+].url = $sdc-subQuestionnaire
-* item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaTreatingPhysician"
+* item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician"

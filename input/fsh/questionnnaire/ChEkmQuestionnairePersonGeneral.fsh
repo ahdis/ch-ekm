@@ -2,7 +2,7 @@
 // Split out of the former ChEkmQuestionnaireGonorrhoeaPerson: holds everything about the
 // affected person EXCEPT the name initials (-> ChEkmQuestionnairePersonInitials) and the
 // gender identity (-> ChEkmQuestionnairePersonGenderIdentity).
-// Source of truth: logical model ChEkmGonorrhoeaPersonForm (-> ChEkmPatientInitials).
+// Source of truth: logical model ChEkmPersonForm (-> ChEkmPatientInitials).
 //
 // The items are top-level (no wrapping group), so on assembly they merge directly into the
 // referencing root's group without an extra nesting level.
@@ -43,7 +43,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 
 // Geburtsdatum - required
 * item[+].linkId = "dateOfBirth"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.dateOfBirth"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.dateOfBirth"
 * item[=].text = "Date of birth"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -86,7 +86,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 // ChEkmPatient identifier[AHVN13]). Per §10, read it with extension/identifier .where(...)
 // rather than a slice name, since slices have no runtime FHIRPath representation.
 * item[+].linkId = "ahvn13"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.ahvn13"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.ahvn13"
 * item[=].text = "OASI number (AHV)"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -121,7 +121,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 // alpha-2 too (the redundant alpha-3 codes were removed), so the prepopulated Coding matches a
 // dropdown option directly — no code-system translation needed.
 * item[+].linkId = "nationality"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.nationality"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.nationality"
 * item[=].text = "Nationality"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -148,7 +148,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 
 // PLZ
 * item[+].linkId = "zipCode"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.zipCode"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.zipCode"
 * item[=].text = "Postal code"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -172,7 +172,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 
 // Wohnort
 * item[+].linkId = "city"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.city"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.city"
 * item[=].text = "Place of residence"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -196,7 +196,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 
 // Land - choice (BFS country codes), autocomplete
 * item[+].linkId = "country"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.country"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.country"
 * item[=].text = "Country"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -227,7 +227,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 // "preferred" binding (open-choice = options-or-string). Pre-population reads the address state
 // (a plain string, e.g. "BE"), which fills the free-text part.
 * item[+].linkId = "canton"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.canton"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.canton"
 * item[=].text = "Canton"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -252,7 +252,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 
 // Gender - administrative gender (male/female/other), radio buttons - required
 * item[+].linkId = "administrativeGender"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaPersonForm#ChEkmGonorrhoeaPersonForm.administrativeGender"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.administrativeGender"
 * item[=].text = "Gender"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -276,7 +276,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 // the tx server resolves the German designations from ChEkmAdministrativeGenderLanguageSupplement.
 * item[=].answerValueSet.extension[+].url = $binding-parameter
 * item[=].answerValueSet.extension[=].extension[+].url = "name"
-* item[=].answerValueSet.extension[=].extension[=].valueString = "useSupplement"
+* item[=].answerValueSet.extension[=].extension[=].valueCode = #useSupplement
 * item[=].answerValueSet.extension[=].extension[+].url = "expression"
 * item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-administrative-gender-language-supplement"
 * item[=].extension[+].url = $questionnaire-itemControl
