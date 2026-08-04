@@ -15,11 +15,18 @@
 # (upsert by id) so re-running the script updates the existing resource instead of creating
 # duplicates.
 #
-# The contained SDC extraction template (Bundle + templateExtract wiring) is stripped before
-# upload: it uses a data-absent-reason extension that carries both sub-extensions and a value,
-# which HAPI's strict parser rejects (HAPI-1811, "must not have both a value and other
-# contained extensions"). The renderer does not need it to render/populate the form — it is
-# only used by $extract — so the server copy drops it.
+# The contained SDC extraction template (Bundle + templateExtract wiring) is STRIPPED before
+# upload — the hosted HAPI cannot store it. Two distinct blockers seen (2026-08):
+#   - HAPI-1811 (parser): the OLD data-absent-reason on Condition._onsetDateTime carried both a
+#     value and sub-extensions. This is now GONE — that extension was restructured to build at
+#     extraction via the SdcTemplateExtractExtension carrier + %factory.Extension (forms-summary §8);
+#     Questionnaire/$validate now returns HTTP 200 with no HAPI-1811.
+#   - HAPI-2223 (indexer NPE, "BaseRuntimeChildDefinition.getElementName() ... myDef is null"): a
+#     real PUT of the intact questionnaire still fails HTTP 500. Bisected to the CONTAINED Bundle
+#     template itself (removing just the group-level templateExtract extension does not help; a full
+#     strip returns HTTP 201). $validate only parses, so it does not surface this storage-path error.
+# The renderer does not need the template to render/populate — only $extract does — so the server
+# copy drops it; use the local artifact + tests/extract-gonorrhoea.sh for extraction.
 #
 # As with the other Smart Forms scripts, send Content-Type application/json.
 #

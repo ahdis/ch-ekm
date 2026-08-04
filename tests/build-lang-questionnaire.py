@@ -221,6 +221,11 @@ def walk(item):
         localize_text(it)
         if "answerValueSet" in it:
             canonical = it.pop("answerValueSet")
+            # Also drop the primitive-extension sibling (_answerValueSet holds the
+            # binding-parameter/useSupplement extensions). Leaving it makes FHIRPath still see an
+            # answerValueSet element (value-less but with extensions) alongside the baked
+            # answerOption, which trips que-4 ("cannot have both answerOption and answerValueSet").
+            it.pop("_answerValueSet", None)
             opts = expand(canonical)
             it["answerOption"] = opts
             downgrade_autocomplete(it)

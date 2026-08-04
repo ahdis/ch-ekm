@@ -42,6 +42,8 @@ Alias: $sdc-extr-template =          http://hl7.org/fhir/uv/sdc/StructureDefinit
 Alias: $sdc-templateExtract =        http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract
 Alias: $sdc-templateExtractValue =   http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue
 Alias: $sdc-templateExtractContext = http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext
+// ch-ekm carrier extension for building a whole Extension via %factory.Extension (see Extensions.fsh)
+Alias: $sdc-templateExtractExtension = http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension
 
 //External Extensions
 Alias: $individual-genderIdentity =      http://hl7.org/fhir/StructureDefinition/individual-genderIdentity

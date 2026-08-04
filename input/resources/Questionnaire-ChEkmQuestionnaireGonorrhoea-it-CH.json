@@ -26,6 +26,15 @@
         "system": "urn:ietf:rfc:3986",
         "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
       },
+      "timestamp": "1900-01-01T00:00:00Z",
+      "_timestamp": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+            "valueString": "%resource.authored"
+          }
+        ]
+      },
       "entry": [
         {
           "fullUrl": "http://test.fhir.ch/r4/Composition/GonExtractComposition",
@@ -193,6 +202,15 @@
                 ]
               }
             ],
+            "gender": "unknown",
+            "_gender": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='administrativeGender').answer.value.code.first()"
+                }
+              ]
+            },
             "identifier": [
               {
                 "extension": [
@@ -241,14 +259,6 @@
                 }
               }
             ],
-            "_gender": {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.descendants().where(linkId='administrativeGender').answer.value.code.first()"
-                }
-              ]
-            },
             "_birthDate": {
               "extension": [
                 {
@@ -316,21 +326,17 @@
             "_onsetDateTime": {
               "extension": [
                 {
-                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
                       "valueString": "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown'))"
                     }
-                  ],
-                  "_valueCode": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "'asked-unknown'"
-                      }
-                    ]
-                  }
+                  ]
                 },
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -719,21 +725,17 @@
             ],
             "extension": [
               {
-                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department",
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
                     "valueString": "%resource.descendants().where(linkId='orgDepartment').answer.value"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department', %resource.descendants().where(linkId='orgDepartment').answer.value.first())"
                   }
-                ],
-                "_valueString": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "$this"
-                    }
-                  ]
-                }
+                ]
               }
             ],
             "address": [
@@ -812,15 +814,7 @@
             }
           }
         }
-      ],
-      "_timestamp": {
-        "extension": [
-          {
-            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-            "valueString": "%resource.authored"
-          }
-        ]
-      }
+      ]
     }
   ],
   "extension": [
@@ -4009,23 +4003,6 @@
               "text": "Sesso",
               "type": "choice",
               "required": true,
-              "_answerValueSet": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
-                    "extension": [
-                      {
-                        "url": "name",
-                        "valueCode": "useSupplement"
-                      },
-                      {
-                        "url": "expression",
-                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-administrative-gender-language-supplement"
-                      }
-                    ]
-                  }
-                ]
-              },
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -4086,23 +4063,6 @@
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
               "text": "Identità di genere (transgender)",
               "type": "choice",
-              "_answerValueSet": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
-                    "extension": [
-                      {
-                        "url": "name",
-                        "valueCode": "useSupplement"
-                      },
-                      {
-                        "url": "expression",
-                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
-                      }
-                    ]
-                  }
-                ]
-              },
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
@@ -4151,23 +4111,6 @@
                   }
                 }
               ],
-              "_answerValueSet": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
-                    "extension": [
-                      {
-                        "url": "name",
-                        "valueCode": "useSupplement"
-                      },
-                      {
-                        "url": "expression",
-                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
-                      }
-                    ]
-                  }
-                ]
-              },
               "answerOption": [
                 {
                   "valueCoding": {

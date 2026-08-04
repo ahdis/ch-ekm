@@ -67,6 +67,10 @@ Usage: #inline
 * name[0].family.extension[=].valueString = "item.where(linkId='surnameInitial').answer.value.first()"
 * name[0].given[0].extension[+].url = $sdc-templateExtractValue
 * name[0].given[0].extension[=].valueString = "item.where(linkId='givennameInitial').answer.value"
+// PLACEHOLDER DEFAULT — replaced at extraction. gender has a required binding, so the template
+// needs a real code to be valid; the templateExtractValue below overwrites it with the answered
+// administrativeGender at extraction. The #unknown default never survives a real extraction.
+* gender = #unknown
 * gender.extension[+].url = $sdc-templateExtractValue
 * gender.extension[=].valueString = "%resource.descendants().where(linkId='administrativeGender').answer.value.code.first()"
 * birthDate.extension[+].url = $sdc-templateExtractValue
@@ -108,22 +112,33 @@ Usage: #inline
 // navigation the report consumer follows: Condition.recorder.practitioner / .organization.
 * recorder.reference = "PractitionerRole/GonExtractTreatingPractitionerRole"
 // Manifestationsbeginn:
-//  - known   -> onsetDateTime = the answered date.
+//  - known    -> onsetDateTime = the answered date.
 //  - unbekannt -> no value; onsetDateTime.extension[data-absent-reason] = asked-unknown.
 //
-// extension[0] is the data-absent-reason extension, gated by a templateExtractContext that is
-// non-empty only when manifestationBeginUnknown = true (empty context -> element excluded), with
-// its valueCode set by a templateExtractValue inside that context scope.
+// extension[0] is the data-absent-reason extension. It CANNOT be pre-declared with url =
+// data-absent-reason in the template: a to-be-computed valueCode leaves the extension with no
+// value at authoring time (fails ext-1) and the templateExtractContext sub-extension violates the
+// data-absent-reason profile (0 sub-extensions allowed). Instead the WHOLE extension is built at
+// extraction time by a single templateExtractValue via the FHIR Type Factory
+// %factory.Extension(url, value) — the same idiom as %factory.Coding above (see forms-summary §8).
+// %factory.code(...) makes the value a `code`, so the result is {url: data-absent-reason,
+// valueCode: 'asked-unknown'}. The factory result deep-merges onto the carrier, overwriting the
+// carrier url, so the extracted extension is a clean, valid data-absent-reason.
+// The carrier is the ch-ekm SdcTemplateExtractExtension (defined so the template validates as FHIR
+// — an engine value directive on onsetDateTime.extension would set the primitive value, not a
+// sibling extension, so a carrier is required to reach _onsetDateTime.extension).
+// The templateExtractContext gates emission: empty (element excluded) unless
+// manifestationBeginUnknown = true.
 // extension[1] is the onset value (iif -> {} when unbekannt, so onsetDateTime is omitted then).
 //
 // ORDER MATTERS: the context-gated extension MUST come before the plain onset value extension.
 // The reference engine's array index bookkeeping mis-handles the reverse order (the gated element
 // is not deleted and the valueCode splits into a stray entry). See forms-summary.md §8.
-* onsetDateTime.extension[0].url = $data-absent-reason
+* onsetDateTime.extension[0].url = $sdc-templateExtractExtension
 * onsetDateTime.extension[0].extension[0].url = $sdc-templateExtractContext
 * onsetDateTime.extension[0].extension[0].valueString = "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
-* onsetDateTime.extension[0].valueCode.extension[0].url = $sdc-templateExtractValue
-* onsetDateTime.extension[0].valueCode.extension[0].valueString = "'asked-unknown'"
+* onsetDateTime.extension[0].extension[1].url = $sdc-templateExtractValue
+* onsetDateTime.extension[0].extension[1].valueString = "%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown'))"
 * onsetDateTime.extension[1].url = $sdc-templateExtractValue
 * onsetDateTime.extension[1].valueString = "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
 // Manifestation -> evidence.code (identity pass-through of the answered Coding)
@@ -256,9 +271,13 @@ Usage: #inline
 // ---------------------------------------------------------------------------
 // Treating physician — Organization (ChEkmOrganizationTreatingPhysician) from the
 // `treatingPhysicianOrganization` group. Department (ch-ekm-ext-department, a SIMPLE valueString
-// extension) is gated by a context sub-extension on the extension itself: empty -> the whole
-// extension is omitted; answered -> {url, valueString}. (Safe here because the payload is a value,
-// not a sibling sub-extension — so the §8 complex-extension sibling-strip bug does not apply.)
+// extension) is built via the SdcTemplateExtractExtension carrier + %factory.Extension, the same
+// idiom as the onsetDateTime data-absent-reason: pre-declaring `url = ch-ekm-ext-department` with a
+// templateExtractContext sub-extension makes the template invalid (ext-1 + the department profile
+// allows 0 sub-extensions). Instead the WHOLE extension is produced by one templateExtractValue;
+// its %factory.Extension result deep-merges onto the carrier (overwriting the carrier url). The
+// context gates emission: empty -> extension omitted; answered -> {url: ch-ekm-ext-department,
+// valueString: <department>}.
 // ---------------------------------------------------------------------------
 Instance: GonExtractTreatingOrganization
 InstanceOf: Organization
@@ -276,12 +295,13 @@ Usage: #inline
 * identifier[1].system = "urn:oid:2.16.756.5.45"
 * identifier[1].value.extension[0].url = $sdc-templateExtractValue
 * identifier[1].value.extension[0].valueString = "$this"
-// Department (optional, ch-ekm-ext-department) -> gated on orgDepartment
-* extension[0].url = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department"
+// Department (optional, ch-ekm-ext-department) -> gated on orgDepartment; whole extension built
+// via the carrier + %factory.Extension (see header note).
+* extension[0].url = $sdc-templateExtractExtension
 * extension[0].extension[0].url = $sdc-templateExtractContext
 * extension[0].extension[0].valueString = "%resource.descendants().where(linkId='orgDepartment').answer.value"
-* extension[0].valueString.extension[0].url = $sdc-templateExtractValue
-* extension[0].valueString.extension[0].valueString = "$this"
+* extension[0].extension[1].url = $sdc-templateExtractValue
+* extension[0].extension[1].valueString = "%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department', %resource.descendants().where(linkId='orgDepartment').answer.value.first())"
 // name (required, single)
 * name.extension[+].url = $sdc-templateExtractValue
 * name.extension[=].valueString = "%resource.descendants().where(linkId='orgName').answer.value.first()"
@@ -350,6 +370,11 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentG
 * type = #document
 * identifier.system = "urn:ietf:rfc:3986"
 * identifier.value = "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
+// PLACEHOLDER DEFAULT — replaced at extraction. A document Bundle must have a timestamp value
+// (bdl-10: timestamp.hasValue()), so the template needs a real value to be valid; the
+// templateExtractValue below overwrites it with the QuestionnaireResponse's authored time at
+// extraction. This 1900 sentinel never survives a real extraction.
+* timestamp = "1900-01-01T00:00:00Z"
 * timestamp.extension[+].url = $sdc-templateExtractValue
 * timestamp.extension[=].valueString = "%resource.authored"
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Composition/GonExtractComposition"

@@ -3157,23 +3157,6 @@
               "text": "Sesso",
               "type": "choice",
               "required": true,
-              "_answerValueSet": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
-                    "extension": [
-                      {
-                        "url": "name",
-                        "valueCode": "useSupplement"
-                      },
-                      {
-                        "url": "expression",
-                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-administrative-gender-language-supplement"
-                      }
-                    ]
-                  }
-                ]
-              },
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -3258,23 +3241,6 @@
                   }
                 }
               ],
-              "_answerValueSet": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
-                    "extension": [
-                      {
-                        "url": "name",
-                        "valueCode": "useSupplement"
-                      },
-                      {
-                        "url": "expression",
-                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
-                      }
-                    ]
-                  }
-                ]
-              },
               "answerOption": [
                 {
                   "valueCoding": {

@@ -6,6 +6,7 @@
     "system": "urn:ietf:rfc:3986",
     "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
   },
+  "timestamp": "2026-05-27T11:30:00+02:00",
   "entry": [
     {
       "fullUrl": "http://test.fhir.ch/r4/Composition/GonExtractComposition",
@@ -76,7 +77,7 @@
             ]
           }
         ],
-        "date": "2026-06-23T16:35:27.714Z"
+        "date": "2026-05-27T11:30:00+02:00"
       }
     },
     {
@@ -95,7 +96,7 @@
                     {
                       "system": "urn:iso:std:iso:3166",
                       "code": "CH",
-                      "display": "Schweiz"
+                      "display": "Switzerland"
                     }
                   ]
                 }
@@ -112,7 +113,7 @@
                     {
                       "system": "http://snomed.info/sct",
                       "code": "1384187000",
-                      "display": "Identifiziert sich als Transgender"
+                      "display": "Identifies as transgender (finding)"
                     }
                   ]
                 }
@@ -122,16 +123,17 @@
         ],
         "name": [
           {
-            "family": "F",
+            "family": "M",
             "given": [
-              "D"
+              "B"
             ]
           }
         ],
+        "gender": "male",
         "identifier": [
           {
             "system": "urn:oid:2.16.756.5.32",
-            "value": "7561234567897"
+            "value": "7560000000000"
           }
         ],
         "address": [
@@ -142,7 +144,6 @@
             "state": "BE"
           }
         ],
-        "gender": "female",
         "birthDate": "2000-01-01"
       }
     },
@@ -184,14 +185,21 @@
                   {
                     "system": "http://snomed.info/sct",
                     "code": "264931009",
-                    "display": "Symptomatisch"
+                    "display": "Symptomatic (qualifier value)"
                   }
                 ]
               }
             ]
           }
         ],
-        "onsetDateTime": "2026-06-10"
+        "_onsetDateTime": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+              "valueCode": "asked-unknown"
+            }
+          ]
+        }
       }
     },
     {
@@ -238,7 +246,7 @@
                 {
                   "system": "http://hl7.org/fhir/administrative-gender",
                   "code": "male",
-                  "display": "männlich"
+                  "display": "Male"
                 }
               ]
             }
@@ -257,8 +265,8 @@
               "coding": [
                 {
                   "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                  "code": "non-steady-partner",
-                  "display": "Nicht fester Partner"
+                  "code": "offered-paid-sex",
+                  "display": "Offered paid sex"
                 }
               ]
             }
@@ -383,6 +391,5 @@
         "name": "Regionalspital Genesis"
       }
     }
-  ],
-  "timestamp": "2026-06-23T16:35:27.714Z"
+  ]
 }

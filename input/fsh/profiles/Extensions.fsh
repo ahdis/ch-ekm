@@ -32,3 +32,28 @@ Description: "This CH EKM extension enables the representation of a department (
 * value[x] 1..
 * value[x] only string
 * valueString ^short = "Name of the department"
+
+// -----------------------------------------------------------------------------------------------
+// Carrier extension for SDC template-based $extract.
+//
+// Used ONLY inside an extraction template, at a location where a `templateExtractValue` on the
+// element itself cannot produce the wanted result — most notably a primitive element's
+// `_element.extension` slot: a value directive there sets the primitive's value[x], not a sibling
+// extension. This carrier holds the SDC `templateExtractContext` (optional gate) and
+// `templateExtractValue` directives; the latter's `%factory.Extension(url, value)` builds a whole
+// FHIR Extension, whose result deep-merges onto this carrier during extraction — overwriting the
+// carrier url and stripping the directives. The carrier therefore appears ONLY in the template and
+// never in extracted output. It is defined here purely so the template Bundle validates as FHIR
+// (an otherwise-undefined ch-ekm extension url would be flagged by the IG Publisher).
+// Example: ChEkmDocumentGonorrhoeaTemplate onsetDateTime data-absent-reason.
+Extension: SdcTemplateExtractExtension
+Id: sdc-templateExtractExtension
+Title: "SDC Template Extract Extension (carrier)"
+Description: "Carrier/placeholder extension used only inside an SDC template-based $extract template to build a whole FHIR Extension via %factory.Extension at a location a value directive cannot reach (e.g. a primitive element's _element.extension). Its %factory.Extension result replaces this carrier during extraction, so it never appears in extracted output."
+* ^context[+].type = #element
+* ^context[=].expression = "Element"
+* . ^short = "Template-extract carrier that builds a whole Extension via %factory.Extension"
+* value[x] 0..0
+* extension contains
+    $sdc-templateExtractContext named context 0..1 and
+    $sdc-templateExtractValue named value 0..*

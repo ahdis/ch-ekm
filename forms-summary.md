@@ -509,7 +509,11 @@ The build therefore produces two artifacts (see `tests/`):
 
 ### How the preview is built (`tests/build-lang-questionnaire.py`)
 Walks the assembled questionnaire and, for each item with an `answerValueSet`, expands it
-against **`tx.fhir.ch`** and replaces it with the resulting `answerOption`s. Every value set is
+against **`tx.fhir.ch`** and replaces it with the resulting `answerOption`s. It removes **both**
+`answerValueSet` and its primitive-extension sibling `_answerValueSet` (which holds the
+`binding-parameter`/`useSupplement` extensions) — leaving `_answerValueSet` behind makes FHIRPath
+still see an `answerValueSet` element next to the baked `answerOption`, which trips `que-4` ("a
+question cannot have both `answerOption` and `answerValueSet`"). Every value set is
 expanded via **`POST ValueSet/$expand`** with **`displayLanguage`** (default `de-CH`; override
 with `PREVIEW_LANG=fr-CH`) and **all** local `CodeSystem-*.json` supplied as **`tx-resource`**
 parameters (so internal codes *and* `content=supplement` language supplements are available):
@@ -656,10 +660,13 @@ so the consumer navigation `Condition.recorder.practitioner / .organization` res
 - **optional fields** (`identifier[GLN]`/`[BER]`, `telecom[email]`) → **whole-element** context-gated
   on the answer (same as the Patient AHVN13 identifier): omitted when blank, and the static `system`
   survives when answered.
-- **department** (`ch-ekm-ext-department`, a **simple `valueString` extension**) → gated by a context
-  **sub-extension on the extension itself**; empty ⇒ the whole extension is omitted, answered ⇒
-  `{url, valueString}`. This is safe (unlike the §8 complex-extension caveat) precisely because the
-  payload is a *value*, not a sibling sub-extension, so the sibling-strip bug does not apply.
+- **department** (`ch-ekm-ext-department`, a **simple `valueString` extension**) → the **whole
+  extension is built by one `templateExtractValue` via `%factory.Extension`** on the
+  `SdcTemplateExtractExtension` carrier, gated by a `templateExtractContext`; empty ⇒ the whole
+  extension is omitted, answered ⇒ `{url: ch-ekm-ext-department, valueString: <department>}`. Pre-declaring
+  `url = ch-ekm-ext-department` with a `templateExtractContext` sub-extension makes the **template
+  itself invalid** (fails `ext-1`, and the department extension allows 0 sub-extensions) — see
+  *Building a whole Extension* below.
 
 Verified (all fields answered): the extracted Practitioner/Organization carry the right
 identifiers, name (`given`/`family`), `work` address, phone+email, and a clean department extension;
@@ -682,7 +689,7 @@ standalone Person assembly stays valid.)
 ```
 sushi .                          # compiles the template + the test QuestionnaireResponse
 tests/assemble-gonorrhoea.sh     # re-attaches the template onto the assembled questionnaire
-tests/extract-gonorrhoea.sh      # runs $extract -> fsh-generated/Bundle-ChEkmDocumentGonorrhoea-extracted.json
+tests/extract-gonorrhoea.sh      # runs $extract -> input/resources/Bundle-ChEkmDocumentGonorrhoea-extracted.json
 ```
 `tests/extract-gonorrhoea.sh` defaults to the **assembled** questionnaire (demo parity with the
 renderer) and uses **`input/fsh/examples/Gonorrhoea/ChEkmQuestionnaireResponseGonorrhoea.fsh`** —
@@ -700,22 +707,47 @@ code per the §3 decision) rather than the disease code `15628003`. The `onsetDa
 data-absent handling (next) matches the example bundle.
 
 ### Conditional `data-absent-reason` on `onsetDateTime` (manifestationBeginUnknown)
-The "unbekannt" toggle maps to the example bundle's representation:
+Three cases, all handled and all producing a **valid** template + correct output:
 - **known** → `onsetDateTime` = the answered date;
-- **unbekannt** → no value, `onsetDateTime.extension[data-absent-reason] = asked-unknown`.
+- **unbekannt** → no value, `_onsetDateTime.extension[data-absent-reason] = asked-unknown`;
+- **neither** → `onsetDateTime` omitted entirely.
 
-This is done with a **context-gated extension**: a `templateExtractContext`
-(`…manifestationBeginUnknown… answer.value.where($this = true)`) that is non-empty only when the
-box is ticked, so the whole data-absent extension is emitted only then (empty context → element
-excluded); the `valueCode` is set by a `templateExtractValue` inside that context scope.
+Two directives in the `_onsetDateTime.extension` array, targeting two different JSON locations:
+- `extension[0]` — the **data-absent-reason**, built by one `templateExtractValue` via
+  **`%factory.Extension`** on the `SdcTemplateExtractExtension` carrier (see *Building a whole
+  Extension* below), gated by a `templateExtractContext`
+  (`…manifestationBeginUnknown… answer.value.where($this = true)`) so it is emitted **only** when
+  the box is ticked (empty context → element excluded).
+- `extension[1]` — the **onset value**: `iif(…manifestationBeginUnknown = true, {}, …manifestationBeginDate…)`
+  → the date when known, `{}` (field omitted) when unbekannt or unanswered.
+
+> **Why not one directive?** A `templateExtractValue` on `onsetDateTime.extension` sets the
+> **primitive's value** (`onsetDateTime`), not a sibling extension — so returning an `%factory.Extension`
+> there produces an illegal `onsetDateTime: {url, valueCode}` object. The data-absent-reason must land
+> in `_onsetDateTime.extension`, which needs a directive whose **parent is that extension slot** — the
+> carrier. Verified: unknown → `_onsetDateTime.extension=[{data-absent-reason, asked-unknown}]`;
+> known → `onsetDateTime="…"`; neither → both absent.
 
 > **Two non-obvious engine gotchas (worth knowing for any primitive + data-absent mapping):**
-> 1. **Order matters.** The data-absent (context-gated) extension MUST come **before** the plain
->    `onsetDateTime` value `templateExtractValue` in the `_onsetDateTime.extension` array. With the
->    reverse order the engine's array index-bookkeeping fails to delete the gated extension in the
->    "known" case and splits the `valueCode` into a stray entry. (Gated-first works for both cases.)
+> 1. **Order matters.** The data-absent (context-gated) carrier extension MUST come **before** the
+>    plain `onsetDateTime` value `templateExtractValue` in the `_onsetDateTime.extension` array. With
+>    the reverse order the engine's array index-bookkeeping fails to delete the gated extension in the
+>    "known" case. (Gated-first works for all cases.)
 > 2. FHIRPath *can* navigate the `_onsetDateTime` primitive-extension element (fhirpath.js maps it),
 >    so context gating under a primitive does work — it was only the ordering above that tripped it.
+
+### Required fields that are only templated — placeholder defaults
+A required element populated **only** by a `templateExtractValue` has no value in the template
+itself, so the template is invalid even though extraction is fine. Give it a **placeholder default**
+that the directive overwrites at extraction (the computed value replaces the static one; verified the
+`_element` directive is stripped cleanly). Two in the Gonorrhoea template:
+- `Patient.gender = #unknown` (required binding) → overwritten with the answered administrativeGender.
+- `Bundle.timestamp = "1900-01-01T00:00:00Z"` (a document Bundle must satisfy `bdl-10:
+  timestamp.hasValue()`) → overwritten with the QuestionnaireResponse's `authored`.
+
+Both carry a `PLACEHOLDER DEFAULT — replaced at extraction` comment. (`Composition.date` needs **no**
+default: an absent value still satisfies cardinality via the `_date` element, and Composition has no
+`hasValue()` invariant.)
 
 ### Context-gating to omit an element entirely — works for plain complex types, NOT for complex extensions
 To drop a whole element when an answer is blank, put a `templateExtractContext` (scoped to the
@@ -740,6 +772,40 @@ pruned when unanswered — it emits an empty `{url: patient-citizenship, extensi
 shell. Acceptable because the form normally answers nationality; revisit if the engine fixes the
 sibling-strip bug. (`genderIdentity` has the identical shape and the same caveat.)
 
+> **The carrier + `%factory.Extension` idiom (below) is the clean way to build a *whole* extension**
+> when the value can be produced in one expression — it sidesteps both the sibling-strip bug and the
+> template-validity problem. `citizenship`/`genderIdentity` still use the value-level gate only because
+> they pass a **live answered Coding** through (not a value assembled in one `%factory` call);
+> converting them to the carrier idiom is possible future cleanup.
+
+### Building a whole Extension in one directive — `%factory.Extension` + the `SdcTemplateExtractExtension` carrier
+Some required extensions **cannot** be pre-declared in the template with their real `url` and a
+`templateExtractContext`/`Value` directive hung on them: a to-be-computed value leaves the extension
+with no value at authoring time (fails `ext-1`), and a `templateExtractContext` sub-extension violates
+extensions that allow **0 sub-extensions** (`data-absent-reason`, `ch-ekm-ext-department`). The IG
+Publisher flags exactly this (`ext-1` + `Extension.extension: max allowed = 0, but found 1`).
+
+Build the **whole** extension at extraction time instead, with a single `templateExtractValue`:
+```
+%factory.Extension(url, value)          // value type decides value[x]: string -> valueString, Coding -> valueCoding, …
+%factory.Extension('…/data-absent-reason', %factory.code('asked-unknown'))   // -> {url, valueCode}
+```
+The directive sits on a neutral **carrier** extension so the *template* is valid FHIR; the
+`%factory.Extension` result **deep-merges onto the carrier, overwriting the carrier `url`**, so the
+*extracted* output is the clean real extension and the carrier never appears in output. The carrier is
+a ch-ekm extension defined so the template validates (an undefined ch-ekm url would itself be flagged):
+
+- **`SdcTemplateExtractExtension`** (`Id: sdc-templateExtractExtension`, alias `$sdc-templateExtractExtension`),
+  defined in `input/fsh/profiles/Extensions.fsh`: `context = Element`, `value[x] 0..0`, sub-extensions
+  `context 0..1` (templateExtractContext) + `value 0..*` (templateExtractValue). It is a template-only
+  carrier — reuse it anywhere a value directive can't reach the target (notably a primitive's
+  `_element.extension`).
+
+Used for both `onsetDateTime`'s `data-absent-reason` and the Organization `department` (above). Placement
+rule (from the reference engine): the computed value is inserted at the **parent of the `.extension[i]`
+that holds the directive**, so putting the directive at `X.extension[0].extension[i]` lands the built
+extension at `X.extension[0]`.
+
 ### Emitting a FIXED Coding / CodeableConcept — use the FHIRPath Type Factory (`%factory`)
 When a template field must carry a **constant** coded value not present in any answer (e.g. the
 Gonorrhoea exposition `component[transmissionRoute]` = `$sct#261665006 "Unknown (qualifier value)"`,
@@ -761,6 +827,8 @@ because the extract engine evaluates with the r4 model loaded:
 ```
 %factory.Coding(system, code, display [, version])
 %factory.CodeableConcept(codingCollection [, text])
+%factory.Extension(url, value)                       // see "Building a whole Extension" above
+%factory.<primitive>(value)                          // code, string, dateTime, boolean, uri, … (wrap a value to force value[x] type)
 ```
 
 Use **one** `templateExtractValue` on `coding[0]` whose expression is `%factory.Coding(...)`. It
@@ -794,9 +862,12 @@ Two recurring patterns when gating a templated element (empty context → elemen
   remember: a bare path is fine as an `iif` **value** branch (empty path → field omitted), but as a
   **criterion** it must be Boolean.
 
-> ⚠️ The template artifacts (`ChEkmDocumentGonorrhoeaTemplate` and the modular root's contained
-> copy) will surface **IG Publisher validation warnings** — expected, since the template's
-> resources intentionally lack values and carry `templateExtract` extensions.
+> ✅ **The template artifacts now validate with 0 errors** (verified via the IG Publisher). This
+> needed: the carrier + `%factory.Extension` idiom for `onsetDateTime`/`department` (whole extension
+> built at extraction, so the template carries no half-built extension), and placeholder defaults for
+> `Patient.gender` / `Bundle.timestamp` (required fields otherwise only templated). A few benign
+> `WARNING`/`INFORMATION` remain (e.g. the carrier extension's `context = Element` advisory) — those
+> are expected for a template.
 
 ---
 
@@ -818,29 +889,35 @@ tests/upload-gonorrhoea.sh           # PUT Questionnaire/<id> -> /api/fhir
 - After upload it prints the canonical and a ready-to-open renderer link
   (`https://smartforms.csiro.au/?questionnaireUrl=<canonical>`).
 
-### Open issue — `$extract` is **not** possible on the hosted server (HAPI rejects the template)
-The server-side copy has the **contained extraction template stripped before upload**, because
-HAPI's strict parser **rejects** the assembled questionnaire as-is:
+### Open issue — hosted HAPI cannot store the contained extraction template
+The server-side copy has the **contained extraction template stripped before upload** — the hosted
+HAPI (smartforms.csiro.au) cannot store it. Two distinct blockers, both confirmed 2026-08:
 
-```
-HTTP 400  HAPI-1811: Extension (URL='…/data-absent-reason') must not have both a value
-          and other contained extensions
-```
+- **`HAPI-1811` (parser) — now FIXED.** The old conditional `data-absent-reason` on
+  `Condition._onsetDateTime` carried both a `templateExtractContext` sub-extension **and** a templated
+  `_valueCode`, violating R4 "value xor sub-extensions": `HTTP 400 HAPI-1811: Extension (…/data-absent-reason)
+  must not have both a value and other contained extensions`. That shape was restructured (whole
+  extension built at extraction via the `SdcTemplateExtractExtension` carrier + `%factory.Extension`,
+  §8). **`Questionnaire/$validate` now returns HTTP 200 with no HAPI-1811.**
 
-The offending node is the conditional `data-absent-reason` on `Condition._onsetDateTime` in the
-contained Bundle template (§8): it carries both sub-extensions (`templateExtractContext`) **and**
-a value (`_valueCode`), which the SDC template-extract pattern does deliberately but HAPI reads as
-violating the R4 "value xor sub-extensions" rule. The renderer does not need the template to
-render/populate — only `$extract` does — so the script `del(.contained)` (and drops the
-`sdc-questionnaire-extr-template` `meta.profile` claim) and uploads the rest, which HAPI accepts
-(HTTP 201).
+- **`HAPI-2223` (indexer) — still blocks a real PUT.** A `PUT` of the intact questionnaire fails
+  `HTTP 500 HAPI-2223: Cannot invoke "BaseRuntimeChildDefinition.getElementName()" because "this.myDef"
+  is null` — an internal NPE in HAPI's **search-parameter indexing** as it walks the contained tree
+  (a path `$validate` never runs, which is why validate passes but PUT fails). Bisected on the hosted
+  server:
+  - a **dummy** contained Bundle (plain, even `type=document`) stores fine → **not** the contained-Bundle shape;
+  - removing **all** primitive-extension (`_x`) keys **or** **all** `extension` arrays from `contained`
+    → stores fine; removing any **single** element's does not → the trigger is the **templateExtract
+    directive extensions themselves**, present pervasively on nearly every template element.
 
-**Consequence:** the questionnaire loaded from the hosted server **cannot offer template-based
-`$extract`** (its template is gone). Use the full local artifact
+  Since those directives *are* the extraction template, it cannot be both functional and storable on
+  this HAPI. (Local `$extract` is unaffected — it reads the file, not the server.)
+
+So `tests/upload-gonorrhoea.sh` keeps `del(.contained)` (+ drops the `sdc-questionnaire-extr-template`
+`meta.profile` claim); the trade-off is the hosted copy **cannot offer template-based `$extract`**. For
+extraction, use the full local artifact
 (`input/resources/Questionnaire-ChEkmQuestionnaireGonorrhoeaAssembled.json`, template intact) with
-`tests/extract-gonorrhoea.sh` for extraction. To make hosted `$extract` work, the
-`data-absent-reason` extension in `ChEkmDocumentGonorrhoeaTemplate.fsh` would need restructuring so
-HAPI accepts it (unresolved — the current shape is what the §8 reference engine needs).
+`tests/extract-gonorrhoea.sh`.
 
 ---
 
