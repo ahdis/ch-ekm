@@ -37,10 +37,10 @@
       },
       "entry": [
         {
-          "fullUrl": "http://test.fhir.ch/r4/Composition/GonExtractComposition",
+          "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionGonorrhoea",
           "resource": {
             "resourceType": "Composition",
-            "id": "GonExtractComposition",
+            "id": "ExtractedCompositionGonorrhoea",
             "status": "final",
             "type": {
               "coding": [
@@ -51,29 +51,8 @@
                 }
               ]
             },
-            "category": [
-              {
-                "coding": [
-                  {
-                    "code": "423876004",
-                    "system": "http://snomed.info/sct",
-                    "display": "Clinical report"
-                  }
-                ]
-              }
-            ],
-            "subject": {
-              "reference": "Patient/GonExtractPatient"
-            },
-            "author": [
-              {
-                "reference": "PractitionerRole/GonExtractTreatingPractitionerRole"
-              }
-            ],
-            "title": "Meldung zum klinischen Befund Infektionskrankheit",
             "section": [
               {
-                "title": "Diagnosis section",
                 "code": {
                   "coding": [
                     {
@@ -82,9 +61,10 @@
                     }
                   ]
                 },
+                "title": "Diagnosis section",
                 "entry": [
                   {
-                    "reference": "Condition/GonExtractCondition"
+                    "reference": "Condition/ExtractedConditionGonorrhoea"
                   }
                 ]
               },
@@ -100,11 +80,31 @@
                 },
                 "entry": [
                   {
-                    "reference": "Observation/GonExtractExposure"
+                    "reference": "Observation/ExtractedExposureGonorrhoea"
                   }
                 ]
               }
             ],
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "423876004",
+                    "system": "http://snomed.info/sct",
+                    "display": "Clinical report"
+                  }
+                ]
+              }
+            ],
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "author": [
+              {
+                "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
+              }
+            ],
+            "title": "Meldung zum klinischen Befund Infektionskrankheit",
             "_date": {
               "extension": [
                 {
@@ -116,10 +116,15 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Patient/GonExtractPatient",
+          "fullUrl": "http://test.fhir.ch/r4/Patient/ExtractedPatient",
           "resource": {
             "resourceType": "Patient",
-            "id": "GonExtractPatient",
+            "id": "ExtractedPatient",
+            "meta": {
+              "profile": [
+                "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-patient-initials"
+              ]
+            },
             "extension": [
               {
                 "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship",
@@ -176,28 +181,18 @@
             ],
             "name": [
               {
+                "family": "X",
+                "given": [
+                  "Y"
+                ],
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
                     "valueString": "%resource.descendants().where(linkId='person')"
-                  }
-                ],
-                "_family": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "item.where(linkId='surnameInitial').answer.value.first()"
-                    }
-                  ]
-                },
-                "_given": [
+                  },
                   {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "item.where(linkId='givennameInitial').answer.value"
-                      }
-                    ]
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%factory.HumanName(item.where(linkId='surnameInitial').answer.value.first(), item.where(linkId='givennameInitial').answer.value)"
                   }
                 ]
               }
@@ -270,10 +265,19 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Condition/GonExtractCondition",
+          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionGonorrhoea",
           "resource": {
             "resourceType": "Condition",
-            "id": "GonExtractCondition",
+            "id": "ExtractedConditionGonorrhoea",
+            "code": {
+              "coding": [
+                {
+                  "code": "15628003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Gonorrhea (disorder)"
+                }
+              ]
+            },
             "category": [
               {
                 "coding": [
@@ -284,20 +288,11 @@
                 ]
               }
             ],
-            "code": {
-              "coding": [
-                {
-                  "code": "15628003",
-                  "system": "http://snomed.info/sct",
-                  "display": "Gonorrhea (disorder)"
-                }
-              ]
-            },
             "subject": {
-              "reference": "Patient/GonExtractPatient"
+              "reference": "Patient/ExtractedPatient"
             },
             "recorder": {
-              "reference": "PractitionerRole/GonExtractTreatingPractitionerRole"
+              "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
             },
             "evidence": [
               {
@@ -311,6 +306,9 @@
                     ],
                     "coding": [
                       {
+                        "code": "15628003",
+                        "system": "http://snomed.info/sct",
+                        "display": "Gonorrhea (disorder)",
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -347,10 +345,19 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Observation/GonExtractExposure",
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureGonorrhoea",
           "resource": {
             "resourceType": "Observation",
-            "id": "GonExtractExposure",
+            "id": "ExtractedExposureGonorrhoea",
+            "code": {
+              "coding": [
+                {
+                  "code": "EXPAGNT",
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                  "display": "Exposure Agent"
+                }
+              ]
+            },
             "status": "final",
             "category": [
               {
@@ -363,17 +370,8 @@
                 ]
               }
             ],
-            "code": {
-              "coding": [
-                {
-                  "code": "EXPAGNT",
-                  "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
-                  "display": "Exposure Agent"
-                }
-              ]
-            },
             "subject": {
-              "reference": "Patient/GonExtractPatient"
+              "reference": "Patient/ExtractedPatient"
             },
             "component": [
               {
@@ -394,6 +392,9 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
+                      "code": "unknown",
+                      "system": "http://hl7.org/fhir/administrative-gender",
+                      "display": "Unknown",
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -423,6 +424,9 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
+                      "code": "steady-partner",
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                      "display": "Steady partner",
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -477,6 +481,9 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)",
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -488,21 +495,20 @@
                 }
               },
               {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "409496000",
-                      "system": "http://snomed.info/sct",
-                      "display": "Mode of transmission (observable entity)"
-                    }
-                  ]
-                },
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
                     "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, %resource.descendants().where(linkId='otherTransmission').answer.value)"
                   }
                 ],
+                "code": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
+                    }
+                  ]
+                },
                 "valueCodeableConcept": {
                   "coding": [
                     {
@@ -517,21 +523,20 @@
                 }
               },
               {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "409496000",
-                      "system": "http://snomed.info/sct",
-                      "display": "Mode of transmission (observable entity)"
-                    }
-                  ]
-                },
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
                     "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='otherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='sexualContactPartner').answer.value))"
                   }
                 ],
+                "code": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
+                    }
+                  ]
+                },
                 "valueCodeableConcept": {
                   "coding": [
                     {
@@ -549,23 +554,53 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/PractitionerRole/GonExtractTreatingPractitionerRole",
+          "fullUrl": "http://test.fhir.ch/r4/PractitionerRole/ExtractedTreatingPractitionerRole",
           "resource": {
             "resourceType": "PractitionerRole",
-            "id": "GonExtractTreatingPractitionerRole",
+            "id": "ExtractedTreatingPractitionerRole",
             "practitioner": {
-              "reference": "Practitioner/GonExtractTreatingPractitioner"
+              "reference": "Practitioner/ExtractedTreatingPractitioner"
             },
             "organization": {
-              "reference": "Organization/GonExtractTreatingOrganization"
+              "reference": "Organization/ExtractedTreatingOrganization"
             }
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Practitioner/GonExtractTreatingPractitioner",
+          "fullUrl": "http://test.fhir.ch/r4/Practitioner/ExtractedTreatingPractitioner",
           "resource": {
             "resourceType": "Practitioner",
-            "id": "GonExtractTreatingPractitioner",
+            "id": "ExtractedTreatingPractitioner",
+            "telecom": [
+              {
+                "system": "phone",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='physicianPhone').answer.value.first()"
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='physicianEmail').answer.value"
+                  }
+                ],
+                "system": "email",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
             "identifier": [
               {
                 "extension": [
@@ -649,7 +684,14 @@
                   ]
                 }
               }
-            ],
+            ]
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Organization/ExtractedTreatingOrganization",
+          "resource": {
+            "resourceType": "Organization",
+            "id": "ExtractedTreatingOrganization",
             "telecom": [
               {
                 "system": "phone",
@@ -657,7 +699,7 @@
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%resource.descendants().where(linkId='physicianPhone').answer.value.first()"
+                      "valueString": "%resource.descendants().where(linkId='orgPhone').answer.value.first()"
                     }
                   ]
                 }
@@ -666,7 +708,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='physicianEmail').answer.value"
+                    "valueString": "%resource.descendants().where(linkId='orgEmail').answer.value"
                   }
                 ],
                 "system": "email",
@@ -679,14 +721,7 @@
                   ]
                 }
               }
-            ]
-          }
-        },
-        {
-          "fullUrl": "http://test.fhir.ch/r4/Organization/GonExtractTreatingOrganization",
-          "resource": {
-            "resourceType": "Organization",
-            "id": "GonExtractTreatingOrganization",
+            ],
             "identifier": [
               {
                 "extension": [
@@ -769,36 +804,6 @@
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                       "valueString": "item.where(linkId='orgCity').answer.value.first()"
-                    }
-                  ]
-                }
-              }
-            ],
-            "telecom": [
-              {
-                "system": "phone",
-                "_value": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%resource.descendants().where(linkId='orgPhone').answer.value.first()"
-                    }
-                  ]
-                }
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='orgEmail').answer.value"
-                  }
-                ],
-                "system": "email",
-                "_value": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "$this"
                     }
                   ]
                 }

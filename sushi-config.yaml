@@ -120,12 +120,12 @@ parameters:
 #  apply-version: false
 #  default-version: true
   path-expansion-params: '../../expansion-params.json'  # for using SNOMED CT Swiss Extension
-  logging:
-    - init
-    - progress
-    - context
-    - html
-    - tx
+  # logging:
+  #   - init
+  #   - progress
+  #   - context
+  #   - html
+  #   - tx
 
 instanceOptions:
   # Determines for which types of Instances SUSHI will automatically set meta.profile
