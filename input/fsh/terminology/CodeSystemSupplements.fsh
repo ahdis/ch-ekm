@@ -286,7 +286,7 @@ Description: "CodeSystem supplement adding draft German, French and Italian (Swi
 * #84387000 ^designation[=].value = "Asintomatico"
 
 // --- Mpox manifestation (ValueSet ChEkmMpoxManifestation, issue #24) — DEMIS-aligned ----------
-// Skin-lesion sites are post-coordinated expressions (Skin lesion : Finding site = <skin structure>).
+// Skin-lesion sites are post-coordinated expressions (Skin lesion : Finding site = skin structure).
 // NOTE: tx does NOT apply supplement designations to post-coordinated expressions on $expand — it
 // returns the normal-form display instead. These de/fr/it values are applied client-side by
 // tests/build-preview-questionnaire.py; a live renderer using server $expand shows the

@@ -26,12 +26,12 @@
 #     template itself (removing just the group-level templateExtract extension does not help; a full
 #     strip returns HTTP 201). $validate only parses, so it does not surface this storage-path error.
 # The renderer does not need the template to render/populate — only $extract does — so the server
-# copy drops it; use the local artifact + tests/extract-gonorrhoea.sh for extraction.
+# copy drops it; use the local artifact + scripts/extract-gonorrhoea.sh for extraction.
 #
 # As with the other Smart Forms scripts, send Content-Type application/json.
 #
 # Usage:
-#   ./tests/upload-gonorrhoea.sh [QUESTIONNAIRE_JSON] [FHIR_BASE_URL]
+#   ./scripts/upload-gonorrhoea.sh [QUESTIONNAIRE_JSON] [FHIR_BASE_URL]
 #
 # QUESTIONNAIRE_JSON  questionnaire to upload (default: the assembled questionnaire)
 # FHIR_BASE_URL       Forms Server base (default https://smartforms.csiro.au/api/fhir)
@@ -46,7 +46,7 @@ BASE="${2:-https://smartforms.csiro.au/api/fhir}"
 CT="Content-Type: application/json"
 ACCEPT="Accept: application/json"
 
-[ -f "$Q" ] || { echo "ERROR: $Q not found. Run tests/assemble-gonorrhoea.sh first."; exit 1; }
+[ -f "$Q" ] || { echo "ERROR: $Q not found. Run scripts/assemble-gonorrhoea.sh first."; exit 1; }
 
 ID=$(jq -r '.id' "$Q")
 [ "$ID" != "null" ] && [ -n "$ID" ] || { echo "ERROR: $Q has no id."; exit 1; }

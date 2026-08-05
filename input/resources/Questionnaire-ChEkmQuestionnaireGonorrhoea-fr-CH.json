@@ -6,7 +6,7 @@
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp",
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template"
     ],
-    "source": "https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-questionnaire.sh"
+    "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea-fr-CH",
   "version": "0.0.1",
@@ -120,11 +120,6 @@
           "resource": {
             "resourceType": "Patient",
             "id": "ExtractedPatient",
-            "meta": {
-              "profile": [
-                "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-patient-initials"
-              ]
-            },
             "extension": [
               {
                 "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship",
@@ -192,7 +187,7 @@
                   },
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                    "valueString": "%factory.HumanName(item.where(linkId='surnameInitial').answer.value.first(), item.where(linkId='givennameInitial').answer.value)"
+                    "valueString": "%factory.HumanName(item.where(linkId='surnameInitial' or linkId='surname').answer.value.first(), item.where(linkId='givennameInitial' or linkId='givenname').answer.value)"
                   }
                 ]
               }
@@ -4566,5 +4561,5 @@
     }
   ],
   "title": "CH EKM Questionnaire: Gonorrhoea (assembled) (preview fr-CH, pre-expanded)",
-  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (tests/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

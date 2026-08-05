@@ -3,9 +3,10 @@
   "id": "ChEkmQuestionnaireMpox-de-CH",
   "meta": {
     "profile": [
-      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp"
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp",
+      "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template"
     ],
-    "source": "https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-questionnaire.sh"
+    "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpox-de-CH",
   "version": "0.0.1",
@@ -15,6 +16,797 @@
   "experimental": false,
   "subjectType": [
     "Patient"
+  ],
+  "contained": [
+    {
+      "resourceType": "Bundle",
+      "id": "ChEkmDocumentMpoxTemplate",
+      "type": "document",
+      "identifier": {
+        "system": "urn:ietf:rfc:3986",
+        "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
+      },
+      "timestamp": "1900-01-01T00:00:00Z",
+      "_timestamp": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+            "valueString": "%resource.authored"
+          }
+        ]
+      },
+      "entry": [
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionMpox",
+          "resource": {
+            "resourceType": "Composition",
+            "id": "ExtractedCompositionMpox",
+            "status": "final",
+            "type": {
+              "coding": [
+                {
+                  "code": "722143004",
+                  "system": "http://snomed.info/sct",
+                  "display": "Infectious disease diagnostic study note"
+                }
+              ]
+            },
+            "section": [
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "29308-4",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "title": "Diagnosis section",
+                "entry": [
+                  {
+                    "reference": "Condition/ExtractedConditionMpox"
+                  }
+                ]
+              },
+              {
+                "title": "Social history section",
+                "code": {
+                  "coding": [
+                    {
+                      "code": "29762-2",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "entry": [
+                  {
+                    "reference": "Observation/ExtractedExposureMpox"
+                  }
+                ]
+              }
+            ],
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "423876004",
+                    "system": "http://snomed.info/sct",
+                    "display": "Clinical report"
+                  }
+                ]
+              }
+            ],
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "author": [
+              {
+                "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
+              }
+            ],
+            "title": "Meldung zum klinischen Befund Infektionskrankheit",
+            "_date": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.authored"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Patient/ExtractedPatient",
+          "resource": {
+            "resourceType": "Patient",
+            "id": "ExtractedPatient",
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship",
+                "extension": [
+                  {
+                    "url": "code",
+                    "valueCodeableConcept": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                          "valueString": "%resource.descendants().where(linkId='nationality').answer.value"
+                        }
+                      ],
+                      "coding": [
+                        {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                              "valueString": "ofType(Coding)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity",
+                "extension": [
+                  {
+                    "url": "value",
+                    "valueCodeableConcept": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                          "valueString": "%resource.descendants().where(linkId='genderIdentity').answer.value"
+                        }
+                      ],
+                      "coding": [
+                        {
+                          "extension": [
+                            {
+                              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                              "valueString": "ofType(Coding)"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "name": [
+              {
+                "family": "X",
+                "given": [
+                  "Y"
+                ],
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='person')"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%factory.HumanName(item.where(linkId='surnameInitial' or linkId='surname').answer.value.first(), item.where(linkId='givennameInitial' or linkId='givenname').answer.value)"
+                  }
+                ]
+              }
+            ],
+            "gender": "unknown",
+            "_gender": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='administrativeGender').answer.value.code.first()"
+                }
+              ]
+            },
+            "identifier": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='ahvn13').answer.value"
+                  }
+                ],
+                "system": "urn:oid:2.16.756.5.32",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "address": [
+              {
+                "use": "home",
+                "_postalCode": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='zipCode').answer.value.first()"
+                    }
+                  ]
+                },
+                "_city": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='city').answer.value.first()"
+                    }
+                  ]
+                },
+                "_state": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "iif(%resource.descendants().where(linkId='canton').answer.value.first() is Coding, %resource.descendants().where(linkId='canton').answer.value.first().code, %resource.descendants().where(linkId='canton').answer.value.first())"
+                    }
+                  ]
+                }
+              }
+            ],
+            "_birthDate": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='dateOfBirth').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionMpox",
+          "resource": {
+            "resourceType": "Condition",
+            "id": "ExtractedConditionMpox",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "encounter-diagnosis",
+                    "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+                  }
+                ]
+              }
+            ],
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "recorder": {
+              "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
+            },
+            "evidence": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='manifestation').answer.value"
+                  }
+                ],
+                "code": [
+                  {
+                    "coding": [
+                      {
+                        "code": "95324001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Skin lesion (disorder)",
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                            "valueString": "ofType(Coding)"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "_onsetDateTime": {
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                      "valueString": "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown'))"
+                    }
+                  ]
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureMpox",
+          "resource": {
+            "resourceType": "Observation",
+            "id": "ExtractedExposureMpox",
+            "code": {
+              "coding": [
+                {
+                  "code": "EXPAGNT",
+                  "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                  "display": "Exposure Agent"
+                }
+              ]
+            },
+            "status": "final",
+            "category": [
+              {
+                "coding": [
+                  {
+                    "code": "AEXPOS",
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ActClass",
+                    "display": "acquisition exposure"
+                  }
+                ]
+              }
+            ],
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "component": [
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "sexual-contact-partner",
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='sexualContactPartner').answer.value"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "unknown",
+                      "system": "http://hl7.org/fhir/administrative-gender",
+                      "display": "Unknown",
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "228465009",
+                      "system": "http://snomed.info/sct",
+                      "display": "Sexual relationship details (observable entity)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='relationshipType').answer.value"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "steady-partner",
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                      "display": "Steady partner",
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "74964007",
+                      "system": "http://snomed.info/sct",
+                      "display": "Other (qualifier value)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='otherTransmission').answer.value"
+                  }
+                ],
+                "_valueString": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "409496000",
+                      "system": "http://snomed.info/sct",
+                      "display": "Mode of transmission (observable entity)"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='unknown').answer.value.where($this = true)"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)",
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "%factory.Coding('http://snomed.info/sct', '261665006', 'Unknown (qualifier value)')"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, %resource.descendants().where(linkId='otherTransmission').answer.value)"
+                  }
+                ],
+                "code": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
+                    }
+                  ]
+                },
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "%factory.Coding('http://snomed.info/sct', '74964007', 'Other (qualifier value)')"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='otherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='sexualContactPartner').answer.value))"
+                  }
+                ],
+                "code": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
+                    }
+                  ]
+                },
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "%factory.Coding('http://snomed.info/sct', '417564009', 'Sexual transmission (qualifier value)')"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/PractitionerRole/ExtractedTreatingPractitionerRole",
+          "resource": {
+            "resourceType": "PractitionerRole",
+            "id": "ExtractedTreatingPractitionerRole",
+            "practitioner": {
+              "reference": "Practitioner/ExtractedTreatingPractitioner"
+            },
+            "organization": {
+              "reference": "Organization/ExtractedTreatingOrganization"
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Practitioner/ExtractedTreatingPractitioner",
+          "resource": {
+            "resourceType": "Practitioner",
+            "id": "ExtractedTreatingPractitioner",
+            "telecom": [
+              {
+                "system": "phone",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='physicianPhone').answer.value.first()"
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='physicianEmail').answer.value"
+                  }
+                ],
+                "system": "email",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "identifier": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='physicianGln').answer.value"
+                  }
+                ],
+                "system": "urn:oid:2.51.1.3",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "name": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='treatingPhysicianPractitioner')"
+                  }
+                ],
+                "_family": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='physicianSurname').answer.value.first()"
+                    }
+                  ]
+                },
+                "_given": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "item.where(linkId='physicianGivenname').answer.value"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "address": [
+              {
+                "use": "work",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='treatingPhysicianPractitioner')"
+                  }
+                ],
+                "_line": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "item.where(linkId='physicianStreetLine').answer.value"
+                      }
+                    ]
+                  }
+                ],
+                "_postalCode": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='physicianZipCode').answer.value.first()"
+                    }
+                  ]
+                },
+                "_city": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='physicianCity').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/Organization/ExtractedTreatingOrganization",
+          "resource": {
+            "resourceType": "Organization",
+            "id": "ExtractedTreatingOrganization",
+            "telecom": [
+              {
+                "system": "phone",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='orgPhone').answer.value.first()"
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='orgEmail').answer.value"
+                  }
+                ],
+                "system": "email",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "identifier": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='orgGln').answer.value"
+                  }
+                ],
+                "system": "urn:oid:2.51.1.3",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='orgBer').answer.value"
+                  }
+                ],
+                "system": "urn:oid:2.16.756.5.45",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              }
+            ],
+            "extension": [
+              {
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='orgDepartment').answer.value"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department', %resource.descendants().where(linkId='orgDepartment').answer.value.first())"
+                  }
+                ]
+              }
+            ],
+            "address": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='treatingPhysicianOrganization')"
+                  }
+                ],
+                "_line": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "item.where(linkId='orgStreetLine').answer.value"
+                      }
+                    ]
+                  }
+                ],
+                "_postalCode": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='orgZipCode').answer.value.first()"
+                    }
+                  ]
+                },
+                "_city": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='orgCity').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "_name": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='orgName').answer.value.first()"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
   ],
   "extension": [
     {
@@ -96,6 +888,27 @@
       "linkId": "mpox-form",
       "type": "group",
       "text": "Meldung zum klinischen Befund: Mpox",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract",
+          "extension": [
+            {
+              "url": "template",
+              "valueReference": {
+                "reference": "#ChEkmDocumentMpoxTemplate"
+              }
+            }
+          ]
+        },
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/variable",
+          "valueExpression": {
+            "name": "homeOrFirstAddress",
+            "language": "text/fhirpath",
+            "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
+          }
+        }
+      ],
       "item": [
         {
           "linkId": "person",
@@ -107,14 +920,32 @@
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surname",
               "text": "Name",
               "type": "string",
-              "required": true
+              "required": true,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.first().family"
+                  }
+                }
+              ]
             },
             {
               "linkId": "givenname",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givenname",
               "text": "Vorname",
               "type": "string",
-              "required": true
+              "required": true,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.name.first().given.join(' ')"
+                  }
+                }
+              ]
             },
             {
               "linkId": "dateOfBirth",
@@ -3245,17 +4076,18 @@
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxManifestationForm#ChEkmMpoxManifestationForm.manifestation",
               "text": "Manifestationen",
               "type": "choice",
+              "repeats": true,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                  "valueCode": "horizontal"
+                  "valueCode": "vertical"
                 },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "code": "radio-button",
+                        "code": "check-box",
                         "system": "http://hl7.org/fhir/questionnaire-item-control"
                       }
                     ]
@@ -3263,27 +4095,6 @@
                 }
               ],
               "answerOption": [
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
-                    "code": "74964007",
-                    "display": "Other"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
-                    "code": "373572006",
-                    "display": "Clinical finding absent"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
-                    "code": "261665006",
-                    "display": "Unknown"
-                  }
-                },
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
@@ -3792,19 +4603,9 @@
             }
           ]
         }
-      ],
-      "extension": [
-        {
-          "url": "http://hl7.org/fhir/StructureDefinition/variable",
-          "valueExpression": {
-            "name": "homeOrFirstAddress",
-            "language": "text/fhirpath",
-            "expression": "%patient.address.where(use='home').combine(%patient.address).first()"
-          }
-        }
       ]
     }
   ],
   "title": "CH EKM Questionnaire: Mpox (assembled) (preview de-CH, pre-expanded)",
-  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (tests/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

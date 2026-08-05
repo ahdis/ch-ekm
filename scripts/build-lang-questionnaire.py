@@ -24,7 +24,7 @@ Expansion strategy (terminology server: tx.fhir.ch, which hosts ch-term + SNOMED
     set, then re-expands with `useSupplement` for any local supplement whose base system is present.
     This bakes the localized option labels into the inline `answerOption` displays.
 
-Usage:  python3 tests/build-lang-questionnaire.py [AssembledIdOrPath]
+Usage:  python3 scripts/build-lang-questionnaire.py [AssembledIdOrPath]
           - no arg          -> ChEkmQuestionnaireGonorrhoeaAssembled (default)
           - an id           -> e.g. ChEkmQuestionnaireMpoxAssembled
           - a path to *.json
@@ -237,7 +237,7 @@ def walk(item):
 def main():
     global LANG
     if not os.path.exists(SRC):
-        sys.exit(f"ERROR: {SRC} not found. Run tests/assemble-questionnaire.sh <RootId> first.")
+        sys.exit(f"ERROR: {SRC} not found. Run scripts/assemble-questionnaire.sh <RootId> first.")
     for LANG in LANGS:
         preview_id, preview_url, preview_name, out = preview_identity(LANG)
         # Reload the source for each language: walk() mutates the questionnaire in place

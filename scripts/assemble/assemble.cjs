@@ -8,8 +8,8 @@
 //     tolerates a groupless child (getCanonicalUrls returns [] for a child without item[0].item),
 //     so our person leaves can stay flat (no wrapping group) and merge directly into the root.
 //   - It matches the other two SDC ops, which already run locally via the reference libraries:
-//     $populate (@aehrc/sdc-populate, tests/populate/) and $extract (@aehrc/sdc-template-extract,
-//     tests/extract/). No server round-trip / upload step needed.
+//     $populate (@aehrc/sdc-populate, scripts/populate/) and $extract (@aehrc/sdc-template-extract,
+//     scripts/extract/). No server round-trip / upload step needed.
 //
 // CommonJS on purpose, same reason as the populate/extract wrappers: the ESM build trips Node's
 // loader on a `fhirpath` directory import; the CJS build resolves fine.

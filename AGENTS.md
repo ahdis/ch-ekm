@@ -38,6 +38,7 @@ This IG uses **two parallel representations** of the report content:
 | `input/fsh/ALIAS.fsh` | All FSH aliases (code systems, extensions, value sets) |
 | `input/pagecontent/` | Narrative IG pages (`index`, `usecase`, `guidance`, `profiles`, `terminology`, `examples`, `changelog`, `extensions`) |
 | `input/images-source/` | PlantUML sources for use-case diagrams |
+| `scripts/` | Questionnaire tooling (formerly `tests/`): `$assemble` / `$populate` / `$extract` runners, the language-preview builder, `load_examples.sh` |
 | `sushi-config.yaml` | SUSHI / IG configuration, menu, dependencies, pages |
 | `expansion-params.json` | Terminology expansion params (SNOMED CT Swiss Extension) |
 | `gonorrhoea.png` | Scan of the paper Gonorrhoea reporting form (green = sections to be turned into an SDC Questionnaire) |
@@ -122,9 +123,8 @@ These logical models are the **master** for building the SDC Questionnaires — 
 - **ConceptMap**: `ChEkmSexToHl7Gender` (biological sex → administrative gender).
 
 Note (per `README.md`): the production terminology (ValueSets/CodeSystems) is maintained
-by the FOPH on the **ABN environment**; `tests/updateterminolgy.sh` pulls them via the ABN
-API into `input/resources/`. Terminology expansion uses the SNOMED CT Swiss Extension via
-`expansion-params.json`.
+by the FOPH on the **ABN environment** and pulled via the ABN API into `input/resources/`.
+Terminology expansion uses the SNOMED CT Swiss Extension via `expansion-params.json`.
 
 ## Conventions
 
@@ -149,11 +149,16 @@ renders the IG into `output/`.
 ```bash
 sushi .                 # compile FSH → fsh-generated/ (syntax + basic checks)
 ./_genonce.sh           # or _updatePublisher.sh / _genonce.bat — full IG Publisher build
+
+# If the _genonce.sh helper / input-cache/publisher.jar are not set up in the checkout, run the
+# jar shipped with the VS Code FHIR Tools extension directly (same build, no download needed):
+java -jar "/Users/oegger/.vscode/extensions/yannick-lagger.vscode-fhir-tools-1.5.1/publisher.jar" -ig ig.ini
 ```
 
 **Validate examples/profiles with the IG Publisher** (the project's preferred validator —
 not the matchbox MCP). The Publisher validates all examples against their profiles during
-the build; warnings to ignore are listed in `input/ignoreWarnings.txt`.
+the build; warnings to ignore are listed in `input/ignoreWarnings.txt`. Results land in
+`output/qa.html` (and `output/qa.txt`) — check the error count there after a build.
 
 ## Use cases
 
@@ -169,5 +174,28 @@ A separate effort builds **SDC Questionnaires** from the logical models, to be r
 the **Smart Forms** viewer (`../smart-forms`), using a **modular questionnaire** approach
 (reusable sub-questionnaires assembled per disease via `$assemble`). See
 [forms-summary.md](forms-summary.md) for the full analysis and build plan.
-</content>
-</invoke>
+
+All questionnaire tooling lives in `scripts/` (renamed from `tests/`) and runs the **SDC
+reference libraries locally** — no server round-trip:
+
+```bash
+sushi .                                    # FSH -> fsh-generated/
+./scripts/assemble-gonorrhoea.sh           # $assemble  -> input/resources/…Assembled.json
+./scripts/populate-gonorrhoea.sh           # $populate  -> pre-filled QuestionnaireResponse
+./scripts/extract-gonorrhoea.sh            # $extract   -> input/resources/Bundle-…-extracted.json
+```
+
+**Pre-population needs a local HAPI.** `%user` is the treating physician's **PractitionerRole**,
+and the Practitioner/Organization fields read `%user.practitioner.resolve()` /
+`%user.organization.resolve()`. FHIRPath `resolve()` does a real HTTP fetch, so both
+`populate-gonorrhoea.sh` **and** the Smart Forms playground need a server holding the examples:
+
+```bash
+./scripts/start_hapi.sh              # HAPI FHIR at http://localhost:8080/fhir  (docker)
+./scripts/load_examples.sh   # PUTs Practitioner/Organization/PractitionerRole/Patient into it
+```
+
+In the **playground** (https://smartforms.csiro.au/playground) additionally set *Source FHIR
+server* to `http://localhost:8080/fhir` and pick Patient → User → **PractitionerRole**. Selecting
+the PractitionerRole is what binds `%user`; picking only a "user" (a `Practitioner`) leaves the
+whole treating-physician block empty. See forms-summary.md §10 for why.

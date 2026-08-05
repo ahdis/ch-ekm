@@ -3,9 +3,9 @@
 # Assemble a modular CH EKM questionnaire using the Smart Forms (aehrc/CSIRO) SDC reference
 # $assemble library, run LOCALLY in-process. Disease-agnostic: pass the modular ROOT id.
 #
-# Engine: @aehrc/sdc-assemble via tests/assemble/assemble.cjs — the same reference engine the
+# Engine: @aehrc/sdc-assemble via scripts/assemble/assemble.cjs — the same reference engine the
 # Smart Forms renderer runs in-app, and a sibling of the $populate / $extract wrappers we already
-# run locally (tests/populate/, tests/extract/). We moved OFF the hosted HAPI $assemble
+# run locally (scripts/populate/, scripts/extract/). We moved OFF the hosted HAPI $assemble
 # (smartforms.csiro.au) because HAPI requires every questionnaire it processes (root and every
 # child) to carry the item[0].item group nesting and rejects a groupless leaf sub-questionnaire
 # with "Root questionnaire does not have a valid item." The reference engine tolerates groupless
@@ -15,9 +15,9 @@
 # (no FHIR server, no upload step).
 #
 # Usage:
-#   ./tests/assemble-questionnaire.sh <RootQuestionnaireId>
-#   ./tests/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea
-#   ./tests/assemble-questionnaire.sh ChEkmQuestionnaireMpox
+#   ./scripts/assemble-questionnaire.sh <RootQuestionnaireId>
+#   ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea
+#   ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox
 #
 set -euo pipefail
 
@@ -45,10 +45,10 @@ ASSEMBLED_ID="${ROOT_ID}Assembled"
 OUT="input/resources/Questionnaire-$ASSEMBLED_ID.json"
 # Human-readable disease label, derived from the root id (ChEkmQuestionnaire<Disease>).
 DISEASE="${ROOT_ID#ChEkmQuestionnaire}"
-SCRIPT_URL="https://github.com/ahdis/ch-ekm/blob/master/tests/assemble-questionnaire.sh"
-WRAPPER="tests/assemble/assemble.cjs"
+SCRIPT_URL="https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
+WRAPPER="scripts/assemble/assemble.cjs"
 [ -f "$WRAPPER" ] || { echo "ERROR: missing $WRAPPER"; exit 1; }
-[ -d "tests/assemble/node_modules" ] || { echo "ERROR: run 'npm install' in tests/assemble first"; exit 1; }
+[ -d "scripts/assemble/node_modules" ] || { echo "ERROR: run 'npm install' in scripts/assemble first"; exit 1; }
 
 echo "Engine:  @aehrc/sdc-assemble (local, $WRAPPER)"
 echo "Root:    $ROOT_ID  (disease: $DISEASE)"
@@ -122,7 +122,7 @@ q.setdefault("meta", {})["source"] = script_url
 q["description"] = (
     "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire "
     f"{root.get('id', '')} and its sub-questionnaires via Questionnaire/$assemble "
-    "(tests/assemble-questionnaire.sh). Re-run that script after changing any child "
+    "(scripts/assemble-questionnaire.sh). Re-run that script after changing any child "
     "questionnaire to keep this resource in sync."
 )
 
@@ -153,4 +153,4 @@ jq -r '.. | objects | select(.linkId) | "  [\(.type)] \(.linkId): \(.text // "")
 # so the assembled questionnaire renders offline in the Smart Forms preview.
 echo
 echo "Building per-language preview questionnaires"
-python3 tests/build-lang-questionnaire.py "$ASSEMBLED_ID"
+python3 scripts/build-lang-questionnaire.py "$ASSEMBLED_ID"

@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Loads the treating-physician example resources into the local HAPI FHIR
-# instance (started via ./start_hapi.sh). Waits for the server to be ready,
-# then PUTs each resource by id in dependency order.
+# Loads the treating-physician example resources into a FHIR server. Waits for
+# the server to be ready, then PUTs each resource by id in dependency order.
+#
+# Usage:
+#   ./scripts/start_hapi.sh                                   # local HAPI at http://localhost:8080/fhir
+#   ./scripts/load_examples.sh                                # -> local HAPI (default)
+#   ./scripts/load_examples.sh https://hapi.fhir.org/baseR4   # -> any other server
+#
+# The Smart Forms playground needs these resources on whatever server it is
+# pointed at (Settings -> Source FHIR server) for %user pre-population to work —
+# see forms-summary.md §10.
 
 BASE_URL="${1:-http://localhost:8080/fhir}"
-RES_DIR="$(cd "$(dirname "$0")" && pwd)/fsh-generated/resources"
+RES_DIR="$(cd "$(dirname "$0")/.." && pwd)/fsh-generated/resources"
 
 # Resources in dependency order: PractitionerRole references Practitioner and
 # Organization, so those must exist first.

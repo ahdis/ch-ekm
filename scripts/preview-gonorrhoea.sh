@@ -3,7 +3,7 @@
 # Preview the Gonorrhoea questionnaire in the Smart Forms renderer.
 #
 # Pipeline:
-#   sushi .  ->  tests/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea  ->  this script
+#   sushi .  ->  scripts/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea  ->  this script
 #
 # The Smart Forms renderer expands `answerValueSet`s against a live terminology
 # server, but the CH-specific value sets (bfs-country-codes, ChEkmGenderIdentity,
@@ -34,17 +34,17 @@ PREVIEW="input/resources/Questionnaire-ChEkmQuestionnaireGonorrhoea-$PREVIEW_LAN
 APP_DIR="../smart-forms/apps/demo-renderer-app"
 PUBLIC="$APP_DIR/public/gonorrhoea-preview.json"
 
-[ -f "$ASSEMBLED" ] || { echo "ERROR: $ASSEMBLED not found. Run 'tests/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea' first."; exit 1; }
+[ -f "$ASSEMBLED" ] || { echo "ERROR: $ASSEMBLED not found. Run 'scripts/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea' first."; exit 1; }
 [ -d "$APP_DIR" ]   || { echo "ERROR: $APP_DIR not found (clone aehrc/smart-forms next to this repo)."; exit 1; }
 
 echo "Building self-contained preview ($PREVIEW_LANG, pre-expanding value sets)..."
-PREVIEW_LANG="$PREVIEW_LANG" python3 tests/build-lang-questionnaire.py "$ASSEMBLED_ID"
+PREVIEW_LANG="$PREVIEW_LANG" python3 scripts/build-lang-questionnaire.py "$ASSEMBLED_ID"
 
 echo
 echo "Copying preview questionnaire -> $PUBLIC"
 cp "$PREVIEW" "$PUBLIC"
 
-# Optional: if a populated QuestionnaireResponse exists (from tests/populate-gonorrhoea.sh),
+# Optional: if a populated QuestionnaireResponse exists (from scripts/populate-gonorrhoea.sh),
 # serve it too so the renderer shows the form pre-filled via the app's `?response=` loader.
 POPULATED="fsh-generated/QuestionnaireResponse-ChEkmQuestionnaireGonorrhoea-populated.json"
 OPEN_URL="http://localhost:5173/?url=/gonorrhoea-preview.json"

@@ -7,4 +7,4 @@ FHIR® Implementation Guide for the EKM (Elektronische klinische Meldung) of the
 
 Terminology is handled by the FOPH directly on the ABN environment.
 
-To update the current ValueSets and CodeSystem in the FHIR Implementation Guide there is a script in tests/updateterminolgy.sh which will call the ABN environment API and copy the resources into the input\resources folder. 
+The current ValueSets and CodeSystems are pulled from the ABN environment API and copied into the `input/resources` folder.

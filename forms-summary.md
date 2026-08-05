@@ -48,9 +48,9 @@ Hosted endpoints (for prototyping):
 > and `$populate` FHIRPath support (see §10).
 
 **We assemble LOCALLY with the SDC reference library `@aehrc/sdc-assemble`** (via
-`tests/assemble/assemble.cjs`, wrapped by `tests/assemble-gonorrhoea.sh`) — the same engine the
+`scripts/assemble/assemble.cjs`, wrapped by `scripts/assemble-gonorrhoea.sh`) — the same engine the
 Smart Forms renderer runs in-app, and a sibling of the local `$populate` / `$extract` wrappers
-(`tests/populate/`, `tests/extract/`; all CJS for the same `fhirpath` directory-import reason,
+(`scripts/populate/`, `scripts/extract/`; all CJS for the same `fhirpath` directory-import reason,
 §8/§10). The wrapper builds a `canonical → Questionnaire` index from `fsh-generated/resources` and
 supplies it through the library's `fetchQuestionnaireCallback` (returning a searchset `Bundle`
 whose `entry[0].resource` is the child), so **no FHIR server and no upload step are needed**.
@@ -67,7 +67,7 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
 >
 > **Assembler patch (patch-package) — recursion + arbitrary-depth placeholders (2026-07).** The
 > stock `@aehrc/sdc-assemble` reference engine has **three** gaps we patch, applied to `dist/index.cjs`
-> + `dist/index.js` via **patch-package** (`tests/assemble/patches/@aehrc+sdc-assemble+2.0.2.patch`,
+> + `dist/index.js` via **patch-package** (`scripts/assemble/patches/@aehrc+sdc-assemble+2.0.2.patch`,
 > replayed by the `postinstall` hook) and regenerated from a matching source build in
 > **`../smart-forms/packages/sdc-assemble`** (source + tests changed there too):
 > 1. **Recursion write-back bug.** `assembleQuestionnaire` discarded the recursive result
@@ -408,20 +408,20 @@ Title: "CH EKM Questionnaire: Gonorrhoea (modular)"
    binding to existing value sets and `item.definition` → logical model.
 2. Build the **root modular** `ChEkmQuestionnaireGonorrhoea`.
 3. `sushi .` to compile, then **validate with the IG Publisher** (not matchbox MCP).
-4. Run **`tests/assemble-gonorrhoea.sh`** → runs the **local** `@aehrc/sdc-assemble` reference
-   engine (`tests/assemble/assemble.cjs`; `cd tests/assemble && npm install` once) and writes the
+4. Run **`scripts/assemble-gonorrhoea.sh`** → runs the **local** `@aehrc/sdc-assemble` reference
+   engine (`scripts/assemble/assemble.cjs`; `cd scripts/assemble && npm install` once) and writes the
    assembled questionnaire to `input/resources/` (see note below); check for duplicate `linkId`s.
    No FHIR server / upload needed (see §1).
-5. Run **`tests/preview-gonorrhoea.sh`** to pre-expand the value sets and render in
+5. Run **`scripts/preview-gonorrhoea.sh`** to pre-expand the value sets and render in
    **Smart Forms** (un-launched, local).
-6. `$populate` pre-fill via `tests/populate-gonorrhoea.sh` — runs the **SDC reference**
+6. `$populate` pre-fill via `scripts/populate-gonorrhoea.sh` — runs the **SDC reference**
    `@aehrc/sdc-populate` in-process (not hosted HAPI), feeding `%patient`/`%user` and
    `%organization` (the last via SMART `fhirContext`). See §10.
 7. **`$extract`** the filled `QuestionnaireResponse` into a `ChEkmDocumentGonorrhoea` Bundle
-   via `tests/extract-gonorrhoea.sh` — see §8.
+   via `scripts/extract-gonorrhoea.sh` — see §8.
 
 ### The assembled questionnaire is a generated, committed artifact
-`tests/assemble-gonorrhoea.sh` writes
+`scripts/assemble-gonorrhoea.sh` writes
 **`input/resources/Questionnaire-ChEkmQuestionnaireGonorrhoeaAssembled.json`** — a
 predefined IG resource (already covered by `path-resource: input/resources` in
 `sushi-config.yaml`, picked up automatically by SUSHI / the IG Publisher). It is given a
@@ -430,9 +430,9 @@ root example, and carries a *"GENERATED FILE — do not edit by hand"* `descript
 `meta.source` pointing at the script.
 
 > ⚠️ **It does not regenerate during `sushi`.** Whenever a child sub-questionnaire (or the
-> modular root) changes, **re-run `tests/assemble-gonorrhoea.sh`** to refresh the committed
+> modular root) changes, **re-run `scripts/assemble-gonorrhoea.sh`** to refresh the committed
 > assembled resource, otherwise the published artifact drifts out of sync. The render-only
-> `…-preview.json` (built by `tests/build-lang-questionnaire.py` from the assembled
+> `…-preview.json` (built by `scripts/build-lang-questionnaire.py` from the assembled
 > resource) stays in `fsh-generated/` and is **not** part of the IG.
 
 ---
@@ -474,7 +474,7 @@ Still open:
      item tree, so a real (non-placeholder) group interleaved among placeholders is preserved and
      nested placeholders are resolved in place.
 
-   Verified end-to-end: `tests/assemble-gonorrhoea.sh` produces the single flat `person` group of all
+   Verified end-to-end: `scripts/assemble-gonorrhoea.sh` produces the single flat `person` group of all
    person fields with **zero unresolved placeholders** and an identical linkId set to the previous
    aggregator-based output. Parts 2–3 of the patch (recursive discovery + match-based replacement)
    extend PR [#1998](https://github.com/aehrc/smart-forms/pull/1998); see §1.
@@ -500,14 +500,14 @@ server** (default: the CSIRO/ontoserver tx). This has two consequences for CH EK
   ekm-defined sets by URL. But we can run it on localhost and provide the package direct, see ../tx2.fhir..ch
 
 ### Two questionnaire variants
-The build therefore produces two artifacts (see `tests/`):
+The build therefore produces two artifacts (see `scripts/`):
 
 | Artifact | Value sets | Use |
 | --- | --- | --- |
 | `…-assembled.json` | `answerValueSet` references (unchanged) | **Production** / spec-conformant. Render against a tx that hosts the CH value sets (ch-term + SNOMED CH + the ch-ekm package). |
 | `…-preview.json` | every `answerValueSet` **pre-expanded** into inline `answerOption`s | **Render-only** local preview in Smart Forms — fully self-contained, needs **no** live tx. |
 
-### How the preview is built (`tests/build-lang-questionnaire.py`)
+### How the preview is built (`scripts/build-lang-questionnaire.py`)
 Walks the assembled questionnaire and, for each item with an `answerValueSet`, expands it
 against **`tx.fhir.ch`** and replaces it with the resulting `answerOption`s. It removes **both**
 `answerValueSet` and its primitive-extension sibling `_answerValueSet` (which holds the
@@ -622,7 +622,7 @@ Exposure) this is the cleaner choice:
   identifier, sections and the static Broker resources sit in the template verbatim.
 
 The engine always wraps output in an outer **`transaction`** Bundle, so the document we want is
-`entry[0].resource` — `tests/extract/extract.cjs` unwraps it.
+`entry[0].resource` — `scripts/extract/extract.cjs` unwraps it.
 
 > A single Bundle template is a poor fit only when a section can **repeat with variable
 > cardinality** (→ N entries): the per-instance loop applies to the whole template, not to one
@@ -680,7 +680,7 @@ the modular root **`ChEkmQuestionnaireGonorrhoea`** (FSH source of truth) declar
 - `sdc-questionnaire-templateExtract` → `#ChEkmDocumentGonorrhoeaTemplate` on the `gonorrhoea-form` group.
 
 `$assemble` does not propagate these (and can choke on them), so
-**`tests/assemble-gonorrhoea.sh`** strips them from the assembler input and **re-attaches** all
+**`scripts/assemble-gonorrhoea.sh`** strips them from the assembler input and **re-attaches** all
 three onto the assembled artifact — the one the renderer actually loads. (It re-adds the
 `extr-template` profile claim only when a template was actually present, so the template-less
 standalone Person assembly stays valid.)
@@ -688,13 +688,13 @@ standalone Person assembly stays valid.)
 ### Running it
 ```
 sushi .                          # compiles the template + the test QuestionnaireResponse
-tests/assemble-gonorrhoea.sh     # re-attaches the template onto the assembled questionnaire
-tests/extract-gonorrhoea.sh      # runs $extract -> input/resources/Bundle-ChEkmDocumentGonorrhoea-extracted.json
+scripts/assemble-gonorrhoea.sh     # re-attaches the template onto the assembled questionnaire
+scripts/extract-gonorrhoea.sh      # runs $extract -> input/resources/Bundle-ChEkmDocumentGonorrhoea-extracted.json
 ```
-`tests/extract-gonorrhoea.sh` defaults to the **assembled** questionnaire (demo parity with the
+`scripts/extract-gonorrhoea.sh` defaults to the **assembled** questionnaire (demo parity with the
 renderer) and uses **`input/fsh/examples/Gonorrhoea/ChEkmQuestionnaireResponseGonorrhoea.fsh`** —
 a QuestionnaireResponse reconstructed from `ChEkmBundleGonorrhoea` — as test input. The CLI
-(`tests/extract/`, a tiny CommonJS wrapper on `@aehrc/sdc-template-extract`; CJS because the
+(`scripts/extract/`, a tiny CommonJS wrapper on `@aehrc/sdc-template-extract`; CJS because the
 library's ESM build trips Node's loader on a `fhirpath` directory import) uses the questionnaire
 **as-is**, exactly like Smart Forms.
 
@@ -873,13 +873,13 @@ Two recurring patterns when gating a templated element (empty context → elemen
 
 ## 9. Uploading the questionnaire to the hosted Forms Server
 
-**`tests/upload-gonorrhoea.sh`** PUTs the assembled questionnaire to the Smart Forms HAPI
+**`scripts/upload-gonorrhoea.sh`** PUTs the assembled questionnaire to the Smart Forms HAPI
 Forms Server so it shows up in the hosted renderer's picker, without launching:
 
 ```
 sushi .
-tests/assemble-gonorrhoea.sh
-tests/upload-gonorrhoea.sh           # PUT Questionnaire/<id> -> /api/fhir
+scripts/assemble-gonorrhoea.sh
+scripts/upload-gonorrhoea.sh           # PUT Questionnaire/<id> -> /api/fhir
 ```
 
 - Target base defaults to **`https://smartforms.csiro.au/api/fhir`** — the *FHIR server*,
@@ -913,11 +913,11 @@ HAPI (smartforms.csiro.au) cannot store it. Two distinct blockers, both confirme
   Since those directives *are* the extraction template, it cannot be both functional and storable on
   this HAPI. (Local `$extract` is unaffected — it reads the file, not the server.)
 
-So `tests/upload-gonorrhoea.sh` keeps `del(.contained)` (+ drops the `sdc-questionnaire-extr-template`
+So `scripts/upload-gonorrhoea.sh` keeps `del(.contained)` (+ drops the `sdc-questionnaire-extr-template`
 `meta.profile` claim); the trade-off is the hosted copy **cannot offer template-based `$extract`**. For
 extraction, use the full local artifact
 (`input/resources/Questionnaire-ChEkmQuestionnaireGonorrhoeaAssembled.json`, template intact) with
-`tests/extract-gonorrhoea.sh`.
+`scripts/extract-gonorrhoea.sh`.
 
 ---
 
@@ -928,9 +928,9 @@ reading from launch-context variables (`%patient`, `%user`) declared via the mod
 `launchContext` extensions and propagated onto the assembled questionnaire.
 
 ### Engine: the SDC reference library (in-process), NOT hosted HAPI
-`tests/populate-gonorrhoea.sh` runs the **SDC reference `$populate`** (`@aehrc/sdc-populate`, the
+`scripts/populate-gonorrhoea.sh` runs the **SDC reference `$populate`** (`@aehrc/sdc-populate`, the
 same engine Smart Forms runs in-app) through a small local CommonJS wrapper
-**`tests/populate/populate.cjs`** (mirrors `tests/extract/`; CJS for the same `fhirpath` directory-import
+**`scripts/populate/populate.cjs`** (mirrors `scripts/extract/`; CJS for the same `fhirpath` directory-import
 reason — §8). We **switched off the hosted HAPI `Questionnaire/$populate`** (smartforms.csiro.au,
 HAPI 8.10.0 per §1) because:
 
@@ -981,7 +981,7 @@ entry**, looked up by `resourceType` (`resolvedFhirContextReferences[resourceTyp
 FHIRPath variable under the launchContext's **`name`** (`user`). This is exactly the pattern documented
 in the real renderer's `packages/smart-forms-renderer/src/stores/smartConfigStore.ts` (comment:
 *"resolvedFhirContextReferences, keyed by resource type e.g. `{ "PractitionerRole": <PractitionerRole> }`"*)
-— so it is not a workaround specific to our test harness. `tests/populate/populate.cjs` therefore
+— so it is not a workaround specific to our test harness. `scripts/populate/populate.cjs` therefore
 passes `fhirContext: [{ role: 'launch', type: 'PractitionerRole', reference: 'PractitionerRole/<id>' }]`
 and nothing on `user`; `fetchResourceCallback` resolves that reference (fetched from the local HAPI
 instance), and `%user` ends up bound to the PractitionerRole exactly as the renderer would deliver it.
@@ -999,17 +999,59 @@ mechanism). Consequences:
 - **In production** (Smart Forms, real SMART launch): `sourceServerUrl` is set to the launch `iss`
   (see `apps/demo-renderer-app/src/components/PrePopButton.tsx`), a FHIR server the app already has
   token-scoped read access to — so `resolve()` just works, no extra wiring.
-- **In our offline CLI test**: there is no FHIR server unless we run one. `tests/populate.cjs` now
+- **In our offline CLI test**: there is no FHIR server unless we run one. `scripts/populate.cjs` now
   takes a `fhirServerUrl` (default `http://localhost:8080/fhir`) and passes it as
-  `fetchResourceRequestConfig.sourceServerUrl`; `tests/populate-gonorrhoea.sh` requires the **local
+  `fetchResourceRequestConfig.sourceServerUrl`; `scripts/populate-gonorrhoea.sh` requires the **local
   HAPI instance** to be running first:
   ```
-  ./start_hapi.sh      # HAPI FHIR at http://localhost:8080/fhir
-  ./load_examples.sh   # PUTs Practitioner/Organization/PractitionerRole/Patient examples into it
+  ./scripts/start_hapi.sh              # HAPI FHIR at http://localhost:8080/fhir
+  ./scripts/load_examples.sh   # PUTs Practitioner/Organization/PractitionerRole/Patient examples into it
   ```
   `load_examples.sh` loads the resources in dependency order (Practitioner, Organization, then the
   `ChEkmPractitionerRoleTreatingPhysicianExample` that references both) so `resolve()` can find them
   by relative reference.
+
+### Pre-population in the Smart Forms playground requires a local HAPI
+
+In the hosted playground (https://smartforms.csiro.au/playground) `%patient` pre-populates out of the
+box, but the treating-physician / organization fields stay **empty by default**. That is not a bug in
+the questionnaire — it is the same `%user`-is-a-PractitionerRole + `resolve()` design described above,
+and the playground has to be pointed at a server that actually holds our examples. Two independent
+reasons it fails against the playground default (`https://hapi.fhir.org/baseR4`):
+
+1. **Picking a "user" alone does nothing.** The playground's user picker yields a **`Practitioner`**,
+   passed on the engine's `user` parameter — which `createLaunchContextParam()` only binds when the
+   declared launchContext type is literally `Practitioner`. Ours is `PractitionerRole`, so it is
+   skipped, and `%user` stays unbound unless a **PractitionerRole is also picked** (the playground puts
+   that one into `fhirContext`, exactly as our `populate.cjs` does).
+2. **Even a bound `%user` resolves against the playground's source server.** `resolve()` fetches
+   `<sourceFhirServerUrl>/Practitioner/<id>` and `/Organization/<id>`, so the referenced resources must
+   live on that same server.
+
+**Setup (once per browser):**
+
+```
+./scripts/start_hapi.sh              # HAPI FHIR at http://localhost:8080/fhir
+./scripts/load_examples.sh   # PUTs Practitioner/Organization/PractitionerRole/Patient into it
+```
+
+Then in the playground:
+
+1. **Settings → Source FHIR server** → `http://localhost:8080/fhir`. Browsers treat `http://localhost`
+   as a potentially-trustworthy origin, so this is *not* blocked as mixed content from the HTTPS page.
+2. Pick **Patient** `ChEkmPatientInitialsExample`.
+3. Pick **User** `ChEkmPractitionerTreatingPhysicianExample` — the PractitionerRole picker is scoped to
+   the selected user (`/PractitionerRole?practitioner=<userId>`), so the user must be chosen first.
+4. Pick **PractitionerRole** `ChEkmPractitionerRoleTreatingPhysicianExample`. **This step is the one
+   that binds `%user`** — without it the whole treating-physician block stays empty.
+5. Load the assembled questionnaire and run **Pre-populate**.
+
+All 28 answers (10 patient, 8 physician, 10 organization) should appear — the same result
+`scripts/populate-gonorrhoea.sh` produces on the CLI, which is the quicker way to verify the
+expressions without the browser.
+
+> To demo without a local server, run `./scripts/load_examples.sh https://hapi.fhir.org/baseR4` and
+> leave the playground on its default source server; the ids are stable, so steps 2–5 are unchanged.
 
 ### FHIRPath gotchas (HAPI-specific, but the expressions satisfy both engines)
 Two non-obvious rules emerged getting `nationality` and `genderIdentity` (both read from Patient

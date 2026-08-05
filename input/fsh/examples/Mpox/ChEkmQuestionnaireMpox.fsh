@@ -15,17 +15,10 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * experimental = false
 * meta.profile[+] = $sdc-modular
 * meta.profile[+] = $sdc-pop-exp
-// Declares that this questionnaire supports SDC template-based extraction (contained Bundle
-// template + sdc-questionnaire-templateExtract). Required element: contained 1..* (satisfied).
-// TODO* meta.profile[+] = $sdc-extr-template
+* meta.profile[+] = $sdc-extr-template
 * subjectType = #Patient
+* contained[0] = ChEkmDocumentMpoxTemplate
 
-// SDC template-based extraction: the document Bundle template is carried as a contained
-// resource and referenced from the form group via sdc-questionnaire-templateExtract, so a
-// renderer (e.g. Smart Forms) can run $extract on the filled QuestionnaireResponse to
-// produce a ChEkmDocumentMpox Bundle. tests/assemble-mpox.sh re-attaches both
-// onto the assembled questionnaire (the artifact the renderer loads).
-// TODO * contained[0] = ChEkmDocumentMpoxTemplate
 
 // Required by sdc-questionnaire-modular 4.0.0: the root must declare assemble-root.
 * extension[+].url = $sdc-assemble-expectation
@@ -77,11 +70,11 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * item[=].text.extension[=].extension[=].valueCode = #it-CH
 * item[=].text.extension[=].extension[+].url = "content"
 * item[=].text.extension[=].extension[=].valueString = "Notifica del referto clinico: Mpox"
+
 // Drives template-based $extract: one instance of the contained Bundle template per
-// mpox-form group (i.e. one document Bundle per filled form).
-// TODO * item[=].extension[+].url = $sdc-templateExtract
-// * item[=].extension[=].extension[+].url = "template"
-// * item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentMpoxTemplate)
+* item[=].extension[+].url = $sdc-templateExtract
+* item[=].extension[=].extension[+].url = "template"
+* item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentMpoxTemplate)
 
 
 * item[=].item[+].linkId = "person"
@@ -144,7 +137,7 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * item[=].item[=].text.extension[=].extension[=].valueString = "Diagnosi e manifestazione"
 * item[=].item[=].type = #group
 
-// Manifestationen - single-choice (symptomatic / asymptomatic), radio buttons
+// Manifestationen - multiple-choice, radio buttons
 * item[=].item[=].item[+].linkId = "manifestation"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxManifestationForm#ChEkmMpoxManifestationForm.manifestation"
 * item[=].item[=].item[=].text = "Manifestations"
@@ -164,8 +157,9 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
 * item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Manifestazioni"
 * item[=].item[=].item[=].type = #choice
+* item[=].item[=].item[=].repeats = true
 * item[=].item[=].item[=].extension[+].url = $choiceOrientation
-* item[=].item[=].item[=].extension[=].valueCode = #horizontal
+* item[=].item[=].item[=].extension[=].valueCode = #vertical
 * item[=].item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmMpoxManifestation"
 * item[=].item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
@@ -173,7 +167,7 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "expression"
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
 * item[=].item[=].item[=].extension[+].url = $questionnaire-itemControl
-* item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
+* item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
 
 // Subquestionnaire: Manifestationsbeginn unbekannt (Manifestation begin unknown) - checkbox + date
 * item[=].item[=].item[+].linkId = "manifestationBeginUnknown"

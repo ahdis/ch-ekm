@@ -11,6 +11,6 @@ fsh-generated/**
 # editing files and folders
 .vscode/**
 .DS_Store
-hapifhir/package.tgz
+scripts/hapifhir/package.tgz
 Mpox.csv
 TODO.md

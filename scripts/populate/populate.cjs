@@ -28,7 +28,7 @@
 // %user.organization.resolve() respectively — fhirpath.js's resolve() function fetches those
 // references over HTTP from `fhirServerUrl` (it does NOT go through our fetchResourceCallback),
 // so a reachable FHIR server holding the Practitioner/Organization by id is required. We point it
-// at the local HAPI instance (./start_hapi.sh + ./load_examples.sh), defaulting to
+// at the local HAPI instance (./scripts/start_hapi.sh + ./scripts/load_examples.sh), defaulting to
 // http://localhost:8080/fhir.
 
 const { readFileSync, writeFileSync } = require('node:fs');

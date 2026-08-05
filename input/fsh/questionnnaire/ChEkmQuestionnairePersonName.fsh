@@ -46,6 +46,10 @@ Description: "Modular sub-questionnaire for the name initials (surname / given n
 * item[=].text.extension[=].extension[=].valueString = "Cognome"
 * item[=].type = #string
 * item[=].required = true
+* item[=].extension[+].url = $sdc-initialExpression
+* item[=].extension[=].valueExpression.language = #text/fhirpath
+* item[=].extension[=].valueExpression.expression = "%patient.name.first().family"
+
 
 // given name initial) - require
 * item[+].linkId = "givenname"
@@ -68,3 +72,6 @@ Description: "Modular sub-questionnaire for the name initials (surname / given n
 * item[=].text.extension[=].extension[=].valueString = "Nome"
 * item[=].type = #string
 * item[=].required = true
+* item[=].extension[+].url = $sdc-initialExpression
+* item[=].extension[=].valueExpression.language = #text/fhirpath
+* item[=].extension[=].valueExpression.expression = "%patient.name.first().given.join(' ')"

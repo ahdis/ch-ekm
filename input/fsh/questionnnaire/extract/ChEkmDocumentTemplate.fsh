@@ -26,12 +26,11 @@
 // Run:  ./tests/extract-gonorrhoea.sh   (sushi . first to (re)generate this Bundle JSON)
 
 // ---------------------------------------------------------------------------
-// Patient (ChEkmPatientInitials) — initials, DOB, gender, address from the `person` group
+// Patient (ChEkmPatient) — initials, name, DOB, gender, address from the `person` group
 // ---------------------------------------------------------------------------
 Instance: ExtractedPatient
-InstanceOf: ChEkmPatientInitials
+InstanceOf: ChEkmPatient
 // Usage: #inline
-* meta.profile = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-patient-initials"
 // Nationalität -> patient-citizenship.code (identity pass-through of the answered Coding).
 // Coding idiom: templateExtractContext on the value CodeableConcept sets the answer.value scope,
 // templateExtractValue `ofType(Coding)` on coding[0] writes the Coding.
@@ -71,12 +70,17 @@ InstanceOf: ChEkmPatientInitials
 // GATED by a templateExtractContext on name[0] scoped to the `person` group: empty (person unanswered)
 // -> name[0] dropped entirely; otherwise the relative `item.where(...)` paths resolve within that scope.
 // Order: the context-gated extension MUST come before the value (see forms-summary §8).
+// Both name modules are accepted: ChEkmQuestionnairePersonInitials contributes surnameInitial/
+// givennameInitial, ChEkmQuestionnairePersonName contributes surname/givenname. A root assembles
+// exactly one of them (Gonorrhoea -> initials, Mpox -> full name) and both merge FLAT into the
+// `person` group, so the two linkIds per part are mutually exclusive and can simply be or-ed in the
+// same `where()` — whichever module is present supplies the answer.
 * name[0].family = "X"          // placeholder default — replaced at extraction by surnameInitial
 * name[0].given[0] = "Y"        // placeholder default — replaced at extraction by givennameInitial
 * name[0].extension[0].url = $sdc-templateExtractContext
 * name[0].extension[0].valueString = "%resource.descendants().where(linkId='person')"
 * name[0].extension[1].url = $sdc-templateExtractValue
-* name[0].extension[1].valueString = "%factory.HumanName(item.where(linkId='surnameInitial').answer.value.first(), item.where(linkId='givennameInitial').answer.value)"
+* name[0].extension[1].valueString = "%factory.HumanName(item.where(linkId='surnameInitial' or linkId='surname').answer.value.first(), item.where(linkId='givennameInitial' or linkId='givenname').answer.value)"
 // PLACEHOLDER DEFAULT — replaced at extraction. gender has a required binding, so the template
 // needs a real code to be valid; the templateExtractValue below overwrites it with the answered
 // administrativeGender at extraction. The #unknown default never survives a real extraction.

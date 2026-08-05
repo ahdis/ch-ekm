@@ -35,11 +35,11 @@ dependencies:
 resources:
   Bundle/ChEkmDocumentGonorrhoea-extracted:
     name: "CH EKM Bundle: Gonorrhoea document (extracted)"
-    description: "Gonorrhoea document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentGonorrhoeaTemplate (tests/extract-gonorrhoea.sh). Do not edit by hand."
-    exampleCanonical: false  
+    description: "Gonorrhoea document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentGonorrhoeaTemplate (scripts/extract-gonorrhoea.sh). Do not edit by hand."
+    exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-gonorrhoea 
   Questionnaire/ChEkmQuestionnaireGonorrhoeaAssembled:
     name: "CH EKM Questionnaire: Gonorrhoea (assembled)"
-    description: "Assembled (flattened) Gonorrhoea questionnaire, generated from the modular questionnaire ChEkmQuestionnaireGonorrhoea via Questionnaire/$assemble (tests/assemble-gonorrhoea.sh). Do not edit by hand."
+    description: "Assembled (flattened) Gonorrhoea questionnaire, generated from the modular questionnaire ChEkmQuestionnaireGonorrhoea via Questionnaire/$assemble (scripts/assemble-gonorrhoea.sh). Do not edit by hand."
     exampleBoolean: false
   Questionnaire/ChEkmQuestionnaireGonorrhoea-de-CH:
     name: "CH EKM Questionnaire: Gonorrhoea (de-CH)"
@@ -53,9 +53,13 @@ resources:
     name: "CH EKM Questionnaire: Gonorrhoea (it-CH)"
     description: "Preview of the assembled Gonorrhoea questionnaire with option labels in Italian (it-CH). Do not edit by hand."
     exampleBoolean: false
+  Bundle/ChEkmDocumentMpox-extracted:
+    name: "CH EKM Bundle: Mpox document (extracted)"
+    description: "Mpox document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentMpoxTemplate (scripts/extract-mpox.sh). Do not edit by hand."
+    exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-mpox 
   Questionnaire/ChEkmQuestionnaireMpoxAssembled:
     name: "CH EKM Questionnaire: Mpox (assembled)"
-    description: "Assembled (flattened) Mpox questionnaire, generated from the modular questionnaire ChEkmQuestionnaireMpox via Questionnaire/$assemble (tests/assemble-gonorrhoea.sh). Do not edit by hand."
+    description: "Assembled (flattened) Mpox questionnaire, generated from the modular questionnaire ChEkmQuestionnaireMpox via Questionnaire/$assemble (scripts/assemble-gonorrhoea.sh). Do not edit by hand."
     exampleBoolean: false
   Questionnaire/ChEkmQuestionnaireMpox-de-CH:
     name: "CH EKM Questionnaire: Mpox (de-CH)"

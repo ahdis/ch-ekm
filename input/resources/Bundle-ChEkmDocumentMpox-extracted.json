@@ -1,18 +1,18 @@
 {
   "resourceType": "Bundle",
-  "id": "ChEkmDocumentGonorrhoea-extracted",
+  "id": "ChEkmDocumentMpox-extracted",
   "type": "document",
   "identifier": {
     "system": "urn:ietf:rfc:3986",
     "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
   },
-  "timestamp": "2026-05-27T11:30:00+02:00",
+  "timestamp": "2026-08-05T11:30:00+02:00",
   "entry": [
     {
-      "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionGonorrhoea",
+      "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionMpox",
       "resource": {
         "resourceType": "Composition",
-        "id": "ExtractedCompositionGonorrhoea",
+        "id": "ExtractedCompositionMpox",
         "status": "final",
         "type": {
           "coding": [
@@ -36,7 +36,7 @@
             "title": "Diagnosis section",
             "entry": [
               {
-                "reference": "Condition/ExtractedConditionGonorrhoea"
+                "reference": "Condition/ExtractedConditionMpox"
               }
             ]
           },
@@ -52,7 +52,7 @@
             },
             "entry": [
               {
-                "reference": "Observation/ExtractedExposureGonorrhoea"
+                "reference": "Observation/ExtractedExposureMpox"
               }
             ]
           }
@@ -77,7 +77,7 @@
           }
         ],
         "title": "Meldung zum klinischen Befund Infektionskrankheit",
-        "date": "2026-05-27T11:30:00+02:00"
+        "date": "2026-08-05T11:30:00+02:00"
       }
     },
     {
@@ -123,9 +123,9 @@
         ],
         "name": [
           {
-            "family": "M",
+            "family": "Muster",
             "given": [
-              "B"
+              "Beat Ruedi"
             ]
           }
         ],
@@ -148,19 +148,10 @@
       }
     },
     {
-      "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionGonorrhoea",
+      "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionMpox",
       "resource": {
         "resourceType": "Condition",
-        "id": "ExtractedConditionGonorrhoea",
-        "code": {
-          "coding": [
-            {
-              "code": "15628003",
-              "system": "http://snomed.info/sct",
-              "display": "Gonorrhea (disorder)"
-            }
-          ]
-        },
+        "id": "ExtractedConditionMpox",
         "category": [
           {
             "coding": [
@@ -184,29 +175,48 @@
                 "coding": [
                   {
                     "system": "http://snomed.info/sct",
-                    "code": "264931009",
-                    "display": "Symptomatic (qualifier value)"
+                    "code": "95324001:{363698007=73897004}",
+                    "display": "Skin lesion of face"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "386661006",
+                    "display": "Fever (finding)"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "25064002",
+                    "display": "Headache (finding)"
                   }
                 ]
               }
             ]
           }
         ],
-        "_onsetDateTime": {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-              "valueCode": "asked-unknown"
-            }
-          ]
-        }
+        "onsetDateTime": "2026-07-20"
       }
     },
     {
-      "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureGonorrhoea",
+      "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureMpox",
       "resource": {
         "resourceType": "Observation",
-        "id": "ExtractedExposureGonorrhoea",
+        "id": "ExtractedExposureMpox",
         "code": {
           "coding": [
             {
@@ -246,7 +256,7 @@
                 {
                   "system": "http://hl7.org/fhir/administrative-gender",
                   "code": "male",
-                  "display": "Male"
+                  "display": "male"
                 }
               ]
             }

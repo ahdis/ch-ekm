@@ -2,7 +2,7 @@
 #
 # Pre-populate the assembled Gonorrhoea questionnaire using the SDC REFERENCE $populate
 # implementation (@aehrc/sdc-populate) — the same engine Smart Forms runs in-app — via a
-# small local CommonJS wrapper (tests/populate/populate.cjs).
+# small local CommonJS wrapper (scripts/populate/populate.cjs).
 #
 # Why the reference library and NOT the hosted HAPI $populate
 # (https://smartforms.csiro.au/api/fhir/Questionnaire/$populate):
@@ -22,14 +22,15 @@
 # real FHIR server, so this script requires a LOCAL HAPI INSTANCE with the example resources
 # loaded:
 #
-#   ./start_hapi.sh      # starts HAPI FHIR at http://localhost:8080/fhir
-#   ./load_examples.sh   # PUTs Practitioner/Organization/PractitionerRole/Patient examples into it
+#   ./scripts/start_hapi.sh      # starts HAPI FHIR at http://localhost:8080/fhir
+#   ./scripts/load_examples.sh   # PUTs Practitioner/Organization/PractitionerRole/Patient examples into it
 #
 # The resulting QuestionnaireResponse can be handed to the Smart Forms renderer together with
-# the questionnaire to show the pre-filled form.
+# the questionnaire to show the pre-filled form. The same two commands are the prerequisite for
+# pre-population in the Smart Forms playground — see forms-summary.md §10.
 #
 # Usage:
-#   ./tests/populate-gonorrhoea.sh [PATIENT_ID] [ROLE_ID] [FHIR_BASE_URL]
+#   ./scripts/populate-gonorrhoea.sh [PATIENT_ID] [ROLE_ID] [FHIR_BASE_URL]
 #
 # PATIENT_ID     Patient example id in fsh-generated/resources           (default ChEkmPatientInitialsExample)
 # ROLE_ID        PractitionerRole example id (treating physician's role) (default ChEkmPractitionerRoleTreatingPhysicianExample)
@@ -51,16 +52,16 @@ Q="input/resources/Questionnaire-ChEkmQuestionnaireGonorrhoeaAssembled.json"
 PAT="fsh-generated/resources/Patient-$PATIENT_ID.json"
 ROLE="fsh-generated/resources/PractitionerRole-$ROLE_ID.json"
 OUT="fsh-generated/QuestionnaireResponse-ChEkmQuestionnaireGonorrhoea-populated.json"
-WRAPPER_DIR="tests/populate"
+WRAPPER_DIR="scripts/populate"
 
-[ -f "$Q" ]    || { echo "ERROR: $Q not found. Run tests/assemble-gonorrhoea.sh first."; exit 1; }
+[ -f "$Q" ]    || { echo "ERROR: $Q not found. Run scripts/assemble-gonorrhoea.sh first."; exit 1; }
 [ -f "$PAT" ]  || { echo "ERROR: $PAT not found (run 'sushi .' or pick another PATIENT_ID)."; exit 1; }
 [ -f "$ROLE" ] || { echo "ERROR: $ROLE not found (run 'sushi .' or pick another ROLE_ID)."; exit 1; }
 
 if ! curl -sf -o /dev/null "$FHIR_BASE_URL/metadata"; then
   echo "ERROR: no FHIR server reachable at $FHIR_BASE_URL."
   echo "       %user.practitioner.resolve() / %user.organization.resolve() need a live server."
-  echo "       Run ./start_hapi.sh, then ./load_examples.sh $FHIR_BASE_URL"
+  echo "       Run ./scripts/start_hapi.sh, then ./scripts/load_examples.sh $FHIR_BASE_URL"
   exit 1
 fi
 

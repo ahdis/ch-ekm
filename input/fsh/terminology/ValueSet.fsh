@@ -134,6 +134,7 @@ Description: "This CH EKM value set includes the codes for the manifestation of 
 * ^experimental = false
 
 * include codes from system $sct where concept is-a #15628003
+* $sct#264931009 "Symptomatic (qualifier value)" // TODO To be discussed see below
 * $sct#84387000 "Asymptomatic (finding)"
 
 ValueSet: ChEkmGonorrhoeaManifestationFormChoice
