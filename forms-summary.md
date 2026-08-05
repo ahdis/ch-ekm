@@ -1106,6 +1106,29 @@ This is exactly how the `dateOfBirthRange` constraint in `ChEkmQuestionnaireGono
 authored. (`$assemble` keeps the modular root's extensions, drops a child's root extensions — §10 —
 which is another reason root-level placement is the working pattern.)
 
+TODO: currently commented out
+// Birthdate validation: dateOfBirth (defined in the Person sub-questionnaire) must be in
+// [1900-01-01, today()]. Authored as a Questionnaire-level targetConstraint here on the modular
+// root so it propagates onto the assembled form the renderer loads ($assemble drops a child's
+// root extensions but keeps the root's). Smart Forms binds it to the item via the `location`
+// FHIRPath; the `expression` evaluates TRUE when the value is INVALID (out of range), so the
+// renderer would show `human` and (severity=error) blocks submission. `today()` is the dynamic bound.
+// see issue https://github.com/aehrc/smart-forms/issues/1971
+// * extension[+].url = $targetConstraint
+// * extension[=].extension[+].url = "key"
+// * extension[=].extension[=].valueId = "dateOfBirthRange"
+// * extension[=].extension[+].url = "severity"
+// * extension[=].extension[=].valueCode = #error
+// * extension[=].extension[+].url = "expression"
+// * extension[=].extension[=].valueExpression.language = #text/fhirpath
+// * extension[=].extension[=].valueExpression.expression = "%resource.descendants().where(linkId='dateOfBirth').answer.value.where($this < @1900-01-01 or $this > today()).exists()"
+// * extension[=].extension[+].url = "human"
+// * extension[=].extension[=].valueString = "Geburtsdatum muss zwischen dem 01.01.1900 und heute liegen."
+// * extension[=].extension[+].url = "location"
+// * extension[=].extension[=].valueString = "Questionnaire.descendants().where(linkId='dateOfBirth')"
+
+
+
 **Rule of thumb:** item-local format/length → **`regex`** on the item; cross-field or
 expression/range validation, or anything needing a German `human` message → **`targetConstraint` on
 the root** with a `location`.

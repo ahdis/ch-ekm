@@ -41,6 +41,8 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 // a sub-questionnaire's root extensions, but propagates the modular root's onto the assembled
 // form (the artifact the renderer loads). See ChEkmQuestionnaireGonorrhoea.fsh.
 
+
+
 // Geburtsdatum - required
 * item[+].linkId = "dateOfBirth"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.dateOfBirth"

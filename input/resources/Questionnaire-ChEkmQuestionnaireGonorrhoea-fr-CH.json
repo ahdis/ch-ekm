@@ -9,13 +9,86 @@
     "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea-fr-CH",
-  "version": "0.0.1",
-  "name": "ChEkmQuestionnaireGonorrhoeafrCH",
   "status": "active",
   "language": "fr-CH",
   "experimental": false,
   "subjectType": [
     "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "code": "semver",
+        "system": "http://hl7.org/fhir/version-algorithm"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "patient",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "Patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient to pre-populate the form with"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "user",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "User"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "PractitionerRole"
+        },
+        {
+          "url": "description",
+          "valueString": "The treating physician's PractitionerRole (practitioner + sending organization) to pre-populate the form with"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician|0.0.1"
+    }
   ],
   "contained": [
     {
@@ -817,86 +890,11 @@
       ]
     }
   ],
-  "extension": [
-    {
-      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
-      "valueCoding": {
-        "code": "semver",
-        "system": "http://hl7.org/fhir/version-algorithm"
-      }
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
-      "extension": [
-        {
-          "url": "name",
-          "valueCoding": {
-            "code": "patient",
-            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
-            "display": "Patient"
-          }
-        },
-        {
-          "url": "type",
-          "valueCode": "Patient"
-        },
-        {
-          "url": "description",
-          "valueString": "The patient to pre-populate the form with"
-        }
-      ]
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
-      "extension": [
-        {
-          "url": "name",
-          "valueCoding": {
-            "code": "user",
-            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
-            "display": "User"
-          }
-        },
-        {
-          "url": "type",
-          "valueCode": "PractitionerRole"
-        },
-        {
-          "url": "description",
-          "valueString": "The treating physician's PractitionerRole (practitioner + sending organization) to pre-populate the form with"
-        }
-      ]
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician|0.0.1"
-    }
-  ],
   "item": [
     {
       "linkId": "gonorrhoea-form",
       "type": "group",
-      "text": "Déclaration de résultat clinique : gonorrhée",
+      "text": "Déclaration de résultat clinique : Gonorrhoea",
       "extension": [
         {
           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract",
@@ -4078,14 +4076,14 @@
           ]
         },
         {
-          "linkId": "manifestation-group",
-          "text": "Diagnostic et manifestation",
+          "linkId": "manifestation",
           "type": "group",
+          "text": "Diagnostic et manifestation",
           "item": [
             {
               "linkId": "manifestation",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
               "text": "Manifestations",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
               "type": "choice",
               "extension": [
                 {
@@ -4150,7 +4148,7 @@
         {
           "linkId": "exposure",
           "type": "group",
-          "text": "Exposition",
+          "text": "Données relatives à l'exposition",
           "item": [
             {
               "linkId": "transmission",
@@ -4560,6 +4558,8 @@
       ]
     }
   ],
+  "version": "0.0.1",
+  "name": "ChEkmQuestionnaireGonorrhoeafrCH",
   "title": "CH EKM Questionnaire: Gonorrhoea (assembled) (preview fr-CH, pre-expanded)",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

@@ -9,13 +9,86 @@
     "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxAssembled",
-  "version": "0.0.1",
-  "name": "ChEkmQuestionnaireMpoxAssembled",
   "status": "active",
   "language": "en",
   "experimental": false,
   "subjectType": [
     "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "code": "semver",
+        "system": "http://hl7.org/fhir/version-algorithm"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "patient",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "Patient"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Patient"
+        },
+        {
+          "url": "description",
+          "valueString": "The patient to pre-populate the form with"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "user",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "User"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "PractitionerRole"
+        },
+        {
+          "url": "description",
+          "valueString": "The treating physician's PractitionerRole (practitioner + sending organization) to pre-populate the form with"
+        }
+      ]
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonName|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician|0.0.1"
+    }
   ],
   "contained": [
     {
@@ -806,81 +879,6 @@
           }
         }
       ]
-    }
-  ],
-  "extension": [
-    {
-      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
-      "valueCoding": {
-        "code": "semver",
-        "system": "http://hl7.org/fhir/version-algorithm"
-      }
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
-      "extension": [
-        {
-          "url": "name",
-          "valueCoding": {
-            "code": "patient",
-            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
-            "display": "Patient"
-          }
-        },
-        {
-          "url": "type",
-          "valueCode": "Patient"
-        },
-        {
-          "url": "description",
-          "valueString": "The patient to pre-populate the form with"
-        }
-      ]
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
-      "extension": [
-        {
-          "url": "name",
-          "valueCoding": {
-            "code": "user",
-            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
-            "display": "User"
-          }
-        },
-        {
-          "url": "type",
-          "valueCode": "PractitionerRole"
-        },
-        {
-          "url": "description",
-          "valueString": "The treating physician's PractitionerRole (practitioner + sending organization) to pre-populate the form with"
-        }
-      ]
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonName|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician|0.0.1"
     }
   ],
   "item": [
@@ -1727,7 +1725,8 @@
           ]
         },
         {
-          "linkId": "manifestation-group",
+          "linkId": "manifestation",
+          "type": "group",
           "text": "Diagnosis and manifestation",
           "_text": {
             "extension": [
@@ -1772,11 +1771,9 @@
               }
             ]
           },
-          "type": "group",
           "item": [
             {
               "linkId": "manifestation",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxManifestationForm#ChEkmMpoxManifestationForm.manifestation",
               "text": "Manifestations",
               "_text": {
                 "extension": [
@@ -1974,7 +1971,7 @@
         {
           "linkId": "exposure",
           "type": "group",
-          "text": "Exposure",
+          "text": "Exposure details",
           "_text": {
             "extension": [
               {
@@ -1986,7 +1983,7 @@
                   },
                   {
                     "url": "content",
-                    "valueString": "Exposition"
+                    "valueString": "Angaben zur Exposition"
                   }
                 ]
               },
@@ -1999,7 +1996,7 @@
                   },
                   {
                     "url": "content",
-                    "valueString": "Exposition"
+                    "valueString": "Données relatives à l'exposition"
                   }
                 ]
               },
@@ -2012,7 +2009,7 @@
                   },
                   {
                     "url": "content",
-                    "valueString": "Esposizione"
+                    "valueString": "Dati relativi all'esposizione"
                   }
                 ]
               }
@@ -3451,6 +3448,8 @@
       ]
     }
   ],
+  "version": "0.0.1",
+  "name": "ChEkmQuestionnaireMpoxAssembled",
   "title": "CH EKM Questionnaire: Mpox (assembled)",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }
