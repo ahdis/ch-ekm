@@ -365,15 +365,15 @@
                   {
                     "coding": [
                       {
-                        "code": "95324001",
-                        "system": "http://snomed.info/sct",
-                        "display": "Skin lesion (disorder)",
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                             "valueString": "ofType(Coding)"
                           }
-                        ]
+                        ],
+                        "code": "95324001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Skin lesion (disorder)"
                       }
                     ]
                   }
@@ -4065,7 +4065,7 @@
           ]
         },
         {
-          "linkId": "manifestation",
+          "linkId": "manifestation-group",
           "type": "group",
           "text": "Diagnostic et manifestation",
           "item": [

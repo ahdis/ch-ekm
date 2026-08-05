@@ -364,25 +364,25 @@
             },
             "evidence": [
               {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='manifestation').answer.value"
+                  }
+                ],
                 "code": [
                   {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                        "valueString": "%resource.descendants().where(linkId='manifestation').answer.value"
-                      }
-                    ],
                     "coding": [
                       {
-                        "code": "15628003",
-                        "system": "http://snomed.info/sct",
-                        "display": "Gonorrhea (disorder)",
                         "extension": [
                           {
                             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                             "valueString": "ofType(Coding)"
                           }
-                        ]
+                        ],
+                        "code": "15628003",
+                        "system": "http://snomed.info/sct",
+                        "display": "Gonorrhea (disorder)"
                       }
                     ]
                   }
@@ -4076,7 +4076,7 @@
           ]
         },
         {
-          "linkId": "manifestation",
+          "linkId": "manifestation-group",
           "type": "group",
           "text": "Diagnosi e manifestazione",
           "item": [

@@ -8,50 +8,13 @@ InstanceOf: ChEkmConditionGonorrhoea
 * code = $sct#15628003 "Gonorrhea (disorder)"
 * category = $condition-category#encounter-diagnosis
 * subject.reference = "Patient/ExtractedPatient"
-// recorder -> the treating physician PractitionerRole (static reference; the role bundles the
-// treating Practitioner + sending Organization, both populated from the form below). This is the
-// navigation the report consumer follows: Condition.recorder.practitioner / .organization.
 * recorder.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
-// Manifestationsbeginn:
-//  - known    -> onsetDateTime = the answered date.
-//  - unbekannt -> no value; onsetDateTime.extension[data-absent-reason] = asked-unknown.
-//
-// extension[0] is the data-absent-reason extension. It CANNOT be pre-declared with url =
-// data-absent-reason in the template: a to-be-computed valueCode leaves the extension with no
-// value at authoring time (fails ext-1) and the templateExtractContext sub-extension violates the
-// data-absent-reason profile (0 sub-extensions allowed). Instead the WHOLE extension is built at
-// extraction time by a single templateExtractValue via the FHIR Type Factory
-// %factory.Extension(url, value) — the same idiom as %factory.Coding above (see forms-summary §8).
-// %factory.code(...) makes the value a `code`, so the result is {url: data-absent-reason,
-// valueCode: 'asked-unknown'}. The factory result deep-merges onto the carrier, overwriting the
-// carrier url, so the extracted extension is a clean, valid data-absent-reason.
-// The carrier is the ch-ekm SdcTemplateExtractExtension (defined so the template validates as FHIR
-// — an engine value directive on onsetDateTime.extension would set the primitive value, not a
-// sibling extension, so a carrier is required to reach _onsetDateTime.extension).
-// The templateExtractContext gates emission: empty (element excluded) unless
-// manifestationBeginUnknown = true.
-// extension[1] is the onset value (iif -> {} when unbekannt, so onsetDateTime is omitted then).
-//
-// ORDER MATTERS: the context-gated extension MUST come before the plain onset value extension.
-// The reference engine's array index bookkeeping mis-handles the reverse order (the gated element
-// is not deleted and the valueCode splits into a stray entry). See forms-summary.md §8.
-* onsetDateTime.extension[0].url = $sdc-templateExtractExtension
-* onsetDateTime.extension[0].extension[0].url = $sdc-templateExtractContext
-* onsetDateTime.extension[0].extension[0].valueString = "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
-* onsetDateTime.extension[0].extension[1].url = $sdc-templateExtractValue
-* onsetDateTime.extension[0].extension[1].valueString = "%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown'))"
-* onsetDateTime.extension[1].url = $sdc-templateExtractValue
-* onsetDateTime.extension[1].valueString = "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
-// Manifestation -> evidence.code (identity pass-through of the answered Coding)
-// PLACEHOLDER DEFAULT coding — replaced/dropped at extraction (evidence.code has a required binding to
-// ChEkmGonorrhoeaManifestation, so a valid coding is needed for the template to validate standalone;
-// the templateExtractValue overwrites coding[0] at extraction, and an unanswered manifestation drops
-// the context-gated code). 15628003 is a member (is-a is reflexive) — same idiom as the components.
-* evidence[0].code[0].extension[+].url = $sdc-templateExtractContext
-* evidence[0].code[0].extension[=].valueString = "%resource.descendants().where(linkId='manifestation').answer.value"
+
+* insert RuleSetOnsetDateManifestationBeginUnknown
+
+* insert RuleSetEvidenceManifestation
 * evidence[0].code[0].coding[0] = $sct#15628003 "Gonorrhea (disorder)"
-* evidence[0].code[0].coding[0].extension[+].url = $sdc-templateExtractValue
-* evidence[0].code[0].coding[0].extension[=].valueString = "ofType(Coding)"
+
 
 // ---------------------------------------------------------------------------
 // Exposure (ChEkmExposureGonorrhoea) — fixed component codes; sex & relationship from `transmission`
@@ -63,86 +26,7 @@ InstanceOf: ChEkmExposureGonorrhoea
 * category = $v3-ActClass#AEXPOS "acquisition exposure"
 * code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
 * subject.reference = "Patient/ExtractedPatient"
-// Sexualkontakt mit infizierter Person (Geschlecht)
-// PLACEHOLDER DEFAULT valueCodeableConcept — replaced/dropped at extraction. These sliced components
-// have a REQUIRED value binding, so a coding is needed for the template to validate as a standalone
-// example; the templateExtractValue overwrites coding[0] at extraction, and when the answer is absent
-// the whole context-gated component is dropped. (Same idea as the gender/timestamp defaults, §8.)
-* component[0].code = ChEkmExposureComponent#sexual-contact-partner
-* component[0].extension[+].url = $sdc-templateExtractContext
-* component[0].extension[=].valueString = "%resource.descendants().where(linkId='sexualContactPartner').answer.value"
-* component[0].valueCodeableConcept.coding[0] = $administrative-gender#unknown "Unknown"
-* component[0].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
-* component[0].valueCodeableConcept.coding[0].extension[=].valueString = "ofType(Coding)"
-// Art der Beziehung
-* component[1].code = $sct#228465009 "Sexual relationship details (observable entity)"
-* component[1].extension[+].url = $sdc-templateExtractContext
-* component[1].extension[=].valueString = "%resource.descendants().where(linkId='relationshipType').answer.value"
-* component[1].valueCodeableConcept.coding[0] = ChEkmRelationshipType#steady-partner "Steady partner"
-* component[1].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
-* component[1].valueCodeableConcept.coding[0].extension[=].valueString = "ofType(Coding)"
-// Anderer Übertragungsweg (Freitext) -> component[2] (no code, just a text value). This is a free-text field, so no context gating or coding idiom — just write the string directly, and if it's blank the component is omitted.
-* component[2].code = $sct#74964007  "Other (qualifier value)"
-* component[2].extension[+].url = $sdc-templateExtractContext
-* component[2].extension[=].valueString = "%resource.descendants().where(linkId='otherTransmission').answer.value"
-* component[2].valueString.extension[+].url = $sdc-templateExtractValue
-* component[2].valueString.extension[=].valueString = "$this"
-
-
-// TransmissionRoute: a single component recording "unknown transmission route", emitted ONLY when the
-// "unknown" checkbox is ticked.
-//
-// The component is gated by a templateExtractContext on component[3] scoped to `…unknown… = true`
-// (empty when unticked/unanswered -> the whole component is omitted). CRUCIAL: the engine DELETES any
-// array element carrying a templateExtractContext and only re-inserts it while iterating that element's
-// templateExtractValue paths — so a context WITHOUT any nested templateExtractValue is dropped and
-// never restored (that is why a static-only `valueCodeableConcept` produced no component at all).
-//
-// The value is a FIXED Coding. fhirpath.js has no object literals, and assembling a Coding from
-// several primitive templateExtractValues fails (multiple value-paths deepmerge-concat the coding
-// array; a single one shallow-overwrites valueCodeableConcept and loses system/display). The clean
-// way is one value-path on coding[0] whose result is already a full Coding — built with the FHIR
-// Type Factory API `%factory.Coding(system, code, display)` (fhirpath.js 4.11, r4 model loaded by
-// the engine). This both materialises the element and yields a complete Coding; the static
-// `component[3].code` survives (it is a different key from the shallow-merged valueCodeableConcept).
-// See forms-summary §8.
-* component[3].code = $sct#409496000  "Mode of transmission (observable entity)"
-* component[3].extension[+].url = $sdc-templateExtractContext
-* component[3].extension[=].valueString = "%resource.descendants().where(linkId='unknown').answer.value.where($this = true)"
-* component[3].valueCodeableConcept.coding[0] = $sct#261665006 "Unknown (qualifier value)"
-* component[3].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
-* component[3].valueCodeableConcept.coding[0].extension[=].valueString = "%factory.Coding('http://snomed.info/sct', '261665006', 'Unknown (qualifier value)')"
-
-// Emit only when "unknown" is NOT ticked AND otherTransmission has a value. The iif gates on unknown
-// (empty -> component omitted when unknown=true); otherwise it yields the otherTransmission answer,
-// which is itself empty when blank, so the component is also omitted when there is no free text.
-// Note: a plain `.where($this != true)` negation would miss the unanswered/absent case (empty
-// collection), so the iif form is required — see forms-summary §8.
-// NB: `code` is NOT set statically here. component[transmissionRoute] (code 409496000) is 0..1 in the
-// profile, and components 3/4/5 all carry that code — three static ones would trip the max-1 slice on
-// the *template* (only one is ever emitted at runtime). So 4/5 build their code at extraction too, via
-// %factory.CodeableConcept: at template-validation time the code is an empty CodeableConcept that does
-// not match the 409496000 pattern (open slice → allowed); at extraction it becomes the real code, and
-// only one of 3/4/5 is emitted so the output still has exactly one transmissionRoute component.
-* component[4].extension[+].url = $sdc-templateExtractContext
-* component[4].extension[=].valueString = "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, %resource.descendants().where(linkId='otherTransmission').answer.value)"
-* component[4].code.extension[+].url = $sdc-templateExtractValue
-* component[4].code.extension[=].valueString = "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
-* component[4].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
-* component[4].valueCodeableConcept.coding[0].extension[=].valueString = "%factory.Coding('http://snomed.info/sct', '74964007', 'Other (qualifier value)')"
-
-// code built at extraction (same reason as component[4] above — avoid a third static 409496000).
-* component[5].extension[+].url = $sdc-templateExtractContext
-// Fallback: emit sexualContactPartner only when unknown is NOT true AND otherTransmission has no
-// value. NB the inner iif criterion must be a Boolean — a bare `…otherTransmission…answer.value`
-// (a string) is not treated as truthy by FHIRPath, so it falls through to the else branch and the
-// component fires even when other-transmission IS present. Use `.exists()` to make it a Boolean.
-* component[5].extension[=].valueString = "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='otherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='sexualContactPartner').answer.value))"
-* component[5].code.extension[+].url = $sdc-templateExtractValue
-* component[5].code.extension[=].valueString = "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
-* component[5].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
-* component[5].valueCodeableConcept.coding[0].extension[=].valueString = "%factory.Coding('http://snomed.info/sct', '417564009', 'Sexual transmission (qualifier value)')"
-
+* insert RuleSetComponentExposure
 // ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionGonorrhoea) — static structure, references the entries above,
 // author = Broker, date taken from QR.authored

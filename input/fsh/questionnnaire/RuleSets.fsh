@@ -138,7 +138,7 @@ RuleSet: RuleSetQrPersonGenderIdentity
 * insert RuleSetQrLevel3SubQuestionnaire("personGenderIdentity", "Gender identity", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity")
 
 RuleSet: RuleSetQrGroupManifestation
-* insert RuleSetQrLevel2Group("manifestation", "Diagnosis and manifestation", "Diagnose und Manifestation", "Diagnostic et manifestation", "Diagnosi e manifestazione")
+* insert RuleSetQrLevel2Group("manifestation-group", "Diagnosis and manifestation", "Diagnose und Manifestation", "Diagnostic et manifestation", "Diagnosi e manifestazione")
 
 RuleSet: RuleSetQrManifestationBeginUnknown
 * insert RuleSetQrLevel3SubQuestionnaire("manifestationBeginUnknown", "Onset of manifestation unknown", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown")
