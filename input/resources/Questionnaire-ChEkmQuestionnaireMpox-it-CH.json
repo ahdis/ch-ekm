@@ -76,6 +76,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
     },
     {
@@ -3186,28 +3190,45 @@
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "male",
-                    "display": "maschile"
+                    "display": "sesso maschile"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "female",
-                    "display": "femminile"
+                    "display": "sesso femminile"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "other",
-                    "display": "altro"
+                    "display": "indeterminato"
                   }
-                },
+                }
+              ]
+            },
+            {
+              "linkId": "genderIdentity",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
+              "text": "Identità di genere (transgender)",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
+                  }
+                }
+              ],
+              "answerOption": [
                 {
                   "valueCoding": {
-                    "system": "http://hl7.org/fhir/administrative-gender",
-                    "code": "unknown",
-                    "display": "sconosciuto"
+                    "system": "http://snomed.info/sct",
+                    "code": "1384187000",
+                    "display": "Si identifica come transgender"
                   }
                 }
               ]
@@ -3398,28 +3419,21 @@
                       "valueCoding": {
                         "system": "http://hl7.org/fhir/administrative-gender",
                         "code": "male",
-                        "display": "maschile"
+                        "display": "sesso maschile"
                       }
                     },
                     {
                       "valueCoding": {
                         "system": "http://hl7.org/fhir/administrative-gender",
                         "code": "female",
-                        "display": "femminile"
+                        "display": "sesso femminile"
                       }
                     },
                     {
                       "valueCoding": {
                         "system": "http://hl7.org/fhir/administrative-gender",
                         "code": "other",
-                        "display": "altro"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://hl7.org/fhir/administrative-gender",
-                        "code": "unknown",
-                        "display": "sconosciuto"
+                        "display": "indeterminato"
                       }
                     }
                   ]

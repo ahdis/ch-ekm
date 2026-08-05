@@ -4051,14 +4051,7 @@
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "other",
-                    "display": "anderes"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://hl7.org/fhir/administrative-gender",
-                    "code": "unknown",
-                    "display": "unbekannt"
+                    "display": "unbestimmt"
                   }
                 }
               ]
@@ -4210,14 +4203,7 @@
                       "valueCoding": {
                         "system": "http://hl7.org/fhir/administrative-gender",
                         "code": "other",
-                        "display": "anderes"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://hl7.org/fhir/administrative-gender",
-                        "code": "unknown",
-                        "display": "unbekannt"
+                        "display": "unbestimmt"
                       }
                     }
                   ]

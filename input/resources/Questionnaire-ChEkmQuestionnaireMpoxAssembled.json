@@ -76,6 +76,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
     },
     {
@@ -770,7 +774,7 @@
               },
               "type": "choice",
               "required": true,
-              "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender",
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex",
               "_answerValueSet": {
                 "extension": [
                   {
@@ -809,6 +813,82 @@
                   "valueExpression": {
                     "language": "text/fhirpath",
                     "expression": "%patient.gender"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "genderIdentity",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
+              "text": "Gender identity (transgender)",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Geschlechtsidentität (transgender)"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Identité de genre (transgenre)"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Identità di genere (transgender)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "choice",
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGenderIdentity",
+              "_answerValueSet": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueCode": "useSupplement"
+                      },
+                      {
+                        "url": "expression",
+                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
                   }
                 }
               ]
@@ -1203,7 +1283,7 @@
                     ]
                   },
                   "type": "choice",
-                  "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",

@@ -1621,7 +1621,7 @@
               },
               "type": "choice",
               "required": true,
-              "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender",
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex",
               "_answerValueSet": {
                 "extension": [
                   {
@@ -2130,7 +2130,7 @@
                     ]
                   },
                   "type": "choice",
-                  "answerValueSet": "http://hl7.org/fhir/ValueSet/administrative-gender",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",

@@ -76,6 +76,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
     },
     {
@@ -3200,14 +3204,31 @@
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "other",
-                    "display": "anderes"
+                    "display": "unbestimmt"
                   }
-                },
+                }
+              ]
+            },
+            {
+              "linkId": "genderIdentity",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
+              "text": "Geschlechtsidentität (transgender)",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                  "valueExpression": {
+                    "language": "text/fhirpath",
+                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
+                  }
+                }
+              ],
+              "answerOption": [
                 {
                   "valueCoding": {
-                    "system": "http://hl7.org/fhir/administrative-gender",
-                    "code": "unknown",
-                    "display": "unbekannt"
+                    "system": "http://snomed.info/sct",
+                    "code": "1384187000",
+                    "display": "Identifiziert sich als Transgender"
                   }
                 }
               ]
@@ -3412,14 +3433,7 @@
                       "valueCoding": {
                         "system": "http://hl7.org/fhir/administrative-gender",
                         "code": "other",
-                        "display": "anderes"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://hl7.org/fhir/administrative-gender",
-                        "code": "unknown",
-                        "display": "unbekannt"
+                        "display": "unbestimmt"
                       }
                     }
                   ]

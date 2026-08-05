@@ -117,6 +117,13 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
 * item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral"
 
+// Geschlechtsidentität
+* item[=].item[=].item[+].linkId = "personGenderIdentity"
+* item[=].item[=].item[=].type = #display
+* item[=].item[=].item[=].text = "Gender identity"
+* item[=].item[=].item[=].extension[+].url = $sdc-subQuestionnaire
+* item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity"
+
 // Diagnose und Manifestation
 * item[=].item[+].linkId = "manifestation-group"
 * item[=].item[=].text = "Diagnosis and manifestation"
@@ -199,7 +206,6 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 // TODO Exposition where
 
 // TODO Exposition when
-
 
 // Exposition (Wie / Übertragungsweg) -> subQuestionnaire ChEkmQuestionnaireTransmissionHow
 * item[=].item[=].item[+].linkId = "transmissionhow"

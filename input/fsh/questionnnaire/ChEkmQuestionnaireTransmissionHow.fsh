@@ -58,7 +58,7 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 * item[=].item[=].text.extension[=].extension[+].url = "content"
 * item[=].item[=].text.extension[=].extension[=].valueString = "Rapporto sessuale con una persona infetta (sesso)"
 * item[=].item[=].type = #choice
-* item[=].item[=].answerValueSet = "http://hl7.org/fhir/ValueSet/administrative-gender"
+* item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex"
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
 * item[=].item[=].extension[+].url = $choiceOrientation

@@ -4037,28 +4037,21 @@
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "male",
-                    "display": "maschile"
+                    "display": "sesso maschile"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "female",
-                    "display": "femminile"
+                    "display": "sesso femminile"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "other",
-                    "display": "altro"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://hl7.org/fhir/administrative-gender",
-                    "code": "unknown",
-                    "display": "sconosciuto"
+                    "display": "indeterminato"
                   }
                 }
               ]
@@ -4196,28 +4189,21 @@
                       "valueCoding": {
                         "system": "http://hl7.org/fhir/administrative-gender",
                         "code": "male",
-                        "display": "maschile"
+                        "display": "sesso maschile"
                       }
                     },
                     {
                       "valueCoding": {
                         "system": "http://hl7.org/fhir/administrative-gender",
                         "code": "female",
-                        "display": "femminile"
+                        "display": "sesso femminile"
                       }
                     },
                     {
                       "valueCoding": {
                         "system": "http://hl7.org/fhir/administrative-gender",
                         "code": "other",
-                        "display": "altro"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://hl7.org/fhir/administrative-gender",
-                        "code": "unknown",
-                        "display": "sconosciuto"
+                        "display": "indeterminato"
                       }
                     }
                   ]

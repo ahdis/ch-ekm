@@ -18,7 +18,7 @@ Characteristics: #can-be-target
 * country from ChEkmCountryCodes (required)
 * canton 0..1 string "Canton"
 * administrativeGender 1..1 CodeableConcept "Gender (male, female, other)"
-* administrativeGender from http://hl7.org/fhir/ValueSet/administrative-gender (required)
+* administrativeGender from http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex (required)
 * genderIdentity 0..1 CodeableConcept "Gender identity (affiliation with the transgender community)"
 * genderIdentity from ChEkmGenderIdentity (required)
 

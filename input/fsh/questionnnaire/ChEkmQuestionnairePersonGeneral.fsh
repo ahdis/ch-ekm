@@ -271,7 +271,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 * item[=].text.extension[=].extension[=].valueString = "Sesso"
 * item[=].type = #choice
 * item[=].required = true
-* item[=].answerValueSet = "http://hl7.org/fhir/ValueSet/administrative-gender"
+* item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex"
 // Localize the option labels: request displayLanguage de-CH via the binding-parameter extension;
 // the tx server resolves the German designations from ChEkmAdministrativeGenderLanguageSupplement.
 * item[=].answerValueSet.extension[+].url = $binding-parameter

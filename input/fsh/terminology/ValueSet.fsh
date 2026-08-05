@@ -1,3 +1,13 @@
+ValueSet: ChEkmPatientAdministrativeSex
+Title: "CH EKM Patient Administrative Sex"
+Description: "This CH EKM value set includes the codes for patient administrative sex with the tree codes defined for Switzerland."
+* ^status = #active
+* ^experimental = false
+
+* $administrative-gender#male "Male"
+* $administrative-gender#female "Female"
+* $administrative-gender#other "Other"
+
 ValueSet: ChEkmExposureClass
 Title: "CH EKM Exposure Class"
 Description: "This CH EKM value set includes the HL7 v3 ActClass codes that classify an exposure (mirrors the ActClassExposure value set used by HL7 Europe HDR and US eCR)."

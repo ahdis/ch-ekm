@@ -13,7 +13,7 @@ Description: "CodeSystem supplement adding German, French and Italian (Swiss) di
 * #male ^designation[+].language = #fr-CH
 * #male ^designation[=].value = "masculin"
 * #male ^designation[+].language = #it-CH
-* #male ^designation[=].value = "maschile"
+* #male ^designation[=].value = "sesso maschile"
 
 * #female "Female"
 * #female ^designation[+].language = #de-CH
@@ -21,24 +21,15 @@ Description: "CodeSystem supplement adding German, French and Italian (Swiss) di
 * #female ^designation[+].language = #fr-CH
 * #female ^designation[=].value = "féminin"
 * #female ^designation[+].language = #it-CH
-* #female ^designation[=].value = "femminile"
+* #female ^designation[=].value = "sesso femminile"
 
 * #other "Other"
 * #other ^designation[+].language = #de-CH
-* #other ^designation[=].value = "anderes"
+* #other ^designation[=].value = "unbestimmt"
 * #other ^designation[+].language = #fr-CH
-* #other ^designation[=].value = "autre"
+* #other ^designation[=].value = "indéterminé"
 * #other ^designation[+].language = #it-CH
-* #other ^designation[=].value = "altro"
-
-* #unknown "Unknown"
-* #unknown ^designation[+].language = #de-CH
-* #unknown ^designation[=].value = "unbekannt"
-* #unknown ^designation[+].language = #fr-CH
-* #unknown ^designation[=].value = "inconnu"
-* #unknown ^designation[+].language = #it-CH
-* #unknown ^designation[=].value = "sconosciuto"
-
+* #other ^designation[=].value = "indeterminato"
 
 // ============================================================================================
 // SNOMED CT language supplement — de-CH / fr-CH / it-CH for the SNOMED codes enumerated in
