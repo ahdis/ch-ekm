@@ -12,22 +12,46 @@
 # leaves, so our person leaves can stay flat and merge directly into the root's group.
 #
 # The child sub-questionnaires are resolved by canonical url from local fsh-generated/resources
-# (no FHIR server, no upload step).
+# (no FHIR server needed for the assembly itself).
+#
+# Steps:
+#   1. sushi .
+#   2. $assemble -> input/resources/Questionnaire-<RootId>Assembled.json
+#   3. build-lang-questionnaire.py -> input/resources/Questionnaire-<RootId>-<lang>.json (de/fr/it-CH)
+#   4. PUBLISH all of the above to the Forms Server via scripts/upload-questionnaire.sh
+#
+# Step 4 writes to a live server (https://smartforms.ahdis.ch/api/fhir by default), so the
+# renderer's picker always matches what was just built. Opt out with --no-upload or EKM_UPLOAD=0;
+# override the target with EKM_FHIR_BASE. PREVIEW_LANG is honoured in both steps 3 and 4, so
+# building one language publishes that one language.
 #
 # Usage:
-#   ./scripts/assemble-questionnaire.sh <RootQuestionnaireId>
+#   ./scripts/assemble-questionnaire.sh <RootQuestionnaireId> [--no-upload]
 #   ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea
-#   ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox
+#   ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox --no-upload
+#   PREVIEW_LANG=fr-CH ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox
+#   EKM_FHIR_BASE=http://localhost:8080/fhir ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox
 #
 set -euo pipefail
 
 # Run from the repo root regardless of where the script is invoked from.
 cd "$(dirname "$0")/.."
 
+# --no-upload skips step 4 (publishing to the Forms Server); everything else is positional.
+UPLOAD=1
+ARGS=()
+for a in "$@"; do
+  case "$a" in
+    --no-upload) UPLOAD=0 ;;
+    *) ARGS+=("$a") ;;
+  esac
+done
+set -- "${ARGS[@]+"${ARGS[@]}"}"
+
 ROOT_ID="${1:-}"
 if [ -z "$ROOT_ID" ]; then
   echo "ERROR: missing root questionnaire id."
-  echo "Usage: $0 <RootQuestionnaireId>   (e.g. ChEkmQuestionnaireGonorrhoea)"
+  echo "Usage: $0 <RootQuestionnaireId> [--no-upload]   (e.g. ChEkmQuestionnaireGonorrhoea)"
   exit 2
 fi
 
@@ -154,3 +178,45 @@ jq -r '.. | objects | select(.linkId) | "  [\(.type)] \(.linkId): \(.text // "")
 echo
 echo "Building per-language preview questionnaires"
 python3 scripts/build-lang-questionnaire.py "$ASSEMBLED_ID"
+
+# --- 4. publish to the Forms Server -------------------------------------------
+# Push the assembled questionnaire and the per-language previews so the renderer's picker
+# matches what was just built. Skipped with --no-upload (or EKM_UPLOAD=0) when working offline
+# or on a branch you do not want published.
+if [ "${EKM_UPLOAD:-1}" = "0" ]; then UPLOAD=0; fi
+
+if [ "$UPLOAD" = "1" ]; then
+  BASE="${EKM_FHIR_BASE:-https://smartforms.ahdis.ch/api/fhir}"
+  # Mirror build-lang-questionnaire.py: PREVIEW_LANG overrides the three Swiss languages.
+  LANGS="${PREVIEW_LANG:-de-CH fr-CH it-CH}"
+  BASE_ID="${ASSEMBLED_ID%Assembled}"
+
+  UPLOADS=("$OUT")
+  for lang in $LANGS; do
+    f="input/resources/Questionnaire-${BASE_ID}-${lang}.json"
+    [ -f "$f" ] && UPLOADS+=("$f")
+  done
+
+  echo
+  echo "=============================================================================="
+  echo "Publishing ${#UPLOADS[@]} questionnaire(s) to $BASE"
+  echo "=============================================================================="
+  FAILED=()
+  for f in "${UPLOADS[@]}"; do
+    echo
+    scripts/upload-questionnaire.sh "$f" "$BASE" || FAILED+=("$f")
+  done
+
+  if [ ${#FAILED[@]} -gt 0 ]; then
+    echo
+    echo "ERROR: ${#FAILED[@]} of ${#UPLOADS[@]} upload(s) failed:"
+    printf '  %s\n' "${FAILED[@]}"
+    echo "The generated files above are fine — only publishing failed. Re-run with --no-upload"
+    echo "to skip this step, or upload individually with scripts/upload-questionnaire.sh."
+    exit 1
+  fi
+else
+  echo
+  echo "Skipping upload to the Forms Server (--no-upload / EKM_UPLOAD=0)."
+  echo "  Publish later with: scripts/upload-questionnaire.sh $ASSEMBLED_ID"
+fi

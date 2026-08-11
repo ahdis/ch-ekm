@@ -5,15 +5,15 @@ set -euo pipefail
 # the server to be ready, then PUTs each resource by id in dependency order.
 #
 # Usage:
-#   ./scripts/start_hapi.sh                                   # local HAPI at http://localhost:8080/fhir
-#   ./scripts/load_examples.sh                                # -> local HAPI (default)
-#   ./scripts/load_examples.sh https://hapi.fhir.org/baseR4   # -> any other server
+#   ./scripts/start_hapi.sh                          
+#   ./scripts/load_examples.sh http://localhost:8080/fhir  # -> local HAPI (default)
+#   ./scripts/load_examples.sh https://smartforms.ahdis.ch/api/fhir   # -> any other server
 #
 # The Smart Forms playground needs these resources on whatever server it is
 # pointed at (Settings -> Source FHIR server) for %user pre-population to work —
 # see forms-summary.md §10.
 
-BASE_URL="${1:-http://localhost:8080/fhir}"
+BASE_URL="${1:-https://smartforms.ahdis.ch/api/fhir}"
 RES_DIR="$(cd "$(dirname "$0")/.." && pwd)/fsh-generated/resources"
 
 # Resources in dependency order: PractitionerRole references Practitioner and
@@ -23,9 +23,9 @@ RESOURCES=(
   "Organization/ChEkmOrganizationTreatingPhysicianExample|Organization-ChEkmOrganizationTreatingPhysicianExample.json"
   "PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample|PractitionerRole-ChEkmPractitionerRoleTreatingPhysicianExample.json"
   "Patient/ChEkmPatientInitialsExample|Patient-ChEkmPatientInitialsExample.json"
-)
+  "Patient/ChEkmPatientDupontAntoine|Patient-ChEkmPatientDupontAntoine.json")
 
-echo "Waiting for HAPI FHIR at ${BASE_URL} ..."
+echo "Waiting for FHIR server at ${BASE_URL} ..."
 until curl -sf -o /dev/null "${BASE_URL}/metadata"; do
   printf '.'
   sleep 5
@@ -36,7 +36,7 @@ for entry in "${RESOURCES[@]}"; do
   path="${entry%%|*}"
   file="${entry##*|}"
   echo "PUT ${path}"
-  status=$(curl -s -o /tmp/hapi_put_resp.json -w "%{http_code}" \
+  status=$(curl -s -o /tmp/put_resp.json -w "%{http_code}" \
     -X PUT "${BASE_URL}/${path}" \
     -H "Content-Type: application/fhir+json" \
     -H "Accept: application/fhir+json" \
@@ -44,7 +44,7 @@ for entry in "${RESOURCES[@]}"; do
   echo "  -> HTTP ${status}"
   if [[ "${status}" != "200" && "${status}" != "201" ]]; then
     echo "  ! failed:"
-    cat /tmp/hapi_put_resp.json
+    cat /tmp/put_resp.json
     echo
     exit 1
   fi

@@ -11,6 +11,20 @@ Smart Forms (`../smart-forms`) is an open-source, React/TypeScript reference
 implementation of the HL7 **Structured Data Capture (SDC)** IG, FHIR **R4**. We use it as
 the renderer for the CH EKM forms.
 
+> **Two deployments — do not conflate them.** This document refers to both:
+>
+> | | **CSIRO's** (upstream) | **ours** |
+> | --- | --- | --- |
+> | Renderer / app | https://smartforms.csiro.au | https://smartforms.ahdis.ch |
+> | FHIR Forms Server | `https://smartforms.csiro.au/api/fhir` | `https://smartforms.ahdis.ch/api/fhir` |
+> | Server software | HAPI 8.10.0 | **Blaze 1.10.1** (since 2026-08, see §9) |
+> | Role | reference / playground / prototyping | demo for CH EKM questionnaires  |
+>
+> Statements below about HAPI behaviour (`$assemble`, `$populate`, storing the extraction
+> template) describe **CSIRO's** server and HAPI in general — they no longer describe ours.
+> `scripts/upload-questionnaire.sh` defaults to our server; the `$assemble` and `$populate`
+> scripts do not call either one (both run the reference libraries locally).
+
 What it gives us:
 - **Renderer library** `@aehrc/smart-forms-renderer` (npm) — embeds a `Questionnaire` →
   interactive form → `QuestionnaireResponse` in any React app.
@@ -34,18 +48,21 @@ Hosted endpoints (for prototyping):
 - Assemble: `https://smartforms.csiro.au/api/fhir/Questionnaire/$assemble` — **no longer used
   by our build** (see the switch below); kept here as a reference/fallback endpoint.
 
-> **`/api/fhir` is the FHIR server, `/fhir` is the web app.** The HAPI Forms Server the
-> renderer reads from (and that `$assemble`/`$populate` live on) is at
-> **`https://smartforms.csiro.au/api/fhir`**. The bare **`https://smartforms.csiro.au/fhir`**
+> **`/api/fhir` is the FHIR server, the other path is the web app.** On CSIRO's deployment the
+> Forms Server the renderer reads from (and that `$assemble`/`$populate` live on) is at
+> **`https://smartforms.csiro.au/api/fhir`**, while the bare **`https://smartforms.csiro.au/fhir`**
 > path is the **renderer single-page app** (served from S3/CloudFront) — a `PUT` there
-> returns the SPA's `index.html` with HTTP 200, not a FHIR response. Always upload to
-> `/api/fhir` (see §9).
+> returns the SPA's `index.html` with HTTP 200, not a FHIR response. Ours splits the same way,
+> with the app at the host root: `https://smartforms.ahdis.ch/` is the renderer,
+> `https://smartforms.ahdis.ch/api/fhir` is Blaze. Always upload to `/api/fhir` (see §9).
 >
-> **The deployed endpoint is HAPI, not the TS microservices.** `/api/fhir/metadata` reports
-> **HAPI FHIR Server 8.10.0**, so the hosted `$assemble`/`$populate` are HAPI's operations, not
-> the `sdc-assemble`/`sdc-populate` Express services in the table above (those are the *reference*
-> implementations / what Smart Forms runs in-app). This matters for both `$assemble` (see next)
-> and `$populate` FHIRPath support (see §10).
+> **CSIRO's endpoint is HAPI, not the TS microservices.** `smartforms.csiro.au/api/fhir/metadata`
+> reports **HAPI FHIR Server 8.10.0**, so *their* hosted `$assemble`/`$populate` are HAPI's
+> operations, not the `sdc-assemble`/`sdc-populate` Express services in the table above (those are
+> the *reference* implementations / what Smart Forms runs in-app). This matters for both
+> `$assemble` (see next) and `$populate` FHIRPath support (see §10). Our server offers **neither**
+> operation — Blaze has no SDC operations at all, which costs us nothing because we run both
+> locally.
 
 **We assemble LOCALLY with the SDC reference library `@aehrc/sdc-assemble`** (via
 `scripts/assemble/assemble.cjs`, wrapped by `scripts/assemble-gonorrhoea.sh`) — the same engine the
@@ -55,7 +72,7 @@ Smart Forms renderer runs in-app, and a sibling of the local `$populate` / `$ext
 supplies it through the library's `fetchQuestionnaireCallback` (returning a searchset `Bundle`
 whose `entry[0].resource` is the child), so **no FHIR server and no upload step are needed**.
 
-> **Why we moved off the hosted HAPI `$assemble` (2026-07).** HAPI requires **every**
+> **Why we moved off CSIRO's hosted HAPI `$assemble` (2026-07).** HAPI requires **every**
 > questionnaire it processes — the root **and every child** — to carry the `item[0].item` group
 > nesting; a **groupless leaf** sub-questionnaire (top-level items not wrapped in a group) is
 > rejected with `HTTP 400 — "Root questionnaire does not have a valid item."` The `@aehrc/sdc-assemble`
@@ -63,7 +80,7 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
 > `item[0].item`, so a groupless leaf just contributes its items directly. We rely on this so the
 > **person leaves stay flat** (no wrapping group) and merge into one flat group in the assembled
 > form. Trade-off: the committed assembled artifact is produced offline by the reference engine
-> rather than the hosted server (equivalent output, and it is the engine the renderer uses anyway).
+> rather than a hosted server (equivalent output, and it is the engine the renderer uses anyway).
 >
 > **Assembler patch (patch-package) — recursion + arbitrary-depth placeholders (2026-07).** The
 > stock `@aehrc/sdc-assemble` reference engine has **three** gaps we patch, applied to `dist/index.cjs`
@@ -103,7 +120,7 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
 > `[]` for a child, so a groupless leaf still contributes its items directly, see above). Placeholders
 > may now sit anywhere **under** that group, at any nesting depth, mixed with real content.
 
-> **matchbox / hosted HAPI as fallbacks.** matchbox (`test.ahdis.ch/matchbox/fhir`) and the hosted
+> **matchbox / CSIRO's HAPI as fallbacks.** matchbox (`test.ahdis.ch/matchbox/fhir`) and CSIRO's
 > HAPI both implement `Questionnaire/$assemble` and accept a nested-group root (matchbox wants
 > `Content-Type: application/fhir+json` + an SDC `Parameters{questionnaire}` body; the CSIRO Express
 > service wants `application/json` + a bare/wrapped `Questionnaire`). Both share HAPI's stricter
@@ -871,53 +888,69 @@ Two recurring patterns when gating a templated element (empty context → elemen
 
 ---
 
-## 9. Uploading the questionnaire to the hosted Forms Server
+## 9. Uploading the questionnaire to our Forms Server
 
-**`scripts/upload-gonorrhoea.sh`** PUTs the assembled questionnaire to the Smart Forms HAPI
-Forms Server so it shows up in the hosted renderer's picker, without launching:
+**`scripts/upload-questionnaire.sh`** PUTs the assembled questionnaire to the Smart Forms Forms
+Server so it shows up in the hosted renderer's picker, without launching:
 
 ```
 sushi .
-scripts/assemble-gonorrhoea.sh
-scripts/upload-gonorrhoea.sh           # PUT Questionnaire/<id> -> /api/fhir
+scripts/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea
+scripts/upload-questionnaire.sh   ChEkmQuestionnaireGonorrhoea   # PUT Questionnaire/<id> -> /api/fhir
 ```
 
-- Target base defaults to **`https://smartforms.csiro.au/api/fhir`** — the *FHIR server*,
-  not the `/fhir` web app (see §1). Both the base and the questionnaire file are overridable.
+`scripts/upload-{gonorrhoea,mpox}.sh` are thin wrappers over it.
+
+- Target base defaults to **`https://smartforms.ahdis.ch/api/fhir`** — the *FHIR server*, not the
+  web app at the host root (see §1). Both the base and the questionnaire file are overridable.
 - Uses **PUT by id** (upsert) so re-runs update the existing resource instead of creating
   duplicates; **`Content-Type: application/json`** as with the other Smart Forms scripts.
-- After upload it prints the canonical and a ready-to-open renderer link
-  (`https://smartforms.csiro.au/?questionnaireUrl=<canonical>`).
+- The artifact goes up **verbatim** — contained extraction template and all `templateExtract`
+  directives intact, so the server copy *is* the file in `input/resources/`.
+- After upload it prints the canonical and a ready-to-open renderer link, and verifies the stored
+  copy by diffing it against the artifact and counting directives.
 
-### Open issue — hosted HAPI cannot store the contained extraction template
-The server-side copy has the **contained extraction template stripped before upload** — the hosted
-HAPI (smartforms.csiro.au) cannot store it. Two distinct blockers, both confirmed 2026-08:
+### Why the Forms Server runs Blaze, not HAPI (2026-08)
 
-- **`HAPI-1811` (parser) — now FIXED.** The old conditional `data-absent-reason` on
-  `Condition._onsetDateTime` carried both a `templateExtractContext` sub-extension **and** a templated
-  `_valueCode`, violating R4 "value xor sub-extensions": `HTTP 400 HAPI-1811: Extension (…/data-absent-reason)
-  must not have both a value and other contained extensions`. That shape was restructured (whole
-  extension built at extraction via the `SdcTemplateExtractExtension` carrier + `%factory.Extension`,
-  §8). **`Questionnaire/$validate` now returns HTTP 200 with no HAPI-1811.**
+The upload used to strip the contained template, because **HAPI cannot store it**. Two independent
+defects, both now reported upstream:
 
-- **`HAPI-2223` (indexer) — still blocks a real PUT.** A `PUT` of the intact questionnaire fails
-  `HTTP 500 HAPI-2223: Cannot invoke "BaseRuntimeChildDefinition.getElementName()" because "this.myDef"
-  is null` — an internal NPE in HAPI's **search-parameter indexing** as it walks the contained tree
-  (a path `$validate` never runs, which is why validate passes but PUT fails). Bisected on the hosted
-  server:
-  - a **dummy** contained Bundle (plain, even `type=document`) stores fine → **not** the contained-Bundle shape;
-  - removing **all** primitive-extension (`_x`) keys **or** **all** `extension` arrays from `contained`
-    → stores fine; removing any **single** element's does not → the trigger is the **templateExtract
-    directive extensions themselves**, present pervasively on nearly every template element.
+- **[hapifhir/hapi-fhir#8238](https://github.com/hapifhir/hapi-fhir/issues/8238) — `HAPI-2223` NPE,
+  write rejected.** A resource whose `contained[]` holds a **Bundle** with an `extension` on one of
+  that Bundle's **root-level primitives** fails with `HTTP 500 HAPI-2223: Cannot invoke
+  "BaseRuntimeChildDefinition.getElementName()" because "this.myDef" is null`. In our template that
+  is exactly one spot: `_timestamp`, carrying `templateExtractValue = %resource.authored`.
 
-  Since those directives *are* the extraction template, it cannot be both functional and storable on
-  this HAPI. (Local `$extract` is unaffected — it reads the file, not the server.)
+  Bisected against HAPI 8.10.0 and hapi.fhir.org 8.11.16-SNAPSHOT. It is **not** search-parameter
+  indexing (an earlier reading of this section said so — `Bundle.implicitRules`, which is a search
+  parameter nowhere in R4, fails identically, while a **top-level** Bundle carrying the same
+  extension stores fine), and **not** the directives in general (anything below the Bundle root —
+  `meta`, `link`, `entry`, `entry.resource.*` — is fine). It is the **encoder**, not the indexer:
+  matchbox (hapi-fhir 8.8.0) accepts the write and then serves a truncated, invalid body on every
+  read, and `$validate` never surfaces it.
 
-So `scripts/upload-gonorrhoea.sh` keeps `del(.contained)` (+ drops the `sdc-questionnaire-extr-template`
-`meta.profile` claim); the trade-off is the hosted copy **cannot offer template-based `$extract`**. For
-extraction, use the full local artifact
-(`input/resources/Questionnaire-ChEkmQuestionnaireGonorrhoeaAssembled.json`, template intact) with
-`scripts/extract-gonorrhoea.sh`.
+  This cannot be authored around: SDC requires the directive on `Bundle.timestamp` itself, and
+  `Bundle` derives from `Resource`, not `DomainResource`, so it has **no `extension` element** —
+  every attachment point at a Bundle root is a primitive `_x`, and all of them trip the bug. The
+  `%factory.Extension` carrier (§8) needs a real `extension` slot and so does not apply.
+
+- **[FHIR/sushi#1631](https://github.com/FHIR/sushi/issues/1631) — extensions silently dropped.**
+  SUSHI emits a value-less directive on a *repeating* primitive as `_x` alone, with no null-padded
+  sibling `x` array (`HumanName.given`, `Address.line`). HAPI parses that as an unanchored extension
+  and drops it: `201`, no `OperationOutcome`, 3 of 39 `templateExtractValue` directives simply gone
+  from the stored copy. The FHIR R4 JSON rules call for `"given": [null]`, and SUSHI already emits
+  that correctly as soon as one entry has a value — it only omits the array when *every* value is
+  absent. Fixing it there makes the published IG artifacts conformant too.
+
+**Blaze** ([samply/blaze](https://github.com/samply/blaze)) stores the resource as given and returns
+it verbatim, so both questionnaires round-trip byte-identically with all 39 directives and the
+upload needs no rewriting at all. `smartforms.ahdis.ch/api/fhir` has run Blaze 1.10.1 since 2026-08
+(manifests in `k8s-fhir.ch/ahdis-infomaniak/smartforms-ahdis-ch`). Blaze does **not** validate —
+keep using the IG Publisher for that.
+
+Because the template now survives upload, the server copy also keeps `%resource.authored` on
+`Bundle.timestamp` rather than the 1900 placeholder (§8, "placeholder defaults"). Local `$extract`
+is unaffected either way — it reads the file, not the server.
 
 ---
 
