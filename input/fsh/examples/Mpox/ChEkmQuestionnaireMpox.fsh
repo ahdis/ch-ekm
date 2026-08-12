@@ -6,6 +6,8 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpox"
 
 * insert RuleSetQrHeader("mpox-form", "Clinical findings report: mpox", "Meldung zum klinischen Befund: Mpox", "Déclaration de résultat clinique : Mpox", "Notifica del referto clinico: Mpox", ChEkmDocumentMpoxTemplate)
+// Render the sections below (person / diagnosis / exposure / physician) as tabs on the left
+* insert RuleSetQrLevel1TabContainer
 
 * insert RuleSetQrGroupPerson
 * insert RuleSetQrPersonName

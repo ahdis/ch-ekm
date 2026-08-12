@@ -6,5 +6,12 @@ The extension http://hl7.org/fhir/StructureDefinition/regex|%
 The repeating element has a pattern. The pattern will apply to all the repeats (this has not been clear to all users)
 None of the codings provided are in the value set 'IdentifierType' (http://hl7.org/fhir/ValueSet/identifier-type|%
 
+# itemControl 'tab-container' (renders the sections of the modular root questionnaires as a tab strip,
+# see forms-summary.md) only exists in the CURRENT questionnaire-item-control code system shipped with
+# the FHIR Extensions pack (hl7.fhir.uv.extensions.r4) - R4 core froze that code system at 4.0.1,
+# which is the version the validator resolves here. The binding is extensible and the Smart Forms
+# renderer implements the code, so this is expected until the R4 code system catches up.
+Unknown code 'tab-container' in the CodeSystem 'http://hl7.org/fhir/questionnaire-item-control' version '4.0.1'
+
 # need to update tx.fhir.org with the new SNOMED Swiss CT extension, code is valid since 2026-02 (running with -ig tx.fhir.ch runs ok)
 The code '1384187000' is not valid in the system http://snomed.info/sct (Unknown code '1384187000' in the CodeSystem 'http://snomed.info/sct' version 'http://snomed.info/sct/2011000195101/version/20230607' (Swiss Edition))

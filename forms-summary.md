@@ -135,6 +135,23 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
 - **itemControl** extension: `drop-down`, `radio-button`, `check-box`, `autocomplete`.
   `choiceOrientation` controls horizontal/vertical layout.
 
+  > **`tab-container` puts the sections in a tab strip on the left.** Put
+  > `itemControl = tab-container` on the **top-level form group** (`item[0]`, the one
+  > `RuleSetQrHeader` builds — rule set `RuleSetQrLevel1TabContainer`); every child of that group
+  > then becomes one tab: person / manifestation-group / exposure / treatingPhysician. Only a
+  > *top-level* item is inspected (`FormTopLevelItem` → `isTabContainer`), and on narrow screens the
+  > same structure falls back to a collapsible accordion (`FormBodyCollapsible`).
+  > Tab labels come from `sdc-questionnaire-shortText` and fall back to `item.text`
+  > (`getShortText(qItem) ?? getItemTextToDisplay(qItem)`), so each section carries a short label via
+  > `RuleSetQrLevel1ShortText` / `RuleSetQrLevel2ShortText` — translated the same way as `item.text`
+  > and baked into the language previews by `build-lang-questionnaire.py` (`localize_short_text`).
+  > **Caveat:** `$assemble` *replaces* a `subQuestionnaire` placeholder with the child's items, so a
+  > section that is a placeholder (treatingPhysician) must carry its shortText on the **child's own
+  > root group**, not on the placeholder.
+  > `tab-container` is not in the R4 `questionnaire-item-control` code system (added in a later
+  > version of the extension) → expect an extensible-binding warning from the IG publisher.
+  > Reference: [Smart Forms storybook, tab container](https://smartforms.csiro.au/storybook/?path=/story/sdc-9-1-2-rendering-control-appearance-itemcontrol-group--tab-container)
+
   > **A single tick-box is a `choice`, not a `boolean`.** A `boolean` item renders as a Yes/No
   > radio pair, and even with `itemControl = check-box` the renderer puts the item **label in the
   > left label column and the box on the right** (`ItemFieldGrid` + `BooleanItem`) — nothing in the

@@ -109,6 +109,48 @@ RuleSet: RuleSetQrLevel3Text(text, text-de-CH, text-fr-CH, text-it-CH)
 * item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
 * item[=].item[=].item[=].text.extension[=].extension[=].valueString = {text-it-CH}
 
+// Short tab labels: sdc-questionnaire-shortText + de-CH/fr-CH/it-CH translations, one rule set per
+// nesting level. The renderer falls back to item.text when no shortText is present, so this is
+// purely about keeping the tab strip narrow — the full heading stays on item.text.
+// (https://smartforms.csiro.au/storybook/?path=/story/sdc-9-1-2-rendering-control-appearance-itemcontrol-group--tab-container)
+RuleSet: RuleSetQrLevel1ShortText(text, text-de-CH, text-fr-CH, text-it-CH)
+* item[=].extension[+].url = $sdc-shortText
+* item[=].extension[=].valueString = {text}
+* item[=].extension[=].valueString.extension[+].url = $translation
+* item[=].extension[=].valueString.extension[=].extension[+].url = "lang"
+* item[=].extension[=].valueString.extension[=].extension[=].valueCode = #de-CH
+* item[=].extension[=].valueString.extension[=].extension[+].url = "content"
+* item[=].extension[=].valueString.extension[=].extension[=].valueString = {text-de-CH}
+* item[=].extension[=].valueString.extension[+].url = $translation
+* item[=].extension[=].valueString.extension[=].extension[+].url = "lang"
+* item[=].extension[=].valueString.extension[=].extension[=].valueCode = #fr-CH
+* item[=].extension[=].valueString.extension[=].extension[+].url = "content"
+* item[=].extension[=].valueString.extension[=].extension[=].valueString = {text-fr-CH}
+* item[=].extension[=].valueString.extension[+].url = $translation
+* item[=].extension[=].valueString.extension[=].extension[+].url = "lang"
+* item[=].extension[=].valueString.extension[=].extension[=].valueCode = #it-CH
+* item[=].extension[=].valueString.extension[=].extension[+].url = "content"
+* item[=].extension[=].valueString.extension[=].extension[=].valueString = {text-it-CH}
+
+RuleSet: RuleSetQrLevel2ShortText(text, text-de-CH, text-fr-CH, text-it-CH)
+* item[=].item[=].extension[+].url = $sdc-shortText
+* item[=].item[=].extension[=].valueString = {text}
+* item[=].item[=].extension[=].valueString.extension[+].url = $translation
+* item[=].item[=].extension[=].valueString.extension[=].extension[+].url = "lang"
+* item[=].item[=].extension[=].valueString.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].extension[=].valueString.extension[=].extension[+].url = "content"
+* item[=].item[=].extension[=].valueString.extension[=].extension[=].valueString = {text-de-CH}
+* item[=].item[=].extension[=].valueString.extension[+].url = $translation
+* item[=].item[=].extension[=].valueString.extension[=].extension[+].url = "lang"
+* item[=].item[=].extension[=].valueString.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].extension[=].valueString.extension[=].extension[+].url = "content"
+* item[=].item[=].extension[=].valueString.extension[=].extension[=].valueString = {text-fr-CH}
+* item[=].item[=].extension[=].valueString.extension[+].url = $translation
+* item[=].item[=].extension[=].valueString.extension[=].extension[+].url = "lang"
+* item[=].item[=].extension[=].valueString.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].extension[=].valueString.extension[=].extension[+].url = "content"
+* item[=].item[=].extension[=].valueString.extension[=].extension[=].valueString = {text-it-CH}
+
 // Single-option check-box items (see ChEkmQuestionnaireExposureWhere) carry their visible label
 // on answerOption[0].valueString instead of item.text, but need the same four languages.
 RuleSet: RuleSetQrLevel2AnswerOptionText(text, text-de-CH, text-fr-CH, text-it-CH)
@@ -162,6 +204,17 @@ RuleSet: RuleSetQrHeader(linkId, text, text-de-CH, text-fr-CH, text-it-CH, extra
 * item[=].extension[+].url = $sdc-templateExtract
 * item[=].extension[=].extension[+].url = "template"
 * item[=].extension[=].extension[=].valueReference = Reference({extractTemplate})
+
+// Renders the form group (item[0], the one RuleSetQrHeader creates) as a TAB CONTAINER: each of its
+// children — after $assemble these are the section groups person / manifestation-group / exposure /
+// treatingPhysician — becomes one tab. Insert directly after RuleSetQrHeader, while item[=] is still
+// the form group. Tab labels come from each child's sdc-questionnaire-shortText (RuleSetQrLevel*ShortText),
+// falling back to its item.text.
+// Note: `tab-container` is not in the R4 questionnaire-item-control code system (it was added in a
+// later version of the extension), so the IG publisher flags it as an extensible-binding warning.
+RuleSet: RuleSetQrLevel1TabContainer
+* item[=].extension[+].url = $questionnaire-itemControl
+* item[=].extension[=].valueCodeableConcept = $item-control#tab-container
 
 RuleSet: RuleSetQrLevel2Group(linkId, text, text-de-CH, text-fr-CH, text-it-CH)
 * item[=].item[+].linkId = {linkId}
@@ -219,6 +272,7 @@ RuleSet: RuleSetQrLevel3Item(linkId, text, text-de-CH, text-fr-CH, text-it-CH)
 
 RuleSet: RuleSetQrGroupPerson
 * insert RuleSetQrLevel2Group("person", "Affected person's details", "Angaben zur betroffenen Person", "Données relatives à la personne concernée", "Dati relativi alla persona interessata")
+* insert RuleSetQrLevel2ShortText("Person", "Person", "Personne", "Persona")
 
 RuleSet: RuleSetQrPersonName
 * insert RuleSetQrLevel3SubQuestionnaire("personName", "Name", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonName")
@@ -234,12 +288,14 @@ RuleSet: RuleSetQrPersonGenderIdentity
 
 RuleSet: RuleSetQrGroupManifestation
 * insert RuleSetQrLevel2Group("manifestation-group", "Diagnosis and manifestation", "Diagnose und Manifestation", "Diagnostic et manifestation", "Diagnosi e manifestazione")
+* insert RuleSetQrLevel2ShortText("Diagnosis", "Diagnose", "Diagnostic", "Diagnosi")
 
 RuleSet: RuleSetQrManifestationBeginUnknown
 * insert RuleSetQrLevel3SubQuestionnaire("manifestationBeginUnknown", "Onset of manifestation unknown", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown")
 
 RuleSet: RuleSetQrGroupExposure
 * insert RuleSetQrLevel2Group("exposure", "Exposure details", "Angaben zur Exposition", "Données relatives à l'exposition", "Dati relativi all'esposizione")
+* insert RuleSetQrLevel2ShortText("Exposure", "Exposition", "Exposition", "Esposizione")
 
 RuleSet: RuleSetQrExposureWhere
 * insert RuleSetQrLevel3SubQuestionnaire("exposurewhere", "Exposure: where", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhere")
@@ -250,5 +306,8 @@ RuleSet: RuleSetQrExposureWhen
 RuleSet: RuleSetQrExposureHow
 * insert RuleSetQrLevel3SubQuestionnaire("exposurehow", "Exposure: how", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow") 
 
+// The treating-physician section is a sub-questionnaire placeholder, and $assemble REPLACES the
+// placeholder item with the child's items — so its tab label (shortText) cannot live here, it sits on
+// the child's own root group in ChEkmQuestionnaireTreatingPhysician.
 RuleSet: RuleSetQrGroupTreatingPhysician
 * insert RuleSetQrLevel2SubQuestionnaire("treatingPhysician", "Treating physician", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician")

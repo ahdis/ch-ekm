@@ -18,6 +18,9 @@ Alias: $v2-0203 = http://terminology.hl7.org/CodeSystem/v2-0203
 Alias: $sdc-modular =               http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular
 Alias: $sdc-assemble-expectation =  http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assemble-expectation
 Alias: $sdc-subQuestionnaire =      http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire
+// Short label used instead of item.text where space is tight - notably the tab labels of a
+// tab-container (Smart Forms: getShortText(qItem) ?? item.text).
+Alias: $sdc-shortText =             http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText
 Alias: $questionnaire-itemControl = http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl
 Alias: $choiceOrientation =         http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation
 Alias: $binding-parameter =         http://hl7.org/fhir/tools/StructureDefinition/binding-parameter

@@ -908,6 +908,17 @@
           ]
         },
         {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "code": "tab-container",
+                "system": "http://hl7.org/fhir/questionnaire-item-control"
+              }
+            ]
+          }
+        },
+        {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
             "name": "homeOrFirstAddress",
@@ -921,6 +932,12 @@
           "linkId": "person",
           "type": "group",
           "text": "Angaben zur betroffenen Person",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Person"
+            }
+          ],
           "item": [
             {
               "linkId": "surnameInitial",
@@ -4079,6 +4096,12 @@
           "linkId": "manifestation-group",
           "type": "group",
           "text": "Diagnose und Manifestation",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Diagnose"
+            }
+          ],
           "item": [
             {
               "linkId": "manifestation",
@@ -4149,6 +4172,12 @@
           "linkId": "exposure",
           "type": "group",
           "text": "Angaben zur Exposition",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Exposition"
+            }
+          ],
           "item": [
             {
               "linkId": "exposureHow",
@@ -4274,6 +4303,12 @@
           "linkId": "treatingPhysician",
           "text": "Behandelnde Ärztin / behandelnder Arzt",
           "type": "group",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Arzt/Ärztin"
+            }
+          ],
           "item": [
             {
               "linkId": "treatingPhysicianPractitioner",

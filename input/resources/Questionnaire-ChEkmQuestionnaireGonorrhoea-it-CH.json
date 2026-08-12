@@ -908,6 +908,17 @@
           ]
         },
         {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "code": "tab-container",
+                "system": "http://hl7.org/fhir/questionnaire-item-control"
+              }
+            ]
+          }
+        },
+        {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
             "name": "homeOrFirstAddress",
@@ -921,6 +932,12 @@
           "linkId": "person",
           "type": "group",
           "text": "Dati relativi alla persona interessata",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Persona"
+            }
+          ],
           "item": [
             {
               "linkId": "surnameInitial",
@@ -4079,6 +4096,12 @@
           "linkId": "manifestation-group",
           "type": "group",
           "text": "Diagnosi e manifestazione",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Diagnosi"
+            }
+          ],
           "item": [
             {
               "linkId": "manifestation",
@@ -4149,6 +4172,12 @@
           "linkId": "exposure",
           "type": "group",
           "text": "Dati relativi all'esposizione",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Esposizione"
+            }
+          ],
           "item": [
             {
               "linkId": "exposureHow",
@@ -4274,6 +4303,12 @@
           "linkId": "treatingPhysician",
           "text": "Medico curante",
           "type": "group",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Medico"
+            }
+          ],
           "item": [
             {
               "linkId": "treatingPhysicianPractitioner",

@@ -246,9 +246,33 @@ def localize_answer_options(it):
             holder.pop(ext_key, None)
 
 
+def localize_short_text(it):
+    """Bake the LANG label into the sdc-questionnaire-shortText extension.
+
+    shortText carries the tab labels of the tab-container form group (Smart Forms uses
+    getShortText(qItem) ?? item.text for a tab). Like item.text it holds the English default in
+    `valueString` plus de/fr/it variants under the primitive-element sibling `_valueString`, and the
+    renderer has no live translation step - so bake it in the same way."""
+    for ext in it.get("extension", []):
+        if not ext.get("url", "").endswith("/sdc-questionnaire-shortText"):
+            continue
+        sibling = ext.get("_valueString")
+        if not sibling:
+            continue
+        for e in sibling.get("extension", []):
+            if e.get("url", "").endswith("/translation"):
+                sub = {x.get("url"): x for x in e.get("extension", [])}
+                if sub.get("lang", {}).get("valueCode") == LANG:
+                    content = sub.get("content", {}).get("valueString")
+                    if content:
+                        ext["valueString"] = content
+        ext.pop("_valueString", None)
+
+
 def walk(item):
     for it in item:
         localize_text(it)
+        localize_short_text(it)
         localize_answer_options(it)
         if "answerValueSet" in it:
             canonical = it.pop("answerValueSet")

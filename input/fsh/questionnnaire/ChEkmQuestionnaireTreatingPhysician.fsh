@@ -27,6 +27,9 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[+].linkId = "treatingPhysician"
 * insert RuleSetQrLevel1Text("Treating physician", "Behandelnde Ärztin / behandelnder Arzt", "Médecin traitant", "Medico curante")
 * item[=].type = #group
+// Tab label in the assembled root form (tab-container): this group replaces the root's
+// subQuestionnaire placeholder, so the shortText has to be authored here, not on the placeholder.
+* insert RuleSetQrLevel1ShortText("Physician", "Arzt/Ärztin", "Médecin", "Medico")
 
 // --- Practitioner -----------------------------------------------------------
 * item[=].item[+].linkId = "treatingPhysicianPractitioner"

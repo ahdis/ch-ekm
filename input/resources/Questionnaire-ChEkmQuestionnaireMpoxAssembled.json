@@ -1011,6 +1011,17 @@
           ]
         },
         {
+          "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "code": "tab-container",
+                "system": "http://hl7.org/fhir/questionnaire-item-control"
+              }
+            ]
+          }
+        },
+        {
           "url": "http://hl7.org/fhir/StructureDefinition/variable",
           "valueExpression": {
             "name": "homeOrFirstAddress",
@@ -1067,6 +1078,55 @@
               }
             ]
           },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Person",
+              "_valueString": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Person"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Personne"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Persona"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
           "item": [
             {
               "linkId": "surname",
@@ -1840,6 +1900,55 @@
               }
             ]
           },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Diagnosis",
+              "_valueString": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Diagnose"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Diagnostic"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Diagnosi"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
           "item": [
             {
               "linkId": "manifestation",
@@ -2084,6 +2193,55 @@
               }
             ]
           },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Exposure",
+              "_valueString": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Exposition"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Exposition"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Esposizione"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
           "item": [
             {
               "linkId": "exposureWhere",
@@ -2873,6 +3031,55 @@
             ]
           },
           "type": "group",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Physician",
+              "_valueString": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Arzt/Ärztin"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Médecin"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Medico"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
           "item": [
             {
               "linkId": "treatingPhysicianPractitioner",

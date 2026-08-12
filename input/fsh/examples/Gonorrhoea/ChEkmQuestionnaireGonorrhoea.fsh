@@ -8,6 +8,8 @@ Description: "Modular root questionnaire for the Gonorrhoea clinical findings re
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea"
 
 * insert RuleSetQrHeader("gonorrhoea-form", "Clinical findings report: gonorrhoea", "Meldung zum klinischen Befund: Gonorrhoea", "Déclaration de résultat clinique : Gonorrhoea", "Notifica del referto clinico: Gonorrhoea", ChEkmDocumentGonorrhoeaTemplate)
+// Render the sections below (person / diagnosis / exposure / physician) as tabs on the left
+* insert RuleSetQrLevel1TabContainer
 
 * insert RuleSetQrGroupPerson
 * insert RuleSetQrPersonInitials
