@@ -27,6 +27,9 @@ InstanceOf: ChEkmExposureMpox
 // Wann — inserted AFTER the transmission components so those keep their array indices
 // (the extract engine's context bookkeeping is index-sensitive, see RuleSetComponentExposure).
 * insert RuleSetEffectiveExposureWhen
+// Wo — only touches the `extension` array (two mutually exclusive carriers), so it is independent
+// of the component indices above.
+* insert RuleSetExposureWhere
 
 // ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionMpox) — static structure, references the entries above,

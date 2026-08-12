@@ -302,6 +302,27 @@
             }
           }
         ],
+        "extension": [
+          {
+            "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address",
+            "valueAddress": {
+              "city": "Kinshasa",
+              "country": "CD",
+              "_country": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/iso21090-codedString",
+                    "valueCoding": {
+                      "code": "CD",
+                      "system": "urn:iso:std:iso:3166",
+                      "display": "Congo (Kinshasa)"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
         "effectiveDateTime": "2026-07-01"
       }
     },

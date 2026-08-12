@@ -1,3 +1,57 @@
+RuleSet: RuleSetExposureWhere
+// Exposure "Wo" (https://github.com/ahdis/ch-ekm/issues/26) -> extension[exposureAddress]:
+//   exposureWhereChLi (CH/LI check-box)     -> valueAddress.country = CH
+//   exposureWhereCountry                    -> valueAddress.country (ISO code) + country coding
+//   exposureWherePreciseLocation            -> valueAddress.city
+//   exposureWhereUnknown                    -> valueAddress.extension[data-absent-reason], IN
+//                                              ADDITION to whatever else was answered (see below)
+//
+// The two check-boxes are single-option `choice` items (see ChEkmQuestionnaireExposureWhere), so
+// "ticked" is simply "the answer exists" - un-ticking removes the answer rather than leaving a
+// `false` behind, which is why every gate below tests `exists()` instead of `= true`.
+//
+// The WHOLE extension is built at extraction time by one templateExtractValue via the FHIR Type
+// Factory on the ch-ekm SdcTemplateExtractExtension carrier (idiom: forms-summary §8). Why not
+// annotate a pre-declared `extension[exposureAddress]` field by field:
+//   * the extension cannot be context-gated as a whole - the gate would have to be a
+//     templateExtractContext SUB-extension of it, which is illegal next to a value[x] (ext-1) and
+//     forbidden by the extension definition. Field-level gating alone leaves an empty
+//     `{url: ch-ekm-ext-exposure-address}` shell (no value -> invalid) whenever the whole optional
+//     "Wo" block is left blank - exactly the caveat documented for patient-citizenship.
+//   * the country coding lives on the `_country` primitive-extension slot, which a value directive
+//     on `country` cannot reach (it would set the string itself).
+// %factory.Address(line, city, …) + %factory.withProperty(address, 'country', %factory.string(code,
+// %factory.Extension(...))) produce the complete Address - including `_country.extension` - in one
+// result, so the engine places it whole (no deepmerge-concat, no shallow overwrite) and the carrier
+// url is overwritten by the built extension's url.
+//
+// ONE carrier for all cases (the exposure-address extension is 0..1, so two carriers could not both
+// fire). "Unbekannt" does NOT suppress the address: as long as the meaning of the box is undecided
+// (issue #26), an answered country / precise location / CH/LI is reported as well and the tick only
+// ADDS the data-absent-reason. Resulting branches:
+//   country|CH/LI|Ort answered, Unbekannt not ticked -> Address with country (+coding) and/or city
+//   Unbekannt ticked, nothing else                   -> Address with only the data-absent-reason
+//   Unbekannt ticked AND something answered          -> BOTH (data-absent-reason + the answers)
+//   nothing answered                                 -> no extension at all
+//
+// The context yields a single `true` sentinel (a bare collection of the answers could hold several
+// values, which would emit the extension once per value - see the evidence-per-manifestation
+// idiom); the value expression reads the answers absolutely (%resource), so the context only gates.
+* extension[+].url = $sdc-templateExtractExtension
+* extension[=].extension[+].url = $sdc-templateExtractContext
+* extension[=].extension[=].valueString = "iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists() or %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereUnknown').answer.value.exists(), true, {})"
+// The Address is built once and bound to %addr via `defineVariable` (fhirpath.js supports it), so
+// the "with data-absent-reason" and "without" branches can share it instead of repeating the whole
+// factory expression. `%resource.…select(…)` fixes the focus to exactly one node, so the result is
+// always a single Extension no matter what the engine passes in as the focus.
+//   country: 'CH' when the CH/LI check-box is ticked (collapsed to Switzerland - Liechtenstein is
+//   not distinguishable on the paper form), else the answered country's code; the same country is
+//   attached as a Coding via iso21090-codedString on the `_country` element. When neither is
+//   answered (only a precise location, or only "Unbekannt") the iif falls through to a plain Address.
+// %factory.withExtension on a complex type writes into the Address' own `extension` array.
+* extension[=].extension[+].url = $sdc-templateExtractValue
+* extension[=].extension[=].valueString = "%resource.defineVariable('addr', iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists(), %factory.withProperty(%factory.Address({}, %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.first()), 'country', %factory.string(iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists(), 'CH', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).code.first()), %factory.Extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString', iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists(), %factory.Coding('urn:iso:std:iso:3166', 'CH', 'Switzerland'), %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).first())))), %factory.Address({}, %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.first()))).select(%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address', iif(%resource.descendants().where(linkId='exposureWhereUnknown').answer.value.exists(), %factory.withExtension(%addr, 'http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')), %addr)))"
+
 RuleSet: RuleSetEffectiveExposureWhen
 // Exposure "Wann" (https://github.com/ahdis/ch-ekm/issues/25) — two mutually exclusive answers:
 //   exposureWhenDate -> effectiveDateTime          (the point in time of infection itself)

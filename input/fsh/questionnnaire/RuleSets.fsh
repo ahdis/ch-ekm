@@ -146,6 +146,9 @@ RuleSet: RuleSetQrManifestationBeginUnknown
 RuleSet: RuleSetQrGroupExposure
 * insert RuleSetQrLevel2Group("exposure", "Exposure details", "Angaben zur Exposition", "Données relatives à l'exposition", "Dati relativi all'esposizione")
 
+RuleSet: RuleSetQrExposureWhere
+* insert RuleSetQrLevel3SubQuestionnaire("exposurewhere", "Exposure: where", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhere")
+
 RuleSet: RuleSetQrExposureWhen
 * insert RuleSetQrLevel3SubQuestionnaire("exposurewhen", "Exposure: when", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhen")
 

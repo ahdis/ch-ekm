@@ -216,9 +216,40 @@ def localize_text(it):
     it.pop("_text", None)
 
 
+def localize_answer_options(it):
+    """Bake the LANG label into INLINE answerOption displays from their `translation` extensions.
+
+    Options that come from an `answerValueSet` are localized by the expansion below (displayLanguage
+    + designations). Options authored inline in the questionnaire (e.g. the single-option check-boxes
+    of the Exposure 'Wo' group) carry the English default in `valueString` (or `valueCoding.display`)
+    plus de/fr/it variants as translation extensions under the primitive-element sibling
+    (`_valueString` / `_display`) - the same 'bake it in' treatment as item.text."""
+    for opt in it.get("answerOption", []):
+        # (holder, value key, primitive-extension key)
+        if "valueString" in opt:
+            targets = [(opt, "valueString", "_valueString")]
+        elif isinstance(opt.get("valueCoding"), dict):
+            targets = [(opt["valueCoding"], "display", "_display")]
+        else:
+            continue
+        for holder, value_key, ext_key in targets:
+            ext = holder.get(ext_key)
+            if not ext:
+                continue
+            for e in ext.get("extension", []):
+                if e.get("url", "").endswith("/translation"):
+                    sub = {x.get("url"): x for x in e.get("extension", [])}
+                    if sub.get("lang", {}).get("valueCode") == LANG:
+                        content = sub.get("content", {}).get("valueString")
+                        if content:
+                            holder[value_key] = content
+            holder.pop(ext_key, None)
+
+
 def walk(item):
     for it in item:
         localize_text(it)
+        localize_answer_options(it)
         if "answerValueSet" in it:
             canonical = it.pop("answerValueSet")
             # Also drop the primitive-extension sibling (_answerValueSet holds the

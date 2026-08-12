@@ -11,6 +11,8 @@
 //      path (the Gonorrhoea QR ticks "unknown" and tests the data-absent branch instead).
 //   3. Exposure "Wann": exposureWhenDate answered -> Observation.effectiveDateTime; exposureWhenLastEntryDate
 //      left unanswered -> no component[dateOfEntry] (the two are alternatives, see issue #25).
+//   4. Exposure "Wo": a country abroad + a precise location -> the exposure-address extension is
+//      built at extraction with country code, country Coding and city (see issue #26).
 // The person group uses the full-name module (surname / givenname), not the initials module.
 //
 // Run: ./tests/extract-mpox.sh
@@ -71,26 +73,37 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[1].item[2].linkId = "manifestationBeginDate"
 * item[0].item[1].item[2].answer.valueDate = "2026-07-20"
 
-// --- Exposure (Wann / Wie) ---
-// exposure = outer wrapper group; exposureWhen and transmission are the two
+// --- Exposure (Wo / Wann / Wie) ---
+// exposure = outer wrapper group; exposureWhere, exposureWhen and exposureHow are the three
 // sub-questionnaires, in the order they are assembled into the root.
 * item[0].item[2].linkId = "exposure"
+
+// Wo: abroad with a precise location -> after $extract
+// extension[exposureAddress].valueAddress = {country "CD" + iso21090-codedString Coding, city}.
+// The CH/LI and "Unbekannt" check-boxes are single-option choice items: un-ticked means NO answer
+// item at all (not `false`), so neither appears here and the address branch of the template fires
+// rather than the data-absent branch.
+* item[0].item[2].item[0].linkId = "exposureWhere"
+* item[0].item[2].item[0].item[0].linkId = "exposureWhereCountry"
+* item[0].item[2].item[0].item[0].answer.valueCoding = $iso3166#CD "Congo (Kinshasa)"
+* item[0].item[2].item[0].item[1].linkId = "exposureWherePreciseLocation"
+* item[0].item[2].item[0].item[1].answer.valueString = "Kinshasa"
 
 // Wann: the most probable point in time of infection is known -> effectiveDateTime after $extract.
 // `exposureWhenLastEntryDate` is therefore not answered (it is enableWhen-gated on exposureWhenDate not existing),
 // so the extract must NOT emit a component[dateOfEntry].
-* item[0].item[2].item[0].linkId = "exposureWhen"
-* item[0].item[2].item[0].item[0].linkId = "exposureWhenDate"
-* item[0].item[2].item[0].item[0].answer.valueDate = "2026-07-01"
+* item[0].item[2].item[1].linkId = "exposureWhen"
+* item[0].item[2].item[1].item[0].linkId = "exposureWhenDate"
+* item[0].item[2].item[1].item[0].answer.valueDate = "2026-07-01"
 
 // Wie (Übertragungsweg)
-* item[0].item[2].item[1].linkId = "exposureHow"
-* item[0].item[2].item[1].item[0].linkId = "exposureHowSexualContactPartner"
-* item[0].item[2].item[1].item[0].answer.valueCoding = $administrative-gender#male "male"
-* item[0].item[2].item[1].item[1].linkId = "exposureHowRelationshipType"
-* item[0].item[2].item[1].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
-* item[0].item[2].item[1].item[2].linkId = "exposureHowUnknown"
-* item[0].item[2].item[1].item[2].answer.valueBoolean = false
+* item[0].item[2].item[2].linkId = "exposureHow"
+* item[0].item[2].item[2].item[0].linkId = "exposureHowSexualContactPartner"
+* item[0].item[2].item[2].item[0].answer.valueCoding = $administrative-gender#male "male"
+* item[0].item[2].item[2].item[1].linkId = "exposureHowRelationshipType"
+* item[0].item[2].item[2].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
+* item[0].item[2].item[2].item[2].linkId = "exposureHowUnknown"
+* item[0].item[2].item[2].item[2].answer.valueBoolean = false
 
 // --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---
 * item[0].item[3].linkId = "treatingPhysician"

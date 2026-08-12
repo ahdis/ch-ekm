@@ -134,6 +134,21 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
   a terminology server). Our value sets already exist in `input/fsh/terminology/`.
 - **itemControl** extension: `drop-down`, `radio-button`, `check-box`, `autocomplete`.
   `choiceOrientation` controls horizontal/vertical layout.
+
+  > **A single tick-box is a `choice`, not a `boolean`.** A `boolean` item renders as a Yes/No
+  > radio pair, and even with `itemControl = check-box` the renderer puts the item **label in the
+  > left label column and the box on the right** (`ItemFieldGrid` + `BooleanItem`) — nothing in the
+  > questionnaire changes that. For a paper-form style "☐ label" on one line, use a `choice` item
+  > with `repeats = true`, `itemControl = check-box` and **one** `answerOption`, and give the item
+  > **no `text`** (the option label is the visible text). `repeats` also fixes the un-tick
+  > semantics: un-ticking **removes** the answer, whereas a boolean check-box leaves `false`
+  > behind — so `enableWhen`/extraction can gate on `exists()` instead of `= true`.
+  > Prefer `answerOption.valueString` over `valueCoding` for such form-only labels: a Coding is
+  > terminology-validated, so "Schweiz/Liechtenstein (CH/LI)" on `iso3166#CH` raises a *Wrong
+  > Display Name* warning per language file. Inline option labels are translated via
+  > `translation` extensions on the `_valueString` sibling, baked in by
+  > `scripts/build-lang-questionnaire.py` (`localize_answer_options`).
+  > Live example: the "Wo" group's `exposureWhereChLi` / `exposureWhereUnknown`.
 - **Behaviour**: `enableWhen` / `enableBehavior` (conditional display, e.g. show a free-text
   field only when "andere/other" is chosen, or grey out a date when "unbekannt" is ticked),
   `required`, `repeats`, `readOnly`, `initial`.
@@ -291,6 +306,8 @@ ChEkmQuestionnairePersonInitials      (assemble-child)  ← ChEkmPersonForm (nam
 ChEkmQuestionnairePersonGeneral       (assemble-child)  ← ChEkmPersonForm (birth date, AHVN13, address, …)
 ChEkmQuestionnairePersonGenderIdentity(assemble-child)  ← ChEkmPersonForm (gender identity)
 ChEkmQuestionnaireManifestation       (assemble-child)  ← ChEkmManifestationForm
+ChEkmQuestionnaireExposureWhere       (assemble-child)  ← ChEkmExposureForm.where         (input/fsh/questionnnaire/)
+ChEkmQuestionnaireExposureWhen        (assemble-child)  ← ChEkmExposureForm.when          (input/fsh/questionnnaire/)
 ChEkmQuestionnaireExposureHow     (assemble-child)  ← ChEkmExposureForm.transmission  (input/fsh/questionnnaire/)
 ChEkmQuestionnaireTreatingPhysician   (assemble-child)  ← ChEkmTreatingPhysician{Practitioner,Organization}Form
 ```
@@ -856,6 +873,57 @@ materialises the deleted element and supplies the full Coding, while the static 
 survives (different key from the shallow-merged `valueCodeableConcept`). Verified: ticking `unknown`
 yields `component[transmissionRoute].valueCodeableConcept.coding[0] = {system, code, display}`,
 unticked omits the component.
+
+### Building a whole *complex* extension — `%factory.Address` / `withProperty` / `withExtension` (Exposure "Wo")
+The carrier idiom above is not limited to one-field extensions. The exposure address
+(`extension[exposureAddress]`, a `valueAddress` with country + country Coding + city, or a
+data-absent-reason when "Unbekannt" is ticked — issue #26) is built by **one** `templateExtractValue`
+because the fhirpath.js factory (`scripts/extract/node_modules/fhirpath/src/factory.js`) offers more
+than `Coding`/`CodeableConcept`/`Extension`:
+
+```
+%factory.Address(lineColl, city, state, postalCode, country, use, type)   // any trailing arg may be {}
+%factory.<primitive>(value, extensions)     // 2nd arg = extensions -> lands in the `_x` sibling
+%factory.withProperty(instance, 'name', value)   // add/overwrite a property (carries the value's _data)
+%factory.withExtension(instance, url, value)     // add an extension (into `extension` for a complex
+                                                 // type, into `_x.extension` for a primitive)
+%factory.create(TypeSpecifier)
+```
+
+So the address branch is:
+```
+%factory.Extension('…/ch-ekm-ext-exposure-address',
+  %factory.withProperty(
+    %factory.Address({}, <preciseLocation>),          // {} line, city
+    'country',
+    %factory.string(<code>, %factory.Extension('…/iso21090-codedString', <answered Coding>))))
+```
+→ `{url, valueAddress:{city, country, _country:{extension:[{iso21090-codedString, valueCoding}]}}}` —
+including the `_country` primitive-extension slot, which **no** value directive on `country` could
+reach (it would set the string itself). The unknown branch is
+`%factory.withExtension(%factory.Address({}), '…/data-absent-reason', %factory.code('asked-unknown'))`.
+
+**Why not annotate a pre-declared `extension[exposureAddress]` field by field?** Because a whole
+extension cannot be context-gated (§ above): the gate would have to be a `templateExtractContext`
+*sub*-extension next to `valueAddress` — illegal (`ext-1`) and forbidden by the extension definition.
+Field-level directives alone leave an invalid `{url: ch-ekm-ext-exposure-address}` shell (no value)
+whenever the whole optional block is unanswered. With the carrier, the gate sits on the carrier and
+nothing at all is emitted. Mutually exclusive branches (address vs. unknown) are simply **two
+carriers** with complementary contexts, like the transmission-route components.
+
+Two things to get right:
+- The context must be **single-valued**. A bare collection of answers
+  (`chli.combine(country).combine(precise)`) can hold several values, and the engine emits the
+  element **once per context value** (that is exactly how one evidence entry per manifestation is
+  produced). Return a sentinel instead: `iif(<unknown>, {}, iif(<any answered>, true, {}))`.
+- Value expressions inside a carrier read the QR **absolutely** (`%resource.descendants()…`), so the
+  context is only a gate, not a scope.
+
+Verified end-to-end (`scripts/extract-mpox.sh` + hand-built QR variants): country abroad → code +
+Coding + city; CH/LI ticked → `country = "CH"`; "Unbekannt" ticked → data-absent-reason, on its own
+when nothing else is answered and **alongside** an answered country/city otherwise (the meaning of
+the box is still open, so no answer is discarded); precise location only → `{city}`; nothing
+answered → **no** extension.
 
 ### Conditional gating with `iif` — negation and the Boolean-criterion trap
 Two recurring patterns when gating a templated element (empty context → element omitted):

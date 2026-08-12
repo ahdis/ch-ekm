@@ -62,7 +62,9 @@ This IG uses **two parallel representations** of the report content:
   `evidence` = manifestation.
 - **`ChEkmExposure`** (← `Observation`) — the "Exposition" / Exposure (how/where exposed). Mirrors
   HL7 Europe HDR *Infectious Contact*: `category` from `ChEkmExposureClass`,
-  `code = EXPAGNT`, `extension[exposureAddress]` for the place (Wo).
+  `code = EXPAGNT`, `extension[exposureAddress]` for the place (Wo — country as ISO code +
+  `iso21090-codedString`, precise location as `city`, or a `data-absent-reason` when reported as
+  unknown), `effective[x]` + `component[dateOfEntry]` for the time (Wann).
 
 ### Person / actors
 - **`ChEkmPatient`** (← `CHCorePatient`) and four representation variants reflecting the

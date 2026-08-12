@@ -32,7 +32,8 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 
 * insert RuleSetQrGroupExposure
 
-// TODO Exposure where
+// Wo before Wann and Wie, as on the paper form (https://github.com/ahdis/ch-ekm/issues/26)
+* insert RuleSetQrExposureWhere
 
 * insert RuleSetQrExposureWhen
 

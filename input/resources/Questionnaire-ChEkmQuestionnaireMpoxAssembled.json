@@ -83,6 +83,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhere|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhen|0.0.1"
     },
     {
@@ -637,6 +641,21 @@
                     }
                   ]
                 }
+              }
+            ],
+            "extension": [
+              {
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists() or %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereUnknown').answer.value.exists(), true, {})"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.defineVariable('addr', iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists(), %factory.withProperty(%factory.Address({}, %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.first()), 'country', %factory.string(iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists(), 'CH', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).code.first()), %factory.Extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString', iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists(), %factory.Coding('urn:iso:std:iso:3166', 'CH', 'Switzerland'), %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).first())))), %factory.Address({}, %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.first()))).select(%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address', iif(%resource.descendants().where(linkId='exposureWhereUnknown').answer.value.exists(), %factory.withExtension(%addr, 'http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')), %addr)))"
+                  }
+                ]
               }
             ],
             "_effectiveDateTime": {
@@ -2066,6 +2085,308 @@
             ]
           },
           "item": [
+            {
+              "linkId": "exposureWhere",
+              "text": "Where (place of infection)",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Wo (Ort der Ansteckung)"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Où (lieu de l'infection)"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Dove (luogo del contagio)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "exposureWhereChLi",
+                  "type": "choice",
+                  "repeats": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "check-box",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueString": "Switzerland / Liechtenstein (CH/LI)",
+                      "_valueString": {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                            "extension": [
+                              {
+                                "url": "lang",
+                                "valueCode": "de-CH"
+                              },
+                              {
+                                "url": "content",
+                                "valueString": "Schweiz/Liechtenstein (CH/LI)"
+                              }
+                            ]
+                          },
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                            "extension": [
+                              {
+                                "url": "lang",
+                                "valueCode": "fr-CH"
+                              },
+                              {
+                                "url": "content",
+                                "valueString": "Suisse / Liechtenstein (CH/LI)"
+                              }
+                            ]
+                          },
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                            "extension": [
+                              {
+                                "url": "lang",
+                                "valueCode": "it-CH"
+                              },
+                              {
+                                "url": "content",
+                                "valueString": "Svizzera / Liechtenstein (CH/LI)"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "exposureWhereCountry",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.country",
+                  "text": "Abroad, country",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Ausland, Land"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "À l'étranger, pays"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "All'estero, Paese"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodes",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "autocomplete",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "exposureWhereChLi",
+                      "operator": "exists",
+                      "answerBoolean": false
+                    }
+                  ]
+                },
+                {
+                  "linkId": "exposureWherePreciseLocation",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.preciseLocation",
+                  "text": "Precise location (Switzerland/Liechtenstein and abroad)",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Genauer Ort (CH/LI und Ausland)"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Lieu précis (CH/LI et étranger)"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Luogo preciso (CH/LI ed estero)"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "string"
+                },
+                {
+                  "linkId": "exposureWhereUnknown",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.unknown",
+                  "type": "choice",
+                  "repeats": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "check-box",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueString": "Place of infection unknown",
+                      "_valueString": {
+                        "extension": [
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                            "extension": [
+                              {
+                                "url": "lang",
+                                "valueCode": "de-CH"
+                              },
+                              {
+                                "url": "content",
+                                "valueString": "Unbekannt"
+                              }
+                            ]
+                          },
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                            "extension": [
+                              {
+                                "url": "lang",
+                                "valueCode": "fr-CH"
+                              },
+                              {
+                                "url": "content",
+                                "valueString": "Inconnu"
+                              }
+                            ]
+                          },
+                          {
+                            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                            "extension": [
+                              {
+                                "url": "lang",
+                                "valueCode": "it-CH"
+                              },
+                              {
+                                "url": "content",
+                                "valueString": "Sconosciuto"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
             {
               "linkId": "exposureWhen",
               "text": "When (point in time of infection)",

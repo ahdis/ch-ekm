@@ -83,6 +83,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhere|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhen|0.0.1"
     },
     {
@@ -637,6 +641,21 @@
                     }
                   ]
                 }
+              }
+            ],
+            "extension": [
+              {
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists() or %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereUnknown').answer.value.exists(), true, {})"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.defineVariable('addr', iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists(), %factory.withProperty(%factory.Address({}, %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.first()), 'country', %factory.string(iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists(), 'CH', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).code.first()), %factory.Extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString', iif(%resource.descendants().where(linkId='exposureWhereChLi').answer.value.exists(), %factory.Coding('urn:iso:std:iso:3166', 'CH', 'Switzerland'), %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).first())))), %factory.Address({}, %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.first()))).select(%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address', iif(%resource.descendants().where(linkId='exposureWhereUnknown').answer.value.exists(), %factory.withExtension(%addr, 'http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')), %addr)))"
+                  }
+                ]
               }
             ],
             "_effectiveDateTime": {
@@ -4245,6 +4264,1466 @@
           "type": "group",
           "text": "Données relatives à l'exposition",
           "item": [
+            {
+              "linkId": "exposureWhere",
+              "text": "Où (lieu de l'infection)",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "exposureWhereChLi",
+                  "type": "choice",
+                  "repeats": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "check-box",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueString": "Suisse / Liechtenstein (CH/LI)"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "exposureWhereCountry",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.country",
+                  "text": "À l'étranger, pays",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "drop-down",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "exposureWhereChLi",
+                      "operator": "exists",
+                      "answerBoolean": false
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CH",
+                        "display": "Suisse"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AL",
+                        "display": "Albanie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AD",
+                        "display": "Andorre"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BE",
+                        "display": "Belgique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BG",
+                        "display": "Bulgarie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DK",
+                        "display": "Danemark"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DE",
+                        "display": "Allemagne"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "FI",
+                        "display": "Finlande"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "FR",
+                        "display": "France"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GR",
+                        "display": "Grèce"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GB",
+                        "display": "Royaume-Uni"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IE",
+                        "display": "Irlande"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IS",
+                        "display": "Islande"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IT",
+                        "display": "Italie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LI",
+                        "display": "Liechtenstein"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LU",
+                        "display": "Luxembourg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MT",
+                        "display": "Malte"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MC",
+                        "display": "Monaco"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NL",
+                        "display": "Pays-Bas"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NO",
+                        "display": "Norvège"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AT",
+                        "display": "Autriche"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PL",
+                        "display": "Pologne"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PT",
+                        "display": "Portugal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "RO",
+                        "display": "Roumanie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SM",
+                        "display": "Saint-Marin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SE",
+                        "display": "Suède"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ES",
+                        "display": "Espagne"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TR",
+                        "display": "Türkiye"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "HU",
+                        "display": "Hongrie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VA",
+                        "display": "Cité du Vatican"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CY",
+                        "display": "Chypre"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SK",
+                        "display": "Slovaquie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CZ",
+                        "display": "Tchéquie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "RS",
+                        "display": "Serbie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "HR",
+                        "display": "Croatie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SI",
+                        "display": "Slovénie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BA",
+                        "display": "Bosnie et Herzégovine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ME",
+                        "display": "Monténégro"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MK",
+                        "display": "Macédoine du Nord"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "XK",
+                        "display": "Kosovo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "EE",
+                        "display": "Estonie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LV",
+                        "display": "Lettonie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LT",
+                        "display": "Lituanie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MD",
+                        "display": "Moldova"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "RU",
+                        "display": "Russie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "UA",
+                        "display": "Ukraine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BY",
+                        "display": "Bélarus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GQ",
+                        "display": "Guinée équatoriale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ET",
+                        "display": "Éthiopie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DJ",
+                        "display": "Djibouti"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DZ",
+                        "display": "Algérie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AO",
+                        "display": "Angola"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BW",
+                        "display": "Botswana"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BI",
+                        "display": "Burundi"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BJ",
+                        "display": "Bénin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CI",
+                        "display": "Côte d'Ivoire"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GA",
+                        "display": "Gabon"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GM",
+                        "display": "Gambie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GH",
+                        "display": "Ghana"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GW",
+                        "display": "Guinée-Bissau"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GN",
+                        "display": "Guinée"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CM",
+                        "display": "Cameroun"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CV",
+                        "display": "Cabo Verde"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KE",
+                        "display": "Kenya"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KM",
+                        "display": "Comores"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CG",
+                        "display": "Congo (Brazzaville)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CD",
+                        "display": "Congo (Kinshasa)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LS",
+                        "display": "Lesotho"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LR",
+                        "display": "Libéria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LY",
+                        "display": "Libye"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MG",
+                        "display": "Madagascar"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MW",
+                        "display": "Malawi"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ML",
+                        "display": "Mali"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MA",
+                        "display": "Maroc"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MR",
+                        "display": "Mauritanie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MU",
+                        "display": "Maurice"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MZ",
+                        "display": "Mozambique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NE",
+                        "display": "Niger"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NG",
+                        "display": "Nigéria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BF",
+                        "display": "Burkina Faso"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ZW",
+                        "display": "Zimbabwe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "RW",
+                        "display": "Rwanda"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ZM",
+                        "display": "Zambie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ST",
+                        "display": "Sao Tomé-et-Principe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SN",
+                        "display": "Sénégal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SC",
+                        "display": "Seychelles"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SL",
+                        "display": "Sierra Leone"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SO",
+                        "display": "Somalie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ZA",
+                        "display": "Afrique du Sud"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SD",
+                        "display": "Soudan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NA",
+                        "display": "Namibie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SZ",
+                        "display": "Eswatini"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TZ",
+                        "display": "Tanzanie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TG",
+                        "display": "Togo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TD",
+                        "display": "Tchad"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TN",
+                        "display": "Tunisie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "UG",
+                        "display": "Ouganda"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "EG",
+                        "display": "Égypte"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CF",
+                        "display": "République centrafricaine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ER",
+                        "display": "Érythrée"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SS",
+                        "display": "Soudan du Sud"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AR",
+                        "display": "Argentine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BS",
+                        "display": "Bahamas"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BB",
+                        "display": "Barbade"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BO",
+                        "display": "Bolivie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BR",
+                        "display": "Brésil"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CL",
+                        "display": "Chili"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CR",
+                        "display": "Costa Rica"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DO",
+                        "display": "République dominicaine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "EC",
+                        "display": "Équateur"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SV",
+                        "display": "El Salvador"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GT",
+                        "display": "Guatemala"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GY",
+                        "display": "Guyana"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "HT",
+                        "display": "Haïti"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BZ",
+                        "display": "Belize"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "HN",
+                        "display": "Honduras"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "JM",
+                        "display": "Jamaïque"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CA",
+                        "display": "Canada"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CO",
+                        "display": "Colombie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CU",
+                        "display": "Cuba"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MX",
+                        "display": "Mexique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NI",
+                        "display": "Nicaragua"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PA",
+                        "display": "Panama"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PY",
+                        "display": "Paraguay"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PE",
+                        "display": "Pérou"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SR",
+                        "display": "Suriname"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TT",
+                        "display": "Trinité-et-Tobago"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "UY",
+                        "display": "Uruguay"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VE",
+                        "display": "Venezuela"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "US",
+                        "display": "États-Unis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DM",
+                        "display": "Dominique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GD",
+                        "display": "Grenade"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AG",
+                        "display": "Antigua-et-Barbuda"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LC",
+                        "display": "Sainte-Lucie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VC",
+                        "display": "Saint-Vincent-et-les Grenadines"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KN",
+                        "display": "Saint-Kitts-et-Nevis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AF",
+                        "display": "Afghanistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BH",
+                        "display": "Bahreïn"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BT",
+                        "display": "Bhoutan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BN",
+                        "display": "Brunéi Darussalam"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MM",
+                        "display": "Myanmar"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LK",
+                        "display": "Sri Lanka"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CN",
+                        "display": "Chine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IN",
+                        "display": "Inde"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ID",
+                        "display": "Indonésie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IQ",
+                        "display": "Irak"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IR",
+                        "display": "Iran"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IL",
+                        "display": "Israël"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "JP",
+                        "display": "Japon"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "YE",
+                        "display": "Yémen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "JO",
+                        "display": "Jordanie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KH",
+                        "display": "Cambodge"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "QA",
+                        "display": "Qatar"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KW",
+                        "display": "Koweït"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LA",
+                        "display": "Laos"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LB",
+                        "display": "Liban"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MY",
+                        "display": "Malaisie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MV",
+                        "display": "Maldives"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "OM",
+                        "display": "Oman"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MN",
+                        "display": "Mongolie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NP",
+                        "display": "Népal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KP",
+                        "display": "Corée (Nord)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AE",
+                        "display": "Émirats arabes unis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PK",
+                        "display": "Pakistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PH",
+                        "display": "Philippines"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SA",
+                        "display": "Arabie saoudite"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SG",
+                        "display": "Singapour"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KR",
+                        "display": "Corée (Sud)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SY",
+                        "display": "Syrie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TH",
+                        "display": "Thaïlande"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VN",
+                        "display": "Vietnam"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BD",
+                        "display": "Bangladesh"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TL",
+                        "display": "Timor-Leste"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AM",
+                        "display": "Arménie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AZ",
+                        "display": "Azerbaïdjan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GE",
+                        "display": "Géorgie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KZ",
+                        "display": "Kazakhstan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KG",
+                        "display": "Kirghizistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TJ",
+                        "display": "Tadjikistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TM",
+                        "display": "Turkménistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "UZ",
+                        "display": "Ouzbékistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AU",
+                        "display": "Australie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "FJ",
+                        "display": "Fidji"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NR",
+                        "display": "Nauru"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VU",
+                        "display": "Vanuatu"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NZ",
+                        "display": "Nouvelle-Zélande"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PG",
+                        "display": "Papouasie-Nouvelle-Guinée"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TO",
+                        "display": "Tonga"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "WS",
+                        "display": "Samoa"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SB",
+                        "display": "Îles Salomon"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TV",
+                        "display": "Tuvalu"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KI",
+                        "display": "Kiribati"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MH",
+                        "display": "Îles Marshall"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "FM",
+                        "display": "Micronésie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PW",
+                        "display": "Palaos"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CK",
+                        "display": "Îles Cook"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "exposureWherePreciseLocation",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.preciseLocation",
+                  "text": "Lieu précis (CH/LI et étranger)",
+                  "type": "string"
+                },
+                {
+                  "linkId": "exposureWhereUnknown",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.unknown",
+                  "type": "choice",
+                  "repeats": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "check-box",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueString": "Inconnu"
+                    }
+                  ]
+                }
+              ]
+            },
             {
               "linkId": "exposureWhen",
               "text": "Quand (moment de l'infection)",
