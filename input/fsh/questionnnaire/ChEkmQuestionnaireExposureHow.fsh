@@ -9,54 +9,16 @@ InstanceOf: Questionnaire
 Usage: #definition
 Title: "CH EKM Questionnaire: Exposure - How (route of transmission)"
 Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route of transmission) group. Holds the transmission group (sexual-contact partner sex, relationship type, other route, unknown). Reusable as an SDC assemble-child."
-* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow"
-* version = "0.0.1"
-* name = "ChEkmQuestionnaireExposureHow"
-* status = #active
-* language = #en
-* experimental = false
-* subjectType = #Patient
-* extension[+].url = $sdc-assemble-expectation
-* extension[=].valueCode = #assemble-child
+* insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireExposureHow)
 
 * item[+].linkId = "exposureHow"
-* item[=].text = "How (route of transmission)"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Wie (Übertragungsweg)"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Comment (voie de transmission)"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Come (via di trasmissione)"
+* insert RuleSetQrLevel1Text("How (route of transmission\)", "Wie (Übertragungsweg\)", "Comment (voie de transmission\)", "Come (via di trasmissione\)")
 * item[=].type = #group
 
 // Sexualkontakt mit infizierter Person - Geschlecht (Frau / Mann / Andere)
 * item[=].item[+].linkId = "exposureHowSexualContactPartner"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.sexualContactPartner"
-* item[=].item[=].text = "Sexual contact with an infected person (gender)"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Sexualkontakt mit infizierter Person (Geschlecht)"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Rapport sexuel avec une personne infectée (sexe)"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Rapporto sessuale con una persona infetta (sesso)"
+* insert RuleSetQrLevel2Text("Sexual contact with an infected person (gender\)", "Sexualkontakt mit infizierter Person (Geschlecht\)", "Rapport sexuel avec une personne infectée (sexe\)", "Rapporto sessuale con una persona infetta (sesso\)")
 * item[=].item[=].type = #choice
 * item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex"
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
@@ -70,22 +32,7 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 // Art der Beziehung (fester / nicht fester Partner / Angebot bzw. Inanspruchnahme von bezahltem Sex)
 * item[=].item[+].linkId = "exposureHowRelationshipType"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.relationshipType"
-* item[=].item[=].text = "Type of relationship"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Art der Beziehung"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Type de relation"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Tipo di relazione"
+* insert RuleSetQrLevel2Text("Type of relationship", "Art der Beziehung", "Type de relation", "Tipo di relazione")
 * item[=].item[=].type = #choice
 * item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureRelationshipType"
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
@@ -99,22 +46,7 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 // Anderer Übertragungsweg (Freitext)
 * item[=].item[+].linkId = "exposureHowOtherTransmission"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.otherTransmission"
-* item[=].item[=].text = "Other route of transmission (free text)"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Anderer Übertragungsweg (Freitext)"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Autre voie de transmission (texte libre)"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Altra via di trasmissione (testo libero)"
+* insert RuleSetQrLevel2Text("Other route of transmission (free text\)", "Anderer Übertragungsweg (Freitext\)", "Autre voie de transmission (texte libre\)", "Altra via di trasmissione (testo libero\)")
 * item[=].item[=].type = #string
 // * item[=].item[=].enableWhen[+].question = "unknown"
 // * item[=].item[=].enableWhen[=].operator = #=
@@ -123,22 +55,7 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 // Übertragungsweg unbekannt - default false; when checked it disables the details below
 * item[=].item[+].linkId = "exposureHowUnknown"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.unknown"
-* item[=].item[=].text = "Route of transmission unknown"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Übertragungsweg unbekannt"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Voie de transmission inconnue"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Via di trasmissione sconosciuta"
+* insert RuleSetQrLevel2Text("Route of transmission unknown", "Übertragungsweg unbekannt", "Voie de transmission inconnue", "Via di trasmissione sconosciuta")
 * item[=].item[=].type = #boolean
 //* item[=].item[=].initial.valueBoolean = false
 

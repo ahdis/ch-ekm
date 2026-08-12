@@ -15,35 +15,12 @@ InstanceOf: Questionnaire
 Usage: #definition
 Title: "CH EKM Questionnaire: Namensinitialen der betroffenen Person"
 Description: "Modular sub-questionnaire for the name initials (surname / given name) of the affected person. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
-* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonName"
-* version = "0.0.1"
-* name = "ChEkmQuestionnairePersonName"
-* status = #active
-* language = #en
-* experimental = false
-* subjectType = #Patient
-* extension[+].url = $sdc-assemble-expectation
-* extension[=].valueCode = #assemble-child
+* insert RuleSetQrHeaderSubSdc(ChEkmQuestionnairePersonName)
 
 // Name (surname ) - required
 * item[+].linkId = "surname"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surname"
-* item[=].text = "Surname initial"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Name"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Nom"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Cognome"
+* insert RuleSetQrLevel1Text("Surname initial", "Name", "Nom", "Cognome")
 * item[=].type = #string
 * item[=].required = true
 * item[=].extension[+].url = $sdc-initialExpression
@@ -54,22 +31,7 @@ Description: "Modular sub-questionnaire for the name initials (surname / given n
 // given name initial) - require
 * item[+].linkId = "givenname"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givenname"
-* item[=].text = "First name initial"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Vorname"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Prénom"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Nome"
+* insert RuleSetQrLevel1Text("First name initial", "Vorname", "Prénom", "Nome")
 * item[=].type = #string
 * item[=].required = true
 * item[=].extension[+].url = $sdc-initialExpression

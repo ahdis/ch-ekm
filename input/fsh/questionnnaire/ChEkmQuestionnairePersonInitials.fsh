@@ -15,35 +15,12 @@ InstanceOf: Questionnaire
 Usage: #definition
 Title: "CH EKM Questionnaire: Namensinitialen der betroffenen Person"
 Description: "Modular sub-questionnaire for the name initials (surname / given name) of the affected person. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
-* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials"
-* version = "0.0.1"
-* name = "ChEkmQuestionnairePersonInitials"
-* status = #active
-* language = #en
-* experimental = false
-* subjectType = #Patient
-* extension[+].url = $sdc-assemble-expectation
-* extension[=].valueCode = #assemble-child
+* insert RuleSetQrHeaderSubSdc(ChEkmQuestionnairePersonInitials)
 
 // Initiale Name (surname initial) - required; first letter of the family name
 * item[+].linkId = "surnameInitial"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surnameInitial"
-* item[=].text = "Surname initial"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Initiale Name"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Initiale du nom"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Iniziale del cognome"
+* insert RuleSetQrLevel1Text("Surname initial", "Initiale Name", "Initiale du nom", "Iniziale del cognome")
 * item[=].type = #string
 * item[=].required = true
 // Initials are a single letter. maxLength is a NATIVE Questionnaire.item element (not an
@@ -56,22 +33,7 @@ Description: "Modular sub-questionnaire for the name initials (surname / given n
 // Initiale Vorname (given name initial) - required; first letter of the given name
 * item[+].linkId = "givennameInitial"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givennameInitial"
-* item[=].text = "First name initial"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Initiale Vorname"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Initiale du prénom"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Iniziale del nome"
+* insert RuleSetQrLevel1Text("First name initial", "Initiale Vorname", "Initiale du prénom", "Iniziale del nome")
 * item[=].type = #string
 * item[=].required = true
 * item[=].maxLength = 1

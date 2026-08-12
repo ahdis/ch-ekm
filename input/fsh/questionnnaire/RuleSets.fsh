@@ -39,6 +39,101 @@ RuleSet: RuleSetQrHeaderSdc
 * extension[=].extension[+].url = "description"
 * extension[=].extension[=].valueString = "The treating physician's PractitionerRole (practitioner + sending organization) to pre-populate the form with"
 
+// Header shared by every modular SUB-questionnaire (assemble-child). `name` doubles as the
+// canonical's last path segment, so the two can never drift apart.
+RuleSet: RuleSetQrHeaderSubSdc(name)
+* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/{name}"
+* version = "0.0.1"
+* name = "{name}"
+* status = #active
+* language = #en
+* experimental = false
+* subjectType = #Patient
+* extension[+].url = $sdc-assemble-expectation
+* extension[=].valueCode = #assemble-child
+
+// item.text + de-CH/fr-CH/it-CH translations, one rule set per nesting level. These set ONLY
+// `text`, so the caller keeps full control over where `linkId`, `definition` and `type` go
+// (`definition` sits between linkId and text on most items).
+RuleSet: RuleSetQrLevel1Text(text, text-de-CH, text-fr-CH, text-it-CH)
+* item[=].text = {text}
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = {text-de-CH}
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = {text-fr-CH}
+* item[=].text.extension[+].url = $translation
+* item[=].text.extension[=].extension[+].url = "lang"
+* item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].text.extension[=].extension[+].url = "content"
+* item[=].text.extension[=].extension[=].valueString = {text-it-CH}
+
+RuleSet: RuleSetQrLevel2Text(text, text-de-CH, text-fr-CH, text-it-CH)
+* item[=].item[=].text = {text}
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = {text-de-CH}
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = {text-fr-CH}
+* item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].text.extension[=].extension[=].valueString = {text-it-CH}
+
+RuleSet: RuleSetQrLevel3Text(text, text-de-CH, text-fr-CH, text-it-CH)
+* item[=].item[=].item[=].text = {text}
+* item[=].item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueString = {text-de-CH}
+* item[=].item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueString = {text-fr-CH}
+* item[=].item[=].item[=].text.extension[+].url = $translation
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
+* item[=].item[=].item[=].text.extension[=].extension[=].valueString = {text-it-CH}
+
+// Single-option check-box items (see ChEkmQuestionnaireExposureWhere) carry their visible label
+// on answerOption[0].valueString instead of item.text, but need the same four languages.
+RuleSet: RuleSetQrLevel2AnswerOptionText(text, text-de-CH, text-fr-CH, text-it-CH)
+* item[=].item[=].answerOption[0].valueString = {text}
+* item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "lang"
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueCode = #de-CH
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "content"
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueString = {text-de-CH}
+* item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "lang"
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueCode = #fr-CH
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "content"
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueString = {text-fr-CH}
+* item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "lang"
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueCode = #it-CH
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "content"
+* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueString = {text-it-CH}
+
+// NB: the initialExpression triples (extension url / valueExpression.language / .expression) are
+// deliberately NOT wrapped in a rule set. FSH rule-set parameters require `,` and `)` to be
+// backslash-escaped, which would turn every FHIRPath into `resolve\(\).where\(use='work'\)` —
+// unreadable, and the point of these expressions is that they can be read and reviewed.
+
 RuleSet: RuleSetQrHeader(linkId, text, text-de-CH, text-fr-CH, text-it-CH, extractTemplate)
 
 * insert RuleSetQrHeaderSdc

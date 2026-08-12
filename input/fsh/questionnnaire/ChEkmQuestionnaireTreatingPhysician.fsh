@@ -22,53 +22,15 @@ InstanceOf: Questionnaire
 Usage: #definition
 Title: "CH EKM Questionnaire: Gonorrhoea - Behandelnde Ärztin / behandelnder Arzt"
 Description: "Modular sub-questionnaire for the 'Treating Physician' section (Practitioner + Organization) of the Gonorrhoea clinical findings report. Reusable as an SDC assemble-child; supports expression-based pre-population from a single PractitionerRole (%user) launch context, resolving the practitioner and organization references it carries."
-* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician"
-* version = "0.0.1"
-* name = "ChEkmQuestionnaireTreatingPhysician"
-* status = #active
-* language = #en
-* experimental = false
-* subjectType = #Patient
-* extension[+].url = $sdc-assemble-expectation
-* extension[=].valueCode = #assemble-child
+* insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireTreatingPhysician)
 
 * item[+].linkId = "treatingPhysician"
-* item[=].text = "Treating physician"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Behandelnde Ärztin / behandelnder Arzt"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Médecin traitant"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Medico curante"
+* insert RuleSetQrLevel1Text("Treating physician", "Behandelnde Ärztin / behandelnder Arzt", "Médecin traitant", "Medico curante")
 * item[=].type = #group
 
 // --- Practitioner -----------------------------------------------------------
 * item[=].item[+].linkId = "treatingPhysicianPractitioner"
-* item[=].item[=].text = "Treating physician"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Behandelnde Ärztin / behandelnder Arzt"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Médecin traitant"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Medico curante"
+* insert RuleSetQrLevel2Text("Treating physician", "Behandelnde Ärztin / behandelnder Arzt", "Médecin traitant", "Medico curante")
 * item[=].item[=].type = #group
 // Address to pre-populate from: prefer the work address, else fall back to the first address.
 // `combine` preserves order (unlike `|`), so the work entry, when present, is first. The full
@@ -80,22 +42,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // Vorname
 * item[=].item[=].item[+].linkId = "physicianGivenname"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.givenname"
-* item[=].item[=].item[=].text = "First name"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Vorname"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Prénom"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Nome"
+* insert RuleSetQrLevel3Text("First name", "Vorname", "Prénom", "Nome")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
@@ -105,22 +52,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // Name
 * item[=].item[=].item[+].linkId = "physicianSurname"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.surname"
-* item[=].item[=].item[=].text = "Last name"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Name"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Nom"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Cognome"
+* insert RuleSetQrLevel3Text("Last name", "Name", "Nom", "Cognome")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
@@ -130,22 +62,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // Adresse (Strasse, Hausnummer)
 * item[=].item[=].item[+].linkId = "physicianStreetLine"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.streetLine"
-* item[=].item[=].item[=].text = "Address (street, house number)"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Adresse (Strasse, Hausnummer)"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Adresse (rue, numéro)"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Indirizzo (via, numero civico)"
+* insert RuleSetQrLevel3Text("Address (street\, house number\)", "Adresse (Strasse\, Hausnummer\)", "Adresse (rue\, numéro\)", "Indirizzo (via\, numero civico\)")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
@@ -154,22 +71,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // PLZ
 * item[=].item[=].item[+].linkId = "physicianZipCode"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.zipCode"
-* item[=].item[=].item[=].text = "Postal code"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "PLZ"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "NPA"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "NAP"
+* insert RuleSetQrLevel3Text("Postal code", "PLZ", "NPA", "NAP")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
@@ -179,22 +81,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // Ort
 * item[=].item[=].item[+].linkId = "physicianCity"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.city"
-* item[=].item[=].item[=].text = "Town/city"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Ort"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Localité"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Località"
+* insert RuleSetQrLevel3Text("Town/city", "Ort", "Localité", "Località")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
@@ -204,22 +91,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // Telefonnummer
 * item[=].item[=].item[+].linkId = "physicianPhone"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.phone"
-* item[=].item[=].item[=].text = "Phone number"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Telefonnummer"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Numéro de téléphone"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Numero di telefono"
+* insert RuleSetQrLevel3Text("Phone number", "Telefonnummer", "Numéro de téléphone", "Numero di telefono")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
@@ -229,22 +101,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // E-Mail
 * item[=].item[=].item[+].linkId = "physicianEmail"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.email"
-* item[=].item[=].item[=].text = "Email"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "E-Mail"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "E-mail"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "E-mail"
+* insert RuleSetQrLevel3Text("Email", "E-Mail", "E-mail", "E-mail")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
@@ -253,22 +110,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // GLN
 * item[=].item[=].item[+].linkId = "physicianGln"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.gln"
-* item[=].item[=].item[=].text = "GLN"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "GLN"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "GLN"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "GLN"
+* insert RuleSetQrLevel3Text("GLN", "GLN", "GLN", "GLN")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
@@ -276,43 +118,13 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 
 // --- Organization -----------------------------------------------------------
 * item[=].item[+].linkId = "treatingPhysicianOrganization"
-* item[=].item[=].text = "Sending organisation"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Absendende Organisation"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Organisation émettrice"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Organizzazione mittente"
+* insert RuleSetQrLevel2Text("Sending organisation", "Absendende Organisation", "Organisation émettrice", "Organizzazione mittente")
 * item[=].item[=].type = #group
 
 // Name
 * item[=].item[=].item[+].linkId = "orgName"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.name"
-* item[=].item[=].item[=].text = "Name"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Name"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Nom"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Nome"
+* insert RuleSetQrLevel3Text("Name", "Name", "Nom", "Nome")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
@@ -322,22 +134,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // Abteilung
 * item[=].item[=].item[+].linkId = "orgDepartment"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.department"
-* item[=].item[=].item[=].text = "Department"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Abteilung"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Service"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Reparto"
+* insert RuleSetQrLevel3Text("Department", "Abteilung", "Service", "Reparto")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
@@ -346,22 +143,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // Adresse (Strasse, Hausnummer)
 * item[=].item[=].item[+].linkId = "orgStreetLine"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.streetLine"
-* item[=].item[=].item[=].text = "Address (street, house number)"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Adresse (Strasse, Hausnummer)"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Adresse (rue, numéro)"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Indirizzo (via, numero civico)"
+* insert RuleSetQrLevel3Text("Address (street\, house number\)", "Adresse (Strasse\, Hausnummer\)", "Adresse (rue\, numéro\)", "Indirizzo (via\, numero civico\)")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
@@ -370,22 +152,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // PLZ
 * item[=].item[=].item[+].linkId = "orgZipCode"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.zipCode"
-* item[=].item[=].item[=].text = "Postal code"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "PLZ"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "NPA"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "NAP"
+* insert RuleSetQrLevel3Text("Postal code", "PLZ", "NPA", "NAP")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
@@ -395,22 +162,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // Ort
 * item[=].item[=].item[+].linkId = "orgCity"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.city"
-* item[=].item[=].item[=].text = "Town/city"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Ort"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Localité"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Località"
+* insert RuleSetQrLevel3Text("Town/city", "Ort", "Localité", "Località")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
@@ -420,22 +172,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // Telefonnummer
 * item[=].item[=].item[+].linkId = "orgPhone"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.phone"
-* item[=].item[=].item[=].text = "Phone number"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Telefonnummer"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Numéro de téléphone"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "Numero di telefono"
+* insert RuleSetQrLevel3Text("Phone number", "Telefonnummer", "Numéro de téléphone", "Numero di telefono")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
@@ -445,22 +182,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // E-Mail
 * item[=].item[=].item[+].linkId = "orgEmail"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.email"
-* item[=].item[=].item[=].text = "Email"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "E-Mail"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "E-mail"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "E-mail"
+* insert RuleSetQrLevel3Text("Email", "E-Mail", "E-mail", "E-mail")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
@@ -469,22 +191,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // BUR (Betriebs- und Unternehmensregister / BER)
 * item[=].item[=].item[+].linkId = "orgBer"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.ber"
-* item[=].item[=].item[=].text = "BER"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "BUR"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "REE"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "RIS"
+* insert RuleSetQrLevel3Text("BER", "BUR", "REE", "RIS")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
@@ -493,22 +200,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 // GLN
 * item[=].item[=].item[+].linkId = "orgGln"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.gln"
-* item[=].item[=].item[=].text = "GLN"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "GLN"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "GLN"
-* item[=].item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].item[=].text.extension[=].extension[=].valueString = "GLN"
+* insert RuleSetQrLevel3Text("GLN", "GLN", "GLN", "GLN")
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath

@@ -27,33 +27,10 @@ InstanceOf: Questionnaire
 Usage: #definition
 Title: "CH EKM Questionnaire: Exposure - Where (place of infection)"
 Description: "Modular sub-questionnaire for the 'Wo' (where) group of the Exposure section: the most probable place of infection - Switzerland/Liechtenstein or a country abroad, the precise location, or explicitly unknown. Reusable as an SDC assemble-child."
-* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhere"
-* version = "0.0.1"
-* name = "ChEkmQuestionnaireExposureWhere"
-* status = #active
-* language = #en
-* experimental = false
-* subjectType = #Patient
-* extension[+].url = $sdc-assemble-expectation
-* extension[=].valueCode = #assemble-child
+* insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireExposureWhere)
 
 * item[+].linkId = "exposureWhere"
-* item[=].text = "Where (place of infection)"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Wo (Ort der Ansteckung)"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Où (lieu de l'infection)"
-* item[=].text.extension[+].url = $translation
-* item[=].text.extension[=].extension[+].url = "lang"
-* item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].text.extension[=].extension[+].url = "content"
-* item[=].text.extension[=].extension[=].valueString = "Dove (luogo del contagio)"
+* insert RuleSetQrLevel1Text("Where (place of infection\)", "Wo (Ort der Ansteckung\)", "Où (lieu de l'infection\)", "Dove (luogo del contagio\)")
 * item[=].type = #group
 
 // 1. CH/LI - a single-option check-box (see the file header). Ticking it hides the "Ausland"
@@ -72,43 +49,13 @@ Description: "Modular sub-questionnaire for the 'Wo' (where) group of the Exposu
 * item[=].item[=].repeats = true
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
-* item[=].item[=].answerOption[0].valueString = "Switzerland / Liechtenstein (CH/LI)"
-* item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "lang"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "content"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueString = "Schweiz/Liechtenstein (CH/LI)"
-* item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "lang"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "content"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueString = "Suisse / Liechtenstein (CH/LI)"
-* item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "lang"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "content"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueString = "Svizzera / Liechtenstein (CH/LI)"
+* insert RuleSetQrLevel2AnswerOptionText("Switzerland / Liechtenstein (CH/LI\)", "Schweiz/Liechtenstein (CH/LI\)", "Suisse / Liechtenstein (CH/LI\)", "Svizzera / Liechtenstein (CH/LI\)")
 
 // 2. Ausland, Land - choice (country codes), autocomplete. Shown while CH/LI is not ticked; since
 //    un-ticking the check-box above removes its answer, a single `exists = false` is enough.
 * item[=].item[+].linkId = "exposureWhereCountry"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.country"
-* item[=].item[=].text = "Abroad, country"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Ausland, Land"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "À l'étranger, pays"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "All'estero, Paese"
+* insert RuleSetQrLevel2Text("Abroad\, country", "Ausland\, Land", "À l'étranger\, pays", "All'estero\, Paese")
 * item[=].item[=].type = #choice
 * item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodes"
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
@@ -120,22 +67,7 @@ Description: "Modular sub-questionnaire for the 'Wo' (where) group of the Exposu
 // 3. Genauer Ort (CH/LI und Ausland) - free text, applies to both branches above
 * item[=].item[+].linkId = "exposureWherePreciseLocation"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.preciseLocation"
-* item[=].item[=].text = "Precise location (Switzerland/Liechtenstein and abroad)"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Genauer Ort (CH/LI und Ausland)"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Lieu précis (CH/LI et étranger)"
-* item[=].item[=].text.extension[+].url = $translation
-* item[=].item[=].text.extension[=].extension[+].url = "lang"
-* item[=].item[=].text.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].text.extension[=].extension[+].url = "content"
-* item[=].item[=].text.extension[=].extension[=].valueString = "Luogo preciso (CH/LI ed estero)"
+* insert RuleSetQrLevel2Text("Precise location (Switzerland/Liechtenstein and abroad\)", "Genauer Ort (CH/LI und Ausland\)", "Lieu précis (CH/LI et étranger\)", "Luogo preciso (CH/LI ed estero\)")
 * item[=].item[=].type = #string
 
 // 4. Unbekannt - separate box (see the file header); extracted IN ADDITION to 1-3, not instead of them.
@@ -148,19 +80,4 @@ Description: "Modular sub-questionnaire for the 'Wo' (where) group of the Exposu
 * item[=].item[=].repeats = true
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
-* item[=].item[=].answerOption[0].valueString = "Place of infection unknown"
-* item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "lang"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueCode = #de-CH
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "content"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueString = "Unbekannt"
-* item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "lang"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueCode = #fr-CH
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "content"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueString = "Inconnu"
-* item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "lang"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueCode = #it-CH
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[+].url = "content"
-* item[=].item[=].answerOption[0].valueString.extension[=].extension[=].valueString = "Sconosciuto"
+* insert RuleSetQrLevel2AnswerOptionText("Place of infection unknown", "Unbekannt", "Inconnu", "Sconosciuto")
