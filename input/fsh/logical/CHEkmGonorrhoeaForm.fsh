@@ -5,7 +5,7 @@ Description: "Logical model for the form ChEkmGonorrhoeaForm."
 Characteristics: #can-be-target
 
 * person 1..1 ChEkmGonorrhoeaPersonForm "Affected person"
-* exposition 1..1 ChEkmGonorrhoeaExpositionForm "Exposition"
+* exposure 1..1 ChEkmGonorrhoeaExposureForm "Exposure"
 * manifestation 1..1 ChEkmGonorrhoeaManifestationForm "Diagnosis and manifestation"
 * treatingPhysician 1..1 Base "Treating physician"
   * practitioner 1..1 ChEkmTreatingPhysicianPractitionerForm "Practitioner"
@@ -31,10 +31,10 @@ Characteristics: #can-be-target
 * administrativeGender 1..1
 * genderIdentity 0..1
 
-Logical: ChEkmGonorrhoeaExpositionForm
-Parent: ChEkmExpositionForm
-Title: "CH EKM Form: Gonorrhoea - Exposition"
-Description: "Logical model for the form section 'Exposition' of the Gonorrhoea clinical findings report. One element per form item."
+Logical: ChEkmGonorrhoeaExposureForm
+Parent: ChEkmExposureForm
+Title: "CH EKM Form: Gonorrhoea - Exposure"
+Description: "Logical model for the form section 'Exposure' (German form: 'Exposition') of the Gonorrhoea clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
 // Wo on the structured level we will not have inland/ausland as separate items (discussed June 1st)
@@ -50,11 +50,11 @@ Characteristics: #can-be-target
   * otherTransmission 0..1 string "Other transmission route (free text)"
   * unknown 0..1 boolean "Unknown"
 
-Mapping: GonorrhoeaExpositionToExposure
-Source: ChEkmGonorrhoeaExpositionForm
+Mapping: GonorrhoeaExposureFormToExposure
+Source: ChEkmGonorrhoeaExposureForm
 Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-exposure-gonorrhoea"
-Id: gonorrhoea-exposition-to-exposure
-Title: "Exposition Form to CH EKM Exposure"
+Id: gonorrhoea-exposure-form-to-exposure
+Title: "Exposure Form to CH EKM Exposure"
 * -> "Observation" "Maps the form section to the ChEkmExposureGonorrhoea profile"
 * transmission.sexualContactPartner -> "Observation.component[sexualContactPartner].valueCodeableConcept"
 * transmission.relationshipType -> "Observation.component[relationshipType].valueCodeableConcept"

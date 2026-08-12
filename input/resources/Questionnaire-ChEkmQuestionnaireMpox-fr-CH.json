@@ -83,7 +83,11 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhen|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -445,7 +449,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='sexualContactPartner').answer.value"
+                    "valueString": "%resource.descendants().where(linkId='exposureHowSexualContactPartner').answer.value"
                   }
                 ],
                 "valueCodeableConcept": {
@@ -477,7 +481,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='relationshipType').answer.value"
+                    "valueString": "%resource.descendants().where(linkId='exposureHowRelationshipType').answer.value"
                   }
                 ],
                 "valueCodeableConcept": {
@@ -509,7 +513,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='otherTransmission').answer.value"
+                    "valueString": "%resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value"
                   }
                 ],
                 "_valueString": {
@@ -534,7 +538,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='unknown').answer.value.where($this = true)"
+                    "valueString": "%resource.descendants().where(linkId='exposureHowUnknown').answer.value.where($this = true)"
                   }
                 ],
                 "valueCodeableConcept": {
@@ -557,7 +561,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, %resource.descendants().where(linkId='otherTransmission').answer.value)"
+                    "valueString": "iif(%resource.descendants().where(linkId='exposureHowUnknown').answer.value = true, {}, %resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value)"
                   }
                 ],
                 "code": {
@@ -585,7 +589,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='otherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='sexualContactPartner').answer.value))"
+                    "valueString": "iif(%resource.descendants().where(linkId='exposureHowUnknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='exposureHowSexualContactPartner').answer.value))"
                   }
                 ],
                 "code": {
@@ -608,8 +612,54 @@
                     }
                   ]
                 }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "161097008",
+                      "system": "http://snomed.info/sct",
+                      "display": "Date of return from travel"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='exposureWhenLastEntryDate').answer.value"
+                  }
+                ],
+                "_valueDateTime": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
               }
-            ]
+            ],
+            "_effectiveDateTime": {
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                      "valueString": "%resource.descendants().where(linkId='exposureWhenLastEntryDate').answer.value"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown'))"
+                    }
+                  ]
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='exposureWhenDate').answer.value.first()"
+                }
+              ]
+            }
           }
         },
         {
@@ -4196,13 +4246,39 @@
           "text": "Données relatives à l'exposition",
           "item": [
             {
-              "linkId": "transmission",
+              "linkId": "exposureWhen",
+              "text": "Quand (moment de l'infection)",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "exposureWhenDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.when.exposureDate",
+                  "text": "Quand a eu lieu le moment le plus probable de l'infection ?",
+                  "type": "date"
+                },
+                {
+                  "linkId": "exposureWhenLastEntryDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.when.lastEntryDate",
+                  "text": "Si inconnu, quand a eu lieu la dernière entrée en Suisse ?",
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "exposureWhenDate",
+                      "operator": "exists",
+                      "answerBoolean": false
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "exposureHow",
               "text": "Comment (voie de transmission)",
               "type": "group",
               "item": [
                 {
-                  "linkId": "sexualContactPartner",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner",
+                  "linkId": "exposureHowSexualContactPartner",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.sexualContactPartner",
                   "text": "Rapport sexuel avec une personne infectée (sexe)",
                   "type": "choice",
                   "extension": [
@@ -4247,8 +4323,8 @@
                   ]
                 },
                 {
-                  "linkId": "relationshipType",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType",
+                  "linkId": "exposureHowRelationshipType",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.relationshipType",
                   "text": "Type de relation",
                   "type": "choice",
                   "extension": [
@@ -4300,14 +4376,14 @@
                   ]
                 },
                 {
-                  "linkId": "otherTransmission",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.otherTransmission",
+                  "linkId": "exposureHowOtherTransmission",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.otherTransmission",
                   "text": "Autre voie de transmission (texte libre)",
                   "type": "string"
                 },
                 {
-                  "linkId": "unknown",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown",
+                  "linkId": "exposureHowUnknown",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.unknown",
                   "text": "Voie de transmission inconnue",
                   "type": "boolean"
                 }

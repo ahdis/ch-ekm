@@ -122,7 +122,7 @@ Instance: ChEkmObservationExample-ExposureViralDisease
 InstanceOf: ChEkmExposure
 Usage: #example
 Description: "Example for a CH EKM Exposure: Exposure to Viral Disease (Hepatitis C)"
-* extension[expositionAddress].valueAddress.country = "Nepal"
+* extension[exposureAddress].valueAddress.country = "Nepal"
 //* extension[=].valueAddress.extension[+].url = "http://hl7.org/fhir/StructureDefinition/iso21090-SC-coding"
 //* extension[=].valueAddress.extension[=].valueCoding = urn:iso:std:iso:3166#CH
 * status = #final

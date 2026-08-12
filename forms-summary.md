@@ -192,7 +192,7 @@ discovery + match-based replacement), and **nested/recursive** modular children 
 (the discarded-recursion bug is fixed). The only remaining rule: each questionnaire needs a top-level
 form group at `item[0]` with children.
 
-**Why modular for CH EKM**: the report sections (Person, Manifestation, Exposition,
+**Why modular for CH EKM**: the report sections (Person, Manifestation, Exposure,
 Treating physician, Laboratory) recur across organisms. Each becomes a reusable
 sub-questionnaire; each disease's root questionnaire assembles the subset it needs (plus
 disease-specific value-set bindings).
@@ -205,7 +205,7 @@ disease-specific value-set bindings).
 | --- | --- |
 | `ChEkmGonorrhoeaPersonForm` (← `ChEkmPersonForm`) | `ChEkmPatientInitials` |
 | `ChEkmGonorrhoeaManifestationForm` (← `ChEkmManifestationForm`) | `ChEkmConditionGonorrhoea` |
-| `ChEkmGonorrhoeaExpositionForm.transmission` (← `ChEkmExpositionForm`) | `ChEkmExposureGonorrhoea` |
+| `ChEkmGonorrhoeaExposureForm.transmission` (← `ChEkmExposureForm`) | `ChEkmExposureGonorrhoea` |
 | `ChEkmTreatingPhysicianPractitionerForm` | `ChEkmPractitionerTreatingPhysician` |
 | `ChEkmTreatingPhysicianOrganizationForm` | `ChEkmOrganizationTreatingPhysician` |
 
@@ -246,7 +246,7 @@ disease-specific value-set bindings).
 > for "symptomatic". Left unchanged pending decision (semantics: `264931009` is the
 > cleaner manifestation/evidence code, distinct from `Condition.code`).
 
-**Transmission / Wie** (`ChEkmGonorrhoeaExpositionForm.transmission`):
+**Transmission / Wie** (`ChEkmGonorrhoeaExposureForm.transmission`):
 | Item | linkId | type | Binding / note |
 | --- | --- | --- | --- |
 | Sexualkontakt – Geschlecht | `sexualContactPartner` | choice | `administrative-gender` |
@@ -291,7 +291,7 @@ ChEkmQuestionnairePersonInitials      (assemble-child)  ← ChEkmPersonForm (nam
 ChEkmQuestionnairePersonGeneral       (assemble-child)  ← ChEkmPersonForm (birth date, AHVN13, address, …)
 ChEkmQuestionnairePersonGenderIdentity(assemble-child)  ← ChEkmPersonForm (gender identity)
 ChEkmQuestionnaireManifestation       (assemble-child)  ← ChEkmManifestationForm
-ChEkmQuestionnaireTransmissionHow     (assemble-child)  ← ChEkmExpositionForm.transmission  (input/fsh/questionnnaire/)
+ChEkmQuestionnaireExposureHow     (assemble-child)  ← ChEkmExposureForm.transmission  (input/fsh/questionnnaire/)
 ChEkmQuestionnaireTreatingPhysician   (assemble-child)  ← ChEkmTreatingPhysician{Practitioner,Organization}Form
 ```
 
@@ -299,16 +299,16 @@ ChEkmQuestionnaireTreatingPhysician   (assemble-child)  ← ChEkmTreatingPhysici
 > `ChEkmQuestionnaireGonorrhoeaTreatingPhysician` (option (a)); it holds two sub-groups
 > (Practitioner + Organization, §3).
 >
-> **Manifestation is inlined; Exposition/transmission is a generic child (2026-07).** The
+> **Manifestation is inlined; Exposure/transmission is a generic child (2026-07).** The
 > `manifestation-group` (the `manifestation` choice + a nested `manifestationBeginUnknown`
 > `subQuestionnaire` placeholder) lives **inline** under `gonorrhoea-form` in
 > `ChEkmQuestionnaireGonorrhoea`; the old `ChEkmQuestionnaireGonorrhoeaManifestation` child was
 > **removed**, and assembling the root recurses into the inlined group and resolves the
 > `ChEkmQuestionnaireManifestationBeginUnknown` leaf. The `transmission` group (sexualContactPartner,
 > relationshipType, otherTransmission, unknown) was extracted from the old
-> `ChEkmQuestionnaireGonorrhoeaExposition` into a generic leaf
-> **`ChEkmQuestionnaireTransmissionHow`** under `input/fsh/questionnnaire/`, referenced from the root
-> by an `exposition` `subQuestionnaire` placeholder. Either shape assembles to the same output
+> `ChEkmQuestionnaireGonorrhoeaExposure` into a generic leaf
+> **`ChEkmQuestionnaireExposureHow`** under `input/fsh/questionnnaire/`, referenced from the root
+> by an `exposure` `subQuestionnaire` placeholder. Either shape assembles to the same output
 > (identical linkId set) — inline vs. a referenced child is now purely an authoring/reuse choice
 > thanks to the arbitrary-depth-placeholder patch (§1).
 > (`ChEkmQuestionnaireManifestationBeginUnknown` stays a separate leaf.)
@@ -349,7 +349,7 @@ ChEkmQuestionnaireGonorrhoea  (meta.profile = sdc-questionnaire-modular)
      ├─ group manifestation-group                                 (inlined)
      │   ├─ choice  manifestation
      │   └─ display → subQuestionnaire ChEkmQuestionnaireManifestationBeginUnknown
-     ├─ display → subQuestionnaire ChEkmQuestionnaireTransmissionHow   (transmission group)
+     ├─ display → subQuestionnaire ChEkmQuestionnaireExposureHow   (transmission group)
      └─ display → subQuestionnaire ChEkmQuestionnaireGonorrhoeaTreatingPhysician
 ```
 
@@ -400,7 +400,7 @@ Title: "CH EKM Questionnaire: Gonorrhoea (modular)"
 
 // Top-level form group at item[0]. Placeholders may sit anywhere under it (any depth,
 // interleaved with real content) thanks to the assembler patch (§1). Here the person section
-// is an inlined wrapper GROUP holding three leaf placeholders; manifestation/exposition/…
+// is an inlined wrapper GROUP holding three leaf placeholders; manifestation/exposure/…
 // are placeholder siblings of that group.
 * item[+].linkId = "gonorrhoea-form"
 * item[=].type = #group
@@ -414,14 +414,14 @@ Title: "CH EKM Questionnaire: Gonorrhoea (modular)"
 * item[=].item[=].item[=].extension[+].url = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-subQuestionnaire"
 * item[=].item[=].item[=].extension[=].valueCanonical = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials"
 // + personGeneral + personGenderIdentity placeholders (siblings inside the person group)
-// + manifestation + exposition + treatingPhysician placeholders (siblings of the person group)
+// + manifestation + exposure + treatingPhysician placeholders (siblings of the person group)
 ```
 
 ---
 
 ## 5. Suggested workflow
 
-1. Build the **sub-questionnaires** as FSH instances (Person, Manifestation, Exposition),
+1. Build the **sub-questionnaires** as FSH instances (Person, Manifestation, Exposure),
    binding to existing value sets and `item.definition` → logical model.
 2. Build the **root modular** `ChEkmQuestionnaireGonorrhoea`.
 3. `sushi .` to compile, then **validate with the IG Publisher** (not matchbox MCP).
@@ -825,7 +825,7 @@ extension at `X.extension[0]`.
 
 ### Emitting a FIXED Coding / CodeableConcept — use the FHIRPath Type Factory (`%factory`)
 When a template field must carry a **constant** coded value not present in any answer (e.g. the
-Gonorrhoea exposition `component[transmissionRoute]` = `$sct#261665006 "Unknown (qualifier value)"`,
+Gonorrhoea exposure `component[transmissionRoute]` = `$sct#261665006 "Unknown (qualifier value)"`,
 emitted only when the boolean `unknown` is ticked), you cannot assemble it field-by-field:
 
 - **fhirpath.js has no object/complex literals** — `{system:…, code:…}`, `Coding{…}`, `select({…})`
@@ -865,7 +865,7 @@ Two recurring patterns when gating a templated element (empty context → elemen
   answer is unanswered — so the element wrongly stays omitted for "not selected". And you cannot wrap
   in `.not()`, because a boolean result (`true`/`false`) is *always* non-empty, so the context never
   gates. Use `iif` returning empty only for the true case:
-  `iif(%resource.descendants().where(linkId='unknown').answer.value = true, {}, true)` — emits for
+  `iif(%resource.descendants().where(linkId='exposureHowUnknown').answer.value = true, {}, true)` — emits for
   `false` **and** absent (criterion empty → `iif` falls to the otherwise branch), omits only for
   `true`. (The returned `true` is just a non-empty sentinel to materialise the element; a constant
   `%factory.Coding(...)` value-path ignores the context scope.) Chain `iif`s for fallbacks, e.g.

@@ -24,6 +24,9 @@ InstanceOf: ChEkmExposureMpox
 * code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
 * subject.reference = "Patient/ExtractedPatient"
 * insert RuleSetComponentExposure
+// Wann — inserted AFTER the transmission components so those keep their array indices
+// (the extract engine's context bookkeeping is index-sensitive, see RuleSetComponentExposure).
+* insert RuleSetEffectiveExposureWhen
 
 // ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionMpox) — static structure, references the entries above,

@@ -58,15 +58,15 @@ Description: "Example Gonorrhoea QuestionnaireResponse used as input to SDC temp
 * item[0].item[1].item[1].linkId = "manifestationBeginUnknown"
 * item[0].item[1].item[1].answer.valueBoolean = true
 
-// --- Exposition (Wie / Übertragungsweg) ---
+// --- Exposure (Wie / Übertragungsweg) ---
 // exposure = outer wrapper group; transmission = route-of-transmission sub-questionnaire.
 * item[0].item[2].linkId = "exposure"
-* item[0].item[2].item[0].linkId = "transmission"
-* item[0].item[2].item[0].item[0].linkId = "sexualContactPartner"
+* item[0].item[2].item[0].linkId = "exposureHow"
+* item[0].item[2].item[0].item[0].linkId = "exposureHowSexualContactPartner"
 * item[0].item[2].item[0].item[0].answer.valueCoding = $administrative-gender#male "Male"
-* item[0].item[2].item[0].item[1].linkId = "relationshipType"
+* item[0].item[2].item[0].item[1].linkId = "exposureHowRelationshipType"
 * item[0].item[2].item[0].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
-* item[0].item[2].item[0].item[2].linkId = "unknown"
+* item[0].item[2].item[0].item[2].linkId = "exposureHowUnknown"
 * item[0].item[2].item[0].item[2].answer.valueBoolean = false
 
 // --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---

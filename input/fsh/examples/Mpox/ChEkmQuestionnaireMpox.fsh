@@ -32,9 +32,9 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 
 * insert RuleSetQrGroupExposure
 
-// TODO Exposition where
+// TODO Exposure where
 
-// TODO Exposition when
+* insert RuleSetQrExposureWhen
 
 * insert RuleSetQrExposureHow
 

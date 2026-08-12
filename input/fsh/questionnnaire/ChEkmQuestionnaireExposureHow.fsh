@@ -1,17 +1,17 @@
 // Modular sub-questionnaire: "Wie (Übertragungsweg)" — route-of-transmission group.
 // Extracted from the Gonorrhoea root so the transmission group is a reusable assemble-child.
-// Source of truth: logical model ChEkmGonorrhoeaExpositionForm.transmission (-> ChEkmExposureGonorrhoea)
+// Source of truth: logical model ChEkmGonorrhoeaExposureForm.transmission (-> ChEkmExposureGonorrhoea)
 // Decisions (2026-06-09): contact-partner sex = administrative-gender (model);
 // Art der Beziehung = ChEkmExposureRelationshipType (model codes).
 
-Instance: ChEkmQuestionnaireTransmissionHow
+Instance: ChEkmQuestionnaireExposureHow
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Transmission - How (route of transmission)"
+Title: "CH EKM Questionnaire: Exposure - How (route of transmission)"
 Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route of transmission) group. Holds the transmission group (sexual-contact partner sex, relationship type, other route, unknown). Reusable as an SDC assemble-child."
-* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTransmissionHow"
+* url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow"
 * version = "0.0.1"
-* name = "ChEkmQuestionnaireTransmissionHow"
+* name = "ChEkmQuestionnaireExposureHow"
 * status = #active
 * language = #en
 * experimental = false
@@ -19,7 +19,7 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 * extension[+].url = $sdc-assemble-expectation
 * extension[=].valueCode = #assemble-child
 
-* item[+].linkId = "transmission"
+* item[+].linkId = "exposureHow"
 * item[=].text = "How (route of transmission)"
 * item[=].text.extension[+].url = $translation
 * item[=].text.extension[=].extension[+].url = "lang"
@@ -39,8 +39,8 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 * item[=].type = #group
 
 // Sexualkontakt mit infizierter Person - Geschlecht (Frau / Mann / Andere)
-* item[=].item[+].linkId = "sexualContactPartner"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.sexualContactPartner"
+* item[=].item[+].linkId = "exposureHowSexualContactPartner"
+* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.sexualContactPartner"
 * item[=].item[=].text = "Sexual contact with an infected person (gender)"
 * item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].text.extension[=].extension[+].url = "lang"
@@ -68,8 +68,8 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 // * item[=].item[=].enableWhen[=].answerBoolean = false
 
 // Art der Beziehung (fester / nicht fester Partner / Angebot bzw. Inanspruchnahme von bezahltem Sex)
-* item[=].item[+].linkId = "relationshipType"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.relationshipType"
+* item[=].item[+].linkId = "exposureHowRelationshipType"
+* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.relationshipType"
 * item[=].item[=].text = "Type of relationship"
 * item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].text.extension[=].extension[+].url = "lang"
@@ -97,8 +97,8 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 // * item[=].item[=].enableWhen[=].answerBoolean = false
 
 // Anderer Übertragungsweg (Freitext)
-* item[=].item[+].linkId = "otherTransmission"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.otherTransmission"
+* item[=].item[+].linkId = "exposureHowOtherTransmission"
+* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.otherTransmission"
 * item[=].item[=].text = "Other route of transmission (free text)"
 * item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].text.extension[=].extension[+].url = "lang"
@@ -121,8 +121,8 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 // * item[=].item[=].enableWhen[=].answerBoolean = false
 
 // Übertragungsweg unbekannt - default false; when checked it disables the details below
-* item[=].item[+].linkId = "unknown"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExpositionForm#ChEkmGonorrhoeaExpositionForm.transmission.unknown"
+* item[=].item[+].linkId = "exposureHowUnknown"
+* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.unknown"
 * item[=].item[=].text = "Route of transmission unknown"
 * item[=].item[=].text.extension[+].url = $translation
 * item[=].item[=].text.extension[=].extension[+].url = "lang"

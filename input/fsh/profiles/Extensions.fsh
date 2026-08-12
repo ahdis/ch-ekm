@@ -11,16 +11,16 @@ Description: "This CH EKM extension enables to provide the HIV Code."
 * valueString ^short = "Name of the HIV code"
 * valueString ^maxLength = 2
 
-Extension: ChEkmExtExpositionAddress
-Id: ch-ekm-ext-exposition-address
-Title: "CH EKM Extension: Exposition Address"
-Description: "This CH EKM extension enables to provide the exposition address."
+Extension: ChEkmExtExposureAddress
+Id: ch-ekm-ext-exposure-address
+Title: "CH EKM Extension: Exposure Address"
+Description: "This CH EKM extension enables to provide the exposure address."
 * ^context[+].type = #element
 * ^context[=].expression = "Observation"
-* . ^short = "CH EKM Extension: Exposition Address"
+* . ^short = "CH EKM Extension: Exposure Address"
 * value[x] 1..
 * value[x] only Address
-* valueAddress ^short = "Exposition address"
+* valueAddress ^short = "Exposure address"
 
 Extension: ChEkmExtDepartment
 Id: ch-ekm-ext-department

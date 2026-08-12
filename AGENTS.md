@@ -60,9 +60,9 @@ This IG uses **two parallel representations** of the report content:
 - **`ChEkmCondition`** (← `CHCoreCondition`) — diagnosis + manifestations. `code` (the
   disease), `onsetDateTime` (manifestation begin, with `data-absent-reason` for unknown),
   `evidence` = manifestation.
-- **`ChEkmExposure`** (← `Observation`) — the "Exposition" (how/where exposed). Mirrors
+- **`ChEkmExposure`** (← `Observation`) — the "Exposition" / Exposure (how/where exposed). Mirrors
   HL7 Europe HDR *Infectious Contact*: `category` from `ChEkmExposureClass`,
-  `code = EXPAGNT`, `extension[expositionAddress]` for the place (Wo).
+  `code = EXPAGNT`, `extension[exposureAddress]` for the place (Wo).
 
 ### Person / actors
 - **`ChEkmPatient`** (← `CHCorePatient`) and four representation variants reflecting the
@@ -85,7 +85,7 @@ bound to `ChEkmGonorrhoeaManifestation`) and `section[social-history]` to
 HepatitisC and InvasiveStreptococcusPneumoniae follow the same shape.
 
 ### Extensions & invariants
-- Extensions (`profiles/Extensions.fsh`): `ChEkmExtHivCode`, `ChEkmExtExpositionAddress`,
+- Extensions (`profiles/Extensions.fsh`): `ChEkmExtHivCode`, `ChEkmExtExposureAddress`,
   `ChEkmExtDepartment`.
 - Invariants (`profiles/Invariants.fsh`): `name-initials`, `ch-ekm-hiv-check`,
   `ch-ekm-dateTime`.
@@ -97,9 +97,9 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
 
 - **`ChEkmPersonForm`** → maps to `ChEkmPatient` (Person to Patient).
 - **`ChEkmManifestationForm`** → maps to `ChEkmCondition`.
-- **`ChEkmExpositionForm`** → maps to `ChEkmExposure` (the "Wo"/where part).
+- **`ChEkmExposureForm`** → maps to `ChEkmExposure` (the "Wo"/where part).
 - **`ChEkmTreatingPhysicianForm`** → `Practitioner` + `Organization` form models.
-- **`CHEkmGonorrhoeaForm`** — the disease-level aggregate: `person`, `exposition`,
+- **`CHEkmGonorrhoeaForm`** — the disease-level aggregate: `person`, `exposure`,
   `manifestation`, `treatingPhysician`, each refining the generic form models for
   Gonorrhoea (e.g. `surnameInitial 1..1`, `surname 0..0`; adds the Gonorrhoea
   transmission sub-structure `transmission.sexualContactPartner / relationshipType /
