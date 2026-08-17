@@ -78,11 +78,13 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 // sub-questionnaires, in the order they are assembled into the root.
 * item[0].item[2].linkId = "exposure"
 
-// Wo: abroad with a precise location -> after $extract
+// Wo: a country with a precise location -> after $extract
 // extension[exposureAddress].valueAddress = {country "CD" + iso21090-codedString Coding, city}.
-// The CH/LI and "Unbekannt" check-boxes are single-option choice items: un-ticked means NO answer
-// item at all (not `false`), so neither appears here and the address branch of the template fires
-// rather than the data-absent branch.
+// The country item is a single mandatory dropdown (CH/LI are just its first two options); answering
+// it with sct#261665006 "Unknown" would instead leave `country` empty and put a data-absent-reason
+// on `_country`. The "Unbekannt" check-box belongs to the precise location and is a single-option
+// choice item: un-ticked means NO answer item at all (not `false`), so it does not appear here and
+// `city` carries the entered text rather than a data-absent-reason.
 * item[0].item[2].item[0].linkId = "exposureWhere"
 * item[0].item[2].item[0].item[0].linkId = "exposureWhereCountry"
 * item[0].item[2].item[0].item[0].answer.valueCoding = $iso3166#CD "Congo (Kinshasa)"

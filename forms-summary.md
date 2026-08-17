@@ -165,7 +165,7 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
   > Display Name* warning per language file. Inline option labels are translated via
   > `translation` extensions on the `_valueString` sibling, baked in by
   > `scripts/build-lang-questionnaire.py` (`localize_answer_options`).
-  > Live example: the "Wo" group's `exposureWhereChLi` / `exposureWhereUnknown`.
+  > Live example: the "Wo" group's `exposureWhereUnknown`.
 - **Behaviour**: `enableWhen` / `enableBehavior` (conditional display, e.g. show a free-text
   field only when "andere/other" is chosen, or grey out a date when "unbekannt" is ticked),
   `required`, `repeats`, `readOnly`, `initial`.
@@ -920,6 +920,25 @@ including the `_country` primitive-extension slot, which **no** value directive 
 reach (it would set the string itself). The unknown branch is
 `%factory.withExtension(%factory.Address({}), '…/data-absent-reason', %factory.code('asked-unknown'))`.
 
+> **A data-absent-reason on the primitive itself:** pass an **empty value** to the primitive factory —
+> `%factory.withProperty(addr, 'country', %factory.string({}, %factory.Extension('…/data-absent-reason',
+> %factory.code('asked-unknown'))))`. FHIRPath on its own returns
+> `{country: null, _country:{extension:[{data-absent-reason}]}}`; `country` does not repeat, so the
+> null is correctly dropped on serialisation and the extracted Address ends up with `_country` only —
+> the canonical FHIR JSON for a value-less primitive. This is how the country dropdown's
+> `sct#261665006 "Unknown"` option (`ChEkmCountryCodesInclUnknown` — needed because the field is
+> mandatory) is extracted: it is filtered out of the country Coding with
+> `where(system='urn:iso:std:iso:3166')` so it never becomes an ISO country string, and marks the
+> country element absent instead — and the same shape expresses "precise location unknown" on
+> `_city`. Note `withProperty(addr, '_country', …)` is **not** the way to do it — `ResourceNode`
+> forces `_data = {}`, so that call also emits a stray `__country: {}`.
+>
+> **Corollary: only take the `withProperty` path when there really is an extension.** `_data` being
+> forced to `{}` means `withProperty(addr, 'city', %factory.string(text, {}))` emits a stray, invalid
+> `"_city": {}`. Set plain values through the type's own constructor (`%factory.Address({}, city)`,
+> which also omits the field when the value is empty) and reserve `withProperty` for the
+> extension-carrying branch.
+
 **Why not annotate a pre-declared `extension[exposureAddress]` field by field?** Because a whole
 extension cannot be context-gated (§ above): the gate would have to be a `templateExtractContext`
 *sub*-extension next to `valueAddress` — illegal (`ext-1`) and forbidden by the extension definition.
@@ -930,17 +949,21 @@ carriers** with complementary contexts, like the transmission-route components.
 
 Two things to get right:
 - The context must be **single-valued**. A bare collection of answers
-  (`chli.combine(country).combine(precise)`) can hold several values, and the engine emits the
+  (`country.combine(precise)`) can hold several values, and the engine emits the
   element **once per context value** (that is exactly how one evidence entry per manifestation is
   produced). Return a sentinel instead: `iif(<unknown>, {}, iif(<any answered>, true, {}))`.
 - Value expressions inside a carrier read the QR **absolutely** (`%resource.descendants()…`), so the
   context is only a gate, not a scope.
+- `defineVariable` **chains** in fhirpath.js
+  (`%resource.defineVariable('a', …).defineVariable('b', …).select(…)`), and a variable may hold a
+  `%factory`-built value, so each answer is read once and shared by the branches — that is how "Wo"
+  binds `%ctry` / `%ctryUnknown` / `%base` / `%addr`.
 
-Verified end-to-end (`scripts/extract-mpox.sh` + hand-built QR variants): country abroad → code +
-Coding + city; CH/LI ticked → `country = "CH"`; "Unbekannt" ticked → data-absent-reason, on its own
-when nothing else is answered and **alongside** an answered country/city otherwise (the meaning of
-the box is still open, so no answer is discarded); precise location only → `{city}`; nothing
-answered → **no** extension.
+Verified end-to-end (`scripts/extract-mpox.sh` + hand-built QR variants). Country and precise
+location are **independent**, each with its own unknown, so the branches combine freely: a country
+answered → `country` + Coding, `Land = Unbekannt` → no `country` + `_country` data-absent-reason; a
+precise location answered → `city`, the "Unbekannt" box ticked → no `city` + `_city`
+data-absent-reason; nothing answered → **no** extension at all.
 
 ### Conditional gating with `iif` — negation and the Boolean-criterion trap
 Two recurring patterns when gating a templated element (empty context → element omitted):

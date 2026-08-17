@@ -1,83 +1,78 @@
 // Modular sub-questionnaire: "Wo" — most probable place of infection.
 // Source of truth: logical model ChEkmExposureForm.where (-> ChEkmExposure.extension[exposureAddress])
 // Form items per https://github.com/ahdis/ch-ekm/issues/26:
-//   1. CH/LI (check-box)                                  -> valueAddress.country = CH (form-only item)
-//   2. Ausland, Land (dropdown)                           -> valueAddress.country (+ country coding)
-//   3. Genauer Ort (CH/LI und Ausland) (free text)        -> valueAddress.city
-//   4. Unbekannt (separate box)                           -> valueAddress.extension[data-absent-reason]
+//   1. Land (dropdown, mandatory)                        -> valueAddress.country (+ country coding)
+//   2. Genauer Ort (free text)                           -> valueAddress.city
+//   3. Unbekannt (check-box belonging to 2.)             -> valueAddress._city.extension[data-absent-reason]
 //
-// (1) is FORM-ONLY: the logical model has no inland/ausland element ("on the structured level we
-// will not have inland/ausland as separate checkbox items", decision of June 1st, see
-// ChEkmExposureForm), so the check-box has no `definition` and is collapsed to country = CH by the
-// extraction template. Ticking it hides the "Ausland" dropdown (the two are alternatives).
+// (2) and (3) are ONE question in two widgets: the precise location, or "unbekannt" when it is not
+// known. Each of the two questions therefore carries its own unknown - the dropdown's "Unbekannt"
+// option for the country, this box for the precise location - and each becomes a data-absent-reason
+// on its own Address element, so "Land Schweiz, genauer Ort unbekannt" is reportable as such.
 //
-// (1) and (4) are `choice` items with a SINGLE `valueString` answerOption and the check-box item
-// control, not `boolean` items - see the note on item 1 for why (label placement + un-tick
-// behaviour). The option is a plain string, not a Coding: it is a form label, not a coded concept
-// (a Coding would have to carry the terminology's own display, e.g. "Switzerland" instead of
-// "Schweiz/Liechtenstein (CH/LI)"), and nothing but its presence is read at extraction.
+// There is exactly ONE country question. The paper form's "CH/LI check-box next to an Ausland
+// dropdown" layout is NOT reproduced: the place of infection is a single country, never a
+// combination of two, and it is always reported as a country CODE. Switzerland and Liechtenstein
+// are simply the first two entries of the answer value set (ChEkmCountryCodesInclUnknown), so the
+// inland case is answered in the same field as any other country - which also removes the former
+// form-only item `exposureWhereChLi` and its enableWhen gate on the dropdown.
 //
-// (4) is a separate box, as on the paper form: it neither disables nor overrides the items above.
-// It is not yet defined whether "Unbekannt" refers to the country, the precise location or both
-// (issue #26), so the extraction template keeps BOTH - the data-absent-reason and whatever country /
-// precise location was entered (see RuleSetExposureWhere).
+// The value set additionally offers sct#261665006 "Unknown" as a last resort: the country is a
+// MANDATORY field, so "unbekannt" must be selectable rather than left blank. That option is a
+// SNOMED CT concept, not an ISO 3166 country, so the extraction template does NOT write it to
+// `country`; it marks the country itself as absent - `valueAddress._country.extension` carries a
+// data-absent-reason (asked-unknown) instead (see RuleSetExposureWhere).
+//
+// (3) is a `choice` item with a SINGLE `valueString` answerOption and the check-box item control,
+// not a `boolean` item: a boolean item puts its label in the renderer's LEFT label column and the
+// box on the right (Smart Forms ItemFieldGrid / BooleanItem), which does not read like the paper
+// form. A check-box `choice` renders "[x] <option label>" in one line, so the option display
+// carries the visible label and the item itself needs NO `text` (the group header gives the
+// context). The option is a plain string, not a Coding: it is a form label, not a coded concept,
+// and nothing but its presence is read at extraction. `repeats = true` is what makes an
+// already-ticked box un-tickable: un-ticking then REMOVES the answer (a boolean check-box would
+// leave `false` behind), which is why the extraction template gates on `exists()` alone.
+//
+// (3) sits in its own row, as on the paper form, and does not disable (2): the two are alternatives
+// only in practice. Should a response carry both, the extraction template keeps the entered text
+// rather than claiming the value is absent (see RuleSetExposureWhere).
 
 Instance: ChEkmQuestionnaireExposureWhere
 InstanceOf: Questionnaire
 Usage: #definition
 Title: "CH EKM Questionnaire: Exposure - Where (place of infection)"
-Description: "Modular sub-questionnaire for the 'Wo' (where) group of the Exposure section: the most probable place of infection - Switzerland/Liechtenstein or a country abroad, the precise location, or explicitly unknown. Reusable as an SDC assemble-child."
+Description: "Modular sub-questionnaire for the 'Wo' (where) group of the Exposure section: the most probable place of infection - the country (Switzerland/Liechtenstein first, 'unknown' as a last resort), the precise location, or explicitly unknown. Reusable as an SDC assemble-child."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireExposureWhere)
 
 * item[+].linkId = "exposureWhere"
-* insert RuleSetQrLevel1Text("Where (place of infection\)", "Wo (Ort der Ansteckung\)", "Où (lieu de l'infection\)", "Dove (luogo del contagio\)")
+* insert RuleSetQrLevel1Text("What is the most probable place of infection?", "Was ist der meistwahrscheinlichste Ort der Ansteckung?", "Quel est le lieu de contamination le plus probable ?", "Qual è il luogo di contagio più probabile?")
 * item[=].type = #group
 
-// 1. CH/LI - a single-option check-box (see the file header). Ticking it hides the "Ausland"
-//    dropdown below.
-//
-//    Why a `choice` with ONE answerOption and not a `boolean`: a boolean item puts its label in the
-//    renderer's LEFT label column and the box on the right (Smart Forms ItemFieldGrid / BooleanItem),
-//    which does not read like the paper form. A check-box `choice` renders "[x] <option label>" in
-//    one line, so the option display carries the visible label and the item itself needs NO `text`
-//    (the group header "Wo (Ort der Ansteckung)" gives the context). `repeats = true` is what makes
-//    an already-ticked box un-tickable: un-ticking then REMOVES the answer (a boolean check-box
-//    would leave `false` behind), which is why the enableWhen below and the extraction template gate
-//    on `exists()` alone.
-* item[=].item[+].linkId = "exposureWhereChLi"
-* item[=].item[=].type = #choice
-* item[=].item[=].repeats = true
-* item[=].item[=].extension[+].url = $questionnaire-itemControl
-* item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
-* insert RuleSetQrLevel2AnswerOptionText("Switzerland / Liechtenstein (CH/LI\)", "Schweiz/Liechtenstein (CH/LI\)", "Suisse / Liechtenstein (CH/LI\)", "Svizzera / Liechtenstein (CH/LI\)")
-
-// 2. Ausland, Land - choice (country codes), autocomplete. Shown while CH/LI is not ticked; since
-//    un-ticking the check-box above removes its answer, a single `exists = false` is enough.
+// 1. Land - choice (country codes incl. "Unbekannt"), autocomplete, mandatory. Switzerland and
+//    Liechtenstein are the first two entries of the value set so they sit at the top of the popup.
 * item[=].item[+].linkId = "exposureWhereCountry"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.country"
-* insert RuleSetQrLevel2Text("Abroad\, country", "Ausland\, Land", "À l'étranger\, pays", "All'estero\, Paese")
+* insert RuleSetQrLevel2Text("Country", "Land", "Pays", "Paese")
 * item[=].item[=].type = #choice
-* item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodes"
+* item[=].item[=].required = true
+* item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodesInclUnknown"
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#autocomplete
-* item[=].item[=].enableWhen[+].question = "exposureWhereChLi"
-* item[=].item[=].enableWhen[=].operator = #exists
-* item[=].item[=].enableWhen[=].answerBoolean = false
 
-// 3. Genauer Ort (CH/LI und Ausland) - free text, applies to both branches above
+// 2. Genauer Ort - free text, applies to any country answered above
 * item[=].item[+].linkId = "exposureWherePreciseLocation"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.preciseLocation"
-* insert RuleSetQrLevel2Text("Precise location (Switzerland/Liechtenstein and abroad\)", "Genauer Ort (CH/LI und Ausland\)", "Lieu précis (CH/LI et étranger\)", "Luogo preciso (CH/LI ed estero\)")
+* insert RuleSetQrLevel2Text("Precise location", "Genauer Ort", "Lieu précis", "Luogo preciso")
 * item[=].item[=].type = #string
 
-// 4. Unbekannt - separate box (see the file header); extracted IN ADDITION to 1-3, not instead of them.
-//    Same single-option check-box shape as the CH/LI item above (ticked = the model's
-//    `where.unknown` is true; the answer Coding itself is never written to the Exposure, the
-//    template only tests whether it exists).
+// 3. Unbekannt - the "genauer Ort ist nicht bekannt" answer to item 2 above, rendered as its own
+//    check-box row (see the file header). Ticked = the model's `where.unknown` is true; the answer
+//    string itself is never written to the Exposure, the template only tests whether it exists and
+//    marks `city` as absent.
 * item[=].item[+].linkId = "exposureWhereUnknown"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.unknown"
 * item[=].item[=].type = #choice
 * item[=].item[=].repeats = true
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
-* insert RuleSetQrLevel2AnswerOptionText("Place of infection unknown", "Unbekannt", "Inconnu", "Sconosciuto")
+* insert RuleSetQrLevel2AnswerOptionText("Precise location unknown", "Unbekannt", "Inconnu", "Sconosciuto")

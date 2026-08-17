@@ -1,11 +1,11 @@
 {
   "resourceType" : "ValueSet",
   "status" : "active",
-  "name" : "ChEkmCountryCodes",
-  "id" : "ChEkmCountryCodes",
-  "title" : "CH EKM Country Codes (form)",
+  "name" : "ChEkmCountryCodesInclUnknown",
+  "id" : "ChEkmCountryCodesInclUnknown",
+  "title" : "CH EKM Country Codes (form) including unknown as an option",
   "description" : "Country value set for CH EKM reporting form items. The ch-term bfs-country-codes value set, restricted to the ISO 3166 alpha-3 (three-letter) codes so each country appears once in the form dropdown.",
-  "url" : "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodes",
+  "url" : "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodesInclUnknown",
   "experimental" : false,
   "compose" : {
     "include" : [
@@ -47,7 +47,21 @@
                 "value" : "Liechtenstein"
               }
             ]
-          },
+          }
+        ]
+      },
+      {
+        "system" : "http://snomed.info/sct",
+        "concept" : [
+          {
+            "code" : "261665006",
+            "display" : "Unknown (qualifier value)"
+          }
+        ]
+      },
+      {
+        "system" : "urn:iso:std:iso:3166",
+        "concept" : [
           {
             "code" : "AL",
             "display" : "Albania",
