@@ -192,3 +192,31 @@ Description: "Simplified two-option manifestation value set for the Gonorrhoea r
 // * ^status = #active
 // * ^experimental = false
 // * include codes from system $iso3166 and valueset $bfs-country-codes where code regex "^[A-Za-z]{3}$"
+
+// Ja / Nein / Unbekannt, the answer set of the Hospitalisation form item. Only "ja" reaches the wire as data:
+// it is what makes an Encounter be created at all (see RuleSetEncounterHospitalisation). "nein"
+// produces no Encounter, "unbekannt" an Encounter whose `hospitalization` element carries nothing
+// but a data-absent-reason.
+ValueSet: ChEkmYesNoUnknown
+Title: "CH EKM Yes No Unknown"
+Description: "This CH EKM value set contains the SNOMED CT qualifiers Yes / No / Unknown. It is the answer value set of the ja/nein/unbekannt form items."
+* ^status = #active
+* ^experimental = false
+
+* $sct#373066001 "Yes (qualifier value)"
+* $sct#373067005 "No (qualifier value)"
+* $sct#261665006 "Unknown (qualifier value)"
+
+// Hospitalisation reasons  the reported pathogen / another reason / unknown.
+// `reported-pathogen` is the local discriminator code (see the ChEkmHospitalisationReason code
+// system for why it cannot be a clinical concept); the other two are the SNOMED CT qualifiers that
+// end up verbatim in Encounter.reasonCode.
+ValueSet: ChEkmHospitalisationReasonChoice
+Title: "CH EKM Hospitalisation Reason (form choice)"
+Description: "This CH EKM value set contains the answers of the 'Hospitalisation reasons' form item: the reported pathogen (a local code, extracted as Encounter.reasonReference to the diagnosis Condition), another reason, or unknown (both extracted as Encounter.reasonCode)."
+* ^status = #active
+* ^experimental = false
+
+* ChEkmHospitalisationReason#reported-pathogen "Reported pathogen"
+* $sct#74964007  "Other (qualifier value)"
+* $sct#261665006 "Unknown (qualifier value)"

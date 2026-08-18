@@ -8,11 +8,20 @@
 // (dist/index.cjs) resolves it fine, so we require() it here.
 //
 // Usage:
-//   node populate.cjs <questionnaire.json> <patient.json> <practitionerRole.json> <out.json> [fhirServerUrl]
+//   node populate.cjs <questionnaire.json> <patient.json> <practitionerRole.json> <out.json> [fhirServerUrl] [encounter.json]
 //
 // Launch contexts (declared on the modular root, propagated onto the assembled questionnaire):
-//   patient (Patient)         -> %patient  passed as `patient`
-//   user    (PractitionerRole)-> %user     delivered via `fhirContext` (NOT the `user` param)
+//   patient   (Patient)          -> %patient   passed as `patient`
+//   user      (PractitionerRole) -> %user      delivered via `fhirContext` (NOT the `user` param)
+//   encounter (Encounter)        -> %encounter passed as `encounter`, optional
+//
+// The encounter context is only declared by roots that assemble a "Verlauf" section (currently Mpox
+// -> ChEkmQuestionnaireHospitalisation); @aehrc/sdc-populate binds the named `encounter` parameter
+// whenever the launchContext is called `encounter` and typed `Encounter`, so unlike %user it needs
+// no fhirContext detour. Omit the argument for questionnaires without that section — passing an
+// Encounter to a form that does not declare the context is simply ignored, but a form that DOES
+// declare it and gets none leaves the hospitalisation items empty (the expressions reference an
+// unbound %encounter, which fhirpath reports as an evaluation issue).
 //
 // Why fhirContext and not the dedicated `user` parameter: @aehrc/sdc-populate's
 // createLaunchContextParam() only binds the named `user` parameter when the launchContext's
@@ -34,10 +43,10 @@
 const { readFileSync, writeFileSync } = require('node:fs');
 const { populateQuestionnaire } = require('@aehrc/sdc-populate');
 
-const [, , qPath, patPath, rolePath, outPath, fhirServerUrlArg] = process.argv;
+const [, , qPath, patPath, rolePath, outPath, fhirServerUrlArg, encounterPathArg] = process.argv;
 if (!qPath || !patPath || !rolePath || !outPath) {
   console.error(
-    'Usage: node populate.cjs <questionnaire.json> <patient.json> <practitionerRole.json> <out.json> [fhirServerUrl]'
+    'Usage: node populate.cjs <questionnaire.json> <patient.json> <practitionerRole.json> <out.json> [fhirServerUrl] [encounter.json]'
   );
   process.exit(2);
 }
@@ -47,6 +56,7 @@ const fhirServerUrl = fhirServerUrlArg || process.env.CH_EKM_FHIR_BASE || 'http:
 const questionnaire = JSON.parse(readFileSync(qPath, 'utf8'));
 const patient = JSON.parse(readFileSync(patPath, 'utf8'));
 const practitionerRole = JSON.parse(readFileSync(rolePath, 'utf8'));
+const encounter = encounterPathArg ? JSON.parse(readFileSync(encounterPathArg, 'utf8')) : undefined;
 
 // Resolves fhirContext references (the PractitionerRole) by fetching from the local HAPI instance.
 const fetchResourceCallback = async (query) => {
@@ -64,6 +74,7 @@ const fetchResourceCallback = async (query) => {
     fetchResourceCallback,
     fetchResourceRequestConfig: { sourceServerUrl: fhirServerUrl },
     patient,
+    ...(encounter ? { encounter } : {}),
     fhirContext: [
       { role: 'launch', type: 'PractitionerRole', reference: `PractitionerRole/${practitionerRole.id}` }
     ]

@@ -1006,6 +1006,46 @@ Two recurring patterns when gating a templated element (empty context → elemen
   remember: a bare path is fine as an `iif` **value** branch (empty path → field omitted), but as a
   **criterion** it must be Boolean.
 
+### A CONDITIONAL Bundle entry — one context, on the entry, and it must be the LAST entry
+The Hospitalisation section (Mpox "Verlauf") is the first place where a whole **resource** has to
+appear or not appear: answered "ja"/"unbekannt" the document carries an `Encounter`, answered "nein"
+it must carry none. The gate therefore sits on `Bundle.entry[n]` itself — and that pulls in two hard
+constraints of the reference engine, both found the hard way.
+
+**1. No nested `templateExtractContext` below it.** `walkTemplateForContexts` registers *every*
+context as its own entry in the extract-path map, while `walkTemplateForContextValues` *also* attaches
+every value below an outer context to that outer context. A context nested inside another therefore
+has its values evaluated twice, once against the wrong focus; and because an entry path ending in an
+array index is deleted from the template and re-inserted per context result
+(`populateIntoTemplates` step 5a), inner and outer re-insertions then fight over the same indices.
+Observed with a gate on the entry *and* on `reasonCode[0]`: the hospitalisation **answer** was written
+out as the reason code, and the Encounter lost its static `resourceType` / `status` / `class` /
+`subject`. Everything below the entry gate must be a plain `templateExtractValue`, reading the answers
+absolutely via `%resource` and ending in `.first().select(%factory.…)` — `select()` on an empty
+collection returns empty, so "not applicable" and "no element emitted" become the same thing without
+an `iif`, and no half-built element can survive.
+
+**2. The first value inserted decides what survives — write `fullUrl` first.** The engine seeds a
+context-gated array element from the static template with a **shallow** spread,
+`{...staticEntry, ...firstValue}` (`combineStaticTemplateData`); only *subsequent* values are
+deep-merged. So the first value whose path starts at `resource.…` replaces the entire static
+`resource` — `resourceType` included, which is not even addressable by a value directive. The fix is
+an identity `templateExtractValue` on `entry[n].fullUrl` (a literal equal to the static fullUrl):
+`fullUrl` precedes `resource` in the serialised entry, so it is walked first, and that first spread
+overwrites `fullUrl` with itself, leaving the static resource intact for the rest to merge into.
+
+**3. A conditional entry must be the LAST entry.** When the context is empty nothing is re-inserted,
+so every *later* entry has shifted down by one while the extract paths recorded for those entries
+still carry their original index. With the Encounter at `entry[4]`, answering "nein" produced a
+phantom eighth entry holding a half-built `Organization`. Moving it to the end of the template's
+`entry` list removes the problem entirely (a document Bundle only fixes the position of the
+Composition, which is first).
+
+Verified for all four answer combinations: "ja" + reported pathogen (Encounter with `period.start`
+and `reasonReference`), "ja" + anderer (`reasonCode`), "unbekannt" (Encounter with nothing but
+`hospitalization.extension[data-absent-reason]`), "nein" (no Encounter, and no `encounter` reference
+on either the Composition or the Condition).
+
 > ✅ **The template artifacts now validate with 0 errors** (verified via the IG Publisher). This
 > needed: the carrier + `%factory.Extension` idiom for `onsetDateTime`/`department` (whole extension
 > built at extraction, so the template carries no half-built extension), and placeholder defaults for

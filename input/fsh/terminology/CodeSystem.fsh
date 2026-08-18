@@ -50,3 +50,26 @@ Description: "Type of relationship to a sexual contact partner (Art der Beziehun
 * #used-paid-sex ^designation[=].value = "Recours à du sexe rémunéré"
 * #used-paid-sex ^designation[+].language = #it-CH
 * #used-paid-sex ^designation[=].value = "Ricorso a sesso a pagamento"
+
+// Hospitalisationsgrund. Two of the three answers are plain SNOMED CT
+// qualifiers ("anderer" = 74964007, "unbekannt" = 261665006) and go straight into
+// Encounter.reasonCode. The third one — "gemeldeter Erreger" — is NOT a code at all: it says that
+// the reason for the stay is the disease this very report is about, which on the wire becomes an
+// Encounter.reasonReference to the diagnosis Condition. That answer therefore has to be a form-level
+// discriminator rather than a clinical concept, and it must stay disease-agnostic so the
+// Hospitalisation sub-questionnaire is reusable for every organism (the Mpox code 359814004 lives in
+// ChEkmConditionMpox, not in the form). Hence this one local code.
+CodeSystem: ChEkmHospitalisationReason
+Id: ch-ekm-hospitalisation-reason
+Title: "CH EKM Hospitalisation Reason"
+Description: "Internal code system for the 'Hospitalisationsgrund' form item. Holds the single answer that is not a clinical concept but a pointer to the reported disease itself ('gemeldeter Erreger'), which is extracted as an Encounter.reasonReference to the diagnosis Condition. The other two answers ('anderer', 'unbekannt') are SNOMED CT qualifiers and go to Encounter.reasonCode."
+* ^status = #active
+* ^experimental = false
+* ^caseSensitive = true
+* #reported-pathogen "Reported pathogen"
+* #reported-pathogen ^designation[+].language = #de-CH
+* #reported-pathogen ^designation[=].value = "Gemeldeter Erreger"
+* #reported-pathogen ^designation[+].language = #fr-CH
+* #reported-pathogen ^designation[=].value = "Agent pathogène déclaré"
+* #reported-pathogen ^designation[+].language = #it-CH
+* #reported-pathogen ^designation[=].value = "Agente patogeno notificato"

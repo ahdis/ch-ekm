@@ -86,9 +86,9 @@ Description: "Example for a CH EKM Exposure: Gonorrhoea - sexual contact with a 
 * component[relationshipType].valueCodeableConcept = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
 
 Instance: ChEkmEncounterExample-Gonorrhoea
-InstanceOf: Encounter
+InstanceOf: ChEkmEncounter
 Usage: #example
-Description: "Example for a CH EKM Encounter: Invasive Streptococcus Pneumoniae"
+Description: "Example for a CH EKM Encounter: Gonorrhoea"
 * subject = Reference(ChEkmPatientInitialsExample)
 * class = $v3-ActCode#IMP "inpatient encounter"
 * status = #unknown

@@ -4,6 +4,8 @@ Id: ch-ekm-condition
 Title: "CH Ekm Condition"
 Description: "This CH EKM base profile constrains the Condition resource to represent the diagnosis and manifestations"
 * code MS
+* encounter only Reference(ChEkmEncounter)
+* encounter MS
 * onset[x] only dateTime
 * onsetDateTime MS
 * onsetDateTime ^short = "Manifestation beginning date, use data-absent-reason #unknown if the date is explicitly not known"

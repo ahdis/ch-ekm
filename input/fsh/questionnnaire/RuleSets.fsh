@@ -308,6 +308,31 @@ RuleSet: RuleSetQrExposureWhen
 RuleSet: RuleSetQrExposureHow
 * insert RuleSetQrLevel3SubQuestionnaire("exposurehow", "Exposure: how", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow") 
 
+// "Verlauf" — the course of the disease. Container for the Hospitalisation group and, once the
+// cause-of-death modelling is decided (TODO.md #7-#9), for "Zustand" (Tot / Todesdatum /
+// Todesursache). Only diseases whose form has this section insert it: Gonorrhoea has no Verlauf.
+RuleSet: RuleSetQrGroupCourse
+* insert RuleSetQrLevel2Group("course", "Course of the disease", "Verlauf", "Évolution", "Decorso")
+* insert RuleSetQrLevel2ShortText("Course", "Verlauf", "Évolution", "Decorso")
+
+RuleSet: RuleSetQrHospitalisation
+* insert RuleSetQrLevel3SubQuestionnaire("hospitalisationgroup", "Hospitalisation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHospitalisation")
+
+// Third launch context, on top of the patient + user contexts every root gets from
+// RuleSetQrHeaderSdc: the hospitalisation Encounter, consumed by the initialExpressions in
+// ChEkmQuestionnaireHospitalisation. Inserted only by roots that assemble a "Verlauf" section —
+// %encounter is not merely unused elsewhere, an expression referencing an unbound environment
+// variable is an evaluation error. Insert at the END of the root instance: it appends to the
+// Questionnaire's own `extension` array, not to any item.
+RuleSet: RuleSetQrLaunchContextEncounter
+* extension[+].url = $sdc-launchContext
+* extension[=].extension[+].url = "name"
+* extension[=].extension[=].valueCoding = $sdc-launchContext-cs#encounter "Encounter"
+* extension[=].extension[+].url = "type"
+* extension[=].extension[=].valueCode = #Encounter
+* extension[=].extension[+].url = "description"
+* extension[=].extension[=].valueString = "The hospitalisation Encounter to pre-populate the form with"
+
 // The treating-physician section is a sub-questionnaire placeholder, and $assemble REPLACES the
 // placeholder item with the child's items — so its tab label (shortText) cannot live here, it sits on
 // the child's own root group in ChEkmQuestionnaireTreatingPhysician.

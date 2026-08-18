@@ -32,6 +32,10 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
 * insert RuleSetQrManifestationBeginUnknown
 
+// Verlauf — Hospitalisation (and, once the cause-of-death modelling is decided, "Zustand"/death).
+* insert RuleSetQrGroupCourse
+* insert RuleSetQrHospitalisation
+
 * insert RuleSetQrGroupExposure
 
 // Wo before Wann and Wie, as on the paper form (https://github.com/ahdis/ch-ekm/issues/26)
@@ -42,3 +46,8 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * insert RuleSetQrExposureHow
 
 * insert RuleSetQrGroupTreatingPhysician
+
+// Third launch context (patient + user come from RuleSetQrHeader): the hospitalisation Encounter
+// read by the Hospitalisation sub-questionnaire's initialExpressions. Declared here, at the END of
+// the root, because it is a Questionnaire-level extension and only roots with a "Verlauf" need it.
+* insert RuleSetQrLaunchContextEncounter

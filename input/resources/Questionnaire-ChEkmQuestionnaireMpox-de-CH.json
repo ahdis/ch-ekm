@@ -66,6 +66,27 @@
       ]
     },
     {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "encounter",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "Encounter"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Encounter"
+        },
+        {
+          "url": "description",
+          "valueString": "The hospitalisation Encounter to pre-populate the form with"
+        }
+      ]
+    },
+    {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonName|0.0.1"
     },
@@ -80,6 +101,10 @@
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHospitalisation|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -145,7 +170,7 @@
                 "title": "Diagnosis section",
                 "entry": [
                   {
-                    "reference": "Condition/ExtractedConditionMpox"
+                    "reference": "Condition/ExtractedCondition"
                   }
                 ]
               },
@@ -161,7 +186,7 @@
                 },
                 "entry": [
                   {
-                    "reference": "Observation/ExtractedExposureMpox"
+                    "reference": "Observation/ExtractedExposure"
                   }
                 ]
               }
@@ -179,6 +204,15 @@
             ],
             "subject": {
               "reference": "Patient/ExtractedPatient"
+            },
+            "encounter": {
+              "reference": "Encounter/ExtractedEncounter",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounter'))"
+                }
+              ]
             },
             "author": [
               {
@@ -341,10 +375,19 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionMpox",
+          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedCondition",
           "resource": {
             "resourceType": "Condition",
-            "id": "ExtractedConditionMpox",
+            "id": "ExtractedCondition",
+            "code": {
+              "coding": [
+                {
+                  "code": "359814004",
+                  "system": "http://snomed.info/sct",
+                  "display": "Mpox (disorder)"
+                }
+              ]
+            },
             "category": [
               {
                 "coding": [
@@ -360,6 +403,15 @@
             },
             "recorder": {
               "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
+            },
+            "encounter": {
+              "reference": "Encounter/ExtractedEncounter",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounter'))"
+                }
+              ]
             },
             "evidence": [
               {
@@ -412,10 +464,10 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureMpox",
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposure",
           "resource": {
             "resourceType": "Observation",
-            "id": "ExtractedExposureMpox",
+            "id": "ExtractedExposure",
             "code": {
               "coding": [
                 {
@@ -942,6 +994,80 @@
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                   "valueString": "%resource.descendants().where(linkId='orgName').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Encounter/ExtractedEncounter",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Encounter/ExtractedEncounter'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Encounter",
+            "id": "ExtractedEncounter",
+            "class": {
+              "code": "IMP",
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+              "display": "inpatient encounter"
+            },
+            "status": "unknown",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "period": {
+              "_start": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationAdmissionDate').answer.value.first()"
+                  }
+                ]
+              }
+            },
+            "reasonReference": [
+              {
+                "reference": "Condition/ExtractedCondition",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-hospitalisation-reason' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedCondition'))"
+                  }
+                ]
+              }
+            ],
+            "reasonCode": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this))"
+                  }
+                ]
+              }
+            ],
+            "hospitalization": {
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').first().select(%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))"
+                    }
+                  ]
                 }
               ]
             }
@@ -4277,6 +4403,169 @@
                   "question": "manifestationBeginUnknown",
                   "operator": "=",
                   "answerBoolean": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "course",
+          "type": "group",
+          "text": "Verlauf",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Verlauf"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "hospitalisation",
+              "text": "Hospitalisation",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "hospitalisationStatus",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.hospitalisation",
+                  "text": "Wurde die betroffene Person hospitalisiert?",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "iif(%encounter.hospitalization.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/data-absent-reason').exists(), '261665006', iif(%encounter.exists(), '373066001', {}))"
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "373066001",
+                        "display": "Ja"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "373067005",
+                        "display": "Nein"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Unbekannt"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "hospitalisationReason",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.reason",
+                  "text": "Hospitalisationsgrund",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "vertical"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "iif(%encounter.reasonReference.exists(), 'reported-pathogen', %encounter.reasonCode.coding.first())"
+                      }
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "hospitalisationStatus",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-hospitalisation-reason",
+                        "code": "reported-pathogen",
+                        "display": "Gemeldeter Erreger"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "74964007",
+                        "display": "Andere"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Unbekannt"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "hospitalisationAdmissionDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.admissionDate",
+                  "text": "Eintrittsdatum",
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "hospitalisationStatus",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ],
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%encounter.period.start"
+                      }
+                    }
+                  ]
                 }
               ]
             }

@@ -77,6 +77,9 @@
           }
         ],
         "title": "Meldung zum klinischen Befund Infektionskrankheit",
+        "encounter": {
+          "reference": "Encounter/ExtractedEncounterMpox"
+        },
         "date": "2026-08-05T11:30:00+02:00"
       }
     },
@@ -209,6 +212,9 @@
             ]
           }
         ],
+        "encounter": {
+          "reference": "Encounter/ExtractedEncounterMpox"
+        },
         "onsetDateTime": "2026-07-20"
       }
     },
@@ -421,6 +427,30 @@
           }
         ],
         "name": "Regionalspital Genesis"
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Encounter/ExtractedEncounterMpox",
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "ExtractedEncounterMpox",
+        "class": {
+          "code": "IMP",
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "display": "inpatient encounter"
+        },
+        "status": "unknown",
+        "subject": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "period": {
+          "start": "2026-01-27"
+        },
+        "reasonReference": [
+          {
+            "reference": "Condition/ExtractedConditionMpox"
+          }
+        ]
       }
     }
   ]

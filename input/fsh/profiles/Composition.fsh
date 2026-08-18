@@ -22,8 +22,11 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * author 1..
 * author only Reference(ChEkmPractitionerRole)
 * author ^short = "Author of the report. This can be either the treating physician or a private service provider (so-called broker) who transmits the report to the reporting system of the Federal Office of Public Health on behalf of the treating physician."
+// The hospitalisation. There is no `section[hospitalization]` any more: the Encounter is referenced
+// here (and from the diagnosis Condition.encounter) and nowhere else — see ChEkmEncounter for the
+// ja/nein/unbekannt encoding.
 * encounter ..1
-* encounter only Reference(CHCoreEncounter)
+* encounter only Reference(ChEkmEncounter)
 
 * section 1..*
   * ^slicing.discriminator.type = #value
@@ -33,7 +36,6 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * section contains
     diagnosis 1..1 and
     laboratory 0..1 and
-    hospitalization 0..1 and
     medication 0..1 and
     immunization 0..1 and
     risk-factors 0..1 and
@@ -63,10 +65,9 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * section[laboratory].entry[lab-order] only Reference(ChEkmServiceRequest)
 * section[laboratory].entry[seroconversion] only Reference(Observation)
 
-// "History of hospitalizations+History of outpatient visits Narrative"
-* section[hospitalization].code = $loinc#46240-8
-* section[hospitalization].entry 1..1
-* section[hospitalization].entry only Reference(CHCoreEncounter)
+// NB: there is deliberately NO section[hospitalization] (LOINC 46240-8). A section holding the one
+// Encounter that `Composition.encounter` already references states the same fact twice; the
+// hospitalisation is modelled on the Encounter alone (see ChEkmEncounter).
 
 // "History of immunization Narrative"
 * section[immunization].code = $loinc#11369-6 

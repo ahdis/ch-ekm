@@ -371,3 +371,21 @@ Description: "CodeSystem supplement adding draft German, French and Italian (Swi
 * #386661006 ^designation[=].value = "Fièvre"
 * #386661006 ^designation[+].language = #it-CH
 * #386661006 ^designation[=].value = "Febbre"
+
+// Ja / Nein — the two Hospitalisation answers not yet covered above ("Unbekannt" / 261665006 and
+// "Andere" / 74964007 are already designated further up).
+* #373066001 "Yes (qualifier value)"
+* #373066001 ^designation[+].language = #de-CH
+* #373066001 ^designation[=].value = "Ja"
+* #373066001 ^designation[+].language = #fr-CH
+* #373066001 ^designation[=].value = "Oui"
+* #373066001 ^designation[+].language = #it-CH
+* #373066001 ^designation[=].value = "Sì"
+
+* #373067005 "No (qualifier value)"
+* #373067005 ^designation[+].language = #de-CH
+* #373067005 ^designation[=].value = "Nein"
+* #373067005 ^designation[+].language = #fr-CH
+* #373067005 ^designation[=].value = "Non"
+* #373067005 ^designation[+].language = #it-CH
+* #373067005 ^designation[=].value = "No"

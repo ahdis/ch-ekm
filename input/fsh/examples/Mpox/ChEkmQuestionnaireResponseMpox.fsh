@@ -12,6 +12,9 @@
 //   3. Exposure "Wann" (see issue #25).
 //   4. Exposure "Wo": a country abroad + a precise location -> the exposure-address extension is
 //      built at extraction with country code, country Coding and city (see issue #26).
+//   5. Verlauf / Hospitalisation: answered "ja" with a reason and an admission date, so the
+//      context-gated Encounter entry and both references to it (Composition.encounter,
+//      Condition.encounter) must appear in the extracted Bundle.
 // The person group uses the full-name module (surname / givenname), not the initials module.
 //
 // Run: ./tests/extract-mpox.sh
@@ -72,10 +75,25 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[1].item[2].linkId = "manifestationBeginDate"
 * item[0].item[1].item[2].answer.valueDate = "2026-07-20"
 
+// --- Verlauf: Hospitalisation ---
+// Hospitalised ("ja"), because of the reported pathogen, admitted on 2026-01-27 
+// after $extract an Encounter with class IMP, period.start and a reasonReference to the
+// diagnosis Condition, referenced from Composition.encounter and Condition.encounter. The two other
+// branches are covered by the round-trip notes in RuleSetEncounterHospitalisation: "nein" drops the
+// whole Bundle entry, "unbekannt" leaves an Encounter carrying only the data-absent-reason.
+* item[0].item[2].linkId = "course"
+* item[0].item[2].item[0].linkId = "hospitalisation"
+* item[0].item[2].item[0].item[0].linkId = "hospitalisationStatus"
+* item[0].item[2].item[0].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
+* item[0].item[2].item[0].item[1].linkId = "hospitalisationReason"
+* item[0].item[2].item[0].item[1].answer.valueCoding = ChEkmHospitalisationReason#reported-pathogen "Reported pathogen"
+* item[0].item[2].item[0].item[2].linkId = "hospitalisationAdmissionDate"
+* item[0].item[2].item[0].item[2].answer.valueDate = "2026-01-27"
+
 // --- Exposure (Wo / Wann / Wie) ---
 // exposure = outer wrapper group; exposureWhere, exposureWhen and exposureHow are the three
 // sub-questionnaires, in the order they are assembled into the root.
-* item[0].item[2].linkId = "exposure"
+* item[0].item[3].linkId = "exposure"
 
 // Wo: a country with a precise location -> after $extract
 // extension[exposureAddress].valueAddress = {country "CD" + iso21090-codedString Coding, city}.
@@ -83,63 +101,63 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 // (CH/LI are just its first two entries); the precise location is an `open-choice`, so a TYPED
 // answer comes back as valueString - as here - and picking "Unbekannt" would come back as
 // valueCoding sct#261665006 and put a data-absent-reason on `_city` instead of a `city` string.
-* item[0].item[2].item[0].linkId = "exposureWhere"
-* item[0].item[2].item[0].item[0].linkId = "exposureWhereCountry"
-* item[0].item[2].item[0].item[0].answer.valueCoding = $iso3166#CD "Congo (Kinshasa)"
-* item[0].item[2].item[0].item[1].linkId = "exposureWherePreciseLocation"
-* item[0].item[2].item[0].item[1].answer.valueString = "Kinshasa"
+* item[0].item[3].item[0].linkId = "exposureWhere"
+* item[0].item[3].item[0].item[0].linkId = "exposureWhereCountry"
+* item[0].item[3].item[0].item[0].answer.valueCoding = $iso3166#CD "Congo (Kinshasa)"
+* item[0].item[3].item[0].item[1].linkId = "exposureWherePreciseLocation"
+* item[0].item[3].item[0].item[1].answer.valueString = "Kinshasa"
 
 // Wann: the most probable point in time of infection is known -> effectiveDateTime after $extract.
-* item[0].item[2].item[1].linkId = "exposureWhen"
-* item[0].item[2].item[1].item[0].linkId = "exposureWhenDate"
-* item[0].item[2].item[1].item[0].answer.valueDate = "2026-07-01"
+* item[0].item[3].item[1].linkId = "exposureWhen"
+* item[0].item[3].item[1].item[0].linkId = "exposureWhenDate"
+* item[0].item[3].item[1].item[0].answer.valueDate = "2026-07-01"
 
 // Wie (Übertragungsweg)
-* item[0].item[2].item[2].linkId = "exposureHow"
-* item[0].item[2].item[2].item[0].linkId = "exposureHowSexualContactPartner"
-* item[0].item[2].item[2].item[0].answer.valueCoding = $administrative-gender#male "male"
-* item[0].item[2].item[2].item[1].linkId = "exposureHowRelationshipType"
-* item[0].item[2].item[2].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
-* item[0].item[2].item[2].item[2].linkId = "exposureHowUnknown"
-* item[0].item[2].item[2].item[2].answer.valueBoolean = false
+* item[0].item[3].item[2].linkId = "exposureHow"
+* item[0].item[3].item[2].item[0].linkId = "exposureHowSexualContactPartner"
+* item[0].item[3].item[2].item[0].answer.valueCoding = $administrative-gender#male "male"
+* item[0].item[3].item[2].item[1].linkId = "exposureHowRelationshipType"
+* item[0].item[3].item[2].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
+* item[0].item[3].item[2].item[2].linkId = "exposureHowUnknown"
+* item[0].item[3].item[2].item[2].answer.valueBoolean = false
 
 // --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---
-* item[0].item[3].linkId = "treatingPhysician"
+* item[0].item[4].linkId = "treatingPhysician"
 // Practitioner
-* item[0].item[3].item[0].linkId = "treatingPhysicianPractitioner"
-* item[0].item[3].item[0].item[0].linkId = "physicianGivenname"
-* item[0].item[3].item[0].item[0].answer.valueString = "Potagon"
-* item[0].item[3].item[0].item[1].linkId = "physicianSurname"
-* item[0].item[3].item[0].item[1].answer.valueString = "Brachialis"
-* item[0].item[3].item[0].item[2].linkId = "physicianStreetLine"
-* item[0].item[3].item[0].item[2].answer.valueString = "Sodaweg 55"
-* item[0].item[3].item[0].item[3].linkId = "physicianZipCode"
-* item[0].item[3].item[0].item[3].answer.valueString = "3921"
-* item[0].item[3].item[0].item[4].linkId = "physicianCity"
-* item[0].item[3].item[0].item[4].answer.valueString = "Flammingen"
-* item[0].item[3].item[0].item[5].linkId = "physicianPhone"
-* item[0].item[3].item[0].item[5].answer.valueString = "+24 74 200 88 77"
-* item[0].item[3].item[0].item[6].linkId = "physicianEmail"
-* item[0].item[3].item[0].item[6].answer.valueString = "p.brach@sampledoc.com"
-* item[0].item[3].item[0].item[7].linkId = "physicianGln"
-* item[0].item[3].item[0].item[7].answer.valueString = "7601000435666"
+* item[0].item[4].item[0].linkId = "treatingPhysicianPractitioner"
+* item[0].item[4].item[0].item[0].linkId = "physicianGivenname"
+* item[0].item[4].item[0].item[0].answer.valueString = "Potagon"
+* item[0].item[4].item[0].item[1].linkId = "physicianSurname"
+* item[0].item[4].item[0].item[1].answer.valueString = "Brachialis"
+* item[0].item[4].item[0].item[2].linkId = "physicianStreetLine"
+* item[0].item[4].item[0].item[2].answer.valueString = "Sodaweg 55"
+* item[0].item[4].item[0].item[3].linkId = "physicianZipCode"
+* item[0].item[4].item[0].item[3].answer.valueString = "3921"
+* item[0].item[4].item[0].item[4].linkId = "physicianCity"
+* item[0].item[4].item[0].item[4].answer.valueString = "Flammingen"
+* item[0].item[4].item[0].item[5].linkId = "physicianPhone"
+* item[0].item[4].item[0].item[5].answer.valueString = "+24 74 200 88 77"
+* item[0].item[4].item[0].item[6].linkId = "physicianEmail"
+* item[0].item[4].item[0].item[6].answer.valueString = "p.brach@sampledoc.com"
+* item[0].item[4].item[0].item[7].linkId = "physicianGln"
+* item[0].item[4].item[0].item[7].answer.valueString = "7601000435666"
 // Organization
-* item[0].item[3].item[1].linkId = "treatingPhysicianOrganization"
-* item[0].item[3].item[1].item[0].linkId = "orgName"
-* item[0].item[3].item[1].item[0].answer.valueString = "Regionalspital Genesis"
-* item[0].item[3].item[1].item[1].linkId = "orgDepartment"
-* item[0].item[3].item[1].item[1].answer.valueString = "Immunologie"
-* item[0].item[3].item[1].item[2].linkId = "orgStreetLine"
-* item[0].item[3].item[1].item[2].answer.valueString = "Radixstrasse 88"
-* item[0].item[3].item[1].item[3].linkId = "orgZipCode"
-* item[0].item[3].item[1].item[3].answer.valueString = "4088"
-* item[0].item[3].item[1].item[4].linkId = "orgCity"
-* item[0].item[3].item[1].item[4].answer.valueString = "Pankreas"
-* item[0].item[3].item[1].item[5].linkId = "orgPhone"
-* item[0].item[3].item[1].item[5].answer.valueString = "+26 34 876 54 33"
-* item[0].item[3].item[1].item[6].linkId = "orgEmail"
-* item[0].item[3].item[1].item[6].answer.valueString = "immuno@hospidoc.com"
-* item[0].item[3].item[1].item[7].linkId = "orgBer"
-* item[0].item[3].item[1].item[7].answer.valueString = "A99086600"
-* item[0].item[3].item[1].item[8].linkId = "orgGln"
-* item[0].item[3].item[1].item[8].answer.valueString = "7601000435777"
+* item[0].item[4].item[1].linkId = "treatingPhysicianOrganization"
+* item[0].item[4].item[1].item[0].linkId = "orgName"
+* item[0].item[4].item[1].item[0].answer.valueString = "Regionalspital Genesis"
+* item[0].item[4].item[1].item[1].linkId = "orgDepartment"
+* item[0].item[4].item[1].item[1].answer.valueString = "Immunologie"
+* item[0].item[4].item[1].item[2].linkId = "orgStreetLine"
+* item[0].item[4].item[1].item[2].answer.valueString = "Radixstrasse 88"
+* item[0].item[4].item[1].item[3].linkId = "orgZipCode"
+* item[0].item[4].item[1].item[3].answer.valueString = "4088"
+* item[0].item[4].item[1].item[4].linkId = "orgCity"
+* item[0].item[4].item[1].item[4].answer.valueString = "Pankreas"
+* item[0].item[4].item[1].item[5].linkId = "orgPhone"
+* item[0].item[4].item[1].item[5].answer.valueString = "+26 34 876 54 33"
+* item[0].item[4].item[1].item[6].linkId = "orgEmail"
+* item[0].item[4].item[1].item[6].answer.valueString = "immuno@hospidoc.com"
+* item[0].item[4].item[1].item[7].linkId = "orgBer"
+* item[0].item[4].item[1].item[7].answer.valueString = "A99086600"
+* item[0].item[4].item[1].item[8].linkId = "orgGln"
+* item[0].item[4].item[1].item[8].answer.valueString = "7601000435777"

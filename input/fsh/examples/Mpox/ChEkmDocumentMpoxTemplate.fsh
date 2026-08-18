@@ -2,13 +2,15 @@
 // Condition (ChEkmCondition) — fixed disease code; manifestation -> evidence.code;
 // manifestation begin date -> onset (omitted when "unbekannt" is ticked)
 // ---------------------------------------------------------------------------
-Instance: ExtractedConditionMpox
+Instance: ExtractedCondition
 InstanceOf: ChEkmConditionMpox
-// Usage: #inline
-// code already fixed by the profile (ChEkmConditionMpox) to Mpox (disorder)
+Usage: #inline
+* code = $sct#359814004 "Mpox (disorder)"
 * category = $condition-category#encounter-diagnosis
 * subject.reference = "Patient/ExtractedPatient"
 * recorder.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
+// Hospitalisation: reference the Encounter, gated on there being one (see RuleSetEncounterReference)
+* insert RuleSetEncounterReference(encounter)
 * insert RuleSetOnsetDateManifestationBeginUnknown
 * insert RuleSetEvidenceManifestation
 * evidence[0].code[0].coding[0] = $sct#95324001 "Skin lesion (disorder)"
@@ -16,9 +18,9 @@ InstanceOf: ChEkmConditionMpox
 // ---------------------------------------------------------------------------
 // Exposure (ChEkmExposureMpox) — fixed component codes; sex & relationship from `transmission`
 // ---------------------------------------------------------------------------
-Instance: ExtractedExposureMpox
+Instance: ExtractedExposure
 InstanceOf: ChEkmExposureMpox
-// Usage: #inline
+Usage: #inline
 * status = #final
 * category = $v3-ActClass#AEXPOS "acquisition exposure"
 * code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
@@ -32,26 +34,38 @@ InstanceOf: ChEkmExposureMpox
 * insert RuleSetExposureWhere
 
 // ---------------------------------------------------------------------------
+// Encounter (ChEkmEncounter) — the hospitalisation. Emitted only when the Hospitalisation question
+// was answered "ja" or "unbekannt"; the Bundle entry below carries that gate.
+// ---------------------------------------------------------------------------
+Instance: ExtractedEncounter
+InstanceOf: ChEkmEncounter
+Usage: #inline
+* insert RuleSetEncounterHospitalisation
+
+// ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionMpox) — static structure, references the entries above,
 // author = Broker, date taken from QR.authored
 // ---------------------------------------------------------------------------
 Instance: ExtractedCompositionMpox
 InstanceOf: ChEkmCompositionMpox
-//Usage: #inline
+Usage: #inline
 * status = #final
 * type = $sct#722143004 "Infectious disease diagnostic study note"
 * category = $sct#423876004 "Clinical report"
 * subject.reference = "Patient/ExtractedPatient"
+// Hospitalisation: the one place the Encounter is referenced from the Composition — there is no
+// section[hospitalization] any more (see ChEkmComposition / ChEkmEncounter).
+* insert RuleSetEncounterReference(encounter)
 * date.extension[+].url = $sdc-templateExtractValue
 * date.extension[=].valueString = "%resource.authored"
 * author.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
 * title = "Meldung zum klinischen Befund Infektionskrankheit"
 * section[0].title = "Diagnosis section"
 * section[0].code = $loinc#29308-4
-* section[0].entry.reference = "Condition/ExtractedConditionMpox"
+* section[0].entry.reference = "Condition/ExtractedCondition"
 * section[1].title = "Social history section"
 * section[1].code = $loinc#29762-2
-* section[1].entry.reference = "Observation/ExtractedExposureMpox"
+* section[1].entry.reference = "Observation/ExtractedExposure"
 
 // ---------------------------------------------------------------------------
 // The Bundle template itself (ChEkmDocumentMpox shape)
@@ -76,13 +90,40 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 * entry[=].resource = ExtractedCompositionMpox
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ExtractedPatient"
 * entry[=].resource = ExtractedPatient
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ExtractedConditionMpox"
-* entry[=].resource = ExtractedConditionMpox
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedExposureMpox"
-* entry[=].resource = ExtractedExposureMpox
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ExtractedCondition"
+* entry[=].resource = ExtractedCondition
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedExposure"
+* entry[=].resource = ExtractedExposure
 * entry[+].fullUrl = "http://test.fhir.ch/r4/PractitionerRole/ExtractedTreatingPractitionerRole"
 * entry[=].resource = ExtractedTreatingPractitionerRole
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Practitioner/ExtractedTreatingPractitioner"
 * entry[=].resource = ExtractedTreatingPractitioner
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ExtractedTreatingOrganization"
 * entry[=].resource = ExtractedTreatingOrganization
+
+// --- LAST ENTRY ON PURPOSE ---------------------------------------------------------------------
+// The hospitalisation Encounter is the only CONDITIONAL entry, and a conditional entry must be the
+// last one. The engine deletes a context-gated array element from the template and re-inserts it once
+// per context result; when the context is empty nothing is re-inserted and every LATER entry has
+// shifted down by one, while the extract paths recorded for those entries still carry their original
+// index. Putting the Encounter anywhere but last therefore corrupts the entries after it as soon as
+// the answer is "nein" (observed: a phantom eighth entry holding a half-built Organization).
+// Hospitalisation Encounter. The WHOLE entry is context-gated: answered "nein" (or unanswered) ->
+// the context is empty, the engine drops the indexed element, and no Encounter reaches the document.
+// The two references to it (Composition.encounter, Condition.encounter) carry the same test, so they
+// disappear together with it. This is the ONLY templateExtractContext in the Encounter's subtree —
+// see RuleSetEncounterHospitalisation for why nesting a second one below it cannot work.
+* entry[+].extension[0].url = $sdc-templateExtractContext
+* entry[=].extension[0].valueString = "iif(%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).exists(), true, {})"
+* entry[=].fullUrl = "http://test.fhir.ch/r4/Encounter/ExtractedEncounter"
+// IDENTITY VALUE, AND IT IS LOAD-BEARING. The engine seeds a context-gated array element from the
+// static template with a SHALLOW spread — `{...staticEntry, ...firstValue}` (combineStaticTemplateData).
+// The first value it inserts therefore decides what survives at the top level of the entry: a value
+// whose path starts at `resource.…` replaces the whole static `resource`, taking `resourceType`,
+// `status`, `class` and `subject` with it (only later values are deep-merged). Writing `fullUrl`
+// FIRST — it precedes `resource` in the serialised entry, so the engine walks it first — makes that
+// first spread overwrite `fullUrl` with itself, leaving the static Encounter intact for the values
+// below to merge into. Without it the extracted Encounter comes out with no resourceType.
+* entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
+* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Encounter/ExtractedEncounter'"
+* entry[=].resource = ExtractedEncounter

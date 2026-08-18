@@ -57,10 +57,8 @@ Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumonia
 * section[laboratory].code = $loinc#30954-2
 * section[laboratory].entry[0] = Reference(ChEkmServiceRequestExampleInvasivePneumococcalDisease)
 
-// Hospitalization Section
-* section[hospitalization].title = "Hospitalisation section"
-* section[hospitalization].code = $loinc#46240-8
-* section[hospitalization].entry[0] = Reference(ChEkmEncounterExample-InvasivePneumococcalDisease)
+// No hospitalization section: the Encounter is referenced from Composition.encounter above and
+// from Condition.encounter — see ChEkmEncounter.
 
 // Immunization Section
 * section[immunization].title = "Immunization section"
@@ -86,7 +84,7 @@ Description: "Example for a CH EKM Condition: Invasive Streptococcus Pneumoniae"
 * evidence[0].code = $sct#91302008 "Sepsis (disorder)"
 
 Instance: ChEkmEncounterExample-InvasivePneumococcalDisease
-InstanceOf: Encounter
+InstanceOf: ChEkmEncounter
 Usage: #example
 Description: "Example for a CH EKM Encounter: Invasive Streptococcus Pneumoniae"
 * subject = Reference(ChEkmPatientInitialsExample)

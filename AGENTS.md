@@ -34,7 +34,8 @@ This IG uses **two parallel representations** of the report content:
 | `input/fsh/profiles/` | Resource profiles, extensions, invariants |
 | `input/fsh/logical/` | Form logical models (one element per form item) + `Mapping` to profiles |
 | `input/fsh/terminology/` | `CodeSystem`s and `ValueSet`s (+ a `ConceptMap`) |
-| `input/fsh/examples/` | Instance examples, grouped by organism (`Gonorrhoea/`, `HepatitisC/`, `InvasiveStreptococcusPneumoniae/`) and shared Patient/Practitioner/Organization examples |
+| `input/fsh/examples/` | Instance examples, grouped by organism (`Gonorrhoea/`, `HepatitisC/`, `InvasiveStreptococcusPneumoniae/`, `Mpox/`) and shared Patient/Practitioner/Organization examples; the per-disease questionnaire roots and `$extract` templates live here too |
+| `input/fsh/questionnnaire/` | Disease-agnostic SDC sub-questionnaires + `RuleSets.fsh`; `extract/` holds the reusable `$extract` rule sets |
 | `input/fsh/ALIAS.fsh` | All FSH aliases (code systems, extensions, value sets) |
 | `input/pagecontent/` | Narrative IG pages (`index`, `usecase`, `guidance`, `profiles`, `terminology`, `examples`, `changelog`, `extensions`) |
 | `input/images-source/` | PlantUML sources for use-case diagrams |
@@ -50,8 +51,10 @@ This IG uses **two parallel representations** of the report content:
 - **`ChEkmComposition`** (← `CHCoreComposition`) — `status=final`,
   `category = sct#423876004 "Clinical report"`, `type = sct#722143004 "Infectious disease
   diagnostic study note"`. Author is a `ChEkmPractitionerRole` (treating physician *or*
-  broker). Sliced `section`: `diagnosis` (1..1), `laboratory`, `hospitalization`,
-  `medication`, `immunization`, `risk-factors`, `social-history`, `cause-death`.
+  broker). Sliced `section`: `diagnosis` (1..1), `laboratory`, `medication`, `immunization`,
+  `risk-factors`, `social-history`, `cause-death`. There is
+  deliberately **no** `hospitalization` section — the hospitalisation is `Composition.encounter`
+  → `ChEkmEncounter` and nothing else.
   - `section[diagnosis]` → `ChEkmCondition` (+ optional `QuestionnaireResponse`)
   - `section[laboratory]` → `ChEkmServiceRequest` (+ optional seroconversion Observation)
   - `section[social-history]` → `ChEkmExposure`
@@ -60,6 +63,12 @@ This IG uses **two parallel representations** of the report content:
 - **`ChEkmCondition`** (← `CHCoreCondition`) — diagnosis + manifestations. `code` (the
   disease), `onsetDateTime` (manifestation begin, with `data-absent-reason` for unknown),
   `evidence` = manifestation.
+- **`ChEkmEncounter`** (← `CHCoreEncounter`) — the hospitalisation (Verlauf). Referenced from
+  `Composition.encounter` and from the diagnosis `Condition.encounter`. `class = IMP`,
+  `period.start` = Eintrittsdatum, Hospitalisationsgrund in `reasonReference` (the diagnosis
+  Condition) or `reasonCode`. "Hospitalisation unbekannt" is the only use of `hospitalization`:
+  it then carries nothing but `extension[unknown]` = `data-absent-reason#asked-unknown`;
+  "nein" produces no Encounter at all.
 - **`ChEkmExposure`** (← `Observation`) — the "Exposition" / Exposure (how/where exposed). Mirrors
   HL7 Europe HDR *Infectious Contact*: `category` from `ChEkmExposureClass`,
   `code = EXPAGNT`, `extension[exposureAddress]` for the place (Wo — country as ISO code +
@@ -100,6 +109,7 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
 - **`ChEkmPersonForm`** → maps to `ChEkmPatient` (Person to Patient).
 - **`ChEkmManifestationForm`** → maps to `ChEkmCondition`.
 - **`ChEkmExposureForm`** → maps to `ChEkmExposure` (the "Wo"/where part).
+- **`ChEkmHospitalisationForm`** → maps to `ChEkmEncounter` (the "Verlauf"/Hospitalisation part).
 - **`ChEkmTreatingPhysicianForm`** → `Practitioner` + `Organization` form models.
 - **`CHEkmGonorrhoeaForm`** — the disease-level aggregate: `person`, `exposure`,
   `manifestation`, `treatingPhysician`, each refining the generic form models for
@@ -115,13 +125,14 @@ These logical models are the **master** for building the SDC Questionnaires — 
 
 `input/fsh/terminology/`:
 - **CodeSystems**: `ChEkmExposureComponent` (internal discriminator codes for Exposure
-  components), `ChEkmRelationshipType` (Art der Beziehung).
+  components), `ChEkmRelationshipType` (Art der Beziehung), `ChEkmHospitalisationReason` (the one
+  "gemeldeter Erreger" answer, which is a pointer to the reported disease, not a clinical concept).
 - **ValueSets**: per-disease manifestation sets (`ChEkmGonorrhoeaManifestation`,
   `ChEkmHepatitisCManifestation`, `ChEkmInvasivePneumococcalDiseaseManifestation`,
   `ChEkmHIVManifestation`, …), `ChEkmExposureClass`, `ChEkmExposureTransmissionRoute`,
   `ChEkmExposureRelationshipType`, `ChEkmBiologicalSex`, `ChEkmGenderIdentity`,
   `ChEkmServiceRequestReason`, `ChEkmSpecimenType`, `ChEkmOtherNoneUnknown`,
-  `ChEkmHepatitisCCourseOfDisease`.
+  `ChEkmHepatitisCCourseOfDisease`, `ChEkmYesNoUnknown`, `ChEkmHospitalisationReasonChoice`.
 - **ConceptMap**: `ChEkmSexToHl7Gender` (biological sex → administrative gender).
 
 Note (per `README.md`): the production terminology (ValueSets/CodeSystems) is maintained
@@ -185,8 +196,17 @@ sushi .                                    # FSH -> fsh-generated/
 ./scripts/assemble.sh                      # sushi + $assemble for EVERY modular root
 ./scripts/assemble-gonorrhoea.sh           # $assemble  -> input/resources/…Assembled.json
 ./scripts/populate-gonorrhoea.sh           # $populate  -> pre-filled QuestionnaireResponse
+./scripts/populate-mpox.sh                 # $populate, incl. the `encounter` launch context
 ./scripts/extract-gonorrhoea.sh            # $extract   -> input/resources/Bundle-…-extracted.json
+./scripts/extract-mpox.sh                  # $extract, incl. the conditional Encounter entry
 ```
+
+Sub-questionnaires are disease-agnostic and live in `input/fsh/questionnnaire/`; the per-disease
+root (`input/fsh/examples/<Organism>/ChEkmQuestionnaire<Organism>.fsh`) assembles the ones its form
+needs via the `RuleSetQr…` rule sets in `input/fsh/questionnnaire/RuleSets.fsh`. Only Mpox currently
+has the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation`); Gonorrhoea has
+none. That section is also the only one needing a third launch context (`encounter`), which is why
+it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.
 
 The assemble scripts are **local only** by default. Publishing the assembled + per-language
 questionnaires to the Forms Server (https://smartforms.ahdis.ch/api/fhir) is opt-in — add
