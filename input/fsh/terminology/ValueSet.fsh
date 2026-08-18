@@ -8,6 +8,18 @@ Description: "This CH EKM value set includes the codes for patient administrativ
 * $administrative-gender#female "Female"
 * $administrative-gender#other "Other"
 
+// Single-code value set for `open-choice` form items whose only predefined answer is "unbekannt" -
+// the user either types a free text (-> answer.valueString) or picks this code (-> answer.valueCoding),
+// and the two are told apart by the answer type. Used by the Exposure "genauer Ort" item. The de/fr/it
+// labels come from the SNOMED CT supplement in CodeSystemSupplements.fsh.
+ValueSet: ChEkmUnknown
+Title: "CH EKM Unknown"
+Description: "This CH EKM value set contains only the SNOMED CT 'Unknown' concept. It is the answer value set of open-choice form items where the alternative to a free-text entry is an explicit 'unknown'."
+* ^status = #active
+* ^experimental = false
+
+* $sct#261665006 "Unknown (qualifier value)"
+
 ValueSet: ChEkmExposureClass
 Title: "CH EKM Exposure Class"
 Description: "This CH EKM value set includes the HL7 v3 ActClass codes that classify an exposure (mirrors the ActClassExposure value set used by HL7 Europe HDR and US eCR)."

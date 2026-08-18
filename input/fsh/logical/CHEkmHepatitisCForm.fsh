@@ -24,10 +24,10 @@ Description: "Logical model for the form section 'Exposure' (German form: 'Expos
 Characteristics: #can-be-target
 
 // Wo on the structured level we will not have inland/ausland as separate items (discussed June 1st)
+// No `unknown` element: both "Wo" questions carry their own unknown answer (see ChEkmExposureForm).
 * where 0..1
   * country 0..1
   * preciseLocation 0..1
-  * unknown 0..1
 // Wie (Übertragungsweg)
 * transmission 0..1 Base "Transmission route"
   * sexualContactPartner 0..1 CodeableConcept "Sexual contact (female, male, other)" // proposed minimum set of options as of June 1st; to be further discussed, see // to verify that administrative gender is correctly captured here https://docs.google.com/spreadsheets/d/153rbSKx_zNKEO1dNm-AigvTit9cwy3HeVS8MCZTuC7g/edit?gid=509131979#gid=509131979

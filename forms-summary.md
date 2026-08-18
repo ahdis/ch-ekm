@@ -165,7 +165,26 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
   > Display Name* warning per language file. Inline option labels are translated via
   > `translation` extensions on the `_valueString` sibling, baked in by
   > `scripts/build-lang-questionnaire.py` (`localize_answer_options`).
-  > Live example: the "Wo" group's `exposureWhereUnknown`.
+  > No live example remains in this IG — the "Wo" group's `exposureWhereUnknown` used it until the
+  > precise location was merged into a single `open-choice` item (see the next note), which is the
+  > better answer whenever the tick-box is really the "unknown" alternative to another field.
+
+  > **A dropdown that also takes free text = `open-choice` (R4).** Smart Forms renders every
+  > open-choice item control *other than* `autocomplete` / `check-box` / `radio-button` as `Select`
+  > (`getOpenChoiceControlType`), and both Select fields — answerOption and answerValueSet — are MUI
+  > `Autocomplete` with **`freeSolo`**: typing commits the text on blur, picking commits the option.
+  > So a single widget covers "type a value, or choose one of these". The `openLabel` extension is a
+  > *different* pattern (a separately labelled "Andere:" box beside radios/checkboxes) and is only
+  > supported on those two item controls — it is not needed for, and does not apply to, the Select
+  > variant. R5's `answerConstraint` is not implemented here; stay on R4 `open-choice`.
+  >
+  > **The predefined options must be `valueCoding`, not `valueString`.** Free text arrives as
+  > `answer.valueString`, so a string option is indistinguishable from a user typing that same word.
+  > With a Coding the QuestionnaireResponse splits cleanly and extraction can branch on
+  > `ofType(string)` vs `ofType(Coding)`. Live example: the "Wo" group's `exposureWherePreciseLocation`
+  > (free text, or `ChEkmUnknown` = sct#261665006 → a `_city` data-absent-reason). Translations come
+  > from the CodeSystem supplement rather than `_valueString` translation extensions, so this also
+  > sidesteps the *Wrong Display Name* warning that a hand-written Coding display would raise.
 - **Behaviour**: `enableWhen` / `enableBehavior` (conditional display, e.g. show a free-text
   field only when "andere/other" is chosen, or grey out a date when "unbekannt" is ticked),
   `required`, `repeats`, `readOnly`, `initial`.
@@ -960,9 +979,9 @@ Two things to get right:
   binds `%ctry` / `%ctryUnknown` / `%base` / `%addr`.
 
 Verified end-to-end (`scripts/extract-mpox.sh` + hand-built QR variants). Country and precise
-location are **independent**, each with its own unknown, so the branches combine freely: a country
-answered → `country` + Coding, `Land = Unbekannt` → no `country` + `_country` data-absent-reason; a
-precise location answered → `city`, the "Unbekannt" box ticked → no `city` + `_city`
+location are **two items, each with its own unknown answer**, so the branches combine freely: a
+country answered → `country` + Coding, `Land = Unbekannt` → no `country` + `_country`
+data-absent-reason; a precise location typed → `city`, `Ort = Unbekannt` → no `city` + `_city`
 data-absent-reason; nothing answered → **no** extension at all.
 
 ### Conditional gating with `iif` — negation and the Boolean-criterion trap

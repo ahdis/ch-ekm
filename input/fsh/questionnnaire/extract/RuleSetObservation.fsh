@@ -1,14 +1,20 @@
 RuleSet: RuleSetExposureWhere
 // Exposure "Wo" (https://github.com/ahdis/ch-ekm/issues/26) -> extension[exposureAddress]:
-//   exposureWhereCountry = an ISO 3166 country -> valueAddress.country (code) + country coding
-//   exposureWhereCountry = sct#261665006       -> valueAddress._country.extension[data-absent-reason]
-//   exposureWherePreciseLocation               -> valueAddress.city
-//   exposureWhereUnknown                       -> valueAddress._city.extension[data-absent-reason]
+//   exposureWhereCountry (Coding)              = an ISO 3166 country -> valueAddress.country + coding
+//   exposureWhereCountry (Coding)              = sct#261665006 -> valueAddress._country DAR
+//   exposureWherePreciseLocation (string)      = free text      -> valueAddress.city
+//   exposureWherePreciseLocation (Coding)      = sct#261665006 -> valueAddress._city DAR
 //
-// The two questions are INDEPENDENT and each has its own "unknown": the dropdown's "Unbekannt"
-// option says the COUNTRY is unknown, the check-box says the PRECISE LOCATION is unknown. Each is
-// expressed as a data-absent-reason on its own element, so "country CH, precise location unknown"
-// and "country unknown, precise location Zürich" are both reportable.
+// TWO items, and each carries its OWN "unknown" answer, expressed as a data-absent-reason on the
+// element it belongs to - so "country CH, precise location unknown" and "country unknown, precise
+// location Zürich" are both reportable. There is no third item and no Address-level DAR.
+//
+// The precise-location item is an `open-choice` (a dropdown that also takes free text), so its
+// answer arrives EITHER as a string (what the user typed) OR as the Coding of the single offered
+// option (ChEkmUnknown = sct#261665006). Splitting on the answer type - `ofType(string)` vs
+// `ofType(Coding)` - is exactly why that option has to be a Coding and not a plain string: typed
+// text lands in `answer.valueString`, so a string option would be indistinguishable from someone
+// typing the word "Unbekannt".
 //
 // There is only ONE country item (the former form-only CH/LI check-box `exposureWhereChLi` is gone,
 // Switzerland/Liechtenstein are just the first two entries of the answer value set), so the country
@@ -20,13 +26,8 @@ RuleSet: RuleSetExposureWhere
 // `where(system='urn:iso:std:iso:3166')` and instead marks the COUNTRY as absent -
 // `%factory.string({}, <data-absent-reason>)`, i.e. an EMPTY value carrying the extension. Raw
 // FHIRPath yields `{country: null, _country: {extension: [...]}}`; `country` does not repeat, so the
-// null is correctly dropped on serialisation and the emitted Address carries `_country` only. This
-// is deliberately distinct from the "Unbekannt" check-box, which marks the whole Address as absent
-// (`Address.extension`).
-//
-// The "Unbekannt" check-box is a single-option `choice` item (see ChEkmQuestionnaireExposureWhere),
-// so "ticked" is simply "the answer exists" - un-ticking removes the answer rather than leaving a
-// `false` behind, which is why the gate below tests `exists()` instead of `= true`.
+// null is correctly dropped on serialisation and the emitted Address carries `_country` only. The
+// precise location uses the identical shape on `city` / `_city`.
 //
 // The WHOLE extension is built at extraction time by one templateExtractValue via the FHIR Type
 // Factory on the ch-ekm SdcTemplateExtractExtension carrier (idiom: forms-summary §8). Why not
@@ -45,24 +46,25 @@ RuleSet: RuleSetExposureWhere
 //
 // ONE carrier for all cases (the exposure-address extension is 0..1, so two carriers could not both
 // fire). Resulting branches, combined freely since country and precise location are independent:
-//   country answered      -> `country` = the ISO code (+ the Coding on `_country`)
-//   Land = Unbekannt      -> country absent (`_country` DAR)
-//   Ort answered          -> `city` = the free text
-//   Unbekannt box ticked  -> city absent (`_city` DAR)
-//   nothing answered      -> no extension at all
+//   country answered   -> `country` = the ISO code (+ the Coding on `_country`)
+//   Land = Unbekannt   -> country absent (`_country` DAR)
+//   Ort typed          -> `city` = the free text
+//   Ort = Unbekannt    -> city absent (`_city` DAR)
+//   nothing answered   -> no extension at all
 //
 // The context yields a single `true` sentinel (a bare collection of the answers could hold several
 // values, which would emit the extension once per value - see the evidence-per-manifestation
 // idiom); the value expression reads the answers absolutely (%resource), so the context only gates.
 * extension[+].url = $sdc-templateExtractExtension
 * extension[=].extension[+].url = $sdc-templateExtractContext
-* extension[=].extension[=].valueString = "iif(%resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists() or %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.exists() or %resource.descendants().where(linkId='exposureWhereUnknown').answer.value.exists(), true, {})"
+* extension[=].extension[=].valueString = "iif(%resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists() or %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.exists(), true, {})"
 // Four chained `defineVariable`s (fhirpath.js supports them, and they chain - the last one even
 // binds a value built by %factory), so every answer is read exactly once:
 //   %ctry        - the answered country, restricted to real ISO 3166 codes: sct#261665006 "Unknown"
 //                  is an answer of the same item but must not become an Address.country string.
 //   %ctryUnknown - that same item answered with sct#261665006 "Unknown".
-//   %loc         - the precise location free text.
+//   %loc         - the precise location as TYPED (`ofType(string)` - the open-choice item's other
+//                  possible answer is the Coding handled by %locUnknown).
 //   %base        - the Address with the city part settled, shared by all three country branches.
 // `%resource.…select(…)` fixes the focus to exactly one node, so the result is always a single
 // Extension no matter what the engine passes in as the focus.
@@ -71,15 +73,14 @@ RuleSet: RuleSetExposureWhere
 // the value's `_data`, which `ResourceNode` forces to `{}` even when there are no extensions, so the
 // no-extension case would emit a stray, invalid `"_city": {}`. `%factory.Address({}, %loc)` sets
 // `city` directly (and omits it when %loc is empty), so only the data-absent branch needs
-// `withProperty`. `%loc.empty()` guards it: a QR that somehow carries BOTH a text and the tick keeps
-// the text rather than claiming the value is absent.
+// `withProperty`. The typed text wins if a response somehow carries both answers.
 //
 // The country part then wraps %base: answered -> `country` = the code plus the same country as a
 // Coding via iso21090-codedString on the `_country` element (a slot no value directive on `country`
 // could reach); "Unbekannt" -> `%factory.string({}, …)` leaves the value empty and puts the
 // data-absent-reason on `_country`; unanswered -> %base unchanged.
 * extension[=].extension[+].url = $sdc-templateExtractValue
-* extension[=].extension[=].valueString = "%resource.defineVariable('ctry', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='urn:iso:std:iso:3166').first()).defineVariable('ctryUnknown', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists()).defineVariable('loc', %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.first()).defineVariable('base', iif(%resource.descendants().where(linkId='exposureWhereUnknown').answer.value.exists() and %loc.empty(), %factory.withProperty(%factory.Address({}), 'city', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %factory.Address({}, %loc))).select(%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address', iif(%ctry.exists(), %factory.withProperty(%base, 'country', %factory.string(%ctry.code, %factory.Extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString', %ctry))), iif(%ctryUnknown, %factory.withProperty(%base, 'country', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %base))))"
+* extension[=].extension[=].valueString = "%resource.defineVariable('ctry', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='urn:iso:std:iso:3166').first()).defineVariable('ctryUnknown', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists()).defineVariable('loc', %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.ofType(string).first()).defineVariable('base', iif(%loc.empty() and %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists(), %factory.withProperty(%factory.Address({}), 'city', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %factory.Address({}, %loc))).select(%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address', iif(%ctry.exists(), %factory.withProperty(%base, 'country', %factory.string(%ctry.code, %factory.Extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString', %ctry))), iif(%ctryUnknown, %factory.withProperty(%base, 'country', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %base))))"
 
 RuleSet: RuleSetEffectiveExposureWhen
 // Exposure "Wann" (https://github.com/ahdis/ch-ekm/issues/25) — two mutually exclusive answers:

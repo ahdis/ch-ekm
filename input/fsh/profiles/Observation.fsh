@@ -11,14 +11,14 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 * value[x] only CodeableConcept
 * value[x] ^short = "The exposure agent, e.g. the organism the patient was exposed to"
 * effective[x] only dateTime or Period
-* effective[x] ^short = "When the exposure took place (Wann) - the most probable point in time of infection; a Period when only a time window is known"
+* effective[x] ^short = "When the exposure took place (When) - the most probable point in time of infection; a Period when only a time window is known"
 * subject 1..1
 * subject only Reference(ChEkmPatient)
 
 * extension contains ChEkmExtExposureAddress named exposureAddress 0..1
-* extension[exposureAddress] ^short = "Place/address of exposure (Wo)"
+* extension[exposureAddress] ^short = "Place/address of exposure (Where)"
 
-// Wann - the form asks for the date of the last entry into Switzerland when the point in time of
+// When - the form asks for the date of the last entry into Switzerland when the point in time of
 // infection itself is unknown. That date is NOT the exposure time (it only bounds the window in
 // which the exposure abroad must have happened), so it is recorded as its own component instead of
 // as effective[x]. Sliced here on the base profile: every organism asking "Wann" reuses this slice.
@@ -26,7 +26,7 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 * component ^slicing.discriminator.path = "code"
 * component ^slicing.rules = #open
 * component contains dateOfEntry 0..1 MS
-* component[dateOfEntry] ^short = "Date of the last entry into Switzerland (Wann - only when the point in time of infection is unknown)"
+* component[dateOfEntry] ^short = "Date of the last entry into Switzerland (Only when the point in time of infection is unknown)"
 * component[dateOfEntry].code = $sct#161097008 "Date of return from travel"
 * component[dateOfEntry].value[x] only dateTime
 

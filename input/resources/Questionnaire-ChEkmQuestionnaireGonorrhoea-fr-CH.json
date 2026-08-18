@@ -1045,6 +1045,13 @@
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
+                    "code": "LI",
+                    "display": "Liechtenstein"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
                     "code": "AL",
                     "display": "Albanie"
                   }
@@ -1131,13 +1138,6 @@
                     "system": "urn:iso:std:iso:3166",
                     "code": "IT",
                     "display": "Italie"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "urn:iso:std:iso:3166",
-                    "code": "LI",
-                    "display": "Liechtenstein"
                   }
                 },
                 {
@@ -2475,6 +2475,13 @@
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
+                    "code": "LI",
+                    "display": "Liechtenstein"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "urn:iso:std:iso:3166",
                     "code": "AL",
                     "display": "Albanie"
                   }
@@ -2561,13 +2568,6 @@
                     "system": "urn:iso:std:iso:3166",
                     "code": "IT",
                     "display": "Italie"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "urn:iso:std:iso:3166",
-                    "code": "LI",
-                    "display": "Liechtenstein"
                   }
                 },
                 {

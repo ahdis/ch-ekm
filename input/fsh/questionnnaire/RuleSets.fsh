@@ -151,8 +151,10 @@ RuleSet: RuleSetQrLevel2ShortText(text, text-de-CH, text-fr-CH, text-it-CH)
 * item[=].item[=].extension[=].valueString.extension[=].extension[+].url = "content"
 * item[=].item[=].extension[=].valueString.extension[=].extension[=].valueString = {text-it-CH}
 
-// Single-option check-box items (see ChEkmQuestionnaireExposureWhere) carry their visible label
-// on answerOption[0].valueString instead of item.text, but need the same four languages.
+// Single-option check-box items carry their visible label on answerOption[0].valueString instead of
+// item.text, but need the same four languages. Currently unused: the one item that used this shape
+// (the "Wo" group's Unbekannt box) became an open-choice option, whose label comes from the
+// terminology. Kept for the next check-box whose label is a form string rather than a coded concept.
 RuleSet: RuleSetQrLevel2AnswerOptionText(text, text-de-CH, text-fr-CH, text-it-CH)
 * item[=].item[=].answerOption[0].valueString = {text}
 * item[=].item[=].answerOption[0].valueString.extension[+].url = $translation
