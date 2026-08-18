@@ -5727,19 +5727,6 @@
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.when.exposureDate",
                   "text": "Wann war der meistwahrscheinliche Zeitpunkt der Ansteckung?",
                   "type": "date"
-                },
-                {
-                  "linkId": "exposureWhenLastEntryDate",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.when.lastEntryDate",
-                  "text": "Wenn unbekannt, wann war die letzte Einreise in die Schweiz?",
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "exposureWhenDate",
-                      "operator": "exists",
-                      "answerBoolean": false
-                    }
-                  ]
                 }
               ]
             },

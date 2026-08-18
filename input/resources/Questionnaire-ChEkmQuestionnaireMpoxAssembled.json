@@ -2504,62 +2504,6 @@
                     ]
                   },
                   "type": "date"
-                },
-                {
-                  "linkId": "exposureWhenLastEntryDate",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.when.lastEntryDate",
-                  "text": "If unknown, when was the last entry into Switzerland?",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Wenn unbekannt, wann war die letzte Einreise in die Schweiz?"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Si inconnu, quand a eu lieu la dernière entrée en Suisse ?"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Se sconosciuto, quando è avvenuto l'ultimo ingresso in Svizzera?"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "exposureWhenDate",
-                      "operator": "exists",
-                      "answerBoolean": false
-                    }
-                  ]
                 }
               ]
             },

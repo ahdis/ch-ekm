@@ -5727,19 +5727,6 @@
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.when.exposureDate",
                   "text": "Quando è avvenuto il momento più probabile del contagio?",
                   "type": "date"
-                },
-                {
-                  "linkId": "exposureWhenLastEntryDate",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.when.lastEntryDate",
-                  "text": "Se sconosciuto, quando è avvenuto l'ultimo ingresso in Svizzera?",
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "exposureWhenDate",
-                      "operator": "exists",
-                      "answerBoolean": false
-                    }
-                  ]
                 }
               ]
             },
