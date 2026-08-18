@@ -25,7 +25,7 @@ Description: "Logical model for the form section 'Exposure' (German form: 'Expos
 // separate element rather than a second way to fill `exposureDate`.
 * when 0..1 Base "Wann"
   * exposureDate 0..1 dateTime "Most probable point in time of infection. May be a partial date (year / year-month)."
-  * lastEntryDate 0..1 dateTime "Date of the last entry into Switzerland - only asked when the most probable point in time of infection is unknown"
+//  * lastEntryDate 0..1 dateTime "Date of the last entry into Switzerland - only asked when the most probable point in time of infection is unknown"
 
 Mapping: ExposureFormToExposure
 Source: ChEkmExposureForm
@@ -39,4 +39,4 @@ Title: "Exposure Form to CH EKM Exposure"
 * where.preciseLocation -> "Observation.extension[exposureAddress].valueAddress.city" "Precise location - the entered free text"
 * where.preciseLocation -> "Observation.extension[exposureAddress].valueAddress.city.extension[unknown]" "Precise location answered as sct#261665006 'Unknown': no city string is written, the city element carries a data-absent-reason (asked-unknown) instead; the answered country is kept alongside it"
 * when.exposureDate -> "Observation.effectiveDateTime" "When - most probable point in time of infection"
-* when.lastEntryDate -> "Observation.component[dateOfEntry].valueDateTime" "When the point in time of infection is unknown - date of the last entry into Switzerland (sct#161097008 'Date of return from travel')"
+// * when.lastEntryDate -> "Observation.component[dateOfEntry].valueDateTime" "When the point in time of infection is unknown - date of the last entry into Switzerland (sct#161097008 'Date of return from travel')"

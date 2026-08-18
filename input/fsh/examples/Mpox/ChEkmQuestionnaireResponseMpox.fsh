@@ -9,8 +9,7 @@
 //      (see ChEkmDocumentMpoxTemplate).
 //   2. manifestationBeginUnknown=false + a real manifestationBeginDate, i.e. the ANSWERED onset
 //      path (the Gonorrhoea QR ticks "unknown" and tests the data-absent branch instead).
-//   3. Exposure "Wann": exposureWhenDate answered -> Observation.effectiveDateTime; exposureWhenLastEntryDate
-//      left unanswered -> no component[dateOfEntry] (the two are alternatives, see issue #25).
+//   3. Exposure "Wann" (see issue #25).
 //   4. Exposure "Wo": a country abroad + a precise location -> the exposure-address extension is
 //      built at extraction with country code, country Coding and city (see issue #26).
 // The person group uses the full-name module (surname / givenname), not the initials module.
@@ -91,8 +90,6 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[2].item[0].item[1].answer.valueString = "Kinshasa"
 
 // Wann: the most probable point in time of infection is known -> effectiveDateTime after $extract.
-// `exposureWhenLastEntryDate` is therefore not answered (it is enableWhen-gated on exposureWhenDate not existing),
-// so the extract must NOT emit a component[dateOfEntry].
 * item[0].item[2].item[1].linkId = "exposureWhen"
 * item[0].item[2].item[1].item[0].linkId = "exposureWhenDate"
 * item[0].item[2].item[1].item[0].answer.valueDate = "2026-07-01"

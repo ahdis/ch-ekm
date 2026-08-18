@@ -97,7 +97,8 @@ scripts/extract/tests/
 **Runner steps**
 
 1. `sushi .`
-2. **`./scripts/assemble-<disease>.sh --no-upload`** — mandatory, see trap below
+2. **`./scripts/assemble.sh`** (or `./scripts/assemble-<disease>.sh`) — mandatory, see trap below.
+   Neither uploads to the Forms Server unless you pass `--upload`.
 3. for each case: `extract(assembled Q, case qr.json)` → compare to `expected.json` with
    `assert.deepStrictEqual`
 4. `--update` regenerates the goldens; reviewing the resulting `git diff` is the actual test

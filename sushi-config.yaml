@@ -59,7 +59,7 @@ resources:
     exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-mpox 
   Questionnaire/ChEkmQuestionnaireMpoxAssembled:
     name: "CH EKM Questionnaire: Mpox (assembled)"
-    description: "Assembled (flattened) Mpox questionnaire, generated from the modular questionnaire ChEkmQuestionnaireMpox via Questionnaire/$assemble (scripts/assemble-gonorrhoea.sh). Do not edit by hand."
+    description: "Assembled (flattened) Mpox questionnaire, generated from the modular questionnaire ChEkmQuestionnaireMpox via Questionnaire/$assemble (scripts/assemble-mpox.sh). Do not edit by hand."
     exampleBoolean: false
   Questionnaire/ChEkmQuestionnaireMpox-de-CH:
     name: "CH EKM Questionnaire: Mpox (de-CH)"

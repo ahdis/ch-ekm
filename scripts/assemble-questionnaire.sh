@@ -18,31 +18,41 @@
 #   1. sushi .
 #   2. $assemble -> input/resources/Questionnaire-<RootId>Assembled.json
 #   3. build-lang-questionnaire.py -> input/resources/Questionnaire-<RootId>-<lang>.json (de/fr/it-CH)
-#   4. PUBLISH all of the above to the Forms Server via scripts/upload-questionnaire.sh
+#   4. OPTIONALLY publish all of the above to the Forms Server via scripts/upload-questionnaire.sh
 #
-# Step 4 writes to a live server (https://smartforms.ahdis.ch/api/fhir by default), so the
-# renderer's picker always matches what was just built. Opt out with --no-upload or EKM_UPLOAD=0;
-# override the target with EKM_FHIR_BASE. PREVIEW_LANG is honoured in both steps 3 and 4, so
-# building one language publishes that one language.
+# Steps 1-3 are purely local: they only write into the working tree. Step 4 writes to a LIVE
+# server (https://smartforms.ahdis.ch/api/fhir by default) and is therefore OFF by default —
+# opt in explicitly with --upload (or EKM_UPLOAD=1) once you want the renderer's picker to match
+# what was just built. Override the target with EKM_FHIR_BASE. PREVIEW_LANG is honoured in both
+# steps 3 and 4, so building one language publishes that one language.
 #
 # Usage:
-#   ./scripts/assemble-questionnaire.sh <RootQuestionnaireId> [--no-upload]
+#   ./scripts/assemble-questionnaire.sh <RootQuestionnaireId> [--upload] [--no-sushi]
 #   ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireGonorrhoea
-#   ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox --no-upload
+#   ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox --upload
 #   PREVIEW_LANG=fr-CH ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox
-#   EKM_FHIR_BASE=http://localhost:8080/fhir ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox
+#   EKM_FHIR_BASE=http://localhost:8080/fhir ./scripts/assemble-questionnaire.sh ChEkmQuestionnaireMpox --upload
+#
+# Assemble every root at once with scripts/assemble.sh (also reachable as ./assemble.sh from the
+# repo root), which runs `sushi .` once and then calls this script with --no-sushi per root.
 #
 set -euo pipefail
 
 # Run from the repo root regardless of where the script is invoked from.
 cd "$(dirname "$0")/.."
 
-# --no-upload skips step 4 (publishing to the Forms Server); everything else is positional.
-UPLOAD=1
+# --upload opts in to step 4 (publishing to the Forms Server); it is off by default so a plain
+# run never touches a live server. --no-upload is still accepted (now a no-op) so older command
+# lines and docs keep working. --no-sushi skips the `sushi .` refresh, for callers (./assemble.sh)
+# that already ran it once for a batch. Everything else is positional.
+UPLOAD=0
+RUN_SUSHI=1
 ARGS=()
 for a in "$@"; do
   case "$a" in
+    --upload) UPLOAD=1 ;;
     --no-upload) UPLOAD=0 ;;
+    --no-sushi) RUN_SUSHI=0 ;;
     *) ARGS+=("$a") ;;
   esac
 done
@@ -51,12 +61,14 @@ set -- "${ARGS[@]+"${ARGS[@]}"}"
 ROOT_ID="${1:-}"
 if [ -z "$ROOT_ID" ]; then
   echo "ERROR: missing root questionnaire id."
-  echo "Usage: $0 <RootQuestionnaireId> [--no-upload]   (e.g. ChEkmQuestionnaireGonorrhoea)"
+  echo "Usage: $0 <RootQuestionnaireId> [--upload] [--no-sushi]   (e.g. ChEkmQuestionnaireGonorrhoea)"
   exit 2
 fi
 
 # run `sushi .` first to ensure fsh-generated/ is up to date, then assemble locally.
-sushi .
+if [ "$RUN_SUSHI" = "1" ]; then
+  sushi .
+fi
 
 DIR="fsh-generated/resources"
 ROOT_FILE="$DIR/Questionnaire-$ROOT_ID.json"
@@ -181,9 +193,10 @@ python3 scripts/build-lang-questionnaire.py "$ASSEMBLED_ID"
 
 # --- 4. publish to the Forms Server -------------------------------------------
 # Push the assembled questionnaire and the per-language previews so the renderer's picker
-# matches what was just built. Skipped with --no-upload (or EKM_UPLOAD=0) when working offline
-# or on a branch you do not want published.
-if [ "${EKM_UPLOAD:-1}" = "0" ]; then UPLOAD=0; fi
+# matches what was just built. This writes to a live server, so it only runs when asked for
+# with --upload (or EKM_UPLOAD=1).
+if [ "${EKM_UPLOAD:-}" = "1" ]; then UPLOAD=1; fi
+if [ "${EKM_UPLOAD:-}" = "0" ]; then UPLOAD=0; fi
 
 if [ "$UPLOAD" = "1" ]; then
   BASE="${EKM_FHIR_BASE:-https://smartforms.ahdis.ch/api/fhir}"
@@ -211,12 +224,13 @@ if [ "$UPLOAD" = "1" ]; then
     echo
     echo "ERROR: ${#FAILED[@]} of ${#UPLOADS[@]} upload(s) failed:"
     printf '  %s\n' "${FAILED[@]}"
-    echo "The generated files above are fine — only publishing failed. Re-run with --no-upload"
+    echo "The generated files above are fine — only publishing failed. Re-run without --upload"
     echo "to skip this step, or upload individually with scripts/upload-questionnaire.sh."
     exit 1
   fi
 else
   echo
-  echo "Skipping upload to the Forms Server (--no-upload / EKM_UPLOAD=0)."
-  echo "  Publish later with: scripts/upload-questionnaire.sh $ASSEMBLED_ID"
+  echo "Not published to the Forms Server (upload is opt-in)."
+  echo "  Publish by re-running with --upload, or individually with:"
+  echo "    scripts/upload-questionnaire.sh $ASSEMBLED_ID"
 fi

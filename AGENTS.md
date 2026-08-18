@@ -182,10 +182,15 @@ reference libraries locally** — no server round-trip:
 
 ```bash
 sushi .                                    # FSH -> fsh-generated/
+./scripts/assemble.sh                      # sushi + $assemble for EVERY modular root
 ./scripts/assemble-gonorrhoea.sh           # $assemble  -> input/resources/…Assembled.json
 ./scripts/populate-gonorrhoea.sh           # $populate  -> pre-filled QuestionnaireResponse
 ./scripts/extract-gonorrhoea.sh            # $extract   -> input/resources/Bundle-…-extracted.json
 ```
+
+The assemble scripts are **local only** by default. Publishing the assembled + per-language
+questionnaires to the Forms Server (https://smartforms.ahdis.ch/api/fhir) is opt-in — add
+`--upload` (or `EKM_UPLOAD=1`), and point elsewhere with `EKM_FHIR_BASE`.
 
 **Pre-population needs a local HAPI.** `%user` is the treating physician's **PractitionerRole**,
 and the Practitioner/Organization fields read `%user.practitioner.resolve()` /
