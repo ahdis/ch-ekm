@@ -318,6 +318,9 @@ RuleSet: RuleSetQrGroupCourse
 RuleSet: RuleSetQrHospitalisation
 * insert RuleSetQrLevel3SubQuestionnaire("hospitalisationgroup", "Hospitalisation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHospitalisation")
 
+RuleSet: RuleSetQrDeath
+* insert RuleSetQrLevel3SubQuestionnaire("deathgroup", "Death", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireDeath")
+
 // Third launch context, on top of the patient + user contexts every root gets from
 // RuleSetQrHeaderSdc: the hospitalisation Encounter, consumed by the initialExpressions in
 // ChEkmQuestionnaireHospitalisation. Inserted only by roots that assemble a "Verlauf" section —

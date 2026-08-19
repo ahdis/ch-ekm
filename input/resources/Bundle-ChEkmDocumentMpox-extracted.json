@@ -36,7 +36,7 @@
             "title": "Diagnosis section",
             "entry": [
               {
-                "reference": "Condition/ExtractedConditionMpox"
+                "reference": "Condition/ExtractedCondition"
               }
             ]
           },
@@ -52,7 +52,23 @@
             },
             "entry": [
               {
-                "reference": "Observation/ExtractedExposureMpox"
+                "reference": "Observation/ExtractedExposure"
+              }
+            ]
+          },
+          {
+            "title": "Cause of death section",
+            "code": {
+              "coding": [
+                {
+                  "code": "79378-6",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "Observation/ExtractedCauseOfDeath"
               }
             ]
           }
@@ -78,7 +94,7 @@
         ],
         "title": "Meldung zum klinischen Befund Infektionskrankheit",
         "encounter": {
-          "reference": "Encounter/ExtractedEncounterMpox"
+          "reference": "Encounter/ExtractedEncounter"
         },
         "date": "2026-08-05T11:30:00+02:00"
       }
@@ -147,14 +163,24 @@
             "state": "BE"
           }
         ],
-        "birthDate": "2000-01-01"
+        "birthDate": "2000-01-01",
+        "deceasedDateTime": "2026-02-03"
       }
     },
     {
-      "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionMpox",
+      "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedCondition",
       "resource": {
         "resourceType": "Condition",
-        "id": "ExtractedConditionMpox",
+        "id": "ExtractedCondition",
+        "code": {
+          "coding": [
+            {
+              "code": "359814004",
+              "system": "http://snomed.info/sct",
+              "display": "Mpox"
+            }
+          ]
+        },
         "category": [
           {
             "coding": [
@@ -213,16 +239,16 @@
           }
         ],
         "encounter": {
-          "reference": "Encounter/ExtractedEncounterMpox"
+          "reference": "Encounter/ExtractedEncounter"
         },
         "onsetDateTime": "2026-07-20"
       }
     },
     {
-      "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureMpox",
+      "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposure",
       "resource": {
         "resourceType": "Observation",
-        "id": "ExtractedExposureMpox",
+        "id": "ExtractedExposure",
         "code": {
           "coding": [
             {
@@ -430,10 +456,10 @@
       }
     },
     {
-      "fullUrl": "http://test.fhir.ch/r4/Encounter/ExtractedEncounterMpox",
+      "fullUrl": "http://test.fhir.ch/r4/Encounter/ExtractedEncounter",
       "resource": {
         "resourceType": "Encounter",
-        "id": "ExtractedEncounterMpox",
+        "id": "ExtractedEncounter",
         "class": {
           "code": "IMP",
           "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -448,9 +474,43 @@
         },
         "reasonReference": [
           {
-            "reference": "Condition/ExtractedConditionMpox"
+            "reference": "Condition/ExtractedCondition"
           }
         ]
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "ExtractedCauseOfDeath",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "code": "79378-6",
+              "system": "http://loinc.org",
+              "display": "Cause of death"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "focus": [
+          {
+            "reference": "Condition/ExtractedCondition"
+          }
+        ],
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "359814004",
+              "display": "Mpox"
+            }
+          ]
+        }
       }
     }
   ]

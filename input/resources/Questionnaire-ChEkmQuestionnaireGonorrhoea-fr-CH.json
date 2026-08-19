@@ -329,6 +329,27 @@
                   "valueString": "%resource.descendants().where(linkId='dateOfBirth').answer.value.first()"
                 }
               ]
+            },
+            "_deceasedDateTime": {
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                      "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathDate').answer.value.exists().not(), true, {})"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown'))"
+                    }
+                  ]
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true, %resource.descendants().where(linkId='deathDate').answer.value.first(), {})"
+                }
+              ]
             }
           }
         },

@@ -5,7 +5,7 @@
 Instance: ExtractedCondition
 InstanceOf: ChEkmConditionMpox
 Usage: #inline
-* code = $sct#359814004 "Mpox (disorder)"
+* code = $sct#359814004 "Mpox"
 * category = $condition-category#encounter-diagnosis
 * subject.reference = "Patient/ExtractedPatient"
 * recorder.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
@@ -43,6 +43,23 @@ Usage: #inline
 * insert RuleSetEncounterHospitalisation
 
 // ---------------------------------------------------------------------------
+// Cause of death (ChEkmObservationCauseOfDeath) — the "Zustand" half of the Verlauf section.
+// Emitted only when the person died; the Bundle entry below carries that gate. The death itself and
+// its date are NOT here, they are on ExtractedPatient.deceasedDateTime (RuleSetPatientDeceased).
+// ---------------------------------------------------------------------------
+// Two instances, mutually exclusive: obs-6 forbids a single Observation template from carrying both
+// the value carrier and the dataAbsentReason carrier. See RuleSetCauseOfDeath.fsh.
+Instance: ExtractedCauseOfDeath
+InstanceOf: ChEkmObservationCauseOfDeath
+Usage: #inline
+* insert RuleSetObservationCauseOfDeathValue
+
+Instance: ExtractedCauseOfDeathUnknown
+InstanceOf: ChEkmObservationCauseOfDeath
+Usage: #inline
+* insert RuleSetObservationCauseOfDeathUnknown
+
+// ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionMpox) — static structure, references the entries above,
 // author = Broker, date taken from QR.authored
 // ---------------------------------------------------------------------------
@@ -66,6 +83,9 @@ Usage: #inline
 * section[1].title = "Social history section"
 * section[1].code = $loinc#29762-2
 * section[1].entry.reference = "Observation/ExtractedExposure"
+// Cause of death — gated on the person having died, and LAST for the same index-shift reason as the
+// conditional Bundle entries (see RuleSetCauseOfDeathSection).
+* insert RuleSetCauseOfDeathSection
 
 // ---------------------------------------------------------------------------
 // The Bundle template itself (ChEkmDocumentMpox shape)
@@ -127,3 +147,26 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 * entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
 * entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Encounter/ExtractedEncounter'"
 * entry[=].resource = ExtractedEncounter
+
+// Cause of death Observation — the SECOND conditional entry, and therefore after the Encounter.
+// Both gated entries are deleted from the template and re-inserted per context result, and the
+// engine's entryPathPositionMap tracks how many were actually inserted at `Bundle.entry`, so a
+// dropped Encounter correctly shifts this one down instead of leaving a hole. That bookkeeping only
+// works between gated entries — a STATIC entry after a gated one still breaks (see above), which is
+// why all conditional entries sit at the end.
+* entry[+].extension[0].url = $sdc-templateExtractContext
+* entry[=].extension[0].valueString = "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists().not() and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
+* entry[=].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath"
+// IDENTITY VALUE, LOAD-BEARING — see the Encounter entry above for why.
+* entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
+* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath'"
+* entry[=].resource = ExtractedCauseOfDeath
+
+// ... and its mutually exclusive twin, for the "cause reported as unknown" branch.
+* entry[+].extension[0].url = $sdc-templateExtractContext
+* entry[=].extension[0].valueString = "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists(), true, {})"
+* entry[=].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathUnknown"
+// IDENTITY VALUE, LOAD-BEARING — see the Encounter entry above for why.
+* entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
+* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathUnknown'"
+* entry[=].resource = ExtractedCauseOfDeathUnknown

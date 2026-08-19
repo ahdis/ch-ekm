@@ -69,6 +69,14 @@ This IG uses **two parallel representations** of the report content:
   Condition) or `reasonCode`. "Hospitalisation unbekannt" is the only use of `hospitalization`:
   it then carries nothing but `extension[unknown]` = `data-absent-reason#asked-unknown`;
   "nein" produces no Encounter at all.
+- **`ChEkmObservationCauseOfDeath`** (← `Observation`) — the cause of death (Verlauf / Zustand).
+  `code = loinc#79378-6`, `valueCodeableConcept` = the reported disease or `74964007` "Other",
+  `dataAbsentReason = asked-unknown` when the cause is reported as unknown, `focus` → the diagnosis
+  Condition when the reported disease is the cause. An Observation rather than a Condition because
+  the form asks a closed question and needs `dataAbsentReason`; HL7 US VRDR made the same move
+  between STU1 and STU2. Referenced from `Composition.section[cause-death]`. The death itself is
+  `ChEkmPatient.deceasedDateTime` (with a `data-absent-reason` slice for "died, date unknown"), so
+  the fact of death is answerable from the Patient alone.
 - **`ChEkmExposure`** (← `Observation`) — the "Exposition" / Exposure (how/where exposed). Mirrors
   HL7 Europe HDR *Infectious Contact*: `category` from `ChEkmExposureClass`,
   `code = EXPAGNT`, `extension[exposureAddress]` for the place (Wo — country as ISO code +
@@ -109,7 +117,9 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
 - **`ChEkmPersonForm`** → maps to `ChEkmPatient` (Person to Patient).
 - **`ChEkmManifestationForm`** → maps to `ChEkmCondition`.
 - **`ChEkmExposureForm`** → maps to `ChEkmExposure` (the "Wo"/where part).
-- **`ChEkmHospitalisationForm`** → maps to `ChEkmEncounter` (the "Verlauf"/Hospitalisation part).
+- **`ChEkmHospitalisationForm`** → maps to `ChEkmEncounter` (the Verlauf / Hospitalisation part).
+- **`ChEkmDeathForm`** → maps to `ChEkmPatient.deceasedDateTime` + `ChEkmObservationCauseOfDeath`
+  (the Verlauf / Zustand part).
 - **`ChEkmTreatingPhysicianForm`** → `Practitioner` + `Organization` form models.
 - **`CHEkmGonorrhoeaForm`** — the disease-level aggregate: `person`, `exposure`,
   `manifestation`, `treatingPhysician`, each refining the generic form models for
@@ -125,14 +135,16 @@ These logical models are the **master** for building the SDC Questionnaires — 
 
 `input/fsh/terminology/`:
 - **CodeSystems**: `ChEkmExposureComponent` (internal discriminator codes for Exposure
-  components), `ChEkmRelationshipType` (Art der Beziehung), `ChEkmHospitalisationReason` (the one
-  "gemeldeter Erreger" answer, which is a pointer to the reported disease, not a clinical concept).
+  components), `ChEkmRelationshipType` (Art der Beziehung), `ChEkmReportedPathogen` (the one
+  "reported pathogen" answer shared by the hospitalisation-reason and cause-of-death questions — a
+  pointer to the disease this report is about, not a clinical concept).
 - **ValueSets**: per-disease manifestation sets (`ChEkmGonorrhoeaManifestation`,
   `ChEkmHepatitisCManifestation`, `ChEkmInvasivePneumococcalDiseaseManifestation`,
   `ChEkmHIVManifestation`, …), `ChEkmExposureClass`, `ChEkmExposureTransmissionRoute`,
   `ChEkmExposureRelationshipType`, `ChEkmBiologicalSex`, `ChEkmGenderIdentity`,
   `ChEkmServiceRequestReason`, `ChEkmSpecimenType`, `ChEkmOtherNoneUnknown`,
-  `ChEkmHepatitisCCourseOfDisease`, `ChEkmYesNoUnknown`, `ChEkmHospitalisationReasonChoice`.
+  `ChEkmHepatitisCCourseOfDisease`, `ChEkmYesNoUnknown`, `ChEkmHospitalisationReasonChoice`,
+  `ChEkmCauseOfDeathChoice`.
 - **ConceptMap**: `ChEkmSexToHl7Gender` (biological sex → administrative gender).
 
 Note (per `README.md`): the production terminology (ValueSets/CodeSystems) is maintained
@@ -204,8 +216,8 @@ sushi .                                    # FSH -> fsh-generated/
 Sub-questionnaires are disease-agnostic and live in `input/fsh/questionnnaire/`; the per-disease
 root (`input/fsh/examples/<Organism>/ChEkmQuestionnaire<Organism>.fsh`) assembles the ones its form
 needs via the `RuleSetQr…` rule sets in `input/fsh/questionnnaire/RuleSets.fsh`. Only Mpox currently
-has the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation`); Gonorrhoea has
-none. That section is also the only one needing a third launch context (`encounter`), which is why
+has the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation` +
+`RuleSetQrDeath`); Gonorrhoea has none. That section is also the only one needing a third launch context (`encounter`), which is why
 it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.
 
 The assemble scripts are **local only** by default. Publishing the assembled + per-language

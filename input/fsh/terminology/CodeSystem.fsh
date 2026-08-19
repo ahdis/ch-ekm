@@ -51,18 +51,20 @@ Description: "Type of relationship to a sexual contact partner (Art der Beziehun
 * #used-paid-sex ^designation[+].language = #it-CH
 * #used-paid-sex ^designation[=].value = "Ricorso a sesso a pagamento"
 
-// Hospitalisationsgrund. Two of the three answers are plain SNOMED CT
-// qualifiers ("anderer" = 74964007, "unbekannt" = 261665006) and go straight into
-// Encounter.reasonCode. The third one — "gemeldeter Erreger" — is NOT a code at all: it says that
-// the reason for the stay is the disease this very report is about, which on the wire becomes an
-// Encounter.reasonReference to the diagnosis Condition. That answer therefore has to be a form-level
-// discriminator rather than a clinical concept, and it must stay disease-agnostic so the
-// Hospitalisation sub-questionnaire is reusable for every organism (the Mpox code 359814004 lives in
-// ChEkmConditionMpox, not in the form). Hence this one local code.
-CodeSystem: ChEkmHospitalisationReason
-Id: ch-ekm-hospitalisation-reason
-Title: "CH EKM Hospitalisation Reason"
-Description: "Internal code system for the 'Hospitalisationsgrund' form item. Holds the single answer that is not a clinical concept but a pointer to the reported disease itself ('gemeldeter Erreger'), which is extracted as an Encounter.reasonReference to the diagnosis Condition. The other two answers ('anderer', 'unbekannt') are SNOMED CT qualifiers and go to Encounter.reasonCode."
+// "Reported pathogen" — the answer shared by two questions of the "Verlauf" (course) section:
+//   Hospitalisation reason  -> the stay was because of the reported disease
+//   Cause of death          -> the person died of the reported disease
+// In both, the other two answers ("other" = 74964007, "unknown" = 261665006) are plain SNOMED CT
+// qualifiers, while this one is NOT a code at all: it says the answer IS the disease this very
+// report is about. On the wire that becomes a reference to the diagnosis Condition
+// (Encounter.reasonReference / Observation.focus) and, for the cause of death, the disease code
+// itself. It therefore has to be a form-level discriminator rather than a clinical concept, and it
+// must stay disease-agnostic so both sub-questionnaires are reusable for every organism (the Mpox
+// code 359814004 lives in ChEkmConditionMpox, not in the form). Hence this one local code.
+CodeSystem: ChEkmReportedPathogen
+Id: ch-ekm-reported-pathogen
+Title: "CH EKM Reported Pathogen"
+Description: "Internal code system holding the single form answer that is not a clinical concept but a pointer to the disease this report is about. Used by the hospitalisation reason and cause of death form items; on extraction it becomes a reference to the diagnosis Condition rather than a code of its own."
 * ^status = #active
 * ^experimental = false
 * ^caseSensitive = true

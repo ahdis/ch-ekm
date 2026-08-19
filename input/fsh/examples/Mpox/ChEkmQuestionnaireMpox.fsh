@@ -32,9 +32,11 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
 * insert RuleSetQrManifestationBeginUnknown
 
-// Verlauf — Hospitalisation (and, once the cause-of-death modelling is decided, "Zustand"/death).
+// Verlauf (course of the disease) — Hospitalisation and Zustand (death). Mpox is the first organism
+// with this section; Gonorrhoea has none.
 * insert RuleSetQrGroupCourse
 * insert RuleSetQrHospitalisation
+* insert RuleSetQrDeath
 
 * insert RuleSetQrGroupExposure
 

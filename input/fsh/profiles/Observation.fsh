@@ -30,3 +30,53 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 * component[dateOfEntry].code = $sct#161097008 "Date of return from travel"
 * component[dateOfEntry].value[x] only dateTime
 
+
+
+// Cause of death (the "Zustand" half of the Verlauf section).
+//
+// AN OBSERVATION, NOT A CONDITION. The form asks one CLOSED question — was the cause of death the
+// reported pathogen, another cause, or unknown — which is an answer to a question rather than an
+// assertion that the person has a disease. Three consequences settle the resource choice:
+//   * "unknown" needs `dataAbsentReason`; Condition has no equivalent, so a Condition-based model
+//     has to invent a code (sct#87309006) that pretends "we don't know" is a diagnosis.
+//   * "another cause" would become `Condition.code = 74964007 "Other"`, i.e. asserting the person
+//     has a condition called "Other".
+//   * HL7 US VRDR, the reference IG for death reporting, moved exactly this profile from Condition
+//     (STU1, VRDR-Cause-Of-Death-Condition) to Observation (STU2/STU3, vrdr-cause-of-death-part1,
+//     LOINC 69453-9 + dataAbsentReason). US MDI and the vr-common-library followed.
+// The Swiss precedent, ch-crl-condition-finalcauseofdeath, is a Condition with
+// `category = loinc#79378-6`; if cross-IG consistency ever outweighs the above, that is the shape
+// to switch to.
+//
+// Deliberately NOT adopted from VRDR/MDI: the part1 / part2 split and the cause-of-death pathway
+// List. Those model an ordered causal chain on a death certificate; CH EKM asks a single question
+// and issues no certificate.
+//
+// The date of death is NOT here — it is `Patient.deceasedDateTime` (see ChEkmPatient), so that a
+// consumer can find the fact of death without walking the Composition.
+Profile: ChEkmObservationCauseOfDeath
+Parent: Observation
+Id: ch-ekm-observation-cause-of-death
+Title: "CH EKM Observation: Cause of Death"
+Description: "This CH EKM base profile constrains the Observation resource to represent the cause of death: whether the person died of the disease this report is about, of another cause, or of a cause that is not known. Referenced from Composition.section[cause-death]."
+* status = #final
+* code = $loinc#79378-6 "Cause of death"
+* subject 1..1
+* subject only Reference(ChEkmPatient)
+
+// The cause itself. Absent when the cause was reported as unknown - `dataAbsentReason` carries that
+// case, which is the whole reason this is an Observation (see the header).
+* value[x] only CodeableConcept
+* valueCodeableConcept MS
+* valueCodeableConcept ^short = "The cause of death: the reported disease itself, or sct#74964007 'Other'. Absent when reported as unknown - see dataAbsentReason"
+* dataAbsentReason MS
+* dataAbsentReason ^short = "Present instead of a value when the cause of death was reported as unknown (asked-unknown)"
+
+// "The cause of death is the disease this report is about". The value already carries the disease
+// code; this reference makes the statement machine-checkable without comparing codes, and is what
+// links the death back to the diagnosis. NOT Condition.evidence.detail on the diagnosis, which the
+// paper proposal suggested: `evidence` is evidence FOR a condition, and a death is not evidence
+// that somebody had mpox.
+* focus 0..1 MS
+* focus only Reference(ChEkmCondition)
+* focus ^short = "The diagnosis Condition of this report, when the reported disease is the cause of death"

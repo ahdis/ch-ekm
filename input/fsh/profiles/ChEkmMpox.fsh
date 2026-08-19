@@ -19,7 +19,7 @@ Parent: ChEkmCondition
 Id: ch-ekm-condition-mpox
 Title: "CH EKM Condition: Mpox"
 Description: "This CH EKM base profile constrains the Condition resource for the purpose of clinical findings for Mpox"
-* code = $sct#359814004 "Mpox (disorder)"
+* code = $sct#359814004 "Mpox"
 * evidence.code from ChEkmMpoxManifestation (required)
 
 Profile: ChEkmExposureMpox

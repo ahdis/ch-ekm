@@ -57,7 +57,7 @@ RuleSet: RuleSetEncounterHospitalisation
 // to its parent), before the clean template is taken, so this placeholder never survives extraction.
 * reasonReference[0].reference = "Condition/ExtractedCondition"
 * reasonReference[0].extension[+].url = $sdc-templateExtractValue
-* reasonReference[0].extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-hospitalisation-reason' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedCondition'))"
+* reasonReference[0].extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedCondition'))"
 * reasonCode[0].extension[+].url = $sdc-templateExtractValue
 * reasonCode[0].extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this))"
 

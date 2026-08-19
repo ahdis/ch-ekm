@@ -86,9 +86,23 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[2].item[0].item[0].linkId = "hospitalisationStatus"
 * item[0].item[2].item[0].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
 * item[0].item[2].item[0].item[1].linkId = "hospitalisationReason"
-* item[0].item[2].item[0].item[1].answer.valueCoding = ChEkmHospitalisationReason#reported-pathogen "Reported pathogen"
+* item[0].item[2].item[0].item[1].answer.valueCoding = ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
 * item[0].item[2].item[0].item[2].linkId = "hospitalisationAdmissionDate"
 * item[0].item[2].item[0].item[2].answer.valueDate = "2026-01-27"
+
+// Zustand: the person died of the reported pathogen on 2026-02-03 -> after $extract
+// Patient.deceasedDateTime, plus a cause-of-death Observation (value = the Mpox code, focus -> the
+// diagnosis Condition) in a section[cause-death] that only exists because the person died.
+// The other branches are covered by the notes in RuleSetObservationCauseOfDeath: "anderer" writes
+// the SNOMED qualifier verbatim, "unbekannt" writes dataAbsentReason instead of a value, and an
+// unticked `deceased` drops the Observation, the section and deceasedDateTime together.
+* item[0].item[2].item[1].linkId = "death"
+* item[0].item[2].item[1].item[0].linkId = "deceased"
+* item[0].item[2].item[1].item[0].answer.valueBoolean = true
+* item[0].item[2].item[1].item[1].linkId = "deathDate"
+* item[0].item[2].item[1].item[1].answer.valueDate = "2026-02-03"
+* item[0].item[2].item[1].item[2].linkId = "deathCause"
+* item[0].item[2].item[1].item[2].answer.valueCoding = ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
 
 // --- Exposure (Wo / Wann / Wie) ---
 // exposure = outer wrapper group; exposureWhere, exposureWhen and exposureHow are the three

@@ -1034,17 +1034,65 @@ an identity `templateExtractValue` on `entry[n].fullUrl` (a literal equal to the
 `fullUrl` precedes `resource` in the serialised entry, so it is walked first, and that first spread
 overwrites `fullUrl` with itself, leaving the static resource intact for the rest to merge into.
 
-**3. A conditional entry must be the LAST entry.** When the context is empty nothing is re-inserted,
-so every *later* entry has shifted down by one while the extract paths recorded for those entries
-still carry their original index. With the Encounter at `entry[4]`, answering "nein" produced a
-phantom eighth entry holding a half-built `Organization`. Moving it to the end of the template's
-`entry` list removes the problem entirely (a document Bundle only fixes the position of the
-Composition, which is first).
+**3. Conditional entries must be the LAST entries.** When the context is empty nothing is
+re-inserted, so every *later* entry has shifted down by one while the extract paths recorded for
+those entries still carry their original index. With the Encounter at `entry[4]`, answering "nein"
+produced a phantom eighth entry holding a half-built `Organization`. Moving it to the end of the
+template's `entry` list removes the problem entirely (a document Bundle only fixes the position of
+the Composition, which is first).
 
-Verified for all four answer combinations: "ja" + reported pathogen (Encounter with `period.start`
-and `reasonReference`), "ja" + anderer (`reasonCode`), "unbekannt" (Encounter with nothing but
-`hospitalization.extension[data-absent-reason]`), "nein" (no Encounter, and no `encounter` reference
-on either the Composition or the Condition).
+**Several conditional entries are fine, as long as they are all at the end.** The Mpox template now
+has two — the hospitalisation `Encounter` and the cause-of-death `Observation`. Both are deleted in
+step 5a and re-inserted per context result, and `entryPathPositionMap` / `getStartingIndex` track how
+many were actually inserted at the shared base path `Bundle.entry`, so a dropped Encounter correctly
+shifts the Observation down instead of leaving a hole. That bookkeeping exists only *between* gated
+entries; a static entry after a gated one still breaks, which is the whole reason for the ordering
+rule. Verified with "not hospitalised + died": seven static entries, no Encounter, and the cause-of-
+death Observation last and intact.
+
+### Mutually exclusive ELEMENTS force mutually exclusive TEMPLATE INSTANCES (obs-6)
+The cause-of-death Observation writes `valueCodeableConcept` for a known cause and
+`Observation.dataAbsentReason` for "unknown". Only one of them ever survives extraction — but a
+single template instance has to carry BOTH carriers, and the IG Publisher validates the template as
+a real Observation, where `obs-6` ("dataAbsentReason SHALL only be present if Observation.value[x] is
+not present") makes that an error. It also cascades: the Composition referencing an invalid
+Observation stops conforming, and the Bundle then reports `Slice 'Bundle.entry:Composition': a
+matching slice is required, but not found`.
+
+The `%factory` carrier idiom cannot help — it hides an *extension* from the template, and
+`dataAbsentReason` is an element. Nor is suppression an option: `input/ignoreWarnings.txt` does not
+actually suppress these (the `tab-container` entry is listed there and its errors are still counted).
+
+The fix is two template instances — `ExtractedCauseOfDeath` (value + focus) and
+`ExtractedCauseOfDeathUnknown` (dataAbsentReason) — on two Bundle entries whose gates are mutually
+exclusive, so exactly one materialises and each is a valid Observation on its own. The Composition's
+`section[cause-death].entry` then has to be computed rather than static, which is the second value
+path under that section's gate (after the identity `title` value).
+
+Generalises to: **any two elements a profile or invariant declares mutually exclusive need one
+template instance each**, because a template is validated as an instance even though it never
+behaves as one.
+
+**A gated element needs at least one value path to fire at all** — `evaluateAndInsertIntoPath` loops
+over the context's `valuePathMap`, so a context with no values inserts nothing, however true its
+expression is. `section[cause-death]` (0..1, `entry` 1..1) is gated on the person having died, and
+its value path is the `entry` reference, which has to be computed anyway because it points at
+whichever of the two cause-of-death instances fired.
+
+**How deep that value sits decides whether the identity trick is needed.** The shallow
+`{...staticElement, ...firstValue}` spread replaces whole top-level keys: a value at depth 1
+(`section.entry`) leaves the static `title` and `code` untouched, so nothing extra is required, while
+a value under `resource.…` on a gated Bundle entry wipes out the entire static resource — hence the
+identity `fullUrl` value there. Worth checking rather than assuming: an identity value added for a
+depth-1 case is dead weight.
+
+Verified for all four hospitalisation combinations: "yes" + reported pathogen (Encounter with
+`period.start` and `reasonReference`), "yes" + other (`reasonCode`), "unknown" (Encounter with
+nothing but `hospitalization.extension[data-absent-reason]`), "no" (no Encounter, and no `encounter`
+reference on either the Composition or the Condition); and for all four death combinations: not
+deceased (no Observation, no section, no `deceasedDateTime`), deceased without a date
+(`_deceasedDateTime` data-absent-reason), cause = other (`valueCodeableConcept` verbatim, no
+`focus`), cause = unknown (`dataAbsentReason`, no value).
 
 > ✅ **The template artifacts now validate with 0 errors** (verified via the IG Publisher). This
 > needed: the carrier + `%factory.Extension` idiom for `onsetDateTime`/`department` (whole extension

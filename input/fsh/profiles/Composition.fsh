@@ -98,7 +98,10 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 // * section[social-history].section[occupation].entry only Reference(Observation)
 // this doest not work we need ot make the slicing different
 
-// "Cause of death"
+// "Cause of death". Present only when the person died; the fact and date of death themselves are on
+// `Patient.deceasedDateTime`, not on the presence of this section (same reasoning as for the
+// removed hospitalization section above - document structure must not be the only carrier of a
+// clinical fact).
 * section[cause-death].code = $loinc#79378-6 
-* section[cause-death].entry 1..*
-* section[cause-death].entry only Reference(Condition)
+* section[cause-death].entry 1..1
+* section[cause-death].entry only Reference(ChEkmObservationCauseOfDeath)

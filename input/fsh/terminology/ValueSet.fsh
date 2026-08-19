@@ -208,7 +208,7 @@ Description: "This CH EKM value set contains the SNOMED CT qualifiers Yes / No /
 * $sct#261665006 "Unknown (qualifier value)"
 
 // Hospitalisation reasons  the reported pathogen / another reason / unknown.
-// `reported-pathogen` is the local discriminator code (see the ChEkmHospitalisationReason code
+// `reported-pathogen` is the local discriminator code (see the ChEkmReportedPathogen code
 // system for why it cannot be a clinical concept); the other two are the SNOMED CT qualifiers that
 // end up verbatim in Encounter.reasonCode.
 ValueSet: ChEkmHospitalisationReasonChoice
@@ -217,6 +217,22 @@ Description: "This CH EKM value set contains the answers of the 'Hospitalisation
 * ^status = #active
 * ^experimental = false
 
-* ChEkmHospitalisationReason#reported-pathogen "Reported pathogen"
+* ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
+* $sct#74964007  "Other (qualifier value)"
+* $sct#261665006 "Unknown (qualifier value)"
+
+// Cause of death  the reported pathogen / another cause / unknown. The same three answers as the
+// hospitalisation reason above, but a DIFFERENT question, and extracted differently: the reported
+// pathogen becomes the disease code in Observation.valueCodeableConcept (plus Observation.focus ->
+// the diagnosis Condition), "other" becomes that qualifier verbatim, and "unknown" becomes
+// Observation.dataAbsentReason instead of a value. Kept as its own value set so the two questions
+// can diverge (e.g. sct#87309006 "Death of unknown cause") without disturbing the other.
+ValueSet: ChEkmCauseOfDeathChoice
+Title: "CH EKM Cause of Death (form choice)"
+Description: "This CH EKM value set contains the answers of the cause of death form item: the reported pathogen (a local code, extracted as the disease code in Observation.value plus a focus reference to the diagnosis Condition), another cause, or unknown (extracted as Observation.dataAbsentReason)."
+* ^status = #active
+* ^experimental = false
+
+* ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
 * $sct#74964007  "Other (qualifier value)"
 * $sct#261665006 "Unknown (qualifier value)"

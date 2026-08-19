@@ -41,6 +41,18 @@ Description: "This CH EKM base profile constrains the Patient resource."
 * gender ^short = "Administrative gender" 
 * birthDate 1..
 * birthDate.extension contains $data-absent-reason named dataabsentreason 0..1
+// Death. `deceased[x]` is restricted to dateTime so that one element carries both facts the form
+// asks for: its presence means the person died, its value is the date of death. The cause of death
+// is a separate resource (ChEkmObservationCauseOfDeath) referenced from
+// Composition.section[cause-death].
+// "Died, date unknown" is the data-absent-reason slice rather than `deceasedBoolean = true`: keeping
+// a single element means a consumer never has to check two places to learn whether someone died.
+// Same idiom as birthDate above and as ChEkmCondition.onsetDateTime.
+* deceased[x] only dateTime
+* deceasedDateTime MS
+* deceasedDateTime ^short = "Date of death. Present only if the person died; use the data-absent-reason slice when the death is reported without a date"
+* deceasedDateTime.extension contains $data-absent-reason named dataabsentreason 0..1
+* deceasedDateTime.extension[dataabsentreason] ^short = "Death reported without a date (asked-unknown)"
 * address ..1 MS
 * address ^slicing.discriminator[0].type = #value
 * address ^slicing.discriminator[=].path = "use"

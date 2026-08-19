@@ -100,6 +100,9 @@ InstanceOf: ChEkmPatient
 // Inside the context scope $this is the answer string.
 * identifier[0].value.extension[0].url = $sdc-templateExtractValue
 * identifier[0].value.extension[0].valueString = "$this"
+// Death ("Zustand"). Only forms with a Verlauf section answer these; elsewhere the expressions are
+// empty and no deceasedDateTime is emitted. See RuleSetPatientDeceased.
+* insert RuleSetPatientDeceased
 * address[0].use = #home
 * address[0].postalCode.extension[+].url = $sdc-templateExtractValue
 * address[0].postalCode.extension[=].valueString = "%resource.descendants().where(linkId='zipCode').answer.value.first()"
