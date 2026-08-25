@@ -308,9 +308,9 @@ RuleSet: RuleSetQrExposureWhen
 RuleSet: RuleSetQrExposureHow
 * insert RuleSetQrLevel3SubQuestionnaire("exposurehow", "Exposure: how", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow") 
 
-// "Verlauf" — the course of the disease. Container for the Hospitalisation group and, once the
-// cause-of-death modelling is decided (TODO.md #7-#9), for "Zustand" (Tot / Todesdatum /
-// Todesursache). Only diseases whose form has this section insert it: Gonorrhoea has no Verlauf.
+// "Verlauf" — the course of the disease. Container for the Hospitalisation group and for "Zustand"
+// (Tot / Todesdatum / Todesursache). Only diseases whose form has this section insert it:
+// Gonorrhoea has no Verlauf.
 RuleSet: RuleSetQrGroupCourse
 * insert RuleSetQrLevel2Group("course", "Course of the disease", "Verlauf", "Évolution", "Decorso")
 * insert RuleSetQrLevel2ShortText("Course", "Verlauf", "Évolution", "Decorso")

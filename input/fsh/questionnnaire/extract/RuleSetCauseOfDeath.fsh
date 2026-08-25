@@ -43,29 +43,21 @@ RuleSet: RuleSetPatientDeceased
 //   reported pathogen   -> valueCodeableConcept = the disease code of this report,
 //                          plus focus -> the diagnosis Condition
 //   other (74964007)    -> valueCodeableConcept = that qualifier, verbatim. No focus.
-//   unknown (261665006) -> no value; dataAbsentReason = asked-unknown.
-//   not answered / alive-> no Observation at all (the Bundle entry gates handle that).
+//   unknown (261665006) -> valueCodeableConcept = that qualifier, verbatim. No focus.
+//   not answered / alive-> no Observation at all (the Bundle entry gate handles that).
 //
-// TWO TEMPLATE INSTANCES FOR ONE CLINICAL RESOURCE, AND THAT IS FORCED BY obs-6.
-// `obs-6` is "dataAbsentReason SHALL only be present if Observation.value[x] is not present". A
-// single template instance would have to carry BOTH carriers — `valueCodeableConcept` holding the
-// value directive and `dataAbsentReason` holding the unknown directive — and although only one of
-// them ever survives extraction, the TEMPLATE itself is validated by the IG Publisher as a real
-// Observation and fails obs-6 (it also drags the containing Composition out of conformance, so the
-// Bundle's `entry:Composition` slice stops matching). The carrier idiom used elsewhere cannot help
-// here: it works for extensions, and `dataAbsentReason` is an element.
+// "UNBEKANNT" IS A VALUE, NOT A dataAbsentReason (issue #28). The two SNOMED qualifiers are
+// therefore handled by ONE expression that passes the answered Coding through unchanged — exactly
+// the shape of Encounter.reasonCode in RuleSetEncounterHospitalisation, where "unbekannt" also
+// reaches the wire as sct#261665006 in a CodeableConcept. Modelling it as `dataAbsentReason`
+// instead would say "we did not record the cause", whereas the form did record one: the reporting
+// physician answered, and the answer was "unknown". It also cost a second template instance, since
+// `obs-6` forbids a template carrying a value carrier and a dataAbsentReason carrier at once
+// (forms-summary.md §8) — that whole split is gone with it, and so is the computed
+// section[cause-death] target.
 //
-// So the two branches are two template instances with mutually exclusive Bundle-entry gates — only
-// ever one materialises, and each is a valid Observation on its own. The Composition's
-// section[cause-death] entry points at whichever one fired (see RuleSetCauseOfDeathSection).
-//
-// The alternative — expressing "unknown" as a data-absent-reason EXTENSION on value[x], the way this
-// repo does for onsetDateTime and the exposure address — would keep one instance, but a consumer of
-// an Observation looks for `dataAbsentReason`, and that element is the reason an Observation was
-// chosen over a Condition in the first place (see ChEkmObservationCauseOfDeath).
-//
-// SAME ENGINE CONSTRAINT AS THE ENCOUNTER: both instances sit inside context-gated Bundle entries,
-// so there must be NO templateExtractContext anywhere below those gates. Every conditional part is a
+// SAME ENGINE CONSTRAINT AS THE ENCOUNTER: the instance sits inside a context-gated Bundle entry,
+// so there must be NO templateExtractContext anywhere below that gate. Every conditional part is a
 // plain templateExtractValue reading the answers ABSOLUTELY through %resource and ending in
 // `.first().select(%factory.…)`; `select()` on an empty collection returns empty, so "not
 // applicable" and "no element emitted" are the same thing. See RuleSetEncounterHospitalisation.
@@ -76,21 +68,19 @@ RuleSet: RuleSetPatientDeceased
 // own copy — the FHIRPath cannot read the code off the template.
 // =================================================================================================
 
-RuleSet: RuleSetObservationCauseOfDeathCommon
+RuleSet: RuleSetObservationCauseOfDeath
 * status = #final
 * code = $loinc#79378-6 "Cause of death"
 * subject.reference = "Patient/ExtractedPatient"
-
-RuleSet: RuleSetObservationCauseOfDeathValue
-* insert RuleSetObservationCauseOfDeathCommon
 // The cause. ONE value directive, because only the FIRST templateExtractValue in an extension array
 // is read by the engine — the two answer kinds have to be branched inside a single expression:
 //   reported pathogen -> the Mpox code, built by the factory (the form answer is the local
 //                        discriminator code, which must NOT reach the wire)
-//   other             -> the answered SNOMED qualifier, passed through unchanged
-// "unknown" never reaches this instance; its entry gate excludes it.
+//   other / unknown   -> the answered SNOMED qualifier, passed through unchanged. No `code=` filter
+//                        on the where(): both qualifiers are values now, so both pass, and a third
+//                        one added to ChEkmCauseOfDeathChoice would need no change here.
 * valueCodeableConcept.extension[+].url = $sdc-templateExtractValue
-* valueCodeableConcept.extension[=].valueString = "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '359814004', 'Mpox')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='74964007').first().select(%factory.CodeableConcept($this)))"
+* valueCodeableConcept.extension[=].valueString = "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '359814004', 'Mpox')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this)))"
 // "The cause of death is the disease this report is about" — made machine-checkable by pointing at
 // the diagnosis Condition instead of leaving a consumer to compare codes.
 //
@@ -102,17 +92,6 @@ RuleSet: RuleSetObservationCauseOfDeathValue
 * focus[0].extension[+].url = $sdc-templateExtractValue
 * focus[0].extension[=].valueString = "%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedCondition'))"
 
-RuleSet: RuleSetObservationCauseOfDeathUnknown
-* insert RuleSetObservationCauseOfDeathCommon
-// The cause was reported as unknown. Note the code system: DataAbsentReason the CODE SYSTEM
-// (terminology.hl7.org/CodeSystem/data-absent-reason) for this CodeableConcept, not the
-// data-absent-reason EXTENSION url used on primitives elsewhere in these templates.
-// The value is a constant, but it still goes through `.select()` on the answer so that the element —
-// and with it the only content of this instance — is omitted if the gate ever lets something else
-// through.
-* dataAbsentReason.extension[+].url = $sdc-templateExtractValue
-* dataAbsentReason.extension[=].valueString = "%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').first().select(%factory.CodeableConcept(%factory.Coding('http://terminology.hl7.org/CodeSystem/data-absent-reason', 'asked-unknown', 'Asked But Unknown')))"
-
 RuleSet: RuleSetCauseOfDeathSection
 // Composition.section[cause-death] — present only when the person died AND a cause was answered,
 // because the section is 0..1 with `entry` 1..1: an empty section would be invalid, and a section
@@ -123,17 +102,20 @@ RuleSet: RuleSetCauseOfDeathSection
 // element that is not re-inserted shifts everything after it (same rule as for the Bundle entries).
 //
 // The gate needs at least ONE value path to fire at all: `evaluateAndInsertIntoPath` loops over the
-// context's valuePathMap, so a context with no values inserts nothing. Here that value is `entry` —
-// the reference to whichever of the two cause-of-death instances fired, which has to be computed
-// anyway. `title` and `code` stay static and survive, because the engine seeds a context-gated array
-// element with a SHALLOW spread, `{...staticSection, ...firstValue}`, and a value at depth 1
-// overwrites only its own key. (A value nested deeper WOULD clobber its whole top-level key — that
-// is why a gated Bundle entry, whose values live under `resource.…`, needs the identity value on
-// `fullUrl` in ChEkmDocumentMpoxTemplate. A section does not.)
+// context's valuePathMap, so a context with no values inserts nothing. Here that value is `entry`.
+// Its target is always the same Observation now that "unbekannt" is a value rather than a second,
+// mutually exclusive instance — but it stays a computed value, both to satisfy that "at least one
+// value" rule and because it is the reference that must not dangle. `.select()` on the answer keeps
+// it tied to the same condition as the Observation's own entry gate.
+// `title` and `code` stay static and survive, because the engine seeds a context-gated array element
+// with a SHALLOW spread, `{...staticSection, ...firstValue}`, and a value at depth 1 overwrites only
+// its own key. (A value nested deeper WOULD clobber its whole top-level key — that is why a gated
+// Bundle entry, whose values live under `resource.…`, needs the identity value on `fullUrl` in
+// ChEkmDocumentMpoxTemplate. A section does not.)
 * section[+].extension[0].url = $sdc-templateExtractContext
 * section[=].extension[0].valueString = "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
 * section[=].title = "Cause of death section"
 * section[=].code = $loinc#79378-6
 * section[=].entry[0].reference = "Observation/ExtractedCauseOfDeath"
 * section[=].entry[0].extension[0].url = $sdc-templateExtractValue
-* section[=].entry[0].extension[0].valueString = "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeathUnknown'), %factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeath'))"
+* section[=].entry[0].extension[0].valueString = "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeath'))"

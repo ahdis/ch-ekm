@@ -1,7 +1,6 @@
 // Modular sub-questionnaire: "Hospitalisation" — the first half of the "Verlauf" section of the
-// reporting form. The second half, "Zustand" (Tot / Todesdatum /
-// Todesursache), is not built yet: it still needs the cause-of-death Condition profile and the
-// Patient.deceased[x] decision (TODO.md #7-#9).
+// reporting form. The second half, "Zustand" (Tot / Todesdatum / Todesursache), is the sibling
+// ChEkmQuestionnaireDeath.
 //
 // Source of truth: logical model ChEkmHospitalisationForm (-> ChEkmEncounter).
 //

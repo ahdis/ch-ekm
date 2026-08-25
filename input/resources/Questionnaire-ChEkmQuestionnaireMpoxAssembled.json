@@ -216,7 +216,7 @@
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeathUnknown'), %factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeath'))"
+                        "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeath'))"
                       }
                     ]
                   }
@@ -1130,7 +1130,7 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists().not() and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
+              "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
             }
           ],
           "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath",
@@ -1162,7 +1162,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '359814004', 'Mpox')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='74964007').first().select(%factory.CodeableConcept($this)))"
+                  "valueString": "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '359814004', 'Mpox')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this)))"
                 }
               ]
             },
@@ -1177,48 +1177,6 @@
                 ]
               }
             ]
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists(), true, {})"
-            }
-          ],
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathUnknown",
-          "_fullUrl": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathUnknown'"
-              }
-            ]
-          },
-          "resource": {
-            "resourceType": "Observation",
-            "id": "ExtractedCauseOfDeathUnknown",
-            "status": "final",
-            "code": {
-              "coding": [
-                {
-                  "code": "79378-6",
-                  "system": "http://loinc.org",
-                  "display": "Cause of death"
-                }
-              ]
-            },
-            "subject": {
-              "reference": "Patient/ExtractedPatient"
-            },
-            "dataAbsentReason": {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').first().select(%factory.CodeableConcept(%factory.Coding('http://terminology.hl7.org/CodeSystem/data-absent-reason', 'asked-unknown', 'Asked But Unknown')))"
-                }
-              ]
-            }
           }
         }
       ]

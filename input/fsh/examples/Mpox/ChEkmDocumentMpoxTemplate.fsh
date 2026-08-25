@@ -47,17 +47,13 @@ Usage: #inline
 // Emitted only when the person died; the Bundle entry below carries that gate. The death itself and
 // its date are NOT here, they are on ExtractedPatient.deceasedDateTime (RuleSetPatientDeceased).
 // ---------------------------------------------------------------------------
-// Two instances, mutually exclusive: obs-6 forbids a single Observation template from carrying both
-// the value carrier and the dataAbsentReason carrier. See RuleSetCauseOfDeath.fsh.
+// ONE instance for all three answers: since "unbekannt" is a value (sct#261665006) rather than a
+// dataAbsentReason (issue #28), the template no longer trips obs-6 and no longer needs a second,
+// mutually exclusive instance. See RuleSetCauseOfDeath.fsh.
 Instance: ExtractedCauseOfDeath
 InstanceOf: ChEkmObservationCauseOfDeath
 Usage: #inline
-* insert RuleSetObservationCauseOfDeathValue
-
-Instance: ExtractedCauseOfDeathUnknown
-InstanceOf: ChEkmObservationCauseOfDeath
-Usage: #inline
-* insert RuleSetObservationCauseOfDeathUnknown
+* insert RuleSetObservationCauseOfDeath
 
 // ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionMpox) — static structure, references the entries above,
@@ -154,19 +150,13 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 // dropped Encounter correctly shifts this one down instead of leaving a hole. That bookkeeping only
 // works between gated entries — a STATIC entry after a gated one still breaks (see above), which is
 // why all conditional entries sit at the end.
+//
+// The gate is "the person died AND a cause was answered", for every one of the three answers: the
+// "unbekannt" branch no longer needs an entry of its own (issue #28).
 * entry[+].extension[0].url = $sdc-templateExtractContext
-* entry[=].extension[0].valueString = "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists().not() and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
+* entry[=].extension[0].valueString = "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
 * entry[=].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath"
 // IDENTITY VALUE, LOAD-BEARING — see the Encounter entry above for why.
 * entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
 * entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath'"
 * entry[=].resource = ExtractedCauseOfDeath
-
-// ... and its mutually exclusive twin, for the "cause reported as unknown" branch.
-* entry[+].extension[0].url = $sdc-templateExtractContext
-* entry[=].extension[0].valueString = "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists(), true, {})"
-* entry[=].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathUnknown"
-// IDENTITY VALUE, LOAD-BEARING — see the Encounter entry above for why.
-* entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
-* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathUnknown'"
-* entry[=].resource = ExtractedCauseOfDeathUnknown

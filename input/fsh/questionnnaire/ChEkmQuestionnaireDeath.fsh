@@ -7,15 +7,16 @@
 // THREE items, one question each:
 //   1. deceased    Did the person die?   -> whether Patient.deceasedDateTime exists at all
 //   2. deathDate   Date of death         -> Patient.deceasedDateTime (or its data-absent-reason)
-//   3. deathCause  Cause of death        -> ChEkmObservationCauseOfDeath value / focus / dataAbsentReason
+//   3. deathCause  Cause of death        -> ChEkmObservationCauseOfDeath valueCodeableConcept (+ focus)
 // (2) and (3) are only enabled while (1) is ticked — they are details OF the death. The extraction
 // template relies on that: an answered date or cause implies the person died.
 //
 // Note the asymmetry with the Hospitalisation group, which is deliberate: hospitalisation is a
 // ja/nein/unbekannt choice because the paper form offers "unbekannt" there, whereas the death is a
 // plain check-box — a reporting physician either knows of a death or does not report one. Where
-// "unknown" DOES apply here is one level down, on the cause (item 3), and on a missing date, which
-// becomes a data-absent-reason rather than a missing death.
+// "unknown" DOES apply here is one level down, on the cause (item 3) — where it is a coded answer
+// like any other — and on a missing date, which becomes a data-absent-reason rather than a missing
+// death.
 //
 // SDC pre-population reads the standard `patient` launch context (%patient), which every root
 // already declares — unlike the Hospitalisation group, this section needs no extra context. The
@@ -28,7 +29,7 @@ Instance: ChEkmQuestionnaireDeath
 InstanceOf: Questionnaire
 Usage: #definition
 Title: "CH EKM Questionnaire: Death"
-Description: "Modular sub-questionnaire for the 'Zustand' (death) group of the 'Verlauf' section: whether the affected person died, the date of death and whether the cause of death was the reported pathogen. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
+Description: "Modular sub-questionnaire for the 'Zustand' (death) group of the 'Verlauf' section: whether the affected person died, the date of death and whether the cause of death was the reported pathogen, another cause or unknown. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireDeath)
 
 * item[+].linkId = "death"
@@ -62,8 +63,10 @@ Description: "Modular sub-questionnaire for the 'Zustand' (death) group of the '
 * item[=].item[=].extension[=].valueExpression.expression = "%patient.deceasedDateTime"
 
 // 3. Cause of death — the reported pathogen / another cause / unknown. "Unknown" is a real answer
-//    here rather than a blank field, and it is the answer that becomes Observation.dataAbsentReason
-//    instead of a value (see RuleSetObservationCauseOfDeath).
+//    here rather than a blank field, and it is extracted as one: sct#261665006 lands in
+//    Observation.valueCodeableConcept like the "other" qualifier, NOT in Observation.dataAbsentReason
+//    (issue #28) — the same treatment sct#261665006 gets in Encounter.reasonCode for the
+//    hospitalisation reason. See RuleSetObservationCauseOfDeath.
 * item[=].item[+].linkId = "deathCause"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmDeathForm#ChEkmDeathForm.causeOfDeath"
 * insert RuleSetQrLevel2Text("Cause of death", "Todesursache", "Cause du décès", "Causa del decesso")

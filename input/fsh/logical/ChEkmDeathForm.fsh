@@ -23,7 +23,9 @@ Description: "Logical model for the form section 'Zustand' (death), part of the 
 // than a missing death.
 * deathDate 0..1 dateTime "Date of death"
 
-// Was the cause of death the disease this report is about? Only asked when the person died.
+// Was the cause of death the disease this report is about? Only asked when the person died. All
+// three answers - including "unbekannt" - end up in Observation.valueCodeableConcept; see the
+// mapping below and ChEkmObservationCauseOfDeath.
 * causeOfDeath 0..1 CodeableConcept "Cause of death - the reported pathogen, another cause, or unknown"
 * causeOfDeath from ChEkmCauseOfDeathChoice (required)
 
@@ -43,6 +45,5 @@ Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-observation-cause-o
 Id: death-form-to-cause-of-death
 Title: "Death Form to CH EKM Observation Cause of Death"
 * -> "Observation" "Maps the cause of death to the ChEkmObservationCauseOfDeath profile"
-* causeOfDeath -> "Observation.valueCodeableConcept" "Answered 'reported pathogen': the disease code of this report. Answered 'other' (74964007): that qualifier verbatim"
+* causeOfDeath -> "Observation.valueCodeableConcept" "Answered 'reported pathogen': the disease code of this report. Answered 'other' (74964007) or 'unknown' (261665006): that qualifier verbatim - 'unknown' is an answer, not a dataAbsentReason"
 * causeOfDeath -> "Observation.focus" "Answered 'reported pathogen': a reference to the diagnosis Condition of this report"
-* causeOfDeath -> "Observation.dataAbsentReason" "Answered 'unknown' (261665006): no value, dataAbsentReason = asked-unknown"

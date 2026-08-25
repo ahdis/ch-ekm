@@ -37,13 +37,15 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 // AN OBSERVATION, NOT A CONDITION. The form asks one CLOSED question — was the cause of death the
 // reported pathogen, another cause, or unknown — which is an answer to a question rather than an
 // assertion that the person has a disease. Three consequences settle the resource choice:
-//   * "unknown" needs `dataAbsentReason`; Condition has no equivalent, so a Condition-based model
-//     has to invent a code (sct#87309006) that pretends "we don't know" is a diagnosis.
+//   * every one of the three answers, "unknown" included, is a VALUE of that question:
+//     `Observation.value[x]` holds an answer, whereas `Condition.code` asserts that the person has
+//     the disease it names — a Condition-based model would have to pretend sct#261665006 "Unknown"
+//     is a diagnosis.
 //   * "another cause" would become `Condition.code = 74964007 "Other"`, i.e. asserting the person
 //     has a condition called "Other".
 //   * HL7 US VRDR, the reference IG for death reporting, moved exactly this profile from Condition
 //     (STU1, VRDR-Cause-Of-Death-Condition) to Observation (STU2/STU3, vrdr-cause-of-death-part1,
-//     LOINC 69453-9 + dataAbsentReason). US MDI and the vr-common-library followed.
+//     LOINC 69453-9). US MDI and the vr-common-library followed.
 // The Swiss precedent, ch-crl-condition-finalcauseofdeath, is a Condition with
 // `category = loinc#79378-6`; if cross-IG consistency ever outweighs the above, that is the shape
 // to switch to.
@@ -58,19 +60,25 @@ Profile: ChEkmObservationCauseOfDeath
 Parent: Observation
 Id: ch-ekm-observation-cause-of-death
 Title: "CH EKM Observation: Cause of Death"
-Description: "This CH EKM base profile constrains the Observation resource to represent the cause of death: whether the person died of the disease this report is about, of another cause, or of a cause that is not known. Referenced from Composition.section[cause-death]."
+Description: "This CH EKM base profile constrains the Observation resource to represent the cause of death: whether the person died of the disease this report is about, of another cause, or of a cause that is not known. All three are recorded as valueCodeableConcept - 'unknown' is the answer sct#261665006, not a dataAbsentReason. Referenced from Composition.section[cause-death]."
 * status = #final
 * code = $loinc#79378-6 "Cause of death"
 * subject 1..1
 * subject only Reference(ChEkmPatient)
 
-// The cause itself. Absent when the cause was reported as unknown - `dataAbsentReason` carries that
-// case, which is the whole reason this is an Observation (see the header).
+// The cause itself, and the ONLY place the answer is carried: the three answers of
+// ChEkmCauseOfDeathChoice map to the reported disease code, sct#74964007 "Other" and sct#261665006
+// "Unknown" respectively.
+//
+// "UNKNOWN" IS A VALUE, NOT A dataAbsentReason (issue #28). The reporting physician did answer the
+// question; the answer is "unknown", which is the same thing Encounter.reasonCode carries when the
+// hospitalisation reason is unknown. `dataAbsentReason` would instead say that nothing was recorded,
+// and would put the same fact in two different places depending on the answer. So it is forbidden
+// here - one element, one shape, whatever the answer.
+* value[x] 1..1
 * value[x] only CodeableConcept
 * valueCodeableConcept MS
-* valueCodeableConcept ^short = "The cause of death: the reported disease itself, or sct#74964007 'Other'. Absent when reported as unknown - see dataAbsentReason"
-* dataAbsentReason MS
-* dataAbsentReason ^short = "Present instead of a value when the cause of death was reported as unknown (asked-unknown)"
+* valueCodeableConcept ^short = "The cause of death: the reported disease itself, sct#74964007 'Other', or sct#261665006 'Unknown'"
 
 // "The cause of death is the disease this report is about". The value already carries the disease
 // code; this reference makes the statement machine-checkable without comparing codes, and is what

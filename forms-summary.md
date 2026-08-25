@@ -1051,7 +1051,14 @@ rule. Verified with "not hospitalised + died": seven static entries, no Encounte
 death Observation last and intact.
 
 ### Mutually exclusive ELEMENTS force mutually exclusive TEMPLATE INSTANCES (obs-6)
-The cause-of-death Observation writes `valueCodeableConcept` for a known cause and
+> **No longer applies to the cause of death** — issue #28 decided that "unbekannt" is the *answer*
+> `sct#261665006` in `valueCodeableConcept`, not a `dataAbsentReason` (the same shape
+> `Encounter.reasonCode` already had for an unknown hospitalisation reason). All three answers now
+> go to one element, so ONE template instance and ONE gated Bundle entry cover the whole question,
+> and `ChEkmObservationCauseOfDeath.dataAbsentReason` is `0..0`. Kept here because the engine lesson
+> is general and the next mutually-exclusive pair will hit it.
+
+The cause-of-death Observation used to write `valueCodeableConcept` for a known cause and
 `Observation.dataAbsentReason` for "unknown". Only one of them ever survives extraction — but a
 single template instance has to carry BOTH carriers, and the IG Publisher validates the template as
 a real Observation, where `obs-6` ("dataAbsentReason SHALL only be present if Observation.value[x] is
@@ -1063,21 +1070,23 @@ The `%factory` carrier idiom cannot help — it hides an *extension* from the te
 `dataAbsentReason` is an element. Nor is suppression an option: `input/ignoreWarnings.txt` does not
 actually suppress these (the `tab-container` entry is listed there and its errors are still counted).
 
-The fix is two template instances — `ExtractedCauseOfDeath` (value + focus) and
+The workaround was two template instances — `ExtractedCauseOfDeath` (value + focus) and
 `ExtractedCauseOfDeathUnknown` (dataAbsentReason) — on two Bundle entries whose gates are mutually
 exclusive, so exactly one materialises and each is a valid Observation on its own. The Composition's
-`section[cause-death].entry` then has to be computed rather than static, which is the second value
-path under that section's gate (after the identity `title` value).
+`section[cause-death].entry` then had to be *computed* (pointing at whichever instance fired) rather
+than static.
 
 Generalises to: **any two elements a profile or invariant declares mutually exclusive need one
 template instance each**, because a template is validated as an instance even though it never
-behaves as one.
+behaves as one. And the cheaper way out, where the model allows it: **do not split one question
+across two elements** — an explicit "unknown" answer is data, and belongs in `value[x]` with the
+others.
 
 **A gated element needs at least one value path to fire at all** — `evaluateAndInsertIntoPath` loops
 over the context's `valuePathMap`, so a context with no values inserts nothing, however true its
 expression is. `section[cause-death]` (0..1, `entry` 1..1) is gated on the person having died, and
-its value path is the `entry` reference, which has to be computed anyway because it points at
-whichever of the two cause-of-death instances fired.
+its value path is the `entry` reference. Its target is always the same Observation since #28, but it
+stays a computed value for exactly this reason (and it is the reference that must not dangle).
 
 **How deep that value sits decides whether the identity trick is needed.** The shallow
 `{...staticElement, ...firstValue}` spread replaces whole top-level keys: a value at depth 1
@@ -1092,7 +1101,8 @@ nothing but `hospitalization.extension[data-absent-reason]`), "no" (no Encounter
 reference on either the Composition or the Condition); and for all four death combinations: not
 deceased (no Observation, no section, no `deceasedDateTime`), deceased without a date
 (`_deceasedDateTime` data-absent-reason), cause = other (`valueCodeableConcept` verbatim, no
-`focus`), cause = unknown (`dataAbsentReason`, no value).
+`focus`), cause = unknown (`valueCodeableConcept = sct#261665006` verbatim, no `focus`, no
+`dataAbsentReason` — re-verified after #28).
 
 > ✅ **The template artifacts now validate with 0 errors** (verified via the IG Publisher). This
 > needed: the carrier + `%factory.Extension` idiom for `onsetDateTime`/`department` (whole extension

@@ -222,14 +222,17 @@ Description: "This CH EKM value set contains the answers of the 'Hospitalisation
 * $sct#261665006 "Unknown (qualifier value)"
 
 // Cause of death  the reported pathogen / another cause / unknown. The same three answers as the
-// hospitalisation reason above, but a DIFFERENT question, and extracted differently: the reported
-// pathogen becomes the disease code in Observation.valueCodeableConcept (plus Observation.focus ->
-// the diagnosis Condition), "other" becomes that qualifier verbatim, and "unknown" becomes
-// Observation.dataAbsentReason instead of a value. Kept as its own value set so the two questions
-// can diverge (e.g. sct#87309006 "Death of unknown cause") without disturbing the other.
+// hospitalisation reason above, but a DIFFERENT question, and extracted into a different resource:
+// the reported pathogen becomes the disease code in Observation.valueCodeableConcept (plus
+// Observation.focus -> the diagnosis Condition), while BOTH SNOMED CT qualifiers - "other" and
+// "unknown" - become that qualifier verbatim in Observation.valueCodeableConcept. "Unknown" is an
+// answer, not a missing one: it is NOT mapped to Observation.dataAbsentReason (issue #28), exactly
+// as sct#261665006 reaches Encounter.reasonCode verbatim for an unknown hospitalisation reason.
+// Kept as its own value set so the two questions can diverge (e.g. sct#87309006 "Death of unknown
+// cause") without disturbing the other.
 ValueSet: ChEkmCauseOfDeathChoice
 Title: "CH EKM Cause of Death (form choice)"
-Description: "This CH EKM value set contains the answers of the cause of death form item: the reported pathogen (a local code, extracted as the disease code in Observation.value plus a focus reference to the diagnosis Condition), another cause, or unknown (extracted as Observation.dataAbsentReason)."
+Description: "This CH EKM value set contains the answers of the cause of death form item: the reported pathogen (a local code, extracted as the disease code in Observation.value plus a focus reference to the diagnosis Condition), another cause, or unknown. All three are extracted into Observation.valueCodeableConcept; 'unknown' is the SNOMED CT qualifier sct#261665006, not a data absent reason."
 * ^status = #active
 * ^experimental = false
 

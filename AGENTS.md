@@ -70,11 +70,13 @@ This IG uses **two parallel representations** of the report content:
   it then carries nothing but `extension[unknown]` = `data-absent-reason#asked-unknown`;
   "nein" produces no Encounter at all.
 - **`ChEkmObservationCauseOfDeath`** (← `Observation`) — the cause of death (Verlauf / Zustand).
-  `code = loinc#79378-6`, `valueCodeableConcept` = the reported disease or `74964007` "Other",
-  `dataAbsentReason = asked-unknown` when the cause is reported as unknown, `focus` → the diagnosis
+  `code = loinc#79378-6`, `valueCodeableConcept` = the reported disease, `74964007` "Other" **or
+  `261665006` "Unknown"** — all three answers are values, `dataAbsentReason` is `0..0` (issue #28,
+  same treatment "unbekannt" gets in `Encounter.reasonCode`). `focus` → the diagnosis
   Condition when the reported disease is the cause. An Observation rather than a Condition because
-  the form asks a closed question and needs `dataAbsentReason`; HL7 US VRDR made the same move
-  between STU1 and STU2. Referenced from `Composition.section[cause-death]`. The death itself is
+  the form asks a closed question and `value[x]` is an answer while `Condition.code` would assert a
+  diagnosis; HL7 US VRDR made the same move between STU1 and STU2.
+  Referenced from `Composition.section[cause-death]`. The death itself is
   `ChEkmPatient.deceasedDateTime` (with a `data-absent-reason` slice for "died, date unknown"), so
   the fact of death is answerable from the Patient alone.
 - **`ChEkmExposure`** (← `Observation`) — the "Exposition" / Exposure (how/where exposed). Mirrors

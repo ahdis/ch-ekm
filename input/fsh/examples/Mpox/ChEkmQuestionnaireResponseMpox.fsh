@@ -93,9 +93,10 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 // Zustand: the person died of the reported pathogen on 2026-02-03 -> after $extract
 // Patient.deceasedDateTime, plus a cause-of-death Observation (value = the Mpox code, focus -> the
 // diagnosis Condition) in a section[cause-death] that only exists because the person died.
-// The other branches are covered by the notes in RuleSetObservationCauseOfDeath: "anderer" writes
-// the SNOMED qualifier verbatim, "unbekannt" writes dataAbsentReason instead of a value, and an
-// unticked `deceased` drops the Observation, the section and deceasedDateTime together.
+// The other branches are covered by the notes in RuleSetObservationCauseOfDeath: "anderer" and
+// "unbekannt" both write the answered SNOMED qualifier verbatim into valueCodeableConcept (no
+// dataAbsentReason, see issue #28), and an unticked `deceased` drops the Observation, the section
+// and deceasedDateTime together.
 * item[0].item[2].item[1].linkId = "death"
 * item[0].item[2].item[1].item[0].linkId = "deceased"
 * item[0].item[2].item[1].item[0].answer.valueBoolean = true
