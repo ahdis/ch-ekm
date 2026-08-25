@@ -149,6 +149,13 @@ These logical models are the **master** for building the SDC Questionnaires — 
   `ChEkmCauseOfDeathChoice`.
 - **ConceptMap**: `ChEkmSexToHl7Gender` (biological sex → administrative gender).
 
+**"Unbekannt" has two shapes on the wire, and the target element decides which**: if it can hold a
+code, the answer is `sct#261665006` in `value[x]` / `reasonCode` / a component; if it is a `dateTime`
+or a plain string (`Address.country`, `Address.city`), the element is left empty and carries
+`extension[data-absent-reason] = asked-unknown`. The full rule, the inventory of every "unbekannt"
+in the IG and the one case that still deviates (Hospitalisation ja/nein/unbekannt) are in
+forms-summary.md §12.
+
 Note (per `README.md`): the production terminology (ValueSets/CodeSystems) is maintained
 by the FOPH on the **ABN environment** and pulled via the ABN API into `input/resources/`.
 Terminology expansion uses the SNOMED CT Swiss Extension via `expansion-params.json`.

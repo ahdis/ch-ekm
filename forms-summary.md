@@ -1390,3 +1390,106 @@ TODO: currently commented out
 **Rule of thumb:** item-local format/length → **`regex`** on the item; cross-field or
 expression/range validation, or anything needing a German `human` message → **`targetConstraint` on
 the root** with a `location`.
+
+---
+
+## 12. "Unbekannt" — when it is a value and when it is a data-absent-reason
+
+Nearly every group of these forms offers the reporting physician some form of "unbekannt", and the
+same word ends up on the wire in two very different shapes. This chapter is the rule that decides
+which, written down after issue
+[#28](https://github.com/ahdis/ch-ekm/issues/28) moved the cause of death from one shape to the
+other.
+
+### The rule: the TARGET ELEMENT decides, not the question
+
+> **Can the target element hold a code?**
+> **Yes** → write `sct#261665006 "Unknown (qualifier value)"` as the value, like any other answer.
+> **No** (it is a `dateTime`, an ISO-3166 `string`, a free-text `string`) → leave the element without
+> a value and attach `extension[data-absent-reason] = asked-unknown`.
+
+"Unbekannt" is an **answer**: the physician was asked and responded. `dataAbsentReason` says
+something weaker and different — *no value was recorded* — and it hides the answer in a place a
+consumer has to look for separately. So the value shape is the default, and the data-absent-reason
+is the fallback used only where the element's type makes a code impossible.
+
+The same rule stated from the consumer's side: **one question, one element, one shape, whatever the
+answer.** A question whose answer sometimes lands in `value[x]` and sometimes in `dataAbsentReason`
+forces every reader to check two places, and — as `obs-6` proved for the cause of death (section 8)
+— it forces the extraction template to carry two mutually exclusive instances of the same resource.
+
+### Where each shape is used
+
+**Value (`sct#261665006` in a CodeableConcept):**
+
+| Form item | On the wire |
+| --- | --- |
+| `hospitalisationReason` (Hospitalisationsgrund) | `Encounter.reasonCode` — `RuleSetEncounterHospitalisation` |
+| `deathCause` (Todesursache) | `Observation.valueCodeableConcept` — `RuleSetObservationCauseOfDeath` (#28) |
+| `exposureHowUnknown` (Übertragungsweg unbekannt) | `ChEkmExposure.component[transmissionRoute].valueCodeableConcept` — `RuleSetComponentExposure` |
+
+Note the third: the form item is a **boolean check-box**, yet extraction materialises the SNOMED
+code via `%factory.Coding(...)`, and `ChEkmMpox` / `ChEkmGonorrhoea` *bind* that component to
+`ChEkmExposureTransmissionRoute`, which contains `261665006`. A "yes/no" widget in the form says
+nothing about the shape on the wire — the profile does.
+
+**Data-absent-reason (the element type leaves no choice):**
+
+| Form item | On the wire | Why not a value |
+| --- | --- | --- |
+| `exposureWhereCountry` = Unbekannt | `Address.country` absent, `_country` DAR | `Address.country` is an ISO 3166 string; `261665006` is not a country code |
+| `exposureWherePreciseLocation` = Unbekannt | `Address.city` absent, `_city` DAR | `Address.city` is free text |
+| `manifestationBeginUnknown` ticked | `Condition.onsetDateTime` absent + DAR | `dateTime` primitive |
+| `deathDate` left blank (with `deceased` ticked) | `Patient.deceasedDateTime` absent + DAR | `dateTime` primitive |
+
+All four are built with the carrier + `%factory.Extension(...)` idiom described in section 8 — a
+data-absent-reason cannot be pre-declared in a template, because a to-be-computed `valueCode` leaves
+the extension valueless and fails `ext-1`.
+
+**Each "unknown" sits on the element it belongs to.** The exposure address asks two independent
+questions, so the DAR goes on `Address.country` or on `Address.city` — never on the Address as a
+whole. That keeps "Land unbekannt, genauer Ort Zürich" and "Land CH, genauer Ort unbekannt" both
+reportable. `ChEkmExtExposureAddress` used to declare an Address-level
+`valueAddress.extension[unknown]` slice, from the earlier assumption of a single "Unbekannt" box on
+the paper form (issue #26); extraction never emitted it and it has been removed.
+
+### The one place that still differs: Hospitalisation ja/nein/**unbekannt**
+
+`hospitalisationStatus` answered "unbekannt" produces an `Encounter` carrying nothing but
+`hospitalization.extension[unknown] = asked-unknown` (`ChEkmEncounter`,
+`RuleSetEncounterHospitalisation`). This is the only case where the DAR shape is a **modelling
+choice** rather than a consequence of the element's type, and it is worth understanding before it is
+copied:
+
+* The same instance can carry both idioms at once — `reasonCode = sct#261665006` (a value) next to
+  the `hospitalization` DAR (an absence), two encodings of "unbekannt" in one Encounter.
+* `Encounter.hospitalization` is FHIR's admission/discharge backbone (`admitSource`,
+  `dischargeDisposition`, `reAdmission`). A DAR there reads "the admission/discharge details are
+  unknown", not "whether there was a hospitalisation is unknown". The profile comment concedes the
+  element is there only because an empty BackboneElement would violate `ele-1`.
+* To say "we do not know whether the person was hospitalised", the document nonetheless emits an
+  Encounter with `class = IMP "inpatient encounter"`, referenced from `Composition.encounter` and
+  `Condition.encounter` — it asserts the stay in `class` while denying knowledge of it in
+  `hospitalization`.
+
+Hospitalisation is the **only** ja/nein/unbekannt question in the IG — it is the only place where
+the *fact itself*, not one of its details, can be unknown, and `Encounter` has no CodeableConcept to
+put that in. (The death group deliberately has no "unbekannt" on "Ist die Person verstorben?": a
+reporting physician either knows of a death or does not report one. Its "unbekannt" lives one level
+down, on the cause.) The shape that would follow this chapter's rule is the one cause-of-death
+already uses: a small Observation whose `value[x]` carries ja/nein/unbekannt, with the Encounter
+emitted only for "ja". That is a modelling change, not a rename — left open deliberately.
+
+### Two smaller things worth knowing
+
+**A blank field is not the same as an answered "unbekannt".** `manifestationBeginUnknown` is an
+explicit check-box; `deathDate` is simply left empty. Both end as `asked-unknown`, but only the
+first actually distinguishes "asked, not known" from "skipped". The death date gets away with it
+because the item is `enableWhen`-gated on `deceased` — the reporter has already asserted the death,
+so an empty date under a ticked box is a deliberate blank.
+
+**The German label comes from the supplement, not from the code display.** All value sets carry
+`261665006 "Unknown (qualifier value)"`; `Unbekannt` / `Inconnu` / `Sconosciuto` come from
+`ch-ekm-snomed-language-supplement` via the `useSupplement` binding parameter on the item's
+`answerValueSet`. The display that reaches the wire is whatever the renderer put in the answer, so
+extracted instances legitimately show either.
