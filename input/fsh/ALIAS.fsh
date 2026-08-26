@@ -74,3 +74,8 @@ Alias: $ch-core-practitioner = http://fhir.ch/ig/ch-core/StructureDefinition/ch-
 Alias: $ch-core-practitioner-role = http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-practitionerrole
 Alias: $ch-core-patient =  http://fhir.ch/ig/ch-elm/ValueSet/ch-elm-results-complete-spec
 Alias: $ch-elm-results-complete-spec = http://fhir.ch/ig/ch-elm/ValueSet/ch-elm-results-complete-spec
+// CH VACD vaccine terminology, delivered through the ch-term dependency. These are the two
+// bindings CHCoreImmunization already declares; ChEkmImmunization reuses them rather than
+// inventing CH EKM copies (the vaccine brand list is maintained by eHealth Suisse, not the FOPH).
+Alias: $SwissVaccinesVS =    http://fhir.ch/ig/ch-vacd/ValueSet/ch-vacd-vaccines-vs
+Alias: $TargetDiseasesVS =   http://fhir.ch/ig/ch-vacd/ValueSet/ch-vacd-targetdiseasesandillnessesundergoneforimmunization-vs

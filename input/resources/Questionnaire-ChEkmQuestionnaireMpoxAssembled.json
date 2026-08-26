@@ -124,6 +124,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationMpox|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician|0.0.1"
     }
   ],
@@ -217,6 +221,133 @@
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                         "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeath'))"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox' or linkId='immunizationStatusMpox').answer.value.first()"
+                  }
+                ],
+                "title": "Immunization section",
+                "code": {
+                  "coding": [
+                    {
+                      "code": "11369-6",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "entry": [
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxDatedDosed",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxDatedDosed'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxDatedNoDose",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxDatedNoDose'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxUndatedDosed",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxUndatedDosed'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxUndatedNoDose",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxUndatedNoDose'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxNotDone",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxNotDone'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxUnknown",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxUnknown'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxDatedDosed",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxDatedDosed'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxDatedNoDose",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxDatedNoDose'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxUndatedDosed",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxUndatedDosed'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxUndatedNoDose",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxUndatedNoDose'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxNotDone",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxNotDone'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxUnknown",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxUnknown'))"
                       }
                     ]
                   }
@@ -1177,6 +1308,870 @@
                 ]
               }
             ]
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedDosed",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedDosed'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxDatedDosed",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "doseNumberPositiveInt": 1,
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "occurrenceDateTime": "1900-01-01",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedNoDose",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedNoDose'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxDatedNoDose",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "occurrenceDateTime": "1900-01-01",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedDosed",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedDosed'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxUndatedDosed",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "doseNumberPositiveInt": 1,
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedNoDose",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedNoDose'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxUndatedNoDose",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373067005')"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxNotDone",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxNotDone'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxNotDone",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "not-applicable"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ]
+            },
+            "status": "not-done",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "not-applicable"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='261665006')"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUnknown",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUnknown'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxUnknown",
+            "modifierExtension": [
+              {
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)"
+                    }
+                  ]
+                },
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-immunization-unknown"
+              }
+            ],
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ]
+            },
+            "status": "not-done",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedDosed",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedDosed'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxDatedDosed",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "doseNumberPositiveInt": 1,
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesMpox').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "occurrenceDateTime": "1900-01-01",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedNoDose",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedNoDose'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxDatedNoDose",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "occurrenceDateTime": "1900-01-01",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedDosed",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedDosed'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxUndatedDosed",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "doseNumberPositiveInt": 1,
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesMpox').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedNoDose",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedNoDose'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxUndatedNoDose",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373067005')"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxNotDone",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxNotDone'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxNotDone",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "not-applicable"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ]
+            },
+            "status": "not-done",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "not-applicable"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='261665006')"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUnknown",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUnknown'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxUnknown",
+            "modifierExtension": [
+              {
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)"
+                    }
+                  ]
+                },
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-immunization-unknown"
+              }
+            ],
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ]
+            },
+            "status": "not-done",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
           }
         }
       ]
@@ -3698,6 +4693,773 @@
                     ]
                   },
                   "type": "boolean"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "immunization",
+          "text": "Immunisation status",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "de-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Impfstatus"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "fr-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Statut vaccinal"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "it-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Stato vaccinale"
+                  }
+                ]
+              }
+            ]
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Immunisation",
+              "_valueString": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Impfstatus"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Vaccination"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Vaccinazione"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "type": "group",
+          "item": [
+            {
+              "linkId": "immunizationSmallpox",
+              "text": "Smallpox vaccination — earlier smallpox vaccination programmes",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Pockenimpfung — frühere Pockenimpfprogramme"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Vaccination contre la variole — anciens programmes de vaccination"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Vaccinazione antivaiolosa — precedenti programmi di vaccinazione"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "immunizationStatusSmallpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.status",
+                  "text": "Vaccinated?",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Geimpft?"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Vacciné ?"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Vaccinato?"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
+                  "_answerValueSet": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                        "extension": [
+                          {
+                            "url": "name",
+                            "valueCode": "useSupplement"
+                          },
+                          {
+                            "url": "expression",
+                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationDosesSmallpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses",
+                  "text": "Total number of doses",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Total Anzahl Dosen"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Nombre total de doses"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Numero totale di dosi"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "integer",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+                      "valueInteger": 1
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusSmallpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationLastDoseSmallpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.lastDoseDate",
+                  "text": "Date of the last dose",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Letzte Dosis, Datum"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Date de la dernière dose"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Data dell'ultima dose"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusSmallpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationVaccineSmallpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.vaccine",
+                  "text": "Vaccine — brand name",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Impfstoff — Markenname"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Vaccin — nom de marque"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Vaccino — nome commerciale"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "open-choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-vacd/ValueSet/ch-vacd-vaccines-vs",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "autocomplete",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusSmallpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "immunizationMpox",
+              "text": "Mpox vaccination",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Affenpockenimpfung"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Vaccination contre le mpox"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Vaccinazione contro il vaiolo delle scimmie"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "immunizationStatusMpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.status",
+                  "text": "Vaccinated?",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Geimpft?"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Vacciné ?"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Vaccinato?"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
+                  "_answerValueSet": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                        "extension": [
+                          {
+                            "url": "name",
+                            "valueCode": "useSupplement"
+                          },
+                          {
+                            "url": "expression",
+                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationDosesMpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses",
+                  "text": "Total number of doses",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Total Anzahl Dosen"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Nombre total de doses"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Numero totale di dosi"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "integer",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+                      "valueInteger": 1
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusMpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationLastDoseMpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.lastDoseDate",
+                  "text": "Date of the last dose",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Letzte Dosis, Datum"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Date de la dernière dose"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Data dell'ultima dose"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusMpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationVaccineMpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.vaccine",
+                  "text": "Vaccine — brand name",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Impfstoff — Markenname"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Vaccin — nom de marque"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Vaccino — nome commerciale"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "open-choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-vacd/ValueSet/ch-vacd-vaccines-vs",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "autocomplete",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusMpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
                 }
               ]
             }

@@ -84,6 +84,22 @@ This IG uses **two parallel representations** of the report content:
   `code = EXPAGNT`, `extension[exposureAddress]` for the place (Wo — country as ISO code +
   `iso21090-codedString`, precise location as `city`, or a `data-absent-reason` when reported as
   unknown), `effective[x]` + `component[dateOfEntry]` for the time (Wann).
+- **`ChEkmImmunization`** (← `CHCoreImmunization`) — the "Impfstatus" section (issue #29). **One
+  resource per vaccination type the disease's form asks about, whatever the answer was**: `ja` is
+  `status = completed` with `occurrenceDateTime` = the last dose and
+  `protocolApplied.doseNumberPositiveInt` = the total number of doses; `nein` is `status = not-done`;
+  `unbekannt` is `status = not-done` **plus the modifier extension `ChEkmExtImmunizationUnknown`**,
+  without which a consumer would read `not-done` as "definitely not vaccinated" (R4
+  `Immunization.status` has no "unknown", and a plain `data-absent-reason` on a modifier element is
+  ignorable). `protocolApplied.targetDisease` names the vaccination; `vaccineCode` is the picked Swiss
+  brand code, else the SNOMED CT vaccine product for that target disease. Referenced from
+  `Composition.section[immunization]` (LOINC 11369-6, the section code CH VACD also uses).
+  The row is identified by `vaccineCode` (1..1, fixed per row to the SNOMED CT vaccine product), which
+  is present on every row including "nein" and "unbekannt"; `protocolApplied` is 0..1 and carries
+  `targetDisease` + the dose count only when a dose count was given, because R4 makes `doseNumber[x]`
+  1..1 inside it and the validator rejects a data-absent-reason there. `occurrence[x]` is 1..1 with no
+  such escape, which is why extraction needs six mutually exclusive template instances per row — see
+  `RuleSetImmunization.fsh` and forms-summary.md §8.
 
 ### Person / actors
 - **`ChEkmPatient`** (← `CHCorePatient`) and four representation variants reflecting the
@@ -104,12 +120,15 @@ bound to `ChEkmGonorrhoeaManifestation`) and `section[social-history]` to
 `ChEkmExposureGonorrhoea` (adds sliced components: `transmissionRoute`,
 `sexualContactPartner`, `relationshipType`, `otherTransmission`).
 HepatitisC and InvasiveStreptococcusPneumoniae follow the same shape.
+Mpox additionally constrains `section[immunization]` to `ChEkmImmunizationMpox`, which fixes the
+target diseases to `ChEkmMpoxImmunizationTargetDisease` (smallpox + mpox).
 
 ### Extensions & invariants
 - Extensions (`profiles/Extensions.fsh`): `ChEkmExtHivCode`, `ChEkmExtExposureAddress`,
-  `ChEkmExtDepartment`.
+  `ChEkmExtDepartment`, and the **modifier** extension `ChEkmExtImmunizationUnknown`. Two
+  template-only carrier lives here too: `SdcTemplateExtractExtension`.
 - Invariants (`profiles/Invariants.fsh`): `name-initials`, `ch-ekm-hiv-check`,
-  `ch-ekm-dateTime`.
+  `ch-ekm-dateTime`, `ch-ekm-immunization-unknown`.
 
 ## Logical models (form models)
 
@@ -122,6 +141,9 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
 - **`ChEkmHospitalisationForm`** → maps to `ChEkmEncounter` (the Verlauf / Hospitalisation part).
 - **`ChEkmDeathForm`** → maps to `ChEkmPatient.deceasedDateTime` + `ChEkmObservationCauseOfDeath`
   (the Verlauf / Zustand part).
+- **`ChEkmImmunizationForm`** → maps to `ChEkmImmunization`. Describes ONE row of the "Impfstatus"
+  section (target disease, ja/nein/unbekannt, doses, last dose date, product); a disease instantiates
+  it once per vaccination type it asks about.
 - **`ChEkmTreatingPhysicianForm`** → `Practitioner` + `Organization` form models.
 - **`CHEkmGonorrhoeaForm`** — the disease-level aggregate: `person`, `exposure`,
   `manifestation`, `treatingPhysician`, each refining the generic form models for
@@ -146,7 +168,9 @@ These logical models are the **master** for building the SDC Questionnaires — 
   `ChEkmExposureRelationshipType`, `ChEkmBiologicalSex`, `ChEkmGenderIdentity`,
   `ChEkmServiceRequestReason`, `ChEkmSpecimenType`, `ChEkmOtherNoneUnknown`,
   `ChEkmHepatitisCCourseOfDisease`, `ChEkmYesNoUnknown`, `ChEkmHospitalisationReasonChoice`,
-  `ChEkmCauseOfDeathChoice`.
+  `ChEkmCauseOfDeathChoice`, `ChEkmMpoxImmunizationTargetDisease`. The vaccine brand list and the
+  target disease list are NOT redefined here — `ChEkmImmunization` reuses the CH VACD value sets that
+  `CHCoreImmunization` already binds (`$SwissVaccinesVS`, `$TargetDiseasesVS`, both from ch-term).
 - **ConceptMap**: `ChEkmSexToHl7Gender` (biological sex → administrative gender).
 
 **"Unbekannt" has two shapes on the wire, and the target element decides which**: if it can hold a
@@ -224,7 +248,12 @@ sushi .                                    # FSH -> fsh-generated/
 
 Sub-questionnaires are disease-agnostic and live in `input/fsh/questionnnaire/`; the per-disease
 root (`input/fsh/examples/<Organism>/ChEkmQuestionnaire<Organism>.fsh`) assembles the ones its form
-needs via the `RuleSetQr…` rule sets in `input/fsh/questionnnaire/RuleSets.fsh`. Only Mpox currently
+needs via the `RuleSetQr…` rule sets in `input/fsh/questionnnaire/RuleSets.fsh`. The **"Impfstatus"** section is modular one level further down: SDC `$assemble` cannot parameterise a
+sub-questionnaire, so the reuse lives in the FSH rule sets `RuleSetQrImmunizationRow` (form) and
+`RuleSetImmunizationRow` (extraction), each inserted once per vaccination type by a per-disease child
+(`examples/Mpox/ChEkmQuestionnaireImmunizationMpox.fsh`). Fixed rows, not a repeating group — see
+forms-summary.md §8 for why variable cardinality breaks the single-Bundle-template extraction.
+Only Mpox currently
 has the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation` +
 `RuleSetQrDeath`); Gonorrhoea has none. That section is also the only one needing a third launch context (`encounter`), which is why
 it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.

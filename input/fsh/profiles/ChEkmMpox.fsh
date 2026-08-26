@@ -13,6 +13,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * subject only Reference(ChEkmPatient)
 * section[diagnosis].entry[condition] only Reference(ChEkmConditionMpox)
 * section[social-history].entry[exposure-to-infectious-disease] only Reference(ChEkmExposureMpox)
+* section[immunization].entry only Reference(ChEkmImmunizationMpox)
 
 Profile: ChEkmConditionMpox
 Parent: ChEkmCondition
@@ -54,3 +55,21 @@ Description: "TODO: This CH EKM base profile constrains the Exposure observation
 * component[relationshipType].code = $sct#228465009 "Sexual relationship details (observable entity)"
 * component[relationshipType].value[x] only CodeableConcept
 * component[relationshipType].valueCodeableConcept from ChEkmExposureRelationshipType (required)
+// Impfstatus (https://github.com/ahdis/ch-ekm/issues/29). The Mpox form asks about TWO
+// vaccination types, so this profile does two things the base ChEkmImmunization cannot: it fixes
+// which target diseases may appear, and it constrains the fallback product code to the SNOMED CT
+// vaccine products for those two — the concepts extraction writes when the physician did not pick
+// a brand from the Swiss vaccine list.
+//
+// Both fallbacks are in the CH VACD SNOMED CT vaccine value set:
+//   Pockenimpfung      sct#1290624003 Vaccine product containing Variola virus antigen
+//   Affenpockenimpfung sct#1293025000 Vaccine product containing only modified Vaccinia virus
+//                                     Ankara antigen  (MVA-BN, i.e. Jynneos / Imvanex)
+// Note that MVA-BN is licensed against BOTH smallpox and mpox; it is `targetDisease`, not the
+// product, that separates the two form rows.
+Profile: ChEkmImmunizationMpox
+Parent: ChEkmImmunization
+Id: ch-ekm-immunization-mpox
+Title: "CH EKM Immunization: Mpox"
+Description: "This CH EKM profile constrains the Immunization resource for the 'Impfstatus' section of the Mpox report: one resource per vaccination type asked about (smallpox vaccination, mpox vaccination)."
+* protocolApplied.targetDisease from ChEkmMpoxImmunizationTargetDisease (required)

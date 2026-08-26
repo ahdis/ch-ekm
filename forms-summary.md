@@ -1050,6 +1050,93 @@ entries; a static entry after a gated one still breaks, which is the whole reaso
 rule. Verified with "not hospitalised + died": seven static entries, no Encounter, and the cause-of-
 death Observation last and intact.
 
+### A 1..1 primitive that is sometimes a value and sometimes a data-absent-reason (Impfstatus, issue #29)
+The vaccination rows are the first place where a **required** primitive has to be an answered value on
+one branch and a `data-absent-reason` on another: `Immunization.occurrence[x]` and
+`protocolApplied.doseNumber[x]` are both 1..1, and a row answered "nein"/"unbekannt" has neither a
+date nor a dose count. Three engine/SUSHI facts collide here, all found the hard way:
+
+**1. A required primitive that is sometimes a value and sometimes a data-absent-reason cannot live in
+one template.** An element carrying only `templateExtractValue` artifacts is reported by SUSHI as
+`occurrence[x] has minimum cardinality 1 but occurs 0 time(s)`, so the template needs real static
+content — and whichever shape you pick is wrong on one branch: a sentinel value survives next to a
+computed data-absent-reason, and a static data-absent-reason survives next to a computed value.
+**The validator catches neither** — R4 has no invariant forbidding a value beside a
+data-absent-reason — so a fabricated date would ship silently past QA.
+
+**The resolution is to split the row** into mutually exclusive template instances (the obs-6 pattern
+below), one per combination of "which optional details were answered", so that within each instance
+an element is either statically absent or *always* answered — which is also what makes a sentinel
+safe, since its directive can no longer return empty.
+
+**And SUSHI's acceptance is not the last word: check the IG Publisher.** A statically declared
+`data-absent-reason` on a valueless primitive satisfies SUSHI's cardinality check. The IG Publisher
+then reports 40 errors of the form `Immunization.protocolApplied.doseNumber[x]: minimum required = 1,
+but only found 0` — but **the resources are correct and the validator is right**: the Publisher
+damages the template on the way in, and the validator faithfully reports the damaged object.
+
+**IG Publisher bug — a primitive inside a BackboneElement of a CONTAINED resource is corrupted**
+([HL7/fhir-ig-publisher#1362](https://github.com/HL7/fhir-ig-publisher/issues/1362)). Our `$extract`
+template Bundle is carried in `Questionnaire.contained[0]`. In the published output that contained
+copy has `protocolApplied[0].doseNumberPositiveInt` **retyped** to `doseNumberString`, and a valueless
+one carrying a `data-absent-reason` **dropped entirely** — leaving `protocolApplied` with nothing but
+`targetDisease`, which is exactly what the error describes. Established by comparing the four copies
+in one build:
+
+| copy | `protocolApplied[0]` |
+| --- | --- |
+| `fsh-generated/…Questionnaire-…Mpox.json` (SUSHI) | intact |
+| `input/resources/…MpoxAssembled.json` (our `$assemble`) | intact |
+| `output/Bundle-ChEkmDocumentMpoxTemplate.json` (Publisher, **standalone**) | intact |
+| `output/Questionnaire-…Mpox.json` → `contained[0]` (Publisher, **contained**) | **damaged** |
+
+So neither SUSHI nor our `$assemble` is at fault. `Immunization.occurrence[x]` — same 1..1, same
+choice type, same `data-absent-reason`, but at the **resource root** — survives in every copy, which
+pins the trigger to the BackboneElement nesting rather than to contained resources generally. A
+minimal reproduction (no CH-specific terminology, plus a plain `doseNumberPositiveInt: 2` with no
+extension at all, which is *also* retyped) lives on branch `oe_contained_primitive_extension` in
+`../ch-ig`.
+
+**The 40 errors cannot be suppressed, and are accepted until #1362 lands** (tracked as ch-ekm #30).
+`input/ignoreWarnings.txt` only suppresses *warnings, hints and broken links* — the section header in
+`qa.html` says so, and the existing entries there bear it out: the `IdentifierType` warning is fully
+suppressed, while the `tab-container` entry still emits its ERROR instances. Nor can the model avoid
+the data-absent-reason: keeping `protocolApplied.targetDisease` on every row means keeping
+`protocolApplied`, and R4 makes `doseNumber[x]` 1..1 inside it. And the template has to be contained —
+SDC defines the `templateExtract` `template` sub-extension as a *"Contained reference to the resource
+template"*.
+
+Note the retyping is the more dangerous half: `doseNumberPositiveInt` -> `doseNumberString` is valid
+FHIR saying something we did not author, so it raises no error at all. Until #1362 is fixed the
+published contained template is not authoritative — `output/Bundle-ChEkmDocumentMpoxTemplate.json` is
+the intact copy. When the fix ships, rebuild and check that `contained[0]` round-trips before
+trusting a green build.
+
+**2. Two carriers on one primitive fight over array indices.** `parseFhirPathToWritableSegments`
+splices a trailing `extension[n]` off a directive's path, so `_x.extension[0].extension[0]` writes to
+`_x.extension[0]` and a bare `_x.extension[0]` writes to `x` itself. When the *first* carrier yields
+empty it is deleted, everything shifts, and the second carrier's recorded index now points at the
+wrong slot — the observed symptom is the raw `valueString` directive leaking into the extracted
+output next to the correctly built extension. **Use exactly one carrier per primitive**, and branch
+*inside* its expression with a three-argument `iif`.
+
+**3. A value directive targeting `array[0].field` used to APPEND instead of merging — FIXED in the
+engine.** `protocolApplied[0].doseNumberPositiveInt` came out as a *second* `protocolApplied` entry
+holding only the dose, leaving `targetDisease` in the first and violating `protocolApplied 1..1`.
+The cause was in `walkTemplateAndInsertValue`: when both the existing node and the evaluated value
+are objects it calls `deepmerge`, whose **default array strategy is concatenation**, so an array
+nested inside the merged object was appended to rather than merged by index. Fixed by passing an
+index-wise `arrayMerge`, applied here via `patch-package`
+(`scripts/extract/patches/@aehrc+sdc-template-extract+1.0.15.patch`, auto-applied on `npm install`)
+and submitted upstream. Note this only bites under a `templateExtractContext` — a gated array
+element is re-seeded from the static template and then deep-merged; without a gate the value is
+assigned directly and the bug does not appear.
+
+**Corollary for the section.** `Composition.section[immunization]` needs one `entry` per row, so it
+carries two value directives. Before the engine fix the gated section was re-seeded once per
+directive and the static `code.coding` array was concatenated, emitting the LOINC coding twice; the
+index-wise `arrayMerge` fixes that too.
+
 ### Mutually exclusive ELEMENTS force mutually exclusive TEMPLATE INSTANCES (obs-6)
 > **No longer applies to the cause of death** — issue #28 decided that "unbekannt" is the *answer*
 > `sct#261665006` in `valueCodeableConcept`, not a `dataAbsentReason` (the same shape

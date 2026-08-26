@@ -124,6 +124,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationMpox|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician|0.0.1"
     }
   ],
@@ -217,6 +221,133 @@
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                         "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeath'))"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox' or linkId='immunizationStatusMpox').answer.value.first()"
+                  }
+                ],
+                "title": "Immunization section",
+                "code": {
+                  "coding": [
+                    {
+                      "code": "11369-6",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "entry": [
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxDatedDosed",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxDatedDosed'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxDatedNoDose",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxDatedNoDose'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxUndatedDosed",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxUndatedDosed'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxUndatedNoDose",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxUndatedNoDose'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxNotDone",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxNotDone'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationSmallpoxUnknown",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxUnknown'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxDatedDosed",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxDatedDosed'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxDatedNoDose",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxDatedNoDose'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxUndatedDosed",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxUndatedDosed'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxUndatedNoDose",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxUndatedNoDose'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxNotDone",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxNotDone'))"
+                      }
+                    ]
+                  },
+                  {
+                    "reference": "Immunization/ExtractedImmunizationMpoxUnknown",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxUnknown'))"
                       }
                     ]
                   }
@@ -1177,6 +1308,870 @@
                 ]
               }
             ]
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedDosed",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedDosed'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxDatedDosed",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "doseNumberPositiveInt": 1,
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "occurrenceDateTime": "1900-01-01",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedNoDose",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedNoDose'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxDatedNoDose",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "occurrenceDateTime": "1900-01-01",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedDosed",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedDosed'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxUndatedDosed",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "doseNumberPositiveInt": 1,
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedNoDose",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedNoDose'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxUndatedNoDose",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373067005')"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxNotDone",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxNotDone'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxNotDone",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "not-applicable"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ]
+            },
+            "status": "not-done",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "not-applicable"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='261665006')"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUnknown",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUnknown'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationSmallpoxUnknown",
+            "modifierExtension": [
+              {
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)"
+                    }
+                  ]
+                },
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-immunization-unknown"
+              }
+            ],
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ]
+            },
+            "status": "not-done",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedDosed",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedDosed'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxDatedDosed",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "doseNumberPositiveInt": 1,
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesMpox').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "occurrenceDateTime": "1900-01-01",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedNoDose",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedNoDose'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxDatedNoDose",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "occurrenceDateTime": "1900-01-01",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedDosed",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedDosed'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxUndatedDosed",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "doseNumberPositiveInt": 1,
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesMpox').answer.value.first()"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not())"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedNoDose",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedNoDose'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxUndatedNoDose",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                }
+              ]
+            },
+            "status": "completed",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373067005')"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxNotDone",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxNotDone'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxNotDone",
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "not-applicable"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ]
+            },
+            "status": "not-done",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "not-applicable"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='261665006')"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUnknown",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUnknown'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Immunization",
+            "id": "ExtractedImmunizationMpoxUnknown",
+            "modifierExtension": [
+              {
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)"
+                    }
+                  ]
+                },
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-immunization-unknown"
+              }
+            ],
+            "patient": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "protocolApplied": [
+              {
+                "targetDisease": [
+                  {
+                    "coding": [
+                      {
+                        "code": "359814004",
+                        "system": "http://snomed.info/sct",
+                        "display": "Mpox"
+                      }
+                    ]
+                  }
+                ],
+                "_doseNumberPositiveInt": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                      "valueCode": "asked-unknown"
+                    }
+                  ]
+                }
+              }
+            ],
+            "vaccineCode": {
+              "coding": [
+                {
+                  "code": "1293025000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
+                }
+              ]
+            },
+            "status": "not-done",
+            "_occurrenceDateTime": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
           }
         }
       ]
@@ -6342,6 +7337,3265 @@
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.unknown",
                   "text": "Übertragungsweg unbekannt",
                   "type": "boolean"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "immunization",
+          "text": "Impfstatus",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Impfstatus"
+            }
+          ],
+          "type": "group",
+          "item": [
+            {
+              "linkId": "immunizationSmallpox",
+              "text": "Pockenimpfung — frühere Pockenimpfprogramme",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "immunizationStatusSmallpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.status",
+                  "text": "Geimpft?",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "373066001",
+                        "display": "Ja"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "373067005",
+                        "display": "Nein"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Unbekannt"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationDosesSmallpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses",
+                  "text": "Total Anzahl Dosen",
+                  "type": "integer",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+                      "valueInteger": 1
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusSmallpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationLastDoseSmallpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.lastDoseDate",
+                  "text": "Letzte Dosis, Datum",
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusSmallpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationVaccineSmallpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.vaccine",
+                  "text": "Impfstoff — Markenname",
+                  "type": "open-choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "drop-down",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusSmallpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "787859002",
+                        "display": "Vaccine product"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "683",
+                        "display": "FSME-Immun 0.25 ml Junior"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "450",
+                        "display": "FSME-Immun CC"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "656",
+                        "display": "NeisVac-C"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "627",
+                        "display": "Encepur N"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "628",
+                        "display": "Encepur N Kinder"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "572",
+                        "display": "Epaxal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "544",
+                        "display": "Heprecomb"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "642",
+                        "display": "Heprecomb Kinder"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "614",
+                        "display": "Inflexal V"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "657",
+                        "display": "Menjugate"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "533",
+                        "display": "Moraten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "555",
+                        "display": "Orochol"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "685",
+                        "display": "Rabipur"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "702",
+                        "display": "Td-pur"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "686",
+                        "display": "Td-Virelon"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "467",
+                        "display": "Vivotif"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "637",
+                        "display": "Boostrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "681",
+                        "display": "Boostrix Polio"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "567",
+                        "display": "Ditanrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "551",
+                        "display": "Engerix-B 10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "534",
+                        "display": "Engerix-B 20"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "583",
+                        "display": "Fluarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "558",
+                        "display": "Havrix 1440"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "599",
+                        "display": "Havrix 720"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "603",
+                        "display": "Hiberix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "638",
+                        "display": "Infanrix DTPa-IPV"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "619",
+                        "display": "Infanrix DTPa-IPV+Hib"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "640",
+                        "display": "Infanrix hexa"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "652",
+                        "display": "Mencevax ACWY"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "669",
+                        "display": "Poliorix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "615",
+                        "display": "Priorix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "592",
+                        "display": "Twinrix 720/20"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "585",
+                        "display": "Varilrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "528",
+                        "display": "Gen H-B-Vax 10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "545",
+                        "display": "HBVAXPRO 40"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "610",
+                        "display": "Gen H-B-Vax 5"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "663",
+                        "display": "HBVAXPRO 10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "268",
+                        "display": "MMR-II"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "247",
+                        "display": "Mumpsvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "373",
+                        "display": "Mutagrip"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "613",
+                        "display": "Pentavac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "509",
+                        "display": "Pneumovax-23"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "646",
+                        "display": "Revaxis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "520",
+                        "display": "Stamaril"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "612",
+                        "display": "Tetravac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "417",
+                        "display": "Tollwut Impfstoff Mérieux"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "688",
+                        "display": "Varivax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "485",
+                        "display": "Influvac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "660",
+                        "display": "Influvac plus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "654",
+                        "display": "Meningitec"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "643",
+                        "display": "Prevenar-7"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "644",
+                        "display": "Hexavac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "711",
+                        "display": "DiTe pediatric adsorbed"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "711-01",
+                        "display": "Diphtherie- und Tetanus-Adsorbatimpfstoff für Kinder unter 8 Jahren"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "711-02",
+                        "display": "Diphtherie- und Tetanus-Adsorbatimpfstoff für Erwachsene und Kinder ab 7 Jahren"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "704",
+                        "display": "Dukoral"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "483",
+                        "display": "Rimevax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "707",
+                        "display": "Tetanol pur"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "57735",
+                        "display": "Gardasil"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "709",
+                        "display": "Zostavax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "58158",
+                        "display": "Priorix-Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "696",
+                        "display": "BCG SSI"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "58317",
+                        "display": "Fluad"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "60150",
+                        "display": "Rotarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "703",
+                        "display": "MMRVaxPro"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "58506",
+                        "display": "Measles vaccine live"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "59267",
+                        "display": "Agrippal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "58271",
+                        "display": "Optaflu"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "57814",
+                        "display": "Cervarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "60129",
+                        "display": "Prevenar 13"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "59147",
+                        "display": "Ixiaro"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "62502",
+                        "display": "Menveo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "600",
+                        "display": "DiTe Anatoxal Erwachsene"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "690",
+                        "display": "DiTe Anatoxal N Erwachsene"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "689",
+                        "display": "Te Anatoxal N"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "62961",
+                        "display": "Fluarix Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66037",
+                        "display": "Menjugate liquid"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "699",
+                        "display": "ProQuad"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "65728",
+                        "display": "Gardasil 9"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "65387",
+                        "display": "Gardasil 9"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66940",
+                        "display": "Vaxelis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66427",
+                        "display": "VaxigripTetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "65730",
+                        "display": "Bexsero"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68087",
+                        "display": "Influvac Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68267",
+                        "display": "Spikevax (COVID-19 Vaccine, Moderna)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68225",
+                        "display": "Comirnaty (COVID-19 Vaccine, Pfizer)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68235",
+                        "display": "COVID-19 Vaccine Janssen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "67987",
+                        "display": "Shingrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "67482",
+                        "display": "Flucelvax Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "67704",
+                        "display": "Efluelda 0.7 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68003",
+                        "display": "Supemtek 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66161",
+                        "display": "Foclivia (Durchstechflasche)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66156",
+                        "display": "Foclivia (Fertigspritze)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68473",
+                        "display": "Nuvaxovid 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68358",
+                        "display": "Ervebo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68710-01",
+                        "display": "Comirnaty® 30 Mikrogramm/Dosis, für Personen ab 12 Jahren"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68710-02",
+                        "display": "Comirnaty® 10 Mikrogramm/Dosis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68710-03",
+                        "display": "Comirnaty® 3 Mikrogramm/Dosis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68462",
+                        "display": "Fluenz Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69009",
+                        "display": "Spikevax Bivalent Original / Omicron"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68110",
+                        "display": "Adacel-Polio 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68317",
+                        "display": "Adacel 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68221",
+                        "display": "MenQuadfi"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69123",
+                        "display": "Spikevax Bivalent Original / Omicron 10 mg/ml, Fertigspritze"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69010",
+                        "display": "Spikevax, Fertigspritze"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69047",
+                        "display": "Comirnaty® Original/Omicron BA.1 15/15 µg pro Dosis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69127",
+                        "display": "Comirnaty Original/Omicron BA. 4-5 0.225 mg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69189",
+                        "display": "Spikevax Bivalent Original / Omicron BA.4-5"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69211",
+                        "display": "Spikevax Bivalent Original / Omicron BA.4-5, Fertigspritze"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68752",
+                        "display": "Vaxneuvance"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69465",
+                        "display": "Spikevax XBB.1.5 0.10 mg/ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69484",
+                        "display": "Spikevax XBB.1.5 0.10 mg/ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69488",
+                        "display": "Comirnaty Omicron XBB.1.5 (30 Mikrogramm)/Dosis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69310",
+                        "display": "AREXVY"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69173",
+                        "display": "Jynneos"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69222",
+                        "display": "Prevenar 20"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69815",
+                        "display": "Comirnaty Omicron XBB.1.5, 0.042 mg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69403",
+                        "display": "Qdenga 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69913",
+                        "display": "Comirnaty JN.1 0.042 mg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69912-01",
+                        "display": "Comirnaty JN.1 30 µg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69912-02",
+                        "display": "Comirnaty JN.1 10 µg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69691",
+                        "display": "Abrysvo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69788",
+                        "display": "Spikevax JN.1 (mRNA-1273.167), 0.10mg/ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70205",
+                        "display": "Spikevax LP.8.1"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70400",
+                        "display": "Comirnaty LP.8.1 10 µg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70403",
+                        "display": "Comirnaty LP.8.1 30 µg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69863-01",
+                        "display": "Efluelda TIV 0.5 mL"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69995-01",
+                        "display": "mResvia Respiratorisches-Synzytial-Virus (RSV) Vakzin 0.10 mg/ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69781",
+                        "display": "Capvaxive"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70042",
+                        "display": "Fluarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69992",
+                        "display": "Influvac 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70144",
+                        "display": "Flucelvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70490",
+                        "display": "Vimkunya"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "14",
+                        "display": "MoRu-Viraten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "17",
+                        "display": "Poliomyelitis Impfstoff Berna"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "23",
+                        "display": "Triviraten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "25",
+                        "display": "Vivotif L"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "35",
+                        "display": "Infanrix DTPa"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "39",
+                        "display": "Infanrix Penta"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "47",
+                        "display": "Attenuvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "48",
+                        "display": "BCG"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "53",
+                        "display": "HBVAXPRO 5"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "55",
+                        "display": "Meningokokken-Impfstoff A+C Mérieux"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "56",
+                        "display": "Meruvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "73",
+                        "display": "Infanrix DTPa+Hib"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "74",
+                        "display": "Twinrix 360/10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "75",
+                        "display": "Pluserix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "76",
+                        "display": "Acel Immune"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "77",
+                        "display": "Acel P"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "78",
+                        "display": "Act-Hib"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "79",
+                        "display": "Anatoxal DiTePer"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "80",
+                        "display": "Anatoxal DiTe Erwachsene"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "81",
+                        "display": "Anatoxal DiTe N Erwachsene"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "82",
+                        "display": "Anatoxal Di"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "83",
+                        "display": "Anatoxal Te"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "84",
+                        "display": "Anatoxal Te N"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "86",
+                        "display": "Arilvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "87",
+                        "display": "BCG Vaccin Mérieux"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "88",
+                        "display": "Biviraten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "91",
+                        "display": "Ervevax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "92",
+                        "display": "HibTiter"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "93",
+                        "display": "Infanrix DTPa-HBV"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "94",
+                        "display": "Lyssavac Berna"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "95",
+                        "display": "Vaccin méningococcique A+C Mérieux"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "96",
+                        "display": "MM Vax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "97",
+                        "display": "Mumaten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "98",
+                        "display": "Pedvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "99",
+                        "display": "Pentacoq"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "100",
+                        "display": "Pnu-Immune"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "101",
+                        "display": "Polio Salk"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "102",
+                        "display": "Polio Sabin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "103",
+                        "display": "Poloral"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "106",
+                        "display": "Tetracoq"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "107",
+                        "display": "Tetramune"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "110",
+                        "display": "Vaqta"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "111",
+                        "display": "Rubeaten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "112",
+                        "display": "Rudivax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "115",
+                        "display": "Havrix 360"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "117",
+                        "display": "Almevax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "118",
+                        "display": "Hevac B"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "119",
+                        "display": "MMR-I"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "120",
+                        "display": "Moruman"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "121",
+                        "display": "Rimparix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "122",
+                        "display": "Rubevac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "123",
+                        "display": "Trimovax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "126",
+                        "display": "Ditanrix pediatric"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "127",
+                        "display": "Eolarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "128",
+                        "display": "FSME-Immun Injekt"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "133",
+                        "display": "ProHibit"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "134",
+                        "display": "Anatoxal DiTe Kinder"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "136",
+                        "display": "Celtura"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "137",
+                        "display": "Focetria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "138",
+                        "display": "K1, K2, K3"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "139",
+                        "display": "Koprowski"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "141",
+                        "display": "Pandemrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "142",
+                        "display": "Prohibit DTP"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "143",
+                        "display": "TAB oral"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "144",
+                        "display": "Variola"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "147",
+                        "display": "Polio Koprowski (K1-K3)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "148",
+                        "display": "Polio Lilly"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "151",
+                        "display": "Di Anatoxal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "154",
+                        "display": "DiTe Anatoxal Kinder"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "155",
+                        "display": "DiTePer Anatoxal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "162",
+                        "display": "HBVAX DNA 5"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "163",
+                        "display": "HBVAX DNA 10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "164",
+                        "display": "HBVAX DNA 40"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "165",
+                        "display": "Havrix junior"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "166",
+                        "display": "Infanrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "168",
+                        "display": "Tanrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "169",
+                        "display": "Vaccin variole"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "170",
+                        "display": "Engerix-B 40"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "172",
+                        "display": "Hepavax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "16",
+                        "display": "Orochol E"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "immunizationMpox",
+              "text": "Affenpockenimpfung",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "immunizationStatusMpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.status",
+                  "text": "Geimpft?",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "373066001",
+                        "display": "Ja"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "373067005",
+                        "display": "Nein"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Unbekannt"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationDosesMpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses",
+                  "text": "Total Anzahl Dosen",
+                  "type": "integer",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/minValue",
+                      "valueInteger": 1
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusMpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationLastDoseMpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.lastDoseDate",
+                  "text": "Letzte Dosis, Datum",
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusMpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationVaccineMpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.vaccine",
+                  "text": "Impfstoff — Markenname",
+                  "type": "open-choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "drop-down",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "immunizationStatusMpox",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "787859002",
+                        "display": "Vaccine product"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "683",
+                        "display": "FSME-Immun 0.25 ml Junior"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "450",
+                        "display": "FSME-Immun CC"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "656",
+                        "display": "NeisVac-C"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "627",
+                        "display": "Encepur N"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "628",
+                        "display": "Encepur N Kinder"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "572",
+                        "display": "Epaxal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "544",
+                        "display": "Heprecomb"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "642",
+                        "display": "Heprecomb Kinder"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "614",
+                        "display": "Inflexal V"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "657",
+                        "display": "Menjugate"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "533",
+                        "display": "Moraten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "555",
+                        "display": "Orochol"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "685",
+                        "display": "Rabipur"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "702",
+                        "display": "Td-pur"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "686",
+                        "display": "Td-Virelon"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "467",
+                        "display": "Vivotif"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "637",
+                        "display": "Boostrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "681",
+                        "display": "Boostrix Polio"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "567",
+                        "display": "Ditanrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "551",
+                        "display": "Engerix-B 10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "534",
+                        "display": "Engerix-B 20"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "583",
+                        "display": "Fluarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "558",
+                        "display": "Havrix 1440"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "599",
+                        "display": "Havrix 720"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "603",
+                        "display": "Hiberix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "638",
+                        "display": "Infanrix DTPa-IPV"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "619",
+                        "display": "Infanrix DTPa-IPV+Hib"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "640",
+                        "display": "Infanrix hexa"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "652",
+                        "display": "Mencevax ACWY"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "669",
+                        "display": "Poliorix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "615",
+                        "display": "Priorix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "592",
+                        "display": "Twinrix 720/20"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "585",
+                        "display": "Varilrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "528",
+                        "display": "Gen H-B-Vax 10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "545",
+                        "display": "HBVAXPRO 40"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "610",
+                        "display": "Gen H-B-Vax 5"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "663",
+                        "display": "HBVAXPRO 10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "268",
+                        "display": "MMR-II"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "247",
+                        "display": "Mumpsvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "373",
+                        "display": "Mutagrip"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "613",
+                        "display": "Pentavac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "509",
+                        "display": "Pneumovax-23"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "646",
+                        "display": "Revaxis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "520",
+                        "display": "Stamaril"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "612",
+                        "display": "Tetravac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "417",
+                        "display": "Tollwut Impfstoff Mérieux"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "688",
+                        "display": "Varivax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "485",
+                        "display": "Influvac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "660",
+                        "display": "Influvac plus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "654",
+                        "display": "Meningitec"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "643",
+                        "display": "Prevenar-7"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "644",
+                        "display": "Hexavac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "711",
+                        "display": "DiTe pediatric adsorbed"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "711-01",
+                        "display": "Diphtherie- und Tetanus-Adsorbatimpfstoff für Kinder unter 8 Jahren"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "711-02",
+                        "display": "Diphtherie- und Tetanus-Adsorbatimpfstoff für Erwachsene und Kinder ab 7 Jahren"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "704",
+                        "display": "Dukoral"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "483",
+                        "display": "Rimevax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "707",
+                        "display": "Tetanol pur"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "57735",
+                        "display": "Gardasil"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "709",
+                        "display": "Zostavax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "58158",
+                        "display": "Priorix-Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "696",
+                        "display": "BCG SSI"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "58317",
+                        "display": "Fluad"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "60150",
+                        "display": "Rotarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "703",
+                        "display": "MMRVaxPro"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "58506",
+                        "display": "Measles vaccine live"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "59267",
+                        "display": "Agrippal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "58271",
+                        "display": "Optaflu"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "57814",
+                        "display": "Cervarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "60129",
+                        "display": "Prevenar 13"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "59147",
+                        "display": "Ixiaro"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "62502",
+                        "display": "Menveo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "600",
+                        "display": "DiTe Anatoxal Erwachsene"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "690",
+                        "display": "DiTe Anatoxal N Erwachsene"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "689",
+                        "display": "Te Anatoxal N"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "62961",
+                        "display": "Fluarix Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66037",
+                        "display": "Menjugate liquid"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "699",
+                        "display": "ProQuad"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "65728",
+                        "display": "Gardasil 9"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "65387",
+                        "display": "Gardasil 9"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66940",
+                        "display": "Vaxelis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66427",
+                        "display": "VaxigripTetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "65730",
+                        "display": "Bexsero"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68087",
+                        "display": "Influvac Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68267",
+                        "display": "Spikevax (COVID-19 Vaccine, Moderna)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68225",
+                        "display": "Comirnaty (COVID-19 Vaccine, Pfizer)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68235",
+                        "display": "COVID-19 Vaccine Janssen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "67987",
+                        "display": "Shingrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "67482",
+                        "display": "Flucelvax Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "67704",
+                        "display": "Efluelda 0.7 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68003",
+                        "display": "Supemtek 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66161",
+                        "display": "Foclivia (Durchstechflasche)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "66156",
+                        "display": "Foclivia (Fertigspritze)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68473",
+                        "display": "Nuvaxovid 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68358",
+                        "display": "Ervebo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68710-01",
+                        "display": "Comirnaty® 30 Mikrogramm/Dosis, für Personen ab 12 Jahren"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68710-02",
+                        "display": "Comirnaty® 10 Mikrogramm/Dosis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68710-03",
+                        "display": "Comirnaty® 3 Mikrogramm/Dosis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68462",
+                        "display": "Fluenz Tetra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69009",
+                        "display": "Spikevax Bivalent Original / Omicron"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68110",
+                        "display": "Adacel-Polio 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68317",
+                        "display": "Adacel 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68221",
+                        "display": "MenQuadfi"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69123",
+                        "display": "Spikevax Bivalent Original / Omicron 10 mg/ml, Fertigspritze"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69010",
+                        "display": "Spikevax, Fertigspritze"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69047",
+                        "display": "Comirnaty® Original/Omicron BA.1 15/15 µg pro Dosis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69127",
+                        "display": "Comirnaty Original/Omicron BA. 4-5 0.225 mg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69189",
+                        "display": "Spikevax Bivalent Original / Omicron BA.4-5"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69211",
+                        "display": "Spikevax Bivalent Original / Omicron BA.4-5, Fertigspritze"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "68752",
+                        "display": "Vaxneuvance"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69465",
+                        "display": "Spikevax XBB.1.5 0.10 mg/ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69484",
+                        "display": "Spikevax XBB.1.5 0.10 mg/ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69488",
+                        "display": "Comirnaty Omicron XBB.1.5 (30 Mikrogramm)/Dosis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69310",
+                        "display": "AREXVY"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69173",
+                        "display": "Jynneos"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69222",
+                        "display": "Prevenar 20"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69815",
+                        "display": "Comirnaty Omicron XBB.1.5, 0.042 mg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69403",
+                        "display": "Qdenga 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69913",
+                        "display": "Comirnaty JN.1 0.042 mg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69912-01",
+                        "display": "Comirnaty JN.1 30 µg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69912-02",
+                        "display": "Comirnaty JN.1 10 µg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69691",
+                        "display": "Abrysvo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69788",
+                        "display": "Spikevax JN.1 (mRNA-1273.167), 0.10mg/ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70205",
+                        "display": "Spikevax LP.8.1"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70400",
+                        "display": "Comirnaty LP.8.1 10 µg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70403",
+                        "display": "Comirnaty LP.8.1 30 µg"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69863-01",
+                        "display": "Efluelda TIV 0.5 mL"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69995-01",
+                        "display": "mResvia Respiratorisches-Synzytial-Virus (RSV) Vakzin 0.10 mg/ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69781",
+                        "display": "Capvaxive"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70042",
+                        "display": "Fluarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69992",
+                        "display": "Influvac 0.5 ml"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70144",
+                        "display": "Flucelvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70490",
+                        "display": "Vimkunya"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "14",
+                        "display": "MoRu-Viraten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "17",
+                        "display": "Poliomyelitis Impfstoff Berna"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "23",
+                        "display": "Triviraten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "25",
+                        "display": "Vivotif L"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "35",
+                        "display": "Infanrix DTPa"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "39",
+                        "display": "Infanrix Penta"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "47",
+                        "display": "Attenuvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "48",
+                        "display": "BCG"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "53",
+                        "display": "HBVAXPRO 5"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "55",
+                        "display": "Meningokokken-Impfstoff A+C Mérieux"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "56",
+                        "display": "Meruvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "73",
+                        "display": "Infanrix DTPa+Hib"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "74",
+                        "display": "Twinrix 360/10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "75",
+                        "display": "Pluserix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "76",
+                        "display": "Acel Immune"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "77",
+                        "display": "Acel P"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "78",
+                        "display": "Act-Hib"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "79",
+                        "display": "Anatoxal DiTePer"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "80",
+                        "display": "Anatoxal DiTe Erwachsene"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "81",
+                        "display": "Anatoxal DiTe N Erwachsene"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "82",
+                        "display": "Anatoxal Di"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "83",
+                        "display": "Anatoxal Te"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "84",
+                        "display": "Anatoxal Te N"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "86",
+                        "display": "Arilvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "87",
+                        "display": "BCG Vaccin Mérieux"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "88",
+                        "display": "Biviraten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "91",
+                        "display": "Ervevax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "92",
+                        "display": "HibTiter"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "93",
+                        "display": "Infanrix DTPa-HBV"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "94",
+                        "display": "Lyssavac Berna"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "95",
+                        "display": "Vaccin méningococcique A+C Mérieux"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "96",
+                        "display": "MM Vax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "97",
+                        "display": "Mumaten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "98",
+                        "display": "Pedvax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "99",
+                        "display": "Pentacoq"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "100",
+                        "display": "Pnu-Immune"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "101",
+                        "display": "Polio Salk"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "102",
+                        "display": "Polio Sabin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "103",
+                        "display": "Poloral"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "106",
+                        "display": "Tetracoq"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "107",
+                        "display": "Tetramune"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "110",
+                        "display": "Vaqta"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "111",
+                        "display": "Rubeaten"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "112",
+                        "display": "Rudivax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "115",
+                        "display": "Havrix 360"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "117",
+                        "display": "Almevax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "118",
+                        "display": "Hevac B"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "119",
+                        "display": "MMR-I"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "120",
+                        "display": "Moruman"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "121",
+                        "display": "Rimparix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "122",
+                        "display": "Rubevac"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "123",
+                        "display": "Trimovax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "126",
+                        "display": "Ditanrix pediatric"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "127",
+                        "display": "Eolarix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "128",
+                        "display": "FSME-Immun Injekt"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "133",
+                        "display": "ProHibit"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "134",
+                        "display": "Anatoxal DiTe Kinder"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "136",
+                        "display": "Celtura"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "137",
+                        "display": "Focetria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "138",
+                        "display": "K1, K2, K3"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "139",
+                        "display": "Koprowski"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "141",
+                        "display": "Pandemrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "142",
+                        "display": "Prohibit DTP"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "143",
+                        "display": "TAB oral"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "144",
+                        "display": "Variola"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "147",
+                        "display": "Polio Koprowski (K1-K3)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "148",
+                        "display": "Polio Lilly"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "151",
+                        "display": "Di Anatoxal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "154",
+                        "display": "DiTe Anatoxal Kinder"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "155",
+                        "display": "DiTePer Anatoxal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "162",
+                        "display": "HBVAX DNA 5"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "163",
+                        "display": "HBVAX DNA 10"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "164",
+                        "display": "HBVAX DNA 40"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "165",
+                        "display": "Havrix junior"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "166",
+                        "display": "Infanrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "168",
+                        "display": "Tanrix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "169",
+                        "display": "Vaccin variole"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "170",
+                        "display": "Engerix-B 40"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "172",
+                        "display": "Hepavax"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-myvaccines-cs",
+                        "code": "16",
+                        "display": "Orochol E"
+                      }
+                    }
+                  ]
                 }
               ]
             }

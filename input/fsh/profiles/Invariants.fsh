@@ -14,3 +14,12 @@ Description: "At least the format YYYY-MM-DD is required."
 Severity: #error
 Expression: "$this.toString().length() >= 10"
 
+
+// The "unbekannt" modifier extension and `status` state one fact together and must not contradict
+// each other: the extension is only meaningful on a record that would otherwise read "not
+// vaccinated". Spelled with `modifierExtension.where(url = ...)` rather than `extension(...)` —
+// the FHIRPath `extension()` function only searches `Element.extension`, never `modifierExtension`.
+Invariant: ch-ekm-immunization-unknown
+Description: "If it is unknown whether the vaccination took place (modifierExtension[unknown] present), Immunization.status must be 'not-done'."
+Severity: #error
+Expression: "modifierExtension.where(url = 'http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-immunization-unknown').exists() implies status = 'not-done'"

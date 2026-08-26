@@ -71,6 +71,25 @@
                 "reference": "Observation/ExtractedCauseOfDeath"
               }
             ]
+          },
+          {
+            "title": "Immunization section",
+            "code": {
+              "coding": [
+                {
+                  "code": "11369-6",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "Immunization/ExtractedImmunizationSmallpoxUnknown"
+              },
+              {
+                "reference": "Immunization/ExtractedImmunizationMpoxDatedDosed"
+              }
+            ]
           }
         ],
         "category": [
@@ -406,8 +425,7 @@
             "line": [
               "Sodaweg 55"
             ],
-            "postalCode": "3921",
-            "city": "Flammingen"
+            "postalCode": "3921"
           }
         ]
       }
@@ -508,6 +526,108 @@
               "system": "http://snomed.info/sct",
               "code": "359814004",
               "display": "Mpox"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUnknown",
+      "resource": {
+        "resourceType": "Immunization",
+        "id": "ExtractedImmunizationSmallpoxUnknown",
+        "modifierExtension": [
+          {
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "261665006",
+                  "system": "http://snomed.info/sct",
+                  "display": "Unknown (qualifier value)"
+                }
+              ]
+            },
+            "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-immunization-unknown"
+          }
+        ],
+        "patient": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "protocolApplied": [
+          {
+            "targetDisease": [
+              {
+                "coding": [
+                  {
+                    "code": "67924001",
+                    "system": "http://snomed.info/sct",
+                    "display": "Smallpox"
+                  }
+                ]
+              }
+            ],
+            "_doseNumberPositiveInt": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+                  "valueCode": "asked-unknown"
+                }
+              ]
+            }
+          }
+        ],
+        "vaccineCode": {
+          "coding": [
+            {
+              "code": "1290624003",
+              "system": "http://snomed.info/sct",
+              "display": "Variola virus antigen-containing vaccine product"
+            }
+          ]
+        },
+        "status": "not-done",
+        "_occurrenceDateTime": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
+              "valueCode": "asked-unknown"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedDosed",
+      "resource": {
+        "resourceType": "Immunization",
+        "id": "ExtractedImmunizationMpoxDatedDosed",
+        "patient": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "protocolApplied": [
+          {
+            "targetDisease": [
+              {
+                "coding": [
+                  {
+                    "code": "359814004",
+                    "system": "http://snomed.info/sct",
+                    "display": "Mpox"
+                  }
+                ]
+              }
+            ],
+            "doseNumberPositiveInt": 2
+          }
+        ],
+        "status": "completed",
+        "occurrenceDateTime": "2026-06-15",
+        "vaccineCode": {
+          "coding": [
+            {
+              "code": "69173",
+              "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+              "display": "Jynneos"
             }
           ]
         }

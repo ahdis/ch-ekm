@@ -69,10 +69,13 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 // Encounter that `Composition.encounter` already references states the same fact twice; the
 // hospitalisation is modelled on the Encounter alone (see ChEkmEncounter).
 
-// "History of immunization Narrative"
+// "History of immunization Narrative" - the "Impfstatus" section (issue #29). Same section code
+// CH VACD uses for its vaccination record's `section[administration]`, so the two are readable by
+// the same consumer. One entry per vaccination type the disease's form asks about, whatever the
+// answer was ("nein" and "unbekannt" produce a resource too - see ChEkmImmunization).
 * section[immunization].code = $loinc#11369-6 
 * section[immunization].entry 1..*
-* section[immunization].entry only Reference(Immunization)
+* section[immunization].entry only Reference(ChEkmImmunization)
 
 // "History of medication use Narrative"
 * section[medication].code = $loinc#10160-0

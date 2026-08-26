@@ -79,3 +79,42 @@ Description: "Carrier/placeholder extension used only inside an SDC template-bas
 * extension contains
     $sdc-templateExtractContext named context 0..1 and
     $sdc-templateExtractValue named value 0..*
+
+// -----------------------------------------------------------------------------------------------
+// "Unbekannt" for a vaccination — a MODIFIER extension, and deliberately so.
+//
+// The form asks, per vaccination type, "geimpft? ja / nein / unbekannt". Two of the three answers
+// fit R4 `Immunization.status` (itself a modifier element): "ja" is `completed`, "nein" is
+// `not-done`. The third does not fit anywhere — the required binding
+// (http://hl7.org/fhir/ValueSet/immunization-status) has no "unknown" concept, and `status` is 1..1.
+//
+// Neither escape hatch works here:
+//   * `status = not-done` alone would ASSERT that the vaccination did not happen, which is not what
+//     the reporting physician said.
+//   * `status` left valueless with a plain `data-absent-reason` puts the correction in an IGNORABLE
+//     extension hanging off a modifier element — a consumer is free to skip it — and leaves a
+//     required-bound 1..1 code without a value.
+//
+// A modifier extension is exactly the right tool: a consumer that does not understand it MUST
+// reject the resource rather than silently read `not-done` as "definitely not vaccinated". It is
+// present ONLY on the "unbekannt" rows, so a generic consumer still processes every plain
+// "ja"/"nein" row untouched (see ch-ekm-immunization-unknown for the status pairing).
+//
+// The value follows the IG's own "unbekannt" rule (forms-summary.md §12): the extension CAN hold a
+// code, so it carries the code — sct#261665006, the same qualifier that reaches
+// `Encounter.reasonCode` and `Observation.valueCodeableConcept` elsewhere in this IG — rather than
+// a bare boolean flag.
+Extension: ChEkmExtImmunizationUnknown
+Id: ch-ekm-ext-immunization-unknown
+Title: "CH EKM Extension: Immunization unknown"
+Description: "This CH EKM modifier extension records that it is NOT KNOWN whether the vaccination described by this Immunization took place ('unbekannt' on the reporting form), as opposed to it being known not to have taken place. It is a modifier extension because the resource carries status = not-done, which without this extension would assert that the vaccination did not happen."
+* ^context[+].type = #element
+* ^context[=].expression = "Immunization"
+* . ^short = "It is unknown whether this vaccination took place"
+* . ^isModifier = true
+* . ^isModifierReason = "Changes the meaning of Immunization.status: the record states that it is unknown whether the vaccination took place, not that it did not take place. A consumer that ignores this extension would read status = not-done as an assertion that the person was not vaccinated."
+* value[x] 1..
+* value[x] only CodeableConcept
+* valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
+* valueCodeableConcept ^short = "Always sct#261665006 'Unknown' — the extension's presence is the statement"
+

@@ -239,3 +239,19 @@ Description: "This CH EKM value set contains the answers of the cause of death f
 * ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
 * $sct#74964007  "Other (qualifier value)"
 * $sct#261665006 "Unknown (qualifier value)"
+
+// The vaccination types the Mpox form asks about, expressed as the diseases they protect against
+// (Immunization.protocolApplied.targetDisease). Two rows on the form:
+//   Pockenimpfung       - the historical smallpox vaccination programmes (first/second generation
+//                         vaccinia), discontinued in Switzerland in the 1970s
+//   Affenpockenimpfung  - the modern MVA-BN vaccine (Jynneos / Imvanex)
+// Both concepts are in the CH VACD target disease value set, so a consumer that already handles
+// vaccination records needs no CH EKM specific terminology to read them.
+ValueSet: ChEkmMpoxImmunizationTargetDisease
+Title: "CH EKM Mpox Immunization Target Disease"
+Description: "This CH EKM value set contains the vaccination types asked about on the Mpox reporting form, identified by the disease they target: smallpox (the earlier smallpox vaccination programmes) and mpox."
+* ^status = #active
+* ^experimental = false
+
+* $sct#67924001 "Smallpox (disorder)"
+* $sct#359814004 "Mpox"

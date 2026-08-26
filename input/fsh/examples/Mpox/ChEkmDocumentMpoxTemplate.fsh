@@ -56,6 +56,76 @@ Usage: #inline
 * insert RuleSetObservationCauseOfDeath
 
 // ---------------------------------------------------------------------------
+// Immunization (ChEkmImmunizationMpox) - the "Impfstatus" section (issue #29).
+//
+// SIX MUTUALLY EXCLUSIVE INSTANCES PER FORM ROW, of which exactly one is emitted; a row that was
+// not answered emits none. `occurrence[x]` and `protocolApplied.doseNumber[x]` are both 1..1 and
+// have to be an answered value on some branches and a data-absent-reason on others, which one
+// template instance cannot express - see RuleSetImmunization.fsh for the full reasoning and for
+// which variant covers which answer.
+// ---------------------------------------------------------------------------
+
+Instance: ExtractedImmunizationSmallpoxDatedDosed
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationDatedDosed(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
+
+Instance: ExtractedImmunizationSmallpoxDatedNoDose
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationDatedNoDose(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
+
+Instance: ExtractedImmunizationSmallpoxUndatedDosed
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationUndatedDosed(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
+
+Instance: ExtractedImmunizationSmallpoxUndatedNoDose
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationUndatedNoDose(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
+
+Instance: ExtractedImmunizationSmallpoxNotDone
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationNotDone(67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
+
+Instance: ExtractedImmunizationSmallpoxUnknown
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationUnknown(67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
+
+Instance: ExtractedImmunizationMpoxDatedDosed
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationDatedDosed(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
+
+Instance: ExtractedImmunizationMpoxDatedNoDose
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationDatedNoDose(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
+
+Instance: ExtractedImmunizationMpoxUndatedDosed
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationUndatedDosed(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
+
+Instance: ExtractedImmunizationMpoxUndatedNoDose
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationUndatedNoDose(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
+
+Instance: ExtractedImmunizationMpoxNotDone
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationNotDone(359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
+
+Instance: ExtractedImmunizationMpoxUnknown
+InstanceOf: ChEkmImmunizationMpox
+Usage: #inline
+* insert RuleSetImmunizationUnknown(359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
+
+// ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionMpox) — static structure, references the entries above,
 // author = Broker, date taken from QR.authored
 // ---------------------------------------------------------------------------
@@ -82,6 +152,9 @@ Usage: #inline
 // Cause of death — gated on the person having died, and LAST for the same index-shift reason as the
 // conditional Bundle entries (see RuleSetCauseOfDeathSection).
 * insert RuleSetCauseOfDeathSection
+// Impfstatus — the second gated section, and therefore after the cause of death. Same
+// last-element rule; see RuleSetImmunizationSectionMpox.
+* insert RuleSetImmunizationSectionMpox
 
 // ---------------------------------------------------------------------------
 // The Bundle template itself (ChEkmDocumentMpox shape)
@@ -160,3 +233,9 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 * entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
 * entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath'"
 * entry[=].resource = ExtractedCauseOfDeath
+
+// Impfstatus Immunizations - the remaining conditional entries, after the Encounter and the
+// cause-of-death Observation for the ordering reason above. Twelve gated entries, six per row, of
+// which at most one per row ever fires; the gates are mutually exclusive by construction.
+* insert RuleSetImmunizationEntries(Smallpox)
+* insert RuleSetImmunizationEntries(Mpox)

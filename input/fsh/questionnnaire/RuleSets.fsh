@@ -341,3 +341,100 @@ RuleSet: RuleSetQrLaunchContextEncounter
 // the child's own root group in ChEkmQuestionnaireTreatingPhysician.
 RuleSet: RuleSetQrGroupTreatingPhysician
 * insert RuleSetQrLevel2SubQuestionnaire("treatingPhysician", "Treating physician", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireTreatingPhysician")
+
+// =================================================================================================
+// "Impfstatus" (issue #29) — ONE ROW OF THE VACCINATION TABLE, parameterised by vaccination type.
+//
+// This is the piece that makes the section modular across diseases. SDC's $assemble cannot
+// parameterise a sub-questionnaire, so the reuse happens one level down, in FSH: every disease that
+// asks about vaccinations builds its own small sub-questionnaire (ChEkmQuestionnaireImmunization<X>)
+// by inserting this rule set once per vaccination type. Mpox inserts it twice; a future organism
+// inserts it as often as its form has rows, and gets the identical four questions, item controls,
+// enableWhen wiring and translations for free.
+//
+// FIXED ROWS, NOT A REPEATING GROUP. A `repeats = true` group would be disease-agnostic without any
+// FSH machinery, but it produces a variable number of Immunization resources, and forms-summary.md
+// §8 is explicit that the single-Bundle-template extraction breaks down exactly there: the
+// per-instance loop applies to the whole template, not to one `entry`. Fixed rows keep every
+// Immunization a plain context-gated Bundle entry, the shape that is already proven by the
+// hospitalisation Encounter and the cause-of-death Observation. The paper form has a fixed list too.
+//
+// {suffix} is appended to all five linkIds so several rows can live in one questionnaire; it must be
+// a bare word (no spaces), e.g. `Smallpox`. NOTE the FSH escaping rule for rule set arguments: `,`
+// `(` and `)` must be backslash-escaped inside a parameter value, so the label parameters below use
+// an en dash instead of a parenthetical.
+//
+// The four questions map one-to-one onto ChEkmImmunizationForm; `targetDisease` is NOT a question
+// (the row heading is the vaccination type), it is supplied by the extraction template.
+RuleSet: RuleSetQrImmunizationRow(suffix, text, text-de-CH, text-fr-CH, text-it-CH)
+* item[=].item[+].linkId = "immunization{suffix}"
+* insert RuleSetQrLevel2Text({text}, {text-de-CH}, {text-fr-CH}, {text-it-CH})
+* item[=].item[=].type = #group
+
+// 1. Geimpft? ja / nein / unbekannt. All three are real answers and all three produce an
+//    Immunization — see ChEkmImmunization. The other three items are details OF the vaccination and
+//    are enableWhen-gated on "ja", so an answered dose count / date / product implies "ja"; the
+//    extraction template relies on that, exactly as the hospitalisation group does.
+* item[=].item[=].item[+].linkId = "immunizationStatus{suffix}"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.status"
+* insert RuleSetQrLevel3Text("Vaccinated?", "Geimpft?", "Vacciné ?", "Vaccinato?")
+* item[=].item[=].item[=].type = #choice
+* item[=].item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown"
+* item[=].item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueCode = #useSupplement
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "expression"
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+* item[=].item[=].item[=].extension[+].url = $questionnaire-itemControl
+* item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
+* item[=].item[=].item[=].extension[+].url = $choiceOrientation
+* item[=].item[=].item[=].extension[=].valueCode = #horizontal
+
+// 2. "mit total ___ Dosen". A positive integer: doseNumberPositiveInt cannot be 0, and "0 Dosen"
+//    is not an answer this question has — that is what "nein" above is for.
+* item[=].item[=].item[+].linkId = "immunizationDoses{suffix}"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses"
+* insert RuleSetQrLevel3Text("Total number of doses", "Total Anzahl Dosen", "Nombre total de doses", "Numero totale di dosi")
+* item[=].item[=].item[=].type = #integer
+* item[=].item[=].item[=].extension[+].url = $minValue
+* item[=].item[=].item[=].extension[=].valueInteger = 1
+* item[=].item[=].item[=].enableWhen[+].question = "immunizationStatus{suffix}"
+* item[=].item[=].item[=].enableWhen[=].operator = #=
+* item[=].item[=].item[=].enableWhen[=].answerCoding = $sct#373066001 "Yes (qualifier value)"
+
+// 3. "Letzte Dosis, Datum" — the date of the LAST dose, not of a single administration.
+* item[=].item[=].item[+].linkId = "immunizationLastDose{suffix}"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.lastDoseDate"
+// The comma in the German label must be backslash-escaped: this insert sits INSIDE a rule set
+//    body, where `,` still separates the nested rule set's arguments.
+* insert RuleSetQrLevel3Text("Date of the last dose", "Letzte Dosis\, Datum", "Date de la dernière dose", "Data dell'ultima dose")
+* item[=].item[=].item[=].type = #date
+* item[=].item[=].item[=].enableWhen[+].question = "immunizationStatus{suffix}"
+* item[=].item[=].item[=].enableWhen[=].operator = #=
+* item[=].item[=].item[=].enableWhen[=].answerCoding = $sct#373066001 "Yes (qualifier value)"
+
+// 4. "mit Impfstoff: Markenname". OPEN choice against the Swiss vaccine (brand) list — the same
+//    value set CHCoreImmunization already binds `vaccineCode` to — so a brand that is on the list
+//    comes back coded, and anything else comes back as the typed string. Rendered as an
+//    autocomplete rather than a drop-down: the value set holds ~215 brands, which is far too many
+//    to scroll. Extraction handles both answer shapes plus "unanswered"; see RuleSetImmunizationRow.
+//    (No `useSupplement` here, unlike every other coded item: these are brand names, not clinical
+//    concepts, and they are not translated.)
+* item[=].item[=].item[+].linkId = "immunizationVaccine{suffix}"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.vaccine"
+* insert RuleSetQrLevel3Text("Vaccine — brand name", "Impfstoff — Markenname", "Vaccin — nom de marque", "Vaccino — nome commerciale")
+* item[=].item[=].item[=].type = #open-choice
+* item[=].item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-vacd/ValueSet/ch-vacd-vaccines-vs"
+* item[=].item[=].item[=].extension[+].url = $questionnaire-itemControl
+* item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#autocomplete
+* item[=].item[=].item[=].enableWhen[+].question = "immunizationStatus{suffix}"
+* item[=].item[=].item[=].enableWhen[=].operator = #=
+* item[=].item[=].item[=].enableWhen[=].answerCoding = $sct#373066001 "Yes (qualifier value)"
+
+// The Impfstatus tab. A LEVEL-2 placeholder (like the treating physician, unlike the two-child
+// "Verlauf"): the section has exactly one sub-questionnaire, so the child's own root group can BE
+// the tab once $assemble replaces the placeholder with it — which is why the tab label (shortText)
+// sits on the child's root group, not here. Assembled shape:
+//   mpox-form > immunization > immunizationSmallpox > immunizationStatusSmallpox …
+RuleSet: RuleSetQrGroupImmunizationMpox
+* insert RuleSetQrLevel2SubQuestionnaire("immunization", "Immunisation status", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationMpox")

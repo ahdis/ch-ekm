@@ -47,6 +47,11 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 
 * insert RuleSetQrExposureHow
 
+// Impfstatus (issue #29) — "ein neuer Questionnaire Abschnitt 'Impfstatus' NACH der Exposition",
+// so it sits between the Exposure and the treating physician. One level-2 placeholder, because the
+// section has a single sub-questionnaire whose own root group becomes the tab.
+* insert RuleSetQrGroupImmunizationMpox
+
 * insert RuleSetQrGroupTreatingPhysician
 
 // Third launch context (patient + user come from RuleSetQrHeader): the hospitalisation Encounter
