@@ -3,8 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "description": "Command-line SDC template-based $extract for the CH EKM Gonorrhoea testcase.",
+  "description": "Command-line SDC template-based $extract for the CH EKM testcases.",
   "dependencies": {
     "@aehrc/sdc-template-extract": "^1.0.15"
+  },
+  "scripts": {
+    "postinstall": "patch-package"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.0"
   }
 }
