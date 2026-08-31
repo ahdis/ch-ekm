@@ -45,7 +45,7 @@ Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumonia
 * date = "2026-01-27"
 * author = Reference(ChEkmPractitionerRoleBrokerExample)
 * encounter = Reference(ChEkmEncounterExample-InvasivePneumococcalDisease)
-* title = "Meldung zum klinischen Befund Infektionskrankheit"
+* title = "Meldung zum klinischen Befund  Invasive Streptococcus Pneumoniae"
 
 // Diagnosis Section
 * section[diagnosis].title = "Diagnosis section"
@@ -128,7 +128,7 @@ Description: "Example for a CH EKM Condition: Immunosuppression"
 // Instance: QuestionnairePneumoInvasive
 // InstanceOf: Questionnaire
 // Usage: #example
-// Title: "Meldung zum klinischen Befund Infektionskrankheit: Pneumokokken-Erkrankung Invasive"
+// Title: "Meldung zum klinischen Befund: Pneumokokken-Erkrankung Invasive"
 // * status = #active
 // 
 // // ---  Angaben zur betroffenen Person ---

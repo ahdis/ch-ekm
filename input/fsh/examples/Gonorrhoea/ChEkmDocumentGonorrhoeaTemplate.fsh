@@ -4,7 +4,7 @@
 // ---------------------------------------------------------------------------
 Instance: ExtractedConditionGonorrhoea
 InstanceOf: ChEkmConditionGonorrhoea
-// Usage: #inline
+Usage: #inline
 * code = $sct#15628003 "Gonorrhea (disorder)"
 * category = $condition-category#encounter-diagnosis
 * subject.reference = "Patient/ExtractedPatient"
@@ -21,7 +21,7 @@ InstanceOf: ChEkmConditionGonorrhoea
 // ---------------------------------------------------------------------------
 Instance: ExtractedExposureGonorrhoea
 InstanceOf: ChEkmExposureGonorrhoea
-// Usage: #inline
+Usage: #inline
 * status = #final
 * category = $v3-ActClass#AEXPOS "acquisition exposure"
 * code = $v3-ParticipationType#EXPAGNT "Exposure Agent"
@@ -33,7 +33,7 @@ InstanceOf: ChEkmExposureGonorrhoea
 // ---------------------------------------------------------------------------
 Instance: ExtractedCompositionGonorrhoea
 InstanceOf: ChEkmCompositionGonorrhoea
-//Usage: #inline
+Usage: #inline
 * status = #final
 * type = $sct#722143004 "Infectious disease diagnostic study note"
 * category = $sct#423876004 "Clinical report"
@@ -41,7 +41,7 @@ InstanceOf: ChEkmCompositionGonorrhoea
 * date.extension[+].url = $sdc-templateExtractValue
 * date.extension[=].valueString = "%resource.authored"
 * author.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
-* title = "Meldung zum klinischen Befund Infektionskrankheit"
+* title = "Meldung zum klinischen Befund Gonorrhoea"
 * section[0].title = "Diagnosis section"
 * section[0].code = $loinc#29308-4
 * section[0].entry.reference = "Condition/ExtractedConditionGonorrhoea"

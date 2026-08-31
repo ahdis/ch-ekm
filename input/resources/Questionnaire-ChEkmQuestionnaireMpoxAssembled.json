@@ -382,7 +382,7 @@
                 "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
               }
             ],
-            "title": "Meldung zum klinischen Befund Infektionskrankheit",
+            "title": "Meldung zum klinischen Befund MPox",
             "_date": {
               "extension": [
                 {
@@ -2358,7 +2358,7 @@
             {
               "linkId": "surname",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surname",
-              "text": "Surname initial",
+              "text": "Surname",
               "_text": {
                 "extension": [
                   {
@@ -2417,7 +2417,7 @@
             {
               "linkId": "givenname",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givenname",
-              "text": "First name initial",
+              "text": "First name",
               "_text": {
                 "extension": [
                   {

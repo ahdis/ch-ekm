@@ -382,7 +382,7 @@
                 "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
               }
             ],
-            "title": "Meldung zum klinischen Befund Infektionskrankheit",
+            "title": "Meldung zum klinischen Befund MPox",
             "_date": {
               "extension": [
                 {

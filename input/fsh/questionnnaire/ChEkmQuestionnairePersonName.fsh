@@ -1,6 +1,4 @@
-// Modular sub-questionnaire: "Namensinitialen" (name initials of the affected person).
-// Split out of the former ChEkmQuestionnaireGonorrhoeaPerson so the initials, the general
-// person data and the gender identity can be assembled independently.
+// Modular sub-questionnaire: "Name der betroffenen Person" (name of the affected person).
 // Source of truth: logical model ChEkmPersonForm (-> ChEkmPatientName).
 //
 // The items are top-level (no wrapping group), so on assembly they merge directly into the
@@ -13,14 +11,14 @@
 Instance: ChEkmQuestionnairePersonName
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Namensinitialen der betroffenen Person"
-Description: "Modular sub-questionnaire for the name initials (surname / given name) of the affected person. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
+Title: "CH EKM Questionnaire: Name der betroffenen Person"
+Description: "Modular sub-questionnaire for the name (surname / given name) of the affected person. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnairePersonName)
 
 // Name (surname ) - required
 * item[+].linkId = "surname"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surname"
-* insert RuleSetQrLevel1Text("Surname initial", "Name", "Nom", "Cognome")
+* insert RuleSetQrLevel1Text("Surname", "Name", "Nom", "Cognome")
 * item[=].type = #string
 * item[=].required = true
 * item[=].extension[+].url = $sdc-initialExpression
@@ -28,10 +26,10 @@ Description: "Modular sub-questionnaire for the name initials (surname / given n
 * item[=].extension[=].valueExpression.expression = "%patient.name.first().family"
 
 
-// given name initial) - require
+// given name - require
 * item[+].linkId = "givenname"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givenname"
-* insert RuleSetQrLevel1Text("First name initial", "Vorname", "Prénom", "Nome")
+* insert RuleSetQrLevel1Text("First name", "Vorname", "Prénom", "Nome")
 * item[=].type = #string
 * item[=].required = true
 * item[=].extension[+].url = $sdc-initialExpression

@@ -49,7 +49,7 @@ Description: "Example for a CH EKM Composition: Hepatitis C"
 * subject = Reference(ChEkmPatientExample)
 * date = "2026-01-27"
 * author = Reference(http://test.fhir.ch/r4/PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample)
-* title = "Meldung zum klinischen Befund Infektionskrankheit"
+* title = "Meldung zum klinischen Befund Hepatitis C"
 
 // Diagnosis section
 * section[diagnosis].title = "Diagnosis section"

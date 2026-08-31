@@ -142,7 +142,7 @@ Usage: #inline
 * date.extension[+].url = $sdc-templateExtractValue
 * date.extension[=].valueString = "%resource.authored"
 * author.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
-* title = "Meldung zum klinischen Befund Infektionskrankheit"
+* title = "Meldung zum klinischen Befund MPox"
 * section[0].title = "Diagnosis section"
 * section[0].code = $loinc#29308-4
 * section[0].entry.reference = "Condition/ExtractedCondition"

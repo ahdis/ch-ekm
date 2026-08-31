@@ -18,7 +18,7 @@ The specification herewith documented is work in progress. No liability can be i
 
 </div>
 
-**Download**: You can download this implementation guide in [npm format](https://confluence.hl7.org/display/FHIR/NPM+Package+Specification) from [here](package.tgz).
+**Download**: You can download this implementation guide in [npm format](https://confluence.hl7.org/display/FHIR/NPM+Package+Specification) from [here](../package.tgz).
 
 ### Implementation Support for Clinical Information Systems.
 
@@ -28,13 +28,13 @@ This guide supports you as a clinical information system in the following way:
 [//]: # (- [Use cases](usecase.html) describe the different scenarios with respective example reports for specific organisms.)
 
 
-- Value sets for the [terminology](terminology.html) are provided as FHIR resources which you can directly import from the [npm package](package.tgz).  
+- Value sets for the [terminology](terminology.html) are provided as FHIR resources which you can directly import from the [npm package](../package.tgz).  
 
 - Further documentation for specific topics can be found on [guidance](guidance.html) and/or by contacting the FOPH directly.
 
 [FHIR R4](https://hl7.org/fhir/R4/index.html) has a huge implementation community and offers various libraries to support the implementation of FHIR based solutions, for creating the FHIR document or providing a client for doing the FHIR API calls. For java we recommend [hapi-fhir](https://hapifhir.io/), for .NET [firely-net-sdk](https://github.com/FirelyTeam/firely-net-sdk), but there are also multiple other [options](https://confluence.hl7.org/display/FHIR/Open+Source+Implementations). If you have questions about general FHIR questions do not hesitate to ask in [chat.fhir.org](https://chat.fhir.org/).
 
-To check if your report is valid to the requirements of this implementation guide you can check it with the [FHIR Validator](https://confluence.hl7.org/display/FHIR/Using+the+FHIR+Validator) providing this [package](package.tgz) as a parameter and specifying the profile `http://fhir.ch/ig/ch-ekm/StructureDefinition/profile-id`.
+To check if your report is valid to the requirements of this implementation guide you can check it with the [FHIR Validator](https://confluence.hl7.org/display/FHIR/Using+the+FHIR+Validator) providing this [package](../package.tgz) as a parameter and specifying the profile `http://fhir.ch/ig/ch-ekm/StructureDefinition/profile-id`.
 
 Since the FHIR API is standardized you can test your client also against a public FHIR test server like [hapi](https://hapi.fhir.org/baseR4/swagger-ui/). 
 

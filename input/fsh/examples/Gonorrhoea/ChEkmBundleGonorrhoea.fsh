@@ -35,7 +35,7 @@ Description: "Example for a CH EKM Composition: Gonorrhoea"
 * date = "2026-05-27" // TODO update if example is available
 * author = Reference(ChEkmPractitionerRoleBrokerExample)
 * encounter = Reference(ChEkmEncounterExample-Gonorrhoea)
-* title = "Meldung zum klinischen Befund Infektionskrankheit"
+* title = "Meldung zum klinischen Befund für Gonorrhoea"
 
 // Diagnosis Section
 * section[diagnosis].title = "Diagnosis section"
