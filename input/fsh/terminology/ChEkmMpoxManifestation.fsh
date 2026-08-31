@@ -4,7 +4,7 @@ Description: "This CH EKM value set includes the codes for the manifestation of 
 * ^status = #active
 * ^experimental = false
 
-// TODO to discuss * include codes from valueset ChEkmOtherNoneUnknown                            // "andere" (Other), "Keine" (finding absent), "unbekannt" (Unknown)
+// TODO to discuss * include codes from valueset ChEkmOtherNoneUnknown                            // "andere" (Other), "Keine" (finding absent), "unbekannt" (Unknown) — German paper-form labels
 * $sct#"95324001:{363698007=280158000}" "Skin lesion of anogenital region"     // Hautläsion genital/anal (Skin lesion : Finding site = Skin of anogenital region)
 * $sct#"95324001:{363698007=73897004}"  "Skin lesion of face"                  // Hautläsion Gesicht (Skin lesion : Finding site = Skin of face)
 * $sct#"95324001:{363698007=116370005}" "Skin lesion of extremity"             // Hautläsion Extremitäten (Skin lesion : Finding site = Skin of extremity)

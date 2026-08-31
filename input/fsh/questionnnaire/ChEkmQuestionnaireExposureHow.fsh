@@ -52,7 +52,8 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 // * item[=].item[=].enableWhen[=].operator = #=
 // * item[=].item[=].enableWhen[=].answerBoolean = false
 
-// Übertragungsweg unbekannt - default false; when checked it disables the details below
+// "Übertragungsweg unbekannt" (route of transmission unknown) - default false; when checked it
+// disables the details below
 * item[=].item[+].linkId = "exposureHowUnknown"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.unknown"
 * insert RuleSetQrLevel2Text("Route of transmission unknown", "Übertragungsweg unbekannt", "Voie de transmission inconnue", "Via di trasmissione sconosciuta")

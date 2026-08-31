@@ -14,7 +14,7 @@ RuleSet: RuleSetExposureWhere
 // option (ChEkmUnknown = sct#261665006). Splitting on the answer type - `ofType(string)` vs
 // `ofType(Coding)` - is exactly why that option has to be a Coding and not a plain string: typed
 // text lands in `answer.valueString`, so a string option would be indistinguishable from someone
-// typing the word "Unbekannt".
+// typing the word "unknown".
 //
 // There is only ONE country item (the former form-only CH/LI check-box `exposureWhereChLi` is gone,
 // Switzerland/Liechtenstein are just the first two entries of the answer value set), so the country
@@ -47,9 +47,9 @@ RuleSet: RuleSetExposureWhere
 // ONE carrier for all cases (the exposure-address extension is 0..1, so two carriers could not both
 // fire). Resulting branches, combined freely since country and precise location are independent:
 //   country answered   -> `country` = the ISO code (+ the Coding on `_country`)
-//   Land = Unbekannt   -> country absent (`_country` DAR)
+//   Land = unknown     -> country absent (`_country` DAR)
 //   Ort typed          -> `city` = the free text
-//   Ort = Unbekannt    -> city absent (`_city` DAR)
+//   Ort = unknown      -> city absent (`_city` DAR)
 //   nothing answered   -> no extension at all
 //
 // The context yields a single `true` sentinel (a bare collection of the answers could hold several
@@ -77,7 +77,7 @@ RuleSet: RuleSetExposureWhere
 //
 // The country part then wraps %base: answered -> `country` = the code plus the same country as a
 // Coding via iso21090-codedString on the `_country` element (a slot no value directive on `country`
-// could reach); "Unbekannt" -> `%factory.string({}, …)` leaves the value empty and puts the
+// could reach); "unknown" -> `%factory.string({}, …)` leaves the value empty and puts the
 // data-absent-reason on `_country`; unanswered -> %base unchanged.
 * extension[=].extension[+].url = $sdc-templateExtractValue
 * extension[=].extension[=].valueString = "%resource.defineVariable('ctry', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='urn:iso:std:iso:3166').first()).defineVariable('ctryUnknown', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists()).defineVariable('loc', %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.ofType(string).first()).defineVariable('base', iif(%loc.empty() and %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists(), %factory.withProperty(%factory.Address({}), 'city', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %factory.Address({}, %loc))).select(%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address', iif(%ctry.exists(), %factory.withProperty(%base, 'country', %factory.string(%ctry.code, %factory.Extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString', %ctry))), iif(%ctryUnknown, %factory.withProperty(%base, 'country', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %base))))"

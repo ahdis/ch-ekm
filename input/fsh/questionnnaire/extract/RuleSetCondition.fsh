@@ -1,7 +1,7 @@
 RuleSet: RuleSetOnsetDateManifestationBeginUnknown
 // Manifestationsbeginn:
 //  - known    -> onsetDateTime = the answered date.
-//  - unbekannt -> no value; onsetDateTime.extension[data-absent-reason] = asked-unknown.
+//  - unknown   -> no value; onsetDateTime.extension[data-absent-reason] = asked-unknown.
 //
 // extension[0] is the data-absent-reason extension. It CANNOT be pre-declared with url =
 // data-absent-reason in the template: a to-be-computed valueCode leaves the extension with no
@@ -17,7 +17,7 @@ RuleSet: RuleSetOnsetDateManifestationBeginUnknown
 // sibling extension, so a carrier is required to reach _onsetDateTime.extension).
 // The templateExtractContext gates emission: empty (element excluded) unless
 // manifestationBeginUnknown = true.
-// extension[1] is the onset value (iif -> {} when unbekannt, so onsetDateTime is omitted then).
+// extension[1] is the onset value (iif -> {} when unknown, so onsetDateTime is omitted then).
 //
 // ORDER MATTERS: the context-gated extension MUST come before the plain onset value extension.
 // The reference engine's array index bookkeeping mis-handles the reverse order (the gated element

@@ -5,15 +5,15 @@
 // Source of truth: logical model ChEkmHospitalisationForm (-> ChEkmEncounter).
 //
 // THREE items, one question each:
-//   1. hospitalisationStatus        Ja / Nein / Unbekannt        -> whether an Encounter exists
+//   1. hospitalisationStatus        Yes / No / Unknown           -> whether an Encounter exists
 //   2. hospitalisationReason        Hospitalisationsgrund        -> Encounter.reasonReference / .reasonCode
 //   3. hospitalisationAdmissionDate Eintrittsdatum               -> Encounter.period.start
-// (2) and (3) are only enabled while (1) is answered "ja" — they are details OF the stay, so asking
-// them after "nein"/"unbekannt" would be contradictory. The extraction template relies on this:
-// an answered admission date implies the "ja" branch.
+// (2) and (3) are only enabled while (1) is answered "yes" — they are details OF the stay, so asking
+// them after "no"/"unknown" would be contradictory. The extraction template relies on this:
+// an answered admission date implies the "yes" branch.
 //
-// The whole ja/nein/unbekannt answer is a form-level question, not a field of the Encounter:
-// "ja" creates the Encounter, "nein" creates none, "unbekannt" creates one carrying only
+// The whole yes/no/unknown answer is a form-level question, not a field of the Encounter:
+// "yes" creates the Encounter, "no" creates none, "unknown" creates one carrying only
 // hospitalization.extension[data-absent-reason]. See ChEkmEncounter and RuleSetEncounterHospitalisation.
 //
 // SDC pre-population reads the `encounter` launch context (%encounter), declared on the modular root
@@ -35,11 +35,11 @@ Description: "Modular sub-questionnaire for the 'Hospitalisation' group of the '
 * insert RuleSetQrLevel1Text("Hospitalisation", "Hospitalisation", "Hospitalisation", "Ospedalizzazione")
 * item[=].type = #group
 
-// 1. Hospitalisation - Ja / Nein / Unbekannt (radio buttons; "unbekannt" is a real answer, not a
+// 1. Hospitalisation - Yes / No / Unknown (radio buttons; "unknown" is a real answer, not a
 //    blank field, which is why it is in the value set rather than being left empty).
 //    Pre-population: an Encounter in context whose `hospitalization` element carries a
-//    data-absent-reason means the source system itself recorded "unbekannt"; any other Encounter
-//    means "ja". No Encounter -> nothing pre-filled (the form asks).
+//    data-absent-reason means the source system itself recorded "unknown"; any other Encounter
+//    means "yes". No Encounter -> nothing pre-filled (the form asks).
 * item[=].item[+].linkId = "hospitalisationStatus"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.hospitalisation"
 * insert RuleSetQrLevel2Text("Was the affected person hospitalised?", "Wurde die betroffene Person hospitalisiert?", "La personne concernée a-t-elle été hospitalisée ?", "La persona interessata è stata ospedalizzata?")

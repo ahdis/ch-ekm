@@ -1,13 +1,13 @@
 RuleSet: RuleSetEncounterHospitalisation
 // Hospitalisation -> ChEkmEncounter. Three form answers, three shapes:
 //
-//   ja (373066001)        -> this Encounter, with period.start = Eintrittsdatum and the
+//   yes (373066001)       -> this Encounter, with period.start = Eintrittsdatum and the
 //                            Hospitalisationsgrund in reasonReference / reasonCode. NO
 //                            `hospitalization` element: the inpatient class and the admission date
 //                            already assert the stay, and an empty BackboneElement violates ele-1.
-//   nein (373067005)      -> no Encounter at all. The whole Bundle entry is dropped, as are the
+//   no (373067005)        -> no Encounter at all. The whole Bundle entry is dropped, as are the
 //                            references to it from Composition.encounter and Condition.encounter.
-//   unbekannt (261665006) -> this Encounter carrying nothing but
+//   unknown (261665006)   -> this Encounter carrying nothing but
 //                            hospitalization.extension[data-absent-reason] = asked-unknown.
 //
 // ONE CONTEXT, ON THE BUNDLE ENTRY, AND NO NESTED CONTEXT ANYWHERE BELOW IT.
@@ -21,7 +21,7 @@ RuleSet: RuleSetEncounterHospitalisation
 // separately emitted the hospitalisation ANSWER as the reason code and lost the Encounter's static
 // `resourceType`/`status`/`class`/`subject`.
 //
-// The Encounter must vanish as a whole for "nein", so the gate has to sit on the Bundle entry — and
+// The Encounter must vanish as a whole for "no", so the gate has to sit on the Bundle entry — and
 // then every conditional part below it must be a plain `templateExtractValue` instead of a context.
 // The idiom for that is the one already used by RuleSetExposureWhere: the context yields a single
 // `true` sentinel and only gates, while each value reads the answers ABSOLUTELY through %resource
@@ -33,7 +33,7 @@ RuleSet: RuleSetEncounterHospitalisation
 * subject.reference = "Patient/ExtractedPatient"
 
 // Eintrittsdatum -> period.start. A primitive, so a bare value directive suffices: the item is
-// enableWhen-gated on "ja", so an answer can only exist in the "ja" branch, and an unanswered item
+// enableWhen-gated on "yes", so an answer can only exist in the "yes" branch, and an unanswered item
 // yields an empty result, which omits `period.start` (and with it `period`).
 * period.start.extension[+].url = $sdc-templateExtractValue
 * period.start.extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationAdmissionDate').answer.value.first()"
@@ -61,7 +61,7 @@ RuleSet: RuleSetEncounterHospitalisation
 * reasonCode[0].extension[+].url = $sdc-templateExtractValue
 * reasonCode[0].extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this))"
 
-// "unbekannt" -> hospitalization.extension[unknown] = data-absent-reason#asked-unknown, and nothing
+// "unknown" -> hospitalization.extension[unknown] = data-absent-reason#asked-unknown, and nothing
 // else in the whole element. The extension is built by %factory.Extension on the ch-ekm
 // SdcTemplateExtractExtension carrier, the same idiom as the onsetDateTime data-absent-reason in
 // RuleSetOnsetDateManifestationBeginUnknown: it cannot be pre-declared with
@@ -84,7 +84,7 @@ RuleSet: RuleSetEncounterReference(target)
 // both as plain %factory values makes the two identical and keeps the template context-free apart
 // from the one gate on the entry.
 //
-// The condition is "the hospitalisation question was answered anything other than 'nein'", i.e.
+// The condition is "the hospitalisation question was answered anything other than 'no'", i.e.
 // exactly the condition under which the Encounter entry exists. A dangling reference to a resource
 // that was dropped from the Bundle would break the document, so the two must be spelled with the
 // same test.

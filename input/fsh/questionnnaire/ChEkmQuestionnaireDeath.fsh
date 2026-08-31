@@ -12,7 +12,7 @@
 // template relies on that: an answered date or cause implies the person died.
 //
 // Note the asymmetry with the Hospitalisation group, which is deliberate: hospitalisation is a
-// ja/nein/unbekannt choice because the paper form offers "unbekannt" there, whereas the death is a
+// yes/no/unknown choice because the paper form offers "unknown" there, whereas the death is a
 // plain check-box — a reporting physician either knows of a death or does not report one. Where
 // "unknown" DOES apply here is one level down, on the cause (item 3) — where it is a coded answer
 // like any other — and on a missing date, which becomes a data-absent-reason rather than a missing

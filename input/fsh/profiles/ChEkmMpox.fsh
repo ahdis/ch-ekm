@@ -13,7 +13,8 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * subject only Reference(ChEkmPatient)
 * section[diagnosis].entry[condition] only Reference(ChEkmConditionMpox)
 * section[social-history].entry[exposure-to-infectious-disease] only Reference(ChEkmExposureMpox)
-* section[immunization].entry only Reference(ChEkmImmunizationMpox)
+* section[immunization].entry[immunization] only Reference(ChEkmImmunizationMpox)
+* section[immunization].entry[vaccination-status] only Reference(ChEkmObservationVaccinationStatusMpox)
 
 Profile: ChEkmConditionMpox
 Parent: ChEkmCondition
@@ -73,3 +74,22 @@ Id: ch-ekm-immunization-mpox
 Title: "CH EKM Immunization: Mpox"
 Description: "This CH EKM profile constrains the Immunization resource for the 'Impfstatus' section of the Mpox report: one resource per vaccination type asked about (smallpox vaccination, mpox vaccination)."
 * protocolApplied.targetDisease from ChEkmMpoxImmunizationTargetDisease (required)
+
+// The "no" / "unknown" counterpart of ChEkmImmunizationMpox: same two form rows, same two
+// vaccine products, same two target diseases — only the answer differs, and with it the resource
+// type. Fixing both ends of the component keeps the two halves of one form line consistent:
+//   Pockenimpfung       component.code  sct#1290624003 Variola virus antigen-containing vaccine
+//                       component.value sct#67924001   Smallpox
+//   Affenpockenimpfung  component.code  sct#1293025000 modified Vaccinia virus Ankara (MVA-BN)
+//                       component.value sct#359814004  Mpox
+// The same product / target disease pair the "yes" row puts in Immunization.vaccineCode and
+// Immunization.protocolApplied.targetDisease, so both halves answer "which vaccination?" the same
+// way. MVA-BN is licensed against BOTH smallpox and mpox; it is the target disease, not the
+// product, that separates the two rows.
+Profile: ChEkmObservationVaccinationStatusMpox
+Parent: ChEkmObservationVaccinationStatus
+Id: ch-ekm-observation-vaccination-status-mpox
+Title: "CH EKM Observation: Vaccination status Mpox"
+Description: "This CH EKM profile constrains the Observation resource for the 'no' and 'unknown' answers of the 'Impfstatus' (vaccination status) section of the Mpox report: one resource per vaccination type asked about (smallpox vaccination, mpox vaccination) that the person did not receive or where it is not known."
+* component.code from ChEkmMpoxVaccineProduct (required)
+* component.valueCodeableConcept from ChEkmMpoxImmunizationTargetDisease (required)

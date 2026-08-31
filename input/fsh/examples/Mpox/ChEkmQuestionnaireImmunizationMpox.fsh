@@ -7,13 +7,13 @@
 // This file is disease-SPECIFIC — like ChEkmQuestionnaireHepatitisCCourseOfDisease, and unlike the
 // children in input/fsh/questionnnaire/ — because which vaccinations are asked about is a property
 // of the disease. What is shared lives in RuleSetQrImmunizationRow: the four questions, their item
-// controls, the enableWhen wiring on "ja" and all four languages. A second organism writes a file
+// controls, the enableWhen wiring on "yes" and all four languages. A second organism writes a file
 // like this one with its own rows and inherits everything else. See the rule set's header for why
 // the rows are fixed rather than a repeating "add a vaccination" group.
 //
 // TWO ROWS, per the issue:
 //   Pockenimpfung       -> targetDisease sct#67924001  Smallpox   (the historical programmes;
-//                          routine vaccination ended in Switzerland in the 1970s, so a "ja" here is
+//                          routine vaccination ended in Switzerland in the 1970s, so a "yes" here is
 //                          typically an elderly patient with an unknown dose count)
 //   Affenpockenimpfung  -> targetDisease sct#359814004 Mpox       (MVA-BN, i.e. Jynneos / Imvanex)
 // The target disease codes themselves are not in this questionnaire — they are not answers, they

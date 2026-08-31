@@ -1,14 +1,14 @@
 // Hospitalisation  https://github.com/ahdis/ch-ekm/issues/27 "Hospitalisation").
 //
 //
-// The three form answers (ja / nein / unbekannt) are encoded WITHOUT a coded flag anywhere:
+// The three form answers (yes / no / unknown) are encoded WITHOUT a coded flag anywhere:
 //
-//   ja        -> an Encounter exists: class = IMP, `period.start` = Eintrittsdatum,
+//   yes       -> an Encounter exists: class = IMP, `period.start` = Eintrittsdatum,
 //                `reasonReference` -> the diagnosis Condition (Hospitalisationsgrund = the reported
-//                pathogen) or `reasonCode` (anderer / unbekannt). The inpatient class plus the
+//                pathogen) or `reasonCode` (other / unknown). The inpatient class plus the
 //                admission date already assert the stay, so no `hospitalization` element is needed.
-//   nein      -> no Encounter at all, and no reference to one.
-//   unbekannt -> an Encounter exists carrying nothing but
+//   no        -> no Encounter at all, and no reference to one.
+//   unknown   -> an Encounter exists carrying nothing but
 //                `hospitalization.extension[unknown]` = data-absent-reason#asked-unknown, i.e.
 //                "we asked whether there was a hospitalisation and do not know". This is the reason
 //                `hospitalization` is profiled here at all: an empty BackboneElement would violate
@@ -38,7 +38,7 @@ Description: "This CH EKM base profile constrains the Encounter resource to repr
 
 // Hospitalisationsgrund. Exactly one of the two is used:
 //   reasonReference -> the diagnosis Condition, when the stay is because of the reported disease
-//   reasonCode      -> sct#74964007 (anderer) or sct#261665006 (unbekannt)
+//   reasonCode      -> sct#74964007 (other) or sct#261665006 (unknown)
 * reasonCode MS
 * reasonCode ^short = "Hospitalisation reason when it is not the reported disease: 74964007 'Other' or 261665006 'Unknown'"
 * reasonReference MS

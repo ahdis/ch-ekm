@@ -1,15 +1,20 @@
-// "Impfstatus" (issue #29) -> one ChEkmImmunization per form row.
+// "Impfstatus" (issue #29) -> one resource per ANSWERED form row.
 //
 // The extraction counterpart of RuleSetQrImmunizationRow: that rule set builds one row of the form,
 // this one builds the resource that row extracts to, and both are parameterised by the same
 // {suffix} so a disease adds a vaccination type by inserting each of them once more.
 //
-// SIX MUTUALLY EXCLUSIVE TEMPLATE INSTANCES PER ROW, of which exactly one is ever emitted. This is
-// the obs-6 pattern from forms-summary.md section 8, and here it is forced rather than chosen:
-// `Immunization.occurrence[x]` is **1..1** and has to be an answered value on some branches and a
-// `data-absent-reason` on others. A single template cannot do both - the static content is what makes
-// the cardinality check pass, so whichever of the two is static survives into the extracted resource
-// next to the computed one:
+// THE RESOURCE TYPE DEPENDS ON THE ANSWER. Only "yes" describes a vaccination, so only "yes"
+// produces a ChEkmImmunization; "no" and "unknown" are answers to a question and produce a
+// ChEkmObservationVaccinationStatus (see Observation.fsh for why). A row that was not answered
+// produces nothing at all.
+//
+// SIX MUTUALLY EXCLUSIVE TEMPLATE INSTANCES PER ROW, of which exactly one is ever emitted - four
+// Immunizations and two Observations. This is the obs-6 pattern from forms-summary.md section 8, and
+// on the Immunization side it is forced rather than chosen: `Immunization.occurrence[x]` is **1..1**
+// and has to be an answered value on some branches and a `data-absent-reason` on others. A single
+// template cannot do both - the static content is what makes the cardinality check pass, so
+// whichever of the two is static survives into the extracted resource next to the computed one:
 //
 //   sentinel value + computed data-absent-reason  ->  the sentinel survives on the absent branch
 //   static data-absent-reason + computed value    ->  the reason survives on the answered branch
@@ -18,31 +23,29 @@
 // data-absent-reason), so a wrong date would ship silently. Splitting the row makes every instance
 // unambiguous: an element is either statically absent or always answered, never both.
 //
-// The two optional details are independent, so the "ja" branch needs 2 x 2 combinations:
+// The two optional details are independent, so the "yes" branch needs 2 x 2 combinations:
 //
-//                                   occurrenceDateTime          protocolApplied.doseNumber
-//   ...DatedDosed     ja, both        the answered date           the answered dose count
-//   ...DatedNoDose    ja, no dose     the answered date           DAR asked-unknown
-//   ...UndatedDosed   ja, no date     DAR asked-unknown           the answered dose count
-//   ...UndatedNoDose  ja, neither     DAR asked-unknown           DAR asked-unknown
-//   ...NotDone        nein            DAR not-applicable          DAR not-applicable
-//   ...Unknown        unbekannt       DAR asked-unknown           DAR asked-unknown, + modifier ext
-//   not answered      -> no resource at all (every gate is empty)
+//                                     occurrenceDateTime        protocolApplied.doseNumber
+//   Immunization
+//     ...DatedDosed    yes, both        the answered date         the answered dose count
+//     ...DatedNoDose   yes, no dose     the answered date         DAR asked-unknown
+//     ...UndatedDosed  yes, no date     DAR asked-unknown         the answered dose count
+//     ...UndatedNoDose yes, neither     DAR asked-unknown         DAR asked-unknown
+//   Observation                       value[x]
+//     ...No            no               sct#373067005 "No"        (no such elements)
+//     ...Unknown       unknown          sct#261665006 "Unknown"
+//   not answered       -> no resource at all (every gate is empty)
 //
-// `protocolApplied` is 1..1 and carries `targetDisease` on EVERY variant, including "nein" and
-// "unbekannt", so a row is always directly queryable as "not vaccinated against smallpox" rather
-// than only through `vaccineCode`. That is why the dose number takes a data-absent-reason instead of
-// the whole element being omitted: R4 makes `doseNumber[x]` 1..1 inside `protocolApplied`, so keeping
-// targetDisease means the dose must be present, valued or absent-with-a-reason.
+// `protocolApplied` is 1..1 on the Immunization and carries `targetDisease`, so a "yes" row is
+// directly queryable as "vaccinated against smallpox" rather than only through `vaccineCode`. That
+// is why the dose number takes a data-absent-reason instead of the whole element being omitted: R4
+// makes `doseNumber[x]` 1..1 inside `protocolApplied`, so keeping targetDisease means the dose must
+// be present, valued or absent-with-a-reason. The Observation needs none of this - it has no date
+// and no dose count to be absent, which is why its two instances are entirely static.
 //
-// Making the dose count and the last-dose date mandatory once "ja" is answered would collapse this
-// to two instances, but it would lose "geimpft, Details unbekannt" - the likely answer for the
-// historical smallpox programme, and the reason the split was chosen instead.
-//
-// Splitting "nein" from "unbekannt" costs one instance and buys two things: the right
-// data-absent-reason on each (not-applicable vs asked-unknown), and a statically declared
-// ChEkmExtImmunizationUnknown rather than a computed one - so no modifier-extension carrier is
-// needed here at all.
+// Making the dose count and the last-dose date mandatory once "yes" is answered would collapse the
+// Immunization side to one instance, but it would lose "vaccinated, details unknown" - the likely
+// answer for the historical smallpox programme, and the reason the split was chosen instead.
 //
 // SAME ENGINE CONSTRAINT AS THE ENCOUNTER AND THE CAUSE OF DEATH: each instance sits inside a
 // context-gated Bundle entry, so there must be NO templateExtractContext anywhere below that gate
@@ -52,10 +55,12 @@
 //
 // DISEASE-SPECIFIC PARAMETERS, because the FHIRPath cannot read them off the template:
 //   {suffix}            the linkId suffix of the row, e.g. Smallpox. Only the variants that READ an
-//                       answer need it; "nein" and "unbekannt" read none, so they do not take it.
-//   {diseaseCode}       / {diseaseDisplay} -> protocolApplied.targetDisease, what the row is about
-//   {vaccineCode}       / {vaccineDisplay} -> the SNOMED CT vaccine product used as vaccineCode when
-//                                             the physician did not name a product
+//                       answer need it; the two Observations read none, so they do not take it.
+//   {diseaseCode}       / {diseaseDisplay} -> Immunization.protocolApplied.targetDisease, resp. the
+//                       Observation's component value: what the row is about
+//   {vaccineCode}       / {vaccineDisplay} -> the SNOMED CT vaccine product, used as the
+//                       Immunization's vaccineCode fallback when the physician did not name a
+//                       product, and as the Observation's component code
 //   {vaccineDisplayRaw} the SAME display, passed WITHOUT quotes. A rule set argument arrives with its
 //                       FSH quotes attached, so the quoted form cannot be nested inside a FHIRPath
 //                       string literal; only a bare-word argument can.
@@ -67,16 +72,16 @@
 // product logic are written once.
 // =================================================================================================
 
-// patient and the fallback product. `vaccineCode` is what identifies the row on EVERY variant: it is
-// 1..1 and fixed per row to the SNOMED CT vaccine product for that vaccination, so a "nein" row still
-// says which vaccination was not given. `protocolApplied` is NOT here - see the header and
-// RuleSetImmunizationProtocolApplied.
+// patient and the fallback product, shared by the four "yes" instances. `vaccineCode` is 1..1 and
+// fixed per row to the SNOMED CT vaccine product for that vaccination; the same concept is what the
+// Observation of a "no"/"unknown" row puts in `component.code`, so both halves of one form line
+// name the vaccination the same way.
 RuleSet: RuleSetImmunizationBase(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
 * patient.reference = "Patient/ExtractedPatient"
 * protocolApplied.targetDisease = $sct#{diseaseCode} {diseaseDisplay}
 * vaccineCode = $sct#{vaccineCode} {vaccineDisplay}
 
-// The product, for the "ja" instances only - the form item is enableWhen-gated on "ja", so on the
+// The product, for the "yes" instances only - the form item is enableWhen-gated on "yes", so on the
 // other branches the answer cannot exist and the static fallback above already says the right thing.
 // ONE directive, because the open-choice item has three possible outcomes and `vaccineCode` is 1..1:
 //   picked from the Swiss vaccine list -> answer is a Coding -> that Coding replaces coding[0]
@@ -107,7 +112,7 @@ RuleSet: RuleSetImmunizationOccurrenceAbsent(reason)
 // Total number of doses, answered. PLACEHOLDER DEFAULT - the Bundle.timestamp idiom:
 // `protocolApplied.doseNumber[x]` is 1..1 within `protocolApplied` so the template needs a real
 // value, and the directive always fires because the instance's gate requires the answer to exist.
-// positiveInt cannot express "0 doses" - that answer is "nein".
+// positiveInt cannot express "0 doses" - that answer is "no".
 RuleSet: RuleSetImmunizationDoseAnswered(suffix)
 * protocolApplied.doseNumberPositiveInt = 1
 * protocolApplied.doseNumberPositiveInt.extension[+].url = $sdc-templateExtractValue
@@ -118,14 +123,9 @@ RuleSet: RuleSetImmunizationDoseAbsent(reason)
 * protocolApplied.doseNumberPositiveInt.extension[+].url = $data-absent-reason
 * protocolApplied.doseNumberPositiveInt.extension[=].valueCode = #{reason}
 
-// "unbekannt" -> the modifier extension, declared statically because it has its own instance now.
-// See ChEkmExtImmunizationUnknown for why this is a modifier extension and not a data-absent-reason.
-RuleSet: RuleSetImmunizationUnknownFlag
-* modifierExtension[unknown].valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
-
 
 // =================================================================================================
-// The six row variants.
+// The four "yes" row variants.
 // =================================================================================================
 
 RuleSet: RuleSetImmunizationDatedDosed(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay, vaccineDisplayRaw)
@@ -156,22 +156,42 @@ RuleSet: RuleSetImmunizationUndatedNoDose(suffix, diseaseCode, diseaseDisplay, v
 * insert RuleSetImmunizationOccurrenceAbsent(asked-unknown)
 * insert RuleSetImmunizationDoseAbsent(asked-unknown)
 
-// "nein" - the vaccination is known NOT to have taken place, so a date and a dose count are not
-// merely unknown, they do not exist: not-applicable.
-RuleSet: RuleSetImmunizationNotDone(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
-* insert RuleSetImmunizationBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
-* status = #not-done
-* insert RuleSetImmunizationOccurrenceAbsent(not-applicable)
-* insert RuleSetImmunizationDoseAbsent(not-applicable)
 
-// "unbekannt" - status = not-done PLUS the modifier extension, without which a consumer would read
-// not-done as "definitely not vaccinated".
-RuleSet: RuleSetImmunizationUnknown(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
-* insert RuleSetImmunizationBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
-* status = #not-done
-* insert RuleSetImmunizationUnknownFlag
-* insert RuleSetImmunizationOccurrenceAbsent(asked-unknown)
-* insert RuleSetImmunizationDoseAbsent(asked-unknown)
+// =================================================================================================
+// "No" and "unknown" -> ChEkmObservationVaccinationStatus, NOT an Immunization.
+//
+// Neither answer describes a vaccination, so neither can honestly be an Immunization: R4
+// `Immunization.status` has no "unknown", and `not-done` asserts that the vaccination did not take
+// place. Both are answers, and an answer lives in `Observation.value[x]` - see Observation.fsh.
+//
+// ENTIRELY STATIC, which is what makes these the two simplest instances in the template: the
+// answer, the vaccine product and the target disease are all fixed by the instance's own gate and
+// its disease parameters, so there is not one templateExtractValue directive below the gate. No
+// sentinel, no data-absent-reason, nothing that could survive into the wrong branch.
+//
+// The answer is NOT a rule set argument. Its display, "No (qualifier value)" / "Unknown (qualifier
+// value)", contains parentheses, and `(` and `)` inside an argument are read by the FSH parser as
+// the end of the argument list - the same reason the entry gates below cannot be parameterised. So
+// everything except the answer is shared here and each variant writes its own value[x].
+// =================================================================================================
+
+RuleSet: RuleSetVaccinationStatusBase(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
+* status = #final
+* code = $sct#408864009 "Vaccination status (observable entity)"
+* subject.reference = "Patient/ExtractedPatient"
+* component.code = $sct#{vaccineCode} {vaccineDisplay}
+* component.valueCodeableConcept = $sct#{diseaseCode} {diseaseDisplay}
+
+// "No" - the person was not vaccinated against this disease.
+RuleSet: RuleSetVaccinationStatusNo(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
+* insert RuleSetVaccinationStatusBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
+* valueCodeableConcept = $sct#373067005 "No (qualifier value)"
+
+// "Unknown" - it is not known whether the person was vaccinated against this disease. The same
+// qualifier this IG uses for every other "unknown" that can be carried as a code.
+RuleSet: RuleSetVaccinationStatusUnknown(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
+* insert RuleSetVaccinationStatusBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
+* valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
 
 
 // =================================================================================================
@@ -223,29 +243,29 @@ RuleSet: RuleSetImmunizationEntryUndatedNoDose(suffix)
 * entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}UndatedNoDose'"
 * entry[=].resource = ExtractedImmunization{suffix}UndatedNoDose
 
-RuleSet: RuleSetImmunizationEntryNotDone(suffix)
+RuleSet: RuleSetVaccinationStatusEntryNo(suffix)
 * entry[+].extension[0].url = $sdc-templateExtractContext
 * entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373067005')"
-* entry[=].fullUrl = "http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}NotDone"
+* entry[=].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatus{suffix}No"
 * entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
-* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}NotDone'"
-* entry[=].resource = ExtractedImmunization{suffix}NotDone
+* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatus{suffix}No'"
+* entry[=].resource = ExtractedVaccinationStatus{suffix}No
 
-RuleSet: RuleSetImmunizationEntryUnknown(suffix)
+RuleSet: RuleSetVaccinationStatusEntryUnknown(suffix)
 * entry[+].extension[0].url = $sdc-templateExtractContext
 * entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='261665006')"
-* entry[=].fullUrl = "http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}Unknown"
+* entry[=].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatus{suffix}Unknown"
 * entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
-* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}Unknown'"
-* entry[=].resource = ExtractedImmunization{suffix}Unknown
+* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatus{suffix}Unknown'"
+* entry[=].resource = ExtractedVaccinationStatus{suffix}Unknown
 
 RuleSet: RuleSetImmunizationEntries(suffix)
 * insert RuleSetImmunizationEntryDatedDosed({suffix})
 * insert RuleSetImmunizationEntryDatedNoDose({suffix})
 * insert RuleSetImmunizationEntryUndatedDosed({suffix})
 * insert RuleSetImmunizationEntryUndatedNoDose({suffix})
-* insert RuleSetImmunizationEntryNotDone({suffix})
-* insert RuleSetImmunizationEntryUnknown({suffix})
+* insert RuleSetVaccinationStatusEntryNo({suffix})
+* insert RuleSetVaccinationStatusEntryUnknown({suffix})
 
 
 RuleSet: RuleSetImmunizationSectionEntryDatedDosed(suffix)
@@ -268,23 +288,23 @@ RuleSet: RuleSetImmunizationSectionEntryUndatedNoDose(suffix)
 * section[=].entry[=].extension[0].url = $sdc-templateExtractValue
 * section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunization{suffix}UndatedNoDose'))"
 
-RuleSet: RuleSetImmunizationSectionEntryNotDone(suffix)
-* section[=].entry[+].reference = "Immunization/ExtractedImmunization{suffix}NotDone"
+RuleSet: RuleSetVaccinationStatusSectionEntryNo(suffix)
+* section[=].entry[+].reference = "Observation/ExtractedVaccinationStatus{suffix}No"
 * section[=].entry[=].extension[0].url = $sdc-templateExtractValue
-* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunization{suffix}NotDone'))"
+* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatus{suffix}No'))"
 
-RuleSet: RuleSetImmunizationSectionEntryUnknown(suffix)
-* section[=].entry[+].reference = "Immunization/ExtractedImmunization{suffix}Unknown"
+RuleSet: RuleSetVaccinationStatusSectionEntryUnknown(suffix)
+* section[=].entry[+].reference = "Observation/ExtractedVaccinationStatus{suffix}Unknown"
 * section[=].entry[=].extension[0].url = $sdc-templateExtractValue
-* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunization{suffix}Unknown'))"
+* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatus{suffix}Unknown'))"
 
 RuleSet: RuleSetImmunizationSectionEntries(suffix)
 * insert RuleSetImmunizationSectionEntryDatedDosed({suffix})
 * insert RuleSetImmunizationSectionEntryDatedNoDose({suffix})
 * insert RuleSetImmunizationSectionEntryUndatedDosed({suffix})
 * insert RuleSetImmunizationSectionEntryUndatedNoDose({suffix})
-* insert RuleSetImmunizationSectionEntryNotDone({suffix})
-* insert RuleSetImmunizationSectionEntryUnknown({suffix})
+* insert RuleSetVaccinationStatusSectionEntryNo({suffix})
+* insert RuleSetVaccinationStatusSectionEntryUnknown({suffix})
 
 
 RuleSet: RuleSetImmunizationSectionMpox

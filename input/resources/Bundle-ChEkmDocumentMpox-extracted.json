@@ -84,7 +84,7 @@
             },
             "entry": [
               {
-                "reference": "Immunization/ExtractedImmunizationSmallpoxUnknown"
+                "reference": "Observation/ExtractedVaccinationStatusSmallpoxUnknown"
               },
               {
                 "reference": "Immunization/ExtractedImmunizationMpoxDatedDosed"
@@ -111,7 +111,7 @@
             "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
           }
         ],
-        "title": "Meldung zum klinischen Befund Infektionskrankheit",
+        "title": "Meldung zum klinischen Befund MPox",
         "encounter": {
           "reference": "Encounter/ExtractedEncounter"
         },
@@ -533,65 +533,51 @@
       }
     },
     {
-      "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUnknown",
+      "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusSmallpoxUnknown",
       "resource": {
-        "resourceType": "Immunization",
-        "id": "ExtractedImmunizationSmallpoxUnknown",
-        "modifierExtension": [
-          {
-            "valueCodeableConcept": {
-              "coding": [
-                {
-                  "code": "261665006",
-                  "system": "http://snomed.info/sct",
-                  "display": "Unknown (qualifier value)"
-                }
-              ]
-            },
-            "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-immunization-unknown"
-          }
-        ],
-        "patient": {
-          "reference": "Patient/ExtractedPatient"
-        },
-        "protocolApplied": [
-          {
-            "targetDisease": [
-              {
-                "coding": [
-                  {
-                    "code": "67924001",
-                    "system": "http://snomed.info/sct",
-                    "display": "Smallpox"
-                  }
-                ]
-              }
-            ],
-            "_doseNumberPositiveInt": {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                  "valueCode": "asked-unknown"
-                }
-              ]
-            }
-          }
-        ],
-        "vaccineCode": {
+        "resourceType": "Observation",
+        "id": "ExtractedVaccinationStatusSmallpoxUnknown",
+        "status": "final",
+        "code": {
           "coding": [
             {
-              "code": "1290624003",
+              "code": "408864009",
               "system": "http://snomed.info/sct",
-              "display": "Variola virus antigen-containing vaccine product"
+              "display": "Vaccination status (observable entity)"
             }
           ]
         },
-        "status": "not-done",
-        "_occurrenceDateTime": {
-          "extension": [
+        "subject": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "component": [
+          {
+            "code": {
+              "coding": [
+                {
+                  "code": "1290624003",
+                  "system": "http://snomed.info/sct",
+                  "display": "Variola virus antigen-containing vaccine product"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "67924001",
+                  "system": "http://snomed.info/sct",
+                  "display": "Smallpox"
+                }
+              ]
+            }
+          }
+        ],
+        "valueCodeableConcept": {
+          "coding": [
             {
-              "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-              "valueCode": "asked-unknown"
+              "code": "261665006",
+              "system": "http://snomed.info/sct",
+              "display": "Unknown (qualifier value)"
             }
           ]
         }
@@ -602,6 +588,7 @@
       "resource": {
         "resourceType": "Immunization",
         "id": "ExtractedImmunizationMpoxDatedDosed",
+        "status": "completed",
         "patient": {
           "reference": "Patient/ExtractedPatient"
         },
@@ -621,7 +608,6 @@
             "doseNumberPositiveInt": 2
           }
         ],
-        "status": "completed",
         "occurrenceDateTime": "2026-06-15",
         "vaccineCode": {
           "coding": [

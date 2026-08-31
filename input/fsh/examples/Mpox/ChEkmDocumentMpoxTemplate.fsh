@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
 // Condition (ChEkmCondition) — fixed disease code; manifestation -> evidence.code;
-// manifestation begin date -> onset (omitted when "unbekannt" is ticked)
+// manifestation begin date -> onset (omitted when "unknown" is ticked)
 // ---------------------------------------------------------------------------
 Instance: ExtractedCondition
 InstanceOf: ChEkmConditionMpox
@@ -35,7 +35,7 @@ Usage: #inline
 
 // ---------------------------------------------------------------------------
 // Encounter (ChEkmEncounter) — the hospitalisation. Emitted only when the Hospitalisation question
-// was answered "ja" or "unbekannt"; the Bundle entry below carries that gate.
+// was answered "yes" or "unknown"; the Bundle entry below carries that gate.
 // ---------------------------------------------------------------------------
 Instance: ExtractedEncounter
 InstanceOf: ChEkmEncounter
@@ -47,7 +47,7 @@ Usage: #inline
 // Emitted only when the person died; the Bundle entry below carries that gate. The death itself and
 // its date are NOT here, they are on ExtractedPatient.deceasedDateTime (RuleSetPatientDeceased).
 // ---------------------------------------------------------------------------
-// ONE instance for all three answers: since "unbekannt" is a value (sct#261665006) rather than a
+// ONE instance for all three answers: since "unknown" is a value (sct#261665006) rather than a
 // dataAbsentReason (issue #28), the template no longer trips obs-6 and no longer needs a second,
 // mutually exclusive instance. See RuleSetCauseOfDeath.fsh.
 Instance: ExtractedCauseOfDeath
@@ -56,13 +56,16 @@ Usage: #inline
 * insert RuleSetObservationCauseOfDeath
 
 // ---------------------------------------------------------------------------
-// Immunization (ChEkmImmunizationMpox) - the "Impfstatus" section (issue #29).
+// "Impfstatus" / vaccination status (issue #29) - ChEkmImmunizationMpox for "yes",
+// ChEkmObservationVaccinationStatusMpox for "no" and "unknown".
 //
 // SIX MUTUALLY EXCLUSIVE INSTANCES PER FORM ROW, of which exactly one is emitted; a row that was
-// not answered emits none. `occurrence[x]` and `protocolApplied.doseNumber[x]` are both 1..1 and
-// have to be an answered value on some branches and a data-absent-reason on others, which one
-// template instance cannot express - see RuleSetImmunization.fsh for the full reasoning and for
-// which variant covers which answer.
+// not answered emits none. Four of them are Immunizations, because `occurrence[x]` and
+// `protocolApplied.doseNumber[x]` are both 1..1 and have to be an answered value on some branches
+// and a data-absent-reason on others, which one template instance cannot express. The other two are
+// Observations: only "yes" describes a vaccination, so "no" and "unknown" are answers in
+// `value[x]` instead. See RuleSetImmunization.fsh for the full reasoning and for which variant
+// covers which answer.
 // ---------------------------------------------------------------------------
 
 Instance: ExtractedImmunizationSmallpoxDatedDosed
@@ -85,15 +88,15 @@ InstanceOf: ChEkmImmunizationMpox
 Usage: #inline
 * insert RuleSetImmunizationUndatedNoDose(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
 
-Instance: ExtractedImmunizationSmallpoxNotDone
-InstanceOf: ChEkmImmunizationMpox
+Instance: ExtractedVaccinationStatusSmallpoxNo
+InstanceOf: ChEkmObservationVaccinationStatusMpox
 Usage: #inline
-* insert RuleSetImmunizationNotDone(67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
+* insert RuleSetVaccinationStatusNo(67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
 
-Instance: ExtractedImmunizationSmallpoxUnknown
-InstanceOf: ChEkmImmunizationMpox
+Instance: ExtractedVaccinationStatusSmallpoxUnknown
+InstanceOf: ChEkmObservationVaccinationStatusMpox
 Usage: #inline
-* insert RuleSetImmunizationUnknown(67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
+* insert RuleSetVaccinationStatusUnknown(67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
 
 Instance: ExtractedImmunizationMpoxDatedDosed
 InstanceOf: ChEkmImmunizationMpox
@@ -115,15 +118,15 @@ InstanceOf: ChEkmImmunizationMpox
 Usage: #inline
 * insert RuleSetImmunizationUndatedNoDose(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
 
-Instance: ExtractedImmunizationMpoxNotDone
-InstanceOf: ChEkmImmunizationMpox
+Instance: ExtractedVaccinationStatusMpoxNo
+InstanceOf: ChEkmObservationVaccinationStatusMpox
 Usage: #inline
-* insert RuleSetImmunizationNotDone(359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
+* insert RuleSetVaccinationStatusNo(359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
 
-Instance: ExtractedImmunizationMpoxUnknown
-InstanceOf: ChEkmImmunizationMpox
+Instance: ExtractedVaccinationStatusMpoxUnknown
+InstanceOf: ChEkmObservationVaccinationStatusMpox
 Usage: #inline
-* insert RuleSetImmunizationUnknown(359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
+* insert RuleSetVaccinationStatusUnknown(359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
 
 // ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionMpox) — static structure, references the entries above,
@@ -196,8 +199,8 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 // per context result; when the context is empty nothing is re-inserted and every LATER entry has
 // shifted down by one, while the extract paths recorded for those entries still carry their original
 // index. Putting the Encounter anywhere but last therefore corrupts the entries after it as soon as
-// the answer is "nein" (observed: a phantom eighth entry holding a half-built Organization).
-// Hospitalisation Encounter. The WHOLE entry is context-gated: answered "nein" (or unanswered) ->
+// the answer is "no" (observed: a phantom eighth entry holding a half-built Organization).
+// Hospitalisation Encounter. The WHOLE entry is context-gated: answered "no" (or unanswered) ->
 // the context is empty, the engine drops the indexed element, and no Encounter reaches the document.
 // The two references to it (Composition.encounter, Condition.encounter) carry the same test, so they
 // disappear together with it. This is the ONLY templateExtractContext in the Encounter's subtree —
@@ -225,7 +228,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 // why all conditional entries sit at the end.
 //
 // The gate is "the person died AND a cause was answered", for every one of the three answers: the
-// "unbekannt" branch no longer needs an entry of its own (issue #28).
+// "unknown" branch no longer needs an entry of its own (issue #28).
 * entry[+].extension[0].url = $sdc-templateExtractContext
 * entry[=].extension[0].valueString = "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
 * entry[=].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath"

@@ -2,10 +2,10 @@
 //
 // scripts/populate-mpox.sh hands this Encounter to the form as the `encounter` launch context
 // (%encounter), where the three Hospitalisation items read it:
-//   hospitalisationStatus        <- no data-absent-reason on `hospitalization` -> "ja" (373066001)
+//   hospitalisationStatus        <- no data-absent-reason on `hospitalization` -> "yes" (373066001)
 //   hospitalisationReason        <- reasonReference is set  -> the local `reported-pathogen` answer
 //   hospitalisationAdmissionDate <- period.start
-// To exercise the "unbekannt" branch instead, hand the script an Encounter whose `hospitalization`
+// To exercise the "unknown" branch instead, hand the script an Encounter whose `hospitalization`
 // carries data-absent-reason#asked-unknown; to exercise "anderer", one with a reasonCode.
 //
 // The full-name patient (ChEkmPatientExample) is used because Mpox reports the full name, unlike

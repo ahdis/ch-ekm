@@ -153,7 +153,7 @@ RuleSet: RuleSetQrLevel2ShortText(text, text-de-CH, text-fr-CH, text-it-CH)
 
 // Single-option check-box items carry their visible label on answerOption[0].valueString instead of
 // item.text, but need the same four languages. Currently unused: the one item that used this shape
-// (the "Wo" group's Unbekannt box) became an open-choice option, whose label comes from the
+// (the "Wo" group's "unknown" box) became an open-choice option, whose label comes from the
 // terminology. Kept for the next check-box whose label is a form string rather than a coded concept.
 RuleSet: RuleSetQrLevel2AnswerOptionText(text, text-de-CH, text-fr-CH, text-it-CH)
 * item[=].item[=].answerOption[0].valueString = {text}
@@ -371,9 +371,9 @@ RuleSet: RuleSetQrImmunizationRow(suffix, text, text-de-CH, text-fr-CH, text-it-
 * insert RuleSetQrLevel2Text({text}, {text-de-CH}, {text-fr-CH}, {text-it-CH})
 * item[=].item[=].type = #group
 
-// 1. Geimpft? ja / nein / unbekannt. All three are real answers and all three produce an
+// 1. "Geimpft?" (vaccinated?) - yes / no / unknown. All three are real answers and all three produce an
 //    Immunization — see ChEkmImmunization. The other three items are details OF the vaccination and
-//    are enableWhen-gated on "ja", so an answered dose count / date / product implies "ja"; the
+//    are enableWhen-gated on "yes", so an answered dose count / date / product implies "yes"; the
 //    extraction template relies on that, exactly as the hospitalisation group does.
 * item[=].item[=].item[+].linkId = "immunizationStatus{suffix}"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.status"
@@ -391,7 +391,7 @@ RuleSet: RuleSetQrImmunizationRow(suffix, text, text-de-CH, text-fr-CH, text-it-
 * item[=].item[=].item[=].extension[=].valueCode = #horizontal
 
 // 2. "mit total ___ Dosen". A positive integer: doseNumberPositiveInt cannot be 0, and "0 Dosen"
-//    is not an answer this question has — that is what "nein" above is for.
+//    is not an answer this question has — that is what "no" above is for.
 * item[=].item[=].item[+].linkId = "immunizationDoses{suffix}"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses"
 * insert RuleSetQrLevel3Text("Total number of doses", "Total Anzahl Dosen", "Nombre total de doses", "Numero totale di dosi")

@@ -24,7 +24,7 @@ Description: "Logical model for the form section 'Zustand' (death), part of the 
 * deathDate 0..1 dateTime "Date of death"
 
 // Was the cause of death the disease this report is about? Only asked when the person died. All
-// three answers - including "unbekannt" - end up in Observation.valueCodeableConcept; see the
+// three answers - including "unknown" - end up in Observation.valueCodeableConcept; see the
 // mapping below and ChEkmObservationCauseOfDeath.
 * causeOfDeath 0..1 CodeableConcept "Cause of death - the reported pathogen, another cause, or unknown"
 * causeOfDeath from ChEkmCauseOfDeathChoice (required)

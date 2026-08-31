@@ -88,3 +88,71 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 * focus 0..1 MS
 * focus only Reference(ChEkmCondition)
 * focus ^short = "The diagnosis Condition of this report, when the reported disease is the cause of death"
+
+
+// Vaccination status - the "no" and "unknown" answers of the "Impfstatus" (vaccination status) section
+// (https://github.com/ahdis/ch-ekm/issues/29).
+//
+// WHY AN OBSERVATION AND NOT AN Immunization. The form asks one CLOSED question per vaccination
+// row - "Geimpft?", yes / no / unknown - and only "yes" describes a vaccination. R4
+// `Immunization.status` has no "unknown", so "unknown" used to be carried as `not-done` plus a
+// modifier extension that took the assertion back: a consumer that ignored the extension read
+// "definitely not vaccinated" from a record that said the opposite. The two non-vaccination answers
+// are therefore ANSWERS, not vaccinations, and they live in `Observation.value[x]` - the same move
+// this IG already made for the cause of death (issue #28, ChEkmObservationCauseOfDeath above) and
+// the same reason: `value[x]` holds an answer, whereas a resource's `status` asserts a fact.
+//
+// The three answers now reach the wire as:
+//   yes       ChEkmImmunization, status = completed (with the date and the dose count)
+//   no        this Observation, value = sct#373067005 "No"
+//   unknown   this Observation, value = sct#261665006 "Unknown"
+// A row that was not answered produces nothing at all. All of them are referenced from
+// Composition.section[immunization], so the section still holds one entry per form row whatever the
+// answer was - which is what makes "was this person asked about the smallpox vaccination?"
+// answerable, the argument that decided issue #28.
+//
+// WHICH VACCINATION THE ANSWER IS ABOUT - the single component. `Observation.code` is the generic
+// observable sct#408864009 "Vaccination status"; SNOMED pre-coordinates a per-disease vaccination
+// status for a handful of diseases only (308532005 influenza, 310374009 MMR, 442364007 H1N1) and
+// for neither smallpox nor mpox, so the vaccination has to be post-coordinated. It is named by the
+// SNOMED CT VACCINE PRODUCT of the row, which is the same concept ChEkmImmunizationMpox fixes as
+// its `vaccineCode` fallback, with the target disease as the component's value. No CH EKM code
+// system is minted for the component: both the code and the value are SNOMED CT.
+//
+// ONE component, not a slice: a row asks exactly one question about exactly one vaccination, so
+// there is nothing to discriminate between. The disease specialisation fixes the two allowed
+// products and the two allowed target diseases (see ChEkmObservationVaccinationStatusMpox), exactly
+// as it does for Immunization.protocolApplied.targetDisease.
+//
+// `dataAbsentReason` is forbidden for the same reason as on the cause of death: "unknown" is an
+// answer the physician gave, not a missing recording. An unanswered row emits no resource, which is
+// the genuinely-absent case and needs no element to say so.
+Profile: ChEkmObservationVaccinationStatus
+Parent: Observation
+Id: ch-ekm-observation-vaccination-status
+Title: "CH EKM Observation: Vaccination status"
+Description: "This CH EKM base profile constrains the Observation resource for the 'no' and 'unknown' answers of the 'Impfstatus' (vaccination status) section: for one vaccination relevant to the reported disease, that the affected person was not vaccinated, or that it is not known whether they were. A 'yes' answer is a ChEkmImmunization instead. Referenced from Composition.section[immunization]."
+* . ^short = "CH EKM Observation: vaccination status ('no' / 'unknown') for one vaccination"
+* status = #final
+* code = $sct#408864009 "Vaccination status (observable entity)"
+* subject 1..1
+* subject only Reference(ChEkmPatient)
+
+// The answer, and the only place it is carried.
+* value[x] 1..1
+* value[x] only CodeableConcept
+* valueCodeableConcept from ChEkmVaccinationStatusNoUnknown (required)
+* valueCodeableConcept MS
+* valueCodeableConcept ^short = "sct#373067005 'No' or sct#261665006 'Unknown' — never 'Yes', which is a ChEkmImmunization"
+* dataAbsentReason 0..0
+* dataAbsentReason ^short = "Not used: 'unknown' is an answer and is carried in value[x]; an unanswered row produces no Observation at all"
+
+// The vaccination the answer is about.
+* component 1..1
+* component ^short = "The vaccination this answer is about: the vaccine product, with the disease it targets as its value"
+* component.code from $SwissVaccinesVS (preferred)
+* component.code ^short = "The SNOMED CT vaccine product of the form row — the same concept the 'yes' row of that line puts in Immunization.vaccineCode"
+* component.value[x] 1..1
+* component.value[x] only CodeableConcept
+* component.valueCodeableConcept from $TargetDiseasesVS (preferred)
+* component.valueCodeableConcept ^short = "The disease the vaccination protects against (e.g. smallpox, mpox) — the same concept the 'yes' row puts in Immunization.protocolApplied.targetDisease"

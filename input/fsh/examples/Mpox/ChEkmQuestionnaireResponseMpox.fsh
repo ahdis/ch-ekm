@@ -12,7 +12,7 @@
 //   3. Exposure "Wann" (see issue #25).
 //   4. Exposure "Wo": a country abroad + a precise location -> the exposure-address extension is
 //      built at extraction with country code, country Coding and city (see issue #26).
-//   5. Verlauf / Hospitalisation: answered "ja" with a reason and an admission date, so the
+//   5. Verlauf / Hospitalisation: answered "yes" with a reason and an admission date, so the
 //      context-gated Encounter entry and both references to it (Composition.encounter,
 //      Condition.encounter) must appear in the extracted Bundle.
 // The person group uses the full-name module (surname / givenname), not the initials module.
@@ -76,11 +76,11 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[1].item[2].answer.valueDate = "2026-07-20"
 
 // --- Verlauf: Hospitalisation ---
-// Hospitalised ("ja"), because of the reported pathogen, admitted on 2026-01-27 
+// Hospitalised ("yes"), because of the reported pathogen, admitted on 2026-01-27 
 // after $extract an Encounter with class IMP, period.start and a reasonReference to the
 // diagnosis Condition, referenced from Composition.encounter and Condition.encounter. The two other
-// branches are covered by the round-trip notes in RuleSetEncounterHospitalisation: "nein" drops the
-// whole Bundle entry, "unbekannt" leaves an Encounter carrying only the data-absent-reason.
+// branches are covered by the round-trip notes in RuleSetEncounterHospitalisation: "no" drops the
+// whole Bundle entry, "unknown" leaves an Encounter carrying only the data-absent-reason.
 * item[0].item[2].linkId = "course"
 * item[0].item[2].item[0].linkId = "hospitalisation"
 * item[0].item[2].item[0].item[0].linkId = "hospitalisationStatus"
@@ -94,7 +94,7 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 // Patient.deceasedDateTime, plus a cause-of-death Observation (value = the Mpox code, focus -> the
 // diagnosis Condition) in a section[cause-death] that only exists because the person died.
 // The other branches are covered by the notes in RuleSetObservationCauseOfDeath: "anderer" and
-// "unbekannt" both write the answered SNOMED qualifier verbatim into valueCodeableConcept (no
+// "unknown" both write the answered SNOMED qualifier verbatim into valueCodeableConcept (no
 // dataAbsentReason, see issue #28), and an unticked `deceased` drops the Observation, the section
 // and deceasedDateTime together.
 * item[0].item[2].item[1].linkId = "death"
@@ -112,9 +112,9 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 
 // Wo: a country with a precise location -> after $extract
 // extension[exposureAddress].valueAddress = {country "CD" + iso21090-codedString Coding, city}.
-// Both items are dropdowns with their own "Unbekannt" option. The country is a plain `choice`
+// Both items are dropdowns with their own "unknown" option. The country is a plain `choice`
 // (CH/LI are just its first two entries); the precise location is an `open-choice`, so a TYPED
-// answer comes back as valueString - as here - and picking "Unbekannt" would come back as
+// answer comes back as valueString - as here - and picking "unknown" would come back as
 // valueCoding sct#261665006 and put a data-absent-reason on `_city` instead of a `city` string.
 * item[0].item[3].item[0].linkId = "exposureWhere"
 * item[0].item[3].item[0].item[0].linkId = "exposureWhereCountry"
@@ -136,18 +136,20 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[3].item[2].item[2].linkId = "exposureHowUnknown"
 * item[0].item[3].item[2].item[2].answer.valueBoolean = false
 
-// --- Impfstatus (issue #29) ---
-// Two rows, deliberately answered differently so one round trip covers two of the three branches:
-//   Pockenimpfung      "unbekannt" -> an Immunization with status = not-done PLUS
-//                      modifierExtension[unknown], and data-absent-reason #asked-unknown on both
-//                      the occurrence and the dose number. This is the branch that would be
-//                      indistinguishable from "nein" without the modifier extension.
-//   Affenpockenimpfung "ja", 2 doses, last dose 2026-06-15, Jynneos picked from the Swiss vaccine
+// --- Impfstatus / vaccination status (issue #29) ---
+// Two rows, deliberately answered differently so one round trip covers two of the three branches -
+// and both resource types, because the answer decides which one is emitted (see ChEkmImmunization
+// and ChEkmObservationVaccinationStatus):
+//   Pockenimpfung      "unknown" -> a ChEkmObservationVaccinationStatus with
+//                      value = sct#261665006, and the vaccination named by its single component
+//                      (vaccine product as the code, smallpox as the value). No Immunization: R4
+//                      Immunization.status cannot say "unknown" without asserting something false.
+//   Affenpockenimpfung "yes", 2 doses, last dose 2026-06-15, Jynneos picked from the Swiss vaccine
 //                      list -> a fully populated Immunization whose vaccineCode is the picked brand
 //                      code, replacing the template's SNOMED CT fallback concept.
-// The third branch, "nein", produces status = not-done with data-absent-reason #not-applicable and
-// no modifier extension; it is covered by the notes in RuleSetImmunizationRow. A row left entirely
-// unanswered drops its whole Bundle entry and its section reference.
+// The third branch, "no", produces the same Observation with value = sct#373067005; it is covered by
+// the notes in RuleSetImmunization.fsh. A row left entirely unanswered drops its whole Bundle entry
+// and its section reference.
 * item[0].item[4].linkId = "immunization"
 * item[0].item[4].item[0].linkId = "immunizationSmallpox"
 * item[0].item[4].item[0].item[0].linkId = "immunizationStatusSmallpox"

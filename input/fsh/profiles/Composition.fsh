@@ -24,7 +24,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * author ^short = "Author of the report. This can be either the treating physician or a private service provider (so-called broker) who transmits the report to the reporting system of the Federal Office of Public Health on behalf of the treating physician."
 // The hospitalisation. There is no `section[hospitalization]` any more: the Encounter is referenced
 // here (and from the diagnosis Condition.encounter) and nowhere else — see ChEkmEncounter for the
-// ja/nein/unbekannt encoding.
+// yes/no/unknown encoding.
 * encounter ..1
 * encounter only Reference(ChEkmEncounter)
 
@@ -71,11 +71,23 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 
 // "History of immunization Narrative" - the "Impfstatus" section (issue #29). Same section code
 // CH VACD uses for its vaccination record's `section[administration]`, so the two are readable by
-// the same consumer. One entry per vaccination type the disease's form asks about, whatever the
-// answer was ("nein" and "unbekannt" produce a resource too - see ChEkmImmunization).
+// the same consumer. ONE ENTRY PER VACCINATION TYPE the disease's form asks about, whatever the
+// answer was - but the RESOURCE TYPE depends on the answer: "yes" is a ChEkmImmunization, "no" and
+// "unknown" are a ChEkmObservationVaccinationStatus (see Immunization.fsh / Observation.fsh for
+// why the two answers that describe no vaccination are not Immunizations). A row that was not
+// answered contributes no entry.
 * section[immunization].code = $loinc#11369-6 
 * section[immunization].entry 1..*
-* section[immunization].entry only Reference(ChEkmImmunization)
+* section[immunization].entry ^slicing.discriminator.type = #profile
+* section[immunization].entry ^slicing.discriminator.path = "$this.resolve()"
+* section[immunization].entry ^slicing.rules = #open
+* section[immunization].entry contains
+    immunization 0..* and
+    vaccination-status 0..*
+* section[immunization].entry[immunization] only Reference(ChEkmImmunization)
+* section[immunization].entry[immunization] ^short = "A vaccination the person received ('yes')"
+* section[immunization].entry[vaccination-status] only Reference(ChEkmObservationVaccinationStatus)
+* section[immunization].entry[vaccination-status] ^short = "A vaccination the person did not receive ('no'), or one where it is not known ('unknown')"
 
 // "History of medication use Narrative"
 * section[medication].code = $loinc#10160-0

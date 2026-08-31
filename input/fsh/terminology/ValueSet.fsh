@@ -8,7 +8,7 @@ Description: "This CH EKM value set includes the codes for patient administrativ
 * $administrative-gender#female "Female"
 * $administrative-gender#other "Other"
 
-// Single-code value set for `open-choice` form items whose only predefined answer is "unbekannt" -
+// Single-code value set for `open-choice` form items whose only predefined answer is "unknown" -
 // the user either types a free text (-> answer.valueString) or picks this code (-> answer.valueCoding),
 // and the two are told apart by the answer type. Used by the Exposure "genauer Ort" item. The de/fr/it
 // labels come from the SNOMED CT supplement in CodeSystemSupplements.fsh.
@@ -193,13 +193,13 @@ Description: "Simplified two-option manifestation value set for the Gonorrhoea r
 // * ^experimental = false
 // * include codes from system $iso3166 and valueset $bfs-country-codes where code regex "^[A-Za-z]{3}$"
 
-// Ja / Nein / Unbekannt, the answer set of the Hospitalisation form item. Only "ja" reaches the wire as data:
-// it is what makes an Encounter be created at all (see RuleSetEncounterHospitalisation). "nein"
-// produces no Encounter, "unbekannt" an Encounter whose `hospitalization` element carries nothing
+// Yes / No / Unknown, the answer set of the Hospitalisation form item. Only "yes" reaches the wire as data:
+// it is what makes an Encounter be created at all (see RuleSetEncounterHospitalisation). "No"
+// produces no Encounter, "unknown" an Encounter whose `hospitalization` element carries nothing
 // but a data-absent-reason.
 ValueSet: ChEkmYesNoUnknown
 Title: "CH EKM Yes No Unknown"
-Description: "This CH EKM value set contains the SNOMED CT qualifiers Yes / No / Unknown. It is the answer value set of the ja/nein/unbekannt form items."
+Description: "This CH EKM value set contains the SNOMED CT qualifiers Yes / No / Unknown. It is the answer value set of the yes/no/unknown form items."
 * ^status = #active
 * ^experimental = false
 
@@ -255,3 +255,29 @@ Description: "This CH EKM value set contains the vaccination types asked about o
 
 * $sct#67924001 "Smallpox (disorder)"
 * $sct#359814004 "Mpox"
+
+// The two answers that do NOT produce an Immunization (issue #29). "Yes" is a vaccination and is
+// recorded as one; "no" and "unknown" are answers to a question and are recorded as
+// ChEkmObservationVaccinationStatus.value[x]. Deliberately NOT ChEkmYesNoUnknown: "yes" must never
+// appear as an Observation value, or the same fact would have two homes.
+ValueSet: ChEkmVaccinationStatusNoUnknown
+Title: "CH EKM Vaccination Status No Unknown"
+Description: "This CH EKM value set contains the two answers to the 'Geimpft?' (vaccinated?) question that do not describe a vaccination: no and unknown. It is the value set of ChEkmObservationVaccinationStatus.value[x]; the third answer, yes, produces a ChEkmImmunization instead."
+* ^status = #active
+* ^experimental = false
+
+* $sct#373067005 "No (qualifier value)"
+* $sct#261665006 "Unknown (qualifier value)"
+
+// The vaccine products of the two Mpox form rows, used as ChEkmObservationVaccinationStatusMpox
+// .component.code to say WHICH vaccination the answer is about. Same two concepts
+// ChEkmImmunizationMpox fixes as the `vaccineCode` fallback, so the "yes" row and the
+// "no"/"unknown" row of one form line name the same product.
+ValueSet: ChEkmMpoxVaccineProduct
+Title: "CH EKM Mpox Vaccine Product"
+Description: "This CH EKM value set contains the SNOMED CT vaccine products of the two vaccination rows on the Mpox reporting form: the Variola virus antigen vaccines of the historical smallpox programmes, and modified Vaccinia virus Ankara (MVA-BN, i.e. Jynneos / Imvanex)."
+* ^status = #active
+* ^experimental = false
+
+* $sct#1290624003 "Variola virus antigen-containing vaccine product"
+* $sct#1293025000 "Modified Vaccinia virus Ankara antigen only vaccine product"

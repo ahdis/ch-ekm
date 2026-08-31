@@ -186,7 +186,7 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
   > from the CodeSystem supplement rather than `_valueString` translation extensions, so this also
   > sidesteps the *Wrong Display Name* warning that a hand-written Coding display would raise.
 - **Behaviour**: `enableWhen` / `enableBehavior` (conditional display, e.g. show a free-text
-  field only when "andere/other" is chosen, or grey out a date when "unbekannt" is ticked),
+  field only when "other" is chosen, or grey out a date when "unknown" is ticked),
   `required`, `repeats`, `readOnly`, `initial`.
 - **SDC extensions** (per component docs): `enableWhenExpression`, `calculatedExpression`,
   `answerExpression`, `answerOptionsToggleExpression`, `hidden`, `preferredTerminologyServer`.
@@ -418,7 +418,7 @@ ChEkmQuestionnaireGonorrhoea  (meta.profile = sdc-questionnaire-modular)
   `http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.dateOfBirth`)
   to keep model ↔ form traceability and enable `$extract` later.
 - Reuse existing **`answerValueSet`** canonicals from `input/fsh/terminology/`.
-- Use **`enableWhen`** for the "unbekannt"/"andere" toggles (e.g. disable
+- Use **`enableWhen`** for the "unknown"/"other" toggles (e.g. disable
   `manifestationBeginDate` when `manifestationBeginUnknown = true`; show
   `manifestationOther` when `manifestation` includes the "other" code).
 
@@ -712,7 +712,7 @@ hand-written JSON), as `#inline` instances assembled into the Bundle template:
   so values map into `given[*]` (a standalone value path mis-targets the `_given` sibling).
 - **conditionals** → an empty FHIRPath result omits the field. `Condition.onsetDateTime` uses
   `iif(... manifestationBeginUnknown = true, {}, manifestationBeginDate)` so onset is **omitted**
-  when "unbekannt" is ticked. (Per the SDC spec note, conditionals/loops are *just* empty/multi
+  when "unknown" is ticked. (Per the SDC spec note, conditionals/loops are *just* empty/multi
   FHIRPath results — verified implemented in the reference engine.)
 - **static system metadata** (Broker `PractitionerRole`/`Practitioner`/`Organization`) is reused
   verbatim from the existing examples — it is supplied by the transmitting system, not the form.
@@ -779,7 +779,7 @@ data-absent handling (next) matches the example bundle.
 ### Conditional `data-absent-reason` on `onsetDateTime` (manifestationBeginUnknown)
 Three cases, all handled and all producing a **valid** template + correct output:
 - **known** → `onsetDateTime` = the answered date;
-- **unbekannt** → no value, `_onsetDateTime.extension[data-absent-reason] = asked-unknown`;
+- **unknown** → no value, `_onsetDateTime.extension[data-absent-reason] = asked-unknown`;
 - **neither** → `onsetDateTime` omitted entirely.
 
 Two directives in the `_onsetDateTime.extension` array, targeting two different JSON locations:
@@ -789,7 +789,7 @@ Two directives in the `_onsetDateTime.extension` array, targeting two different 
   (`…manifestationBeginUnknown… answer.value.where($this = true)`) so it is emitted **only** when
   the box is ticked (empty context → element excluded).
 - `extension[1]` — the **onset value**: `iif(…manifestationBeginUnknown = true, {}, …manifestationBeginDate…)`
-  → the date when known, `{}` (field omitted) when unbekannt or unanswered.
+  → the date when known, `{}` (field omitted) when unknown or unanswered.
 
 > **Why not one directive?** A `templateExtractValue` on `onsetDateTime.extension` sets the
 > **primitive's value** (`onsetDateTime`), not a sibling extension — so returning an `%factory.Extension`
@@ -913,7 +913,7 @@ unticked omits the component.
 ### Building a whole *complex* extension — `%factory.Address` / `withProperty` / `withExtension` (Exposure "Wo")
 The carrier idiom above is not limited to one-field extensions. The exposure address
 (`extension[exposureAddress]`, a `valueAddress` with country + country Coding + city, or a
-data-absent-reason when "Unbekannt" is ticked — issue #26) is built by **one** `templateExtractValue`
+data-absent-reason when "unknown" is ticked — issue #26) is built by **one** `templateExtractValue`
 because the fhirpath.js factory (`scripts/extract/node_modules/fhirpath/src/factory.js`) offers more
 than `Coding`/`CodeableConcept`/`Extension`:
 
@@ -980,8 +980,8 @@ Two things to get right:
 
 Verified end-to-end (`scripts/extract-mpox.sh` + hand-built QR variants). Country and precise
 location are **two items, each with its own unknown answer**, so the branches combine freely: a
-country answered → `country` + Coding, `Land = Unbekannt` → no `country` + `_country`
-data-absent-reason; a precise location typed → `city`, `Ort = Unbekannt` → no `city` + `_city`
+country answered → `country` + Coding, `Land = unknown` → no `country` + `_country`
+data-absent-reason; a precise location typed → `city`, `Ort = unknown` → no `city` + `_city`
 data-absent-reason; nothing answered → **no** extension at all.
 
 ### Conditional gating with `iif` — negation and the Boolean-criterion trap
@@ -1008,7 +1008,7 @@ Two recurring patterns when gating a templated element (empty context → elemen
 
 ### A CONDITIONAL Bundle entry — one context, on the entry, and it must be the LAST entry
 The Hospitalisation section (Mpox "Verlauf") is the first place where a whole **resource** has to
-appear or not appear: answered "ja"/"unbekannt" the document carries an `Encounter`, answered "nein"
+appear or not appear: answered "yes"/"unknown" the document carries an `Encounter`, answered "no"
 it must carry none. The gate therefore sits on `Bundle.entry[n]` itself — and that pulls in two hard
 constraints of the reference engine, both found the hard way.
 
@@ -1036,7 +1036,7 @@ overwrites `fullUrl` with itself, leaving the static resource intact for the res
 
 **3. Conditional entries must be the LAST entries.** When the context is empty nothing is
 re-inserted, so every *later* entry has shifted down by one while the extract paths recorded for
-those entries still carry their original index. With the Encounter at `entry[4]`, answering "nein"
+those entries still carry their original index. With the Encounter at `entry[4]`, answering "no"
 produced a phantom eighth entry holding a half-built `Organization`. Moving it to the end of the
 template's `entry` list removes the problem entirely (a document Bundle only fixes the position of
 the Composition, which is first).
@@ -1053,8 +1053,14 @@ death Observation last and intact.
 ### A 1..1 primitive that is sometimes a value and sometimes a data-absent-reason (Impfstatus, issue #29)
 The vaccination rows are the first place where a **required** primitive has to be an answered value on
 one branch and a `data-absent-reason` on another: `Immunization.occurrence[x]` and
-`protocolApplied.doseNumber[x]` are both 1..1, and a row answered "nein"/"unbekannt" has neither a
-date nor a dose count. Three engine/SUSHI facts collide here, all found the hard way:
+`protocolApplied.doseNumber[x]` are both 1..1, and the last-dose date and the dose count are both
+optional once the answer is "yes". Three engine/SUSHI facts collide here, all found the hard way:
+
+> **Since issue #29 this bites on the "yes" branch only.** "No" and "unknown" no longer produce an
+> Immunization at all — they are answers, and they go to `ChEkmObservationVaccinationStatus.value[x]`
+> (see chapter 12). That halves the split: four Immunization instances for the 2 x 2 combinations of
+> "which optional detail was answered", plus two entirely static Observations with no date and no
+> dose count to be absent. The engine lessons below are unchanged.
 
 **1. A required primitive that is sometimes a value and sometimes a data-absent-reason cannot live in
 one template.** An element carrying only `templateExtractValue` artifacts is reported by SUSHI as
@@ -1097,7 +1103,7 @@ directive and the static `code.coding` array was concatenated, emitting the LOIN
 index-wise `arrayMerge` fixes that too.
 
 ### Mutually exclusive ELEMENTS force mutually exclusive TEMPLATE INSTANCES (obs-6)
-> **No longer applies to the cause of death** — issue #28 decided that "unbekannt" is the *answer*
+> **No longer applies to the cause of death** — issue #28 decided that "unknown" is the *answer*
 > `sct#261665006` in `valueCodeableConcept`, not a `dataAbsentReason` (the same shape
 > `Encounter.reasonCode` already had for an unknown hospitalisation reason). All three answers now
 > go to one element, so ONE template instance and ONE gated Bundle entry cover the whole question,
@@ -1439,9 +1445,10 @@ the root** with a `location`.
 
 ---
 
-## 12. "Unbekannt" — when it is a value and when it is a data-absent-reason
+## 12. "Unknown" — when it is a value and when it is a data-absent-reason
 
-Nearly every group of these forms offers the reporting physician some form of "unbekannt", and the
+Nearly every group of these forms offers the reporting physician some form of "unknown" ("unbekannt"
+on the German paper form), and the
 same word ends up on the wire in two very different shapes. This chapter is the rule that decides
 which, written down after issue
 [#28](https://github.com/ahdis/ch-ekm/issues/28) moved the cause of death from one shape to the
@@ -1454,7 +1461,7 @@ other.
 > **No** (it is a `dateTime`, an ISO-3166 `string`, a free-text `string`) → leave the element without
 > a value and attach `extension[data-absent-reason] = asked-unknown`.
 
-"Unbekannt" is an **answer**: the physician was asked and responded. `dataAbsentReason` says
+"Unknown" is an **answer**: the physician was asked and responded. `dataAbsentReason` says
 something weaker and different — *no value was recorded* — and it hides the answer in a place a
 consumer has to look for separately. So the value shape is the default, and the data-absent-reason
 is the fallback used only where the element's type makes a code impossible.
@@ -1473,6 +1480,7 @@ forces every reader to check two places, and — as `obs-6` proved for the cause
 | `hospitalisationReason` (Hospitalisationsgrund) | `Encounter.reasonCode` — `RuleSetEncounterHospitalisation` |
 | `deathCause` (Todesursache) | `Observation.valueCodeableConcept` — `RuleSetObservationCauseOfDeath` (#28) |
 | `exposureHowUnknown` (Übertragungsweg unbekannt) | `ChEkmExposure.component[transmissionRoute].valueCodeableConcept` — `RuleSetComponentExposure` |
+| `immunizationStatus…` = No / Unknown (Impfstatus) | `ChEkmObservationVaccinationStatus.valueCodeableConcept` — `RuleSetVaccinationStatusNo` / `…Unknown` (#29) |
 
 Note the third: the form item is a **boolean check-box**, yet extraction materialises the SNOMED
 code via `%factory.Coding(...)`, and `ChEkmMpox` / `ChEkmGonorrhoea` *bind* that component to
@@ -1483,8 +1491,8 @@ nothing about the shape on the wire — the profile does.
 
 | Form item | On the wire | Why not a value |
 | --- | --- | --- |
-| `exposureWhereCountry` = Unbekannt | `Address.country` absent, `_country` DAR | `Address.country` is an ISO 3166 string; `261665006` is not a country code |
-| `exposureWherePreciseLocation` = Unbekannt | `Address.city` absent, `_city` DAR | `Address.city` is free text |
+| `exposureWhereCountry` = unknown | `Address.country` absent, `_country` DAR | `Address.country` is an ISO 3166 string; `261665006` is not a country code |
+| `exposureWherePreciseLocation` = unknown | `Address.city` absent, `_city` DAR | `Address.city` is free text |
 | `manifestationBeginUnknown` ticked | `Condition.onsetDateTime` absent + DAR | `dateTime` primitive |
 | `deathDate` left blank (with `deceased` ticked) | `Patient.deceasedDateTime` absent + DAR | `dateTime` primitive |
 
@@ -1494,21 +1502,22 @@ the extension valueless and fails `ext-1`.
 
 **Each "unknown" sits on the element it belongs to.** The exposure address asks two independent
 questions, so the DAR goes on `Address.country` or on `Address.city` — never on the Address as a
-whole. That keeps "Land unbekannt, genauer Ort Zürich" and "Land CH, genauer Ort unbekannt" both
+whole. That keeps "country unknown, precise location Zurich" and "country CH, precise location
+unknown" both
 reportable. `ChEkmExtExposureAddress` used to declare an Address-level
-`valueAddress.extension[unknown]` slice, from the earlier assumption of a single "Unbekannt" box on
+`valueAddress.extension[unknown]` slice, from the earlier assumption of a single "unknown" box on
 the paper form (issue #26); extraction never emitted it and it has been removed.
 
-### The one place that still differs: Hospitalisation ja/nein/**unbekannt**
+### The one place that still differs: Hospitalisation yes/no/**unknown**
 
-`hospitalisationStatus` answered "unbekannt" produces an `Encounter` carrying nothing but
+`hospitalisationStatus` answered "unknown" produces an `Encounter` carrying nothing but
 `hospitalization.extension[unknown] = asked-unknown` (`ChEkmEncounter`,
 `RuleSetEncounterHospitalisation`). This is the only case where the DAR shape is a **modelling
 choice** rather than a consequence of the element's type, and it is worth understanding before it is
 copied:
 
 * The same instance can carry both idioms at once — `reasonCode = sct#261665006` (a value) next to
-  the `hospitalization` DAR (an absence), two encodings of "unbekannt" in one Encounter.
+  the `hospitalization` DAR (an absence), two encodings of "unknown" in one Encounter.
 * `Encounter.hospitalization` is FHIR's admission/discharge backbone (`admitSource`,
   `dischargeDisposition`, `reAdmission`). A DAR there reads "the admission/discharge details are
   unknown", not "whether there was a hospitalisation is unknown". The profile comment concedes the
@@ -1518,17 +1527,28 @@ copied:
   `Condition.encounter` — it asserts the stay in `class` while denying knowledge of it in
   `hospitalization`.
 
-Hospitalisation is the **only** ja/nein/unbekannt question in the IG — it is the only place where
-the *fact itself*, not one of its details, can be unknown, and `Encounter` has no CodeableConcept to
-put that in. (The death group deliberately has no "unbekannt" on "Ist die Person verstorben?": a
-reporting physician either knows of a death or does not report one. Its "unbekannt" lives one level
-down, on the cause.) The shape that would follow this chapter's rule is the one cause-of-death
-already uses: a small Observation whose `value[x]` carries ja/nein/unbekannt, with the Encounter
-emitted only for "ja". That is a modelling change, not a rename — left open deliberately.
+Hospitalisation is now the **only remaining deviation**. The other place where the *fact itself*,
+not one of its details, can be unknown is the Impfstatus row, and issue #29 moved it onto exactly
+the shape this chapter prescribes: the answer is a value in
+`ChEkmObservationVaccinationStatus.value[x]`, and the resource that asserts the fact — the
+`Immunization` — is emitted only for "yes". (The death group deliberately has no "unknown" on "Ist
+die Person verstorben?": a reporting physician either knows of a death or does not report one. Its
+"unknown" lives one level down, on the cause.)
+
+The vaccination row is worth reading as the template for fixing the hospitalisation, because the two
+problems were identical. `Immunization.status` is a required 1..1 code with no "unknown" concept,
+exactly like `Encounter` having no CodeableConcept for "was there a stay?". The first attempt at
+#29 did what the Encounter still does: it kept the resource and bolted the correction on — `status =
+not-done` plus a **modifier** extension saying "actually, unknown". That is strictly worse than a
+plain DAR, because the resource now asserts something false in a modifier element and relies on the
+consumer honouring a second one to take it back. Splitting by answer removed the contradiction
+instead of annotating it. The Encounter can take the same route: an Observation carrying
+yes/no/unknown, with the Encounter emitted only for "yes" — a modelling change, not a rename, and
+still open.
 
 ### Two smaller things worth knowing
 
-**A blank field is not the same as an answered "unbekannt".** `manifestationBeginUnknown` is an
+**A blank field is not the same as an answered "unknown".** `manifestationBeginUnknown` is an
 explicit check-box; `deathDate` is simply left empty. Both end as `asked-unknown`, but only the
 first actually distinguishes "asked, not known" from "skipped". The death date gets away with it
 because the item is `enableWhen`-gated on `deceased` — the reporter has already asserted the death,

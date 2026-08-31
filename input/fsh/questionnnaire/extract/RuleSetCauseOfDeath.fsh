@@ -48,7 +48,7 @@ RuleSet: RuleSetPatientDeceased
 //
 // "UNBEKANNT" IS A VALUE, NOT A dataAbsentReason (issue #28). The two SNOMED qualifiers are
 // therefore handled by ONE expression that passes the answered Coding through unchanged — exactly
-// the shape of Encounter.reasonCode in RuleSetEncounterHospitalisation, where "unbekannt" also
+// the shape of Encounter.reasonCode in RuleSetEncounterHospitalisation, where "unknown" also
 // reaches the wire as sct#261665006 in a CodeableConcept. Modelling it as `dataAbsentReason`
 // instead would say "we did not record the cause", whereas the form did record one: the reporting
 // physician answered, and the answer was "unknown". It also cost a second template instance, since
@@ -103,7 +103,7 @@ RuleSet: RuleSetCauseOfDeathSection
 //
 // The gate needs at least ONE value path to fire at all: `evaluateAndInsertIntoPath` loops over the
 // context's valuePathMap, so a context with no values inserts nothing. Here that value is `entry`.
-// Its target is always the same Observation now that "unbekannt" is a value rather than a second,
+// Its target is always the same Observation now that "unknown" is a value rather than a second,
 // mutually exclusive instance — but it stays a computed value, both to satisfy that "at least one
 // value" rule and because it is the reference that must not dangle. `.select()` on the answer keeps
 // it tied to the same condition as the Observation's own entry gate.

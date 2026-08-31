@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------------------
 // Condition (ChEkmCondition) — fixed disease code; manifestation -> evidence.code;
-// manifestation begin date -> onset (omitted when "unbekannt" is ticked)
+// manifestation begin date -> onset (omitted when "unknown" is ticked)
 // ---------------------------------------------------------------------------
 Instance: ExtractedConditionGonorrhoea
 InstanceOf: ChEkmConditionGonorrhoea
