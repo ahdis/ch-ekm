@@ -1069,48 +1069,7 @@ below), one per combination of "which optional details were answered", so that w
 an element is either statically absent or *always* answered — which is also what makes a sentinel
 safe, since its directive can no longer return empty.
 
-**And SUSHI's acceptance is not the last word: check the IG Publisher.** A statically declared
-`data-absent-reason` on a valueless primitive satisfies SUSHI's cardinality check. The IG Publisher
-then reports 40 errors of the form `Immunization.protocolApplied.doseNumber[x]: minimum required = 1,
-but only found 0` — but **the resources are correct and the validator is right**: the Publisher
-damages the template on the way in, and the validator faithfully reports the damaged object.
-
-**IG Publisher bug — a primitive inside a BackboneElement of a CONTAINED resource is corrupted**
-([HL7/fhir-ig-publisher#1362](https://github.com/HL7/fhir-ig-publisher/issues/1362)). Our `$extract`
-template Bundle is carried in `Questionnaire.contained[0]`. In the published output that contained
-copy has `protocolApplied[0].doseNumberPositiveInt` **retyped** to `doseNumberString`, and a valueless
-one carrying a `data-absent-reason` **dropped entirely** — leaving `protocolApplied` with nothing but
-`targetDisease`, which is exactly what the error describes. Established by comparing the four copies
-in one build:
-
-| copy | `protocolApplied[0]` |
-| --- | --- |
-| `fsh-generated/…Questionnaire-…Mpox.json` (SUSHI) | intact |
-| `input/resources/…MpoxAssembled.json` (our `$assemble`) | intact |
-| `output/Bundle-ChEkmDocumentMpoxTemplate.json` (Publisher, **standalone**) | intact |
-| `output/Questionnaire-…Mpox.json` → `contained[0]` (Publisher, **contained**) | **damaged** |
-
-So neither SUSHI nor our `$assemble` is at fault. `Immunization.occurrence[x]` — same 1..1, same
-choice type, same `data-absent-reason`, but at the **resource root** — survives in every copy, which
-pins the trigger to the BackboneElement nesting rather than to contained resources generally. A
-minimal reproduction (no CH-specific terminology, plus a plain `doseNumberPositiveInt: 2` with no
-extension at all, which is *also* retyped) lives on branch `oe_contained_primitive_extension` in
-`../ch-ig`.
-
-**The 40 errors cannot be suppressed, and are accepted until #1362 lands** (tracked as ch-ekm #30).
-`input/ignoreWarnings.txt` only suppresses *warnings, hints and broken links* — the section header in
-`qa.html` says so, and the existing entries there bear it out: the `IdentifierType` warning is fully
-suppressed, while the `tab-container` entry still emits its ERROR instances. Nor can the model avoid
-the data-absent-reason: keeping `protocolApplied.targetDisease` on every row means keeping
-`protocolApplied`, and R4 makes `doseNumber[x]` 1..1 inside it. And the template has to be contained —
-SDC defines the `templateExtract` `template` sub-extension as a *"Contained reference to the resource
-template"*.
-
-Note the retyping is the more dangerous half: `doseNumberPositiveInt` -> `doseNumberString` is valid
-FHIR saying something we did not author, so it raises no error at all. Until #1362 is fixed the
-published contained template is not authoritative — `output/Bundle-ChEkmDocumentMpoxTemplate.json` is
-the intact copy. When the fix ships, rebuild and check that `contained[0]` round-trips before
-trusting a green build.
+**And SUSHI's acceptance is not the last word: check the IG Publisher.** 
 
 **2. Two carriers on one primitive fight over array indices.** `parseFhirPathToWritableSegments`
 splices a trailing `extension[n]` off a directive's path, so `_x.extension[0].extension[0]` writes to
