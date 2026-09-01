@@ -44,6 +44,28 @@ LANG = LANGS[0]  # display language of the current build; reassigned per languag
 TX = "https://tx.fhir.ch/r4"
 RES = "fsh-generated/resources"
 
+# The IG's own terminology expansion parameters — today a single `system-version` pinning the SNOMED
+# CT SWISS EXTENSION (http://snomed.info/sct/2011000195101). Read from expansion-params.json rather
+# than hard-coded here so the previews and the IG Publisher build always expand against the same
+# edition.
+#
+# THIS IS LOAD-BEARING FOR THE TRANSLATIONS. Without it tx falls back to SNOMED International, which
+# carries no de/fr/it designations, and every SNOMED-coded option renders with its ENGLISH display —
+# e.g. 122575003 comes back as "Urine specimen" instead of "Urinprobe" / "échantillon d'urine". The
+# ch-ekm language supplement then had to carry a designation for every single code to compensate;
+# with the Swiss edition pinned it only has to cover what SNOMED CH itself does not translate.
+def _expansion_params():
+    try:
+        doc = json.load(open("expansion-params.json"))
+    except Exception:
+        return []
+    return [{"name": p["name"], "valueUri": p["valueUri"]}
+            for p in doc.get("parameter", [])
+            if p.get("name") == "system-version" and p.get("valueUri")]
+
+
+EXPANSION_PARAMS = _expansion_params()
+
 # Which assembled questionnaire to preview: positional arg is either an id
 # (e.g. ChEkmQuestionnaireMpoxAssembled) or a path to the assembled Questionnaire JSON.
 # Defaults to the Gonorrhoea assembled questionnaire.
@@ -146,6 +168,7 @@ def expand(canonical):
     def do_expand(display_language, use_supplement_urls):
         param = [{"name": "valueSet", "resource": vs_resource}] if is_chekm \
             else [{"name": "url", "valueUri": canonical}]
+        param += EXPANSION_PARAMS
         if display_language:
             param.append({"name": "displayLanguage", "valueCode": display_language})
         param += [{"name": "tx-resource", "resource": cs} for cs in LOCAL_CODESYSTEMS]
@@ -164,8 +187,32 @@ def expand(canonical):
 
     # Localized pass: displayLanguage + any local language supplement whose base system is present
     # (a supplement is not auto-applied — it must be activated with useSupplement).
+    #
+    # BEST EFFORT, because `useSupplement` can hard-fail. tx.fhir.ch answers HTTP 422 "Required
+    # supplement not found: …" for a value set that pulls its codes in through a NESTED value set
+    # include rather than a direct code system include — even though the supplement IS supplied as a
+    # tx-resource — because it only resolves supplements for systems it sees included directly. That
+    # is the same tx limitation TODO.md records for nested includes, in its harder form: there the
+    # supplement is silently ignored, here the expansion is refused outright.
+    #
+    # No value set in this IG hits it today (the one that did, ChEkmSpecimenType, was a pure wrapper
+    # around ch-elm-results-complete-spec and has been removed in favour of binding that canonical
+    # directly). This stays as a guard: failing the WHOLE preview build over one value set is the
+    # wrong trade, since every other item on the form still gets its translated options. So retry
+    # without the supplements, and finally without displayLanguage, warning each time — the affected
+    # dropdown then shows source-language displays instead of breaking the build.
     applicable = [url for sys_base, url in LOCAL_SUPPLEMENTS if sys_base in systems]
-    localized = do_expand(LANG, applicable)
+    try:
+        localized = do_expand(LANG, applicable)
+    except Exception as e:
+        print(f"  WARNING: {canonical}: expansion with useSupplement failed ({e}); "
+              f"retrying without the language supplement — options keep their source-language displays")
+        try:
+            localized = do_expand(LANG, [])
+        except Exception as e2:
+            print(f"  WARNING: {canonical}: expansion with displayLanguage failed too ({e2}); "
+                  f"falling back to the untranslated expansion")
+            localized = base
 
     # Merge: prefer the localized display, fall back to the default display (e.g. eCH-7 cantons
     # have no de-CH designation, so displayLanguage returns no display for them).

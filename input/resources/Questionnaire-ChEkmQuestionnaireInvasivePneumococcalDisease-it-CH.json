@@ -96,15 +96,15 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratory|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratorySpecimen|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -949,6 +949,17 @@
               {
                 "reference": "Organization/ExtractedLabOrganization"
               }
+            ],
+            "specimen": [
+              {
+                "reference": "Specimen/ExtractedLabSpecimenDated",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenDated'), %resource.descendants().where(linkId='specimenType').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenUndated')))"
+                  }
+                ]
+              }
             ]
           }
         },
@@ -1085,6 +1096,89 @@
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                   "valueString": "%resource.descendants().where(linkId='labName').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenDated",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenDated'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Specimen",
+            "id": "ExtractedLabSpecimenDated",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "type": {
+              "coding": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
+                    }
+                  ]
+                }
+              ]
+            },
+            "collection": {
+              "collectedDateTime": "1900-01-01",
+              "_collectedDateTime": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='specimenCollectionDate').answer.value.first()"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists().not() and %resource.descendants().where(linkId='specimenType').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenUndated",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenUndated'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Specimen",
+            "id": "ExtractedLabSpecimenUndated",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "type": {
+              "coding": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
+                    }
+                  ]
                 }
               ]
             }
@@ -4813,30 +4907,6 @@
                   }
                 }
               ]
-            },
-            {
-              "linkId": "genderIdentity",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
-              "text": "Identità di genere (transgender)",
-              "type": "choice",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                  "valueExpression": {
-                    "language": "text/fhirpath",
-                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
-                  }
-                }
-              ],
-              "answerOption": [
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
-                    "code": "1384187000",
-                    "display": "Si identifica come transgender"
-                  }
-                }
-              ]
             }
           ]
         },
@@ -4886,14 +4956,14 @@
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "373572006",
-                    "display": "Reperto clinico assente"
+                    "display": "reperto clinico assente"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "261665006",
-                    "display": "Sconosciuto"
+                    "display": "sconosciuto/a"
                   }
                 },
                 {
@@ -4994,7 +5064,7 @@
                 {
                   "linkId": "labBer",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber",
-                  "text": "Numero BUR",
+                  "text": "Numero RIS",
                   "type": "string"
                 },
                 {
@@ -5002,6 +5072,538 @@
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.gln",
                   "text": "GLN",
                   "type": "string"
+                }
+              ]
+            },
+            {
+              "linkId": "specimen",
+              "text": "Campione",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "specimenCollectionDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabSpecimenForm#ChEkmLabSpecimenForm.collectionDate",
+                  "text": "Data del prelievo",
+                  "type": "date"
+                },
+                {
+                  "linkId": "specimenType",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabSpecimenForm#ChEkmLabSpecimenForm.material",
+                  "text": "Materiale",
+                  "type": "choice",
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122592007",
+                        "display": "Serum or plasma specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119396006",
+                        "display": "Specimen from endometrium"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119341000",
+                        "display": "campione di bile"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "397129002",
+                        "display": "campione di vulva"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258603007",
+                        "display": "Specimen from respiratory system"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309051001",
+                        "display": "campione di fluido corporeo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119340004",
+                        "display": "Meconium specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "418932006",
+                        "display": "Oral swab"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119401005",
+                        "display": "campione di congiuntiva"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "127479004",
+                        "display": "campione uterino"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119378002",
+                        "display": "campione endocardico"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119347001",
+                        "display": "Seminal fluid specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119339001",
+                        "display": "campione di feci"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258580003",
+                        "display": "campione di sangue intero"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119389009",
+                        "display": "Specimen from throat"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258527002",
+                        "display": "Anal swab"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119386002",
+                        "display": "campione dalla prostata"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258454002",
+                        "display": "Dialysate specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "430268003",
+                        "display": "campione d'osso"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119395005",
+                        "display": "campione di cervice uterina"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309066003",
+                        "display": "campione bioptico cutaneo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258542004",
+                        "display": "campione di valvola cardiaca"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122575003",
+                        "display": "campione di urina"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258465007",
+                        "display": "Lacrimal fluid specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119359002",
+                        "display": "Bone marrow specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "257261003",
+                        "display": "tampone"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119361006",
+                        "display": "campione di plasma"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119368000",
+                        "display": "campione da cisti"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258500001",
+                        "display": "tampone nasofaringeo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "168139001",
+                        "display": "campione di liquido peritoneale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119300005",
+                        "display": "campione di prodotto ematico"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258604001",
+                        "display": "Upper respiratory specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119393003",
+                        "display": "Specimen from urethra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119364003",
+                        "display": "campione di siero"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "418564007",
+                        "display": "Pleural fluid specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119303007",
+                        "display": "Microbial isolate"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119369008",
+                        "display": "Specimen from ulcer"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119391001",
+                        "display": "Specimen from bronchus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119323008",
+                        "display": "campione di pus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258606004",
+                        "display": "Lower respiratory tract specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "399492000",
+                        "display": "Tissue specimen from lung"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119332005",
+                        "display": "campione di liquido sinoviale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258589002",
+                        "display": "Lymph node specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "3040001000004107",
+                        "display": "campione di blocco di tessuto incluso in paraffina"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119295008",
+                        "display": "campione ottenuto tramite aspirazione"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "447154002",
+                        "display": "Specimen from nose"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119399004",
+                        "display": "Specimen from eye"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309502007",
+                        "display": "campione fetale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119297000",
+                        "display": "campione di sangue"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119394009",
+                        "display": "campione vaginale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122736005",
+                        "display": "campione di tessuto della placenta"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119344008",
+                        "display": "campione dell'apparato genitale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "447955000",
+                        "display": "campione dal retto"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119376003",
+                        "display": "campione di tessuto"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119343002",
+                        "display": "campione di liquido pancreatico"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "472904006",
+                        "display": "tampone dall'addome"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122643008",
+                        "display": "Tissue specimen from large intestine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119324002",
+                        "display": "Specimen of unknown material"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122571007",
+                        "display": "Pericardial fluid specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309165001",
+                        "display": "Ear specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258459007",
+                        "display": "campione di liquido gastrico"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "608969007",
+                        "display": "Specimen from skin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122556008",
+                        "display": "campione di sangue cordonale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258450006",
+                        "display": "campione di liquido cerebrospinale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258607008",
+                        "display": "campione di liquido di lavaggio broncoalveolare"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258415003",
+                        "display": "campione bioptico"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "445447003",
+                        "display": "Specimen from trachea obtained by aspiration"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119398007",
+                        "display": "Specimen from brain"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119342007",
+                        "display": "campione di saliva"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119365002",
+                        "display": "campione da ferita"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119334006",
+                        "display": "campione di espettorato"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119373006",
+                        "display": "Amniotic fluid specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119371008",
+                        "display": "campione da ascesso"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -6858,7 +7460,7 @@
                       "valueCoding": {
                         "system": "http://snomed.info/sct",
                         "code": "787859002",
-                        "display": "Vaccine product"
+                        "display": "vaccino sconosciuto"
                       }
                     },
                     {

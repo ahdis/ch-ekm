@@ -57,13 +57,10 @@ Description: "This CH EKM value set includes the codes for service request reaso
 * $sct#444071008 "Exposure to organism (event)"
 * $sct#74964007  "Other (qualifier value)"
 
-ValueSet: ChEkmSpecimenType
-Title: "CH EKM Specimen Types"
-Description: "This CH EKM value set includes the codes for specimen types."
-* ^status = #active
-* ^experimental = false
-
-* include codes from valueset $ch-elm-results-complete-spec
+// NB: there is deliberately no `ChEkmSpecimenType` any more. It wrapped
+// ch-elm-results-complete-spec in a local value set that added no concepts of its own, and the
+// nested include made tx.fhir.ch refuse `useSupplement` on it (HTTP 422). ChEkmSpecimen and the
+// "Material" form item now bind to the CH ELM canonical directly - see Specimen.fsh.
 
 ValueSet: ChEkmOtherNoneUnknown
 Title: "CH EKM OtherNoneUnknown"

@@ -872,6 +872,17 @@
               {
                 "reference": "Organization/ExtractedLabOrganization"
               }
+            ],
+            "specimen": [
+              {
+                "reference": "Specimen/ExtractedLabSpecimenDated",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenDated'), %resource.descendants().where(linkId='specimenType').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenUndated')))"
+                  }
+                ]
+              }
             ]
           }
         },
@@ -2758,7 +2769,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Numéro BUR"
+                            "valueString": "Numéro REE"
                           }
                         ]
                       },
@@ -2771,7 +2782,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Numero BUR"
+                            "valueString": "Numero RIS"
                           }
                         ]
                       }

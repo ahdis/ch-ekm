@@ -12,3 +12,14 @@ None of the codings provided are in the value set 'IdentifierType' (http://hl7.o
 # which is the version the validator resolves here. The binding is extensible and the Smart Forms
 # renderer implements the code, so this is expected until the R4 code system catches up.
 Unknown code 'tab-container' in the CodeSystem 'http://hl7.org/fhir/questionnaire-item-control' version '4.0.1'
+
+# The "Labor: Probe" sample extracts into TWO mutually exclusive ChEkmSpecimen template instances -
+# ExtractedLabSpecimenDated and ...Undated - because ch-ekm-dateTime ("at least YYYY-MM-DD") runs on a
+# valueless collection.collectedDateTime and a single template cannot be both answered and absent
+# (see the note on ExtractedLabSpecimenDated in questionnnaire/extract/ChEkmDocumentTemplate.fsh).
+# Only ONE of them can be statically reachable from the Composition, because ChEkmServiceRequest
+# .specimen is 0..1 and therefore holds a single placeholder reference - unlike the Impfstatus
+# variants, whose section[immunization].entry is 0..* and can list every one of them. The gate picks
+# the right instance at extraction, so an EXTRACTED document always contains exactly one Specimen,
+# correctly referenced; only the template carries the unreachable sibling.
+Entry 'http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenUndated' isn't reachable by traversing forwards from the Composition. Only Provenance is approved to be used this way (R4 section 3.3.1)

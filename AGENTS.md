@@ -160,6 +160,8 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
 - **`ChEkmLabForm`** → `ChEkmOrganizationLab` (the "Labor" block: the analysing laboratory).
   Disease-agnostic; the sibling of `ChEkmTreatingPhysicianOrganizationForm`, differing only in what
   is mandatory (here: the name alone).
+- **`ChEkmLabSpecimenForm`** → `ChEkmSpecimen` (the sample: Entnahmedatum + Material), reached from
+  `ChEkmServiceRequest.specimen`. Its own model because only some organisms' forms ask for it.
 - **`CHEkmGonorrhoeaForm`** — the disease-level aggregate: `person`, `exposure`,
   `manifestation`, `treatingPhysician`, each refining the generic form models for
   Gonorrhoea (e.g. `surnameInitial 1..1`, `surname 0..0`; adds the Gonorrhoea
@@ -182,13 +184,20 @@ These logical models are the **master** for building the SDC Questionnaires — 
   `ChEkmHepatitisCManifestation`, `ChEkmInvasivePneumococcalDiseaseManifestation`,
   `ChEkmHIVManifestation`, …), `ChEkmExposureClass`, `ChEkmExposureTransmissionRoute`,
   `ChEkmExposureRelationshipType`, `ChEkmBiologicalSex`, `ChEkmGenderIdentity`,
-  `ChEkmServiceRequestReason`, `ChEkmSpecimenType`, `ChEkmOtherNoneUnknown`,
+  `ChEkmServiceRequestReason`, `ChEkmOtherNoneUnknown`,
   `ChEkmHepatitisCCourseOfDisease`, `ChEkmYesNoUnknown`, `ChEkmHospitalisationReasonChoice`,
   `ChEkmCauseOfDeathChoice`, `ChEkmMpoxImmunizationTargetDisease`,
   `ChEkmVaccinationStatusNoUnknown`, `ChEkmMpoxVaccineProduct`. The vaccine brand list and the
   target disease list are NOT redefined here — `ChEkmImmunization` reuses the CH VACD value sets that
   `CHCoreImmunization` already binds (`$SwissVaccinesVS`, `$TargetDiseasesVS`, both from ch-term).
 - **ConceptMap**: `ChEkmSexToHl7Gender` (biological sex → administrative gender).
+
+**Prefer an external canonical over a local wrapper.** `Specimen.type` and the "Material" form item
+both bind DIRECTLY to `http://fhir.ch/ig/ch-elm/ValueSet/ch-elm-results-complete-spec` (alias
+`$ch-elm-results-complete-spec`). A local `ChEkmSpecimenType` used to wrap it with nothing but
+`include codes from valueset …`; it added no concepts, and the nested include made tx.fhir.ch refuse
+`useSupplement` on it with HTTP 422, breaking the questionnaire language previews. A wrapper that
+adds no concepts is not worth that.
 
 **"Unknown" has two shapes on the wire, and the target element decides which**: if it can hold a
 code, the answer is `sct#261665006` in `value[x]` / `reasonCode` / a component; if it is a `dateTime`
@@ -280,8 +289,8 @@ decision for each, in an `OPEN QUESTIONS` block at the bottom of the root's FSH 
 - **Invasive pneumococcal disease**
   (`examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireInvasivePneumococcalDisease.fsh`) —
   open: Risikofaktoren (a section no other organism has), Exposition "Wie", the Labor block's
-  Material/Entnahmedatum/Anlass, and *which* of the two pneumococcal manifestation value sets is
-  authoritative. **Impfstatus is implemented**: one row
+  "Anlass", and *which* of the two pneumococcal manifestation value sets is authoritative. It is also
+  the one form that does NOT ask the gender identity (its CSV has no such row). **Impfstatus is implemented**: one row
   (`Pneumokokkenimpfung`), the same one-row/total-doses model as Mpox, so an answered row extracts to
   exactly one `ChEkmImmunizationInvasivePneumococcalDisease` — note the example Bundle still carries
   the other, one-resource-per-dose shape. Apart from that section it reuses every shared module
@@ -300,7 +309,11 @@ breaks the single-Bundle-template extraction. **One row = one resource carrying 
 count**, never one resource per dose.
 The **"Labor"** section (`RuleSetQrLaboratory` -> `ChEkmQuestionnaireLaboratory`) is a LEVEL-3 child
 of the Diagnose section, inserted right after the Manifestationsbeginn; Hepatitis C and invasive
-pneumococcal disease assemble it, Gonorrhoea and Mpox do not. Mpox, Hepatitis C and invasive pneumococcal disease
+pneumococcal disease assemble it, Gonorrhoea and Mpox do not. Its OPT-IN companion
+`RuleSetQrLaboratorySpecimen` -> `ChEkmQuestionnaireLaboratorySpecimen` adds the two sample questions
+(Entnahmedatum + Material -> `ChEkmSpecimen`) and is assembled by invasive pneumococcal disease only:
+`$assemble` cannot include a child conditionally, so a form that asks more says so with one more
+insert rather than by branching inside a shared module. Mpox, Hepatitis C and invasive pneumococcal disease
 have the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation` +
 `RuleSetQrDeath`); Gonorrhoea has none. That section is also the only one needing a third launch context (`encounter`), which is why
 it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.

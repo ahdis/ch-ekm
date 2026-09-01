@@ -27,6 +27,10 @@
 #   * Labor: ALL nine fields answered -> every context-gated element of the shared
 #     ExtractedLabOrganization fires (GLN, BUR, department, address, phone, email). The Hepatitis C
 #     round trip covers the closed state of each.
+#   * Probe: Entnahmedatum + Material both answered -> a ChEkmSpecimen referenced from
+#     ChEkmServiceRequest.specimen. No other round trip emits a Specimen at all (the Hepatitis C form
+#     does not assemble that module, so its gate is empty and both the Specimen and the reference to
+#     it are dropped).
 #   * Impfstatus (issue #29): "ja" with a TOTAL of 2 doses, NO last-dose date and the product TYPED
 #     rather than picked -> the UndatedDosed Immunization variant (occurrenceDateTime valueless with
 #     a data-absent-reason) and the `ofType(string)` leg of the vaccineCode expression
@@ -127,6 +131,13 @@ if command -v jq >/dev/null 2>&1; then
   jq -r '([.entry[].resource | select(.resourceType == "Composition")][0].section[]
          | select(.code.coding[0].code == "30954-2")
          | "    entries: \(.entry | map(.reference) | join(", "))") // "    (no laboratory section)"' "$OUT" || true
+  echo
+  echo "Probe (expect a Specimen with type + collection date, referenced from ServiceRequest.specimen):"
+  jq -r '([.entry[].resource | select(.resourceType == "Specimen")][0]
+         | "    type              = \(.type.coding[0].code // "(absent)") (\(.type.coding[0].display // "-"))",
+           "    collectedDateTime = \(.collection.collectedDateTime // "(absent)")") // "    (no Specimen emitted)"' "$OUT" || true
+  jq -r '"    Specimens: \([.entry[].resource | select(.resourceType == "Specimen")] | length) (expect exactly 1)",
+         "    ServiceRequest.specimen = \([.entry[].resource | select(.resourceType == "ServiceRequest")][0].specimen[0].reference // "(absent)")"' "$OUT" || true
   echo
   echo "Impfstatus (expect ONE Immunization: total 2 doses, occurrence DAR, typed brand in .text):"
   jq -r '([.entry[].resource | select(.resourceType == "Immunization")]

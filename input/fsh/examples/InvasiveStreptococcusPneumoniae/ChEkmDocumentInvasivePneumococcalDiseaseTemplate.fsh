@@ -194,6 +194,9 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentI
 // fire. All conditional entries therefore sit at the end. See ChEkmDocumentMpoxTemplate.fsh for the
 // full explanation, including why `fullUrl` needs an identity templateExtractValue.
 
+// The sample (Entnahmedatum / Material) — emitted when either question was answered.
+* insert RuleSetLaboratorySpecimenEntry
+
 // Hospitalisation Encounter — answered "no" (or unanswered) -> empty context -> no Encounter, and
 // the two references to it (Composition.encounter, Condition.encounter) carry the same test, so
 // they disappear with it.

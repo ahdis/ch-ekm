@@ -25,7 +25,9 @@
 //   7. Exposure "Wann": answered, so effectiveDateTime is asserted.
 //   8. Labor: all nine fields answered, so every context-gated element of the shared
 //      ExtractedLabOrganization fires at once (GLN, BUR, department, address, phone, email).
-//   9. Impfstatus: "ja", 2 doses, NO last-dose date, and the product TYPED as free text rather than
+//   9. Probe: Entnahmedatum + Material both answered -> a ChEkmSpecimen referenced from
+//      ChEkmServiceRequest.specimen. No other round trip has a Specimen at all.
+//  10. Impfstatus: "ja", 2 doses, NO last-dose date, and the product TYPED as free text rather than
 //      picked from the Swiss vaccine list. Two Immunization branches that no other round-trip
 //      reaches: the UndatedDosed template instance (occurrenceDateTime valueless with a
 //      data-absent-reason, doseNumberPositiveInt = the answered total) and the `ofType(string)` leg
@@ -55,8 +57,8 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 // --- Angaben zur betroffenen Person ---
 // Item order must follow the assembled questionnaire's person group (surnameInitial,
 // givennameInitial, dateOfBirth, ahvn13, nationality, zipCode, city, country, canton,
-// administrativeGender, genderIdentity) or QR validation reports "items are out of order".
-// `country` is omitted (optional).
+// administrativeGender) or QR validation reports "items are out of order". `country` is omitted
+// (optional), and there is NO genderIdentity item: this form does not ask it.
 * item[0].item[0].linkId = "person"
 * item[0].item[0].item[0].linkId = "surnameInitial"
 * item[0].item[0].item[0].answer.valueString = "M"
@@ -76,8 +78,6 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 * item[0].item[0].item[7].answer.valueString = "BE"
 * item[0].item[0].item[8].linkId = "administrativeGender"
 * item[0].item[0].item[8].answer.valueCoding = $administrative-gender#female "female"
-* item[0].item[0].item[9].linkId = "genderIdentity"
-* item[0].item[0].item[9].answer.valueCoding = $sct#1384187000 "Identifies as transgender (finding)"
 
 // --- Diagnose und Manifestation ---
 // ONE manifestation (the item repeats, this answers it once) -> exactly one Condition.evidence
@@ -113,6 +113,15 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 * item[0].item[1].item[3].item[7].answer.valueString = "A99082200"
 * item[0].item[1].item[3].item[8].linkId = "labGln"
 * item[0].item[1].item[3].item[8].answer.valueString = "7601000435111"
+// Probe — Entnahmedatum + Material, the sample half of the Labor block that only this form asks.
+// Both answered, matching the CSV's example column (27/01/2026, Blut) and the example Bundle's
+// ChEkmSpecimenExampleInvasivePneumococcalDisease -> after $extract a ChEkmSpecimen with
+// collection.collectedDateTime and type.coding, referenced from ChEkmServiceRequest.specimen.
+* item[0].item[1].item[4].linkId = "specimen"
+* item[0].item[1].item[4].item[0].linkId = "specimenCollectionDate"
+* item[0].item[1].item[4].item[0].answer.valueDate = "2026-01-27"
+* item[0].item[1].item[4].item[1].linkId = "specimenType"
+* item[0].item[1].item[4].item[1].answer.valueCoding = $sct#119297000 "Blood specimen (specimen)"
 
 // --- Verlauf ---
 // Hospitalisation "nein" -> the context on the Encounter Bundle entry is empty, so NO Encounter is

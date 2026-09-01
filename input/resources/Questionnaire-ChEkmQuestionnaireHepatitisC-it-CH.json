@@ -872,6 +872,17 @@
               {
                 "reference": "Organization/ExtractedLabOrganization"
               }
+            ],
+            "specimen": [
+              {
+                "reference": "Specimen/ExtractedLabSpecimenDated",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenDated'), %resource.descendants().where(linkId='specimenType').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenUndated')))"
+                  }
+                ]
+              }
             ]
           }
         },
@@ -4389,14 +4400,14 @@
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "373572006",
-                    "display": "Reperto clinico assente"
+                    "display": "reperto clinico assente"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "261665006",
-                    "display": "Sconosciuto"
+                    "display": "sconosciuto/a"
                   }
                 },
                 {
@@ -4504,7 +4515,7 @@
                 {
                   "linkId": "labBer",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber",
-                  "text": "Numero BUR",
+                  "text": "Numero RIS",
                   "type": "string"
                 },
                 {

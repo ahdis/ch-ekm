@@ -150,23 +150,6 @@
                 }
               }
             ]
-          },
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity",
-            "extension": [
-              {
-                "url": "value",
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "1384187000",
-                      "system": "http://snomed.info/sct",
-                      "display": "Identifies as transgender (finding)"
-                    }
-                  ]
-                }
-              }
-            ]
           }
         ],
         "name": [
@@ -422,6 +405,11 @@
           {
             "reference": "Organization/ExtractedLabOrganization"
           }
+        ],
+        "specimen": [
+          {
+            "reference": "Specimen/ExtractedLabSpecimenDated"
+          }
         ]
       }
     },
@@ -466,6 +454,28 @@
           }
         ],
         "name": "LabSan GmbH"
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenDated",
+      "resource": {
+        "resourceType": "Specimen",
+        "id": "ExtractedLabSpecimenDated",
+        "subject": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "type": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "119297000",
+              "display": "Blood specimen (specimen)"
+            }
+          ]
+        },
+        "collection": {
+          "collectedDateTime": "2026-01-27"
+        }
       }
     },
     {

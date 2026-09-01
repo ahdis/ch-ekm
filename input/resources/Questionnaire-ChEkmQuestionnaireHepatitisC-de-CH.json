@@ -872,6 +872,17 @@
               {
                 "reference": "Organization/ExtractedLabOrganization"
               }
+            ],
+            "specimen": [
+              {
+                "reference": "Specimen/ExtractedLabSpecimenDated",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenDated'), %resource.descendants().where(linkId='specimenType').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenUndated')))"
+                  }
+                ]
+              }
             ]
           }
         },
@@ -4389,7 +4400,7 @@
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "373572006",
-                    "display": "Klinischer Befund nicht vorhanden"
+                    "display": "Ohne vorliegenden klinischen Befund"
                   }
                 },
                 {

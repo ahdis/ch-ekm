@@ -303,6 +303,64 @@ InstanceOf: ChEkmServiceRequest
 * intent = #order
 * subject.reference = "Patient/ExtractedPatient"
 * performer[0].reference = "Organization/ExtractedLabOrganization"
+// The sample, for the organisms whose form asks for it (RuleSetQrLaboratorySpecimen). PLACEHOLDER
+// DEFAULT + a plain value directive, the RuleSetEncounterReference idiom: the static reference keeps
+// a Specimen entry reachable from the Composition in the TEMPLATE, and the computed value replaces
+// it at extraction. When neither sample question exists — Hepatitis C, which does not assemble that
+// module — the expression is empty and the engine drops the whole `specimen` element, so the
+// reference can never dangle.
+//
+// ONE directive choosing between the TWO Specimen instances below (only the first
+// templateExtractValue in an extension array is read, so the branch has to live inside the
+// expression). The `iif` criterion is Boolean on purpose — a non-Boolean criterion silently falls
+// through to the else branch (forms-summary §8).
+* specimen[0].reference = "Specimen/ExtractedLabSpecimenDated"
+* specimen[0].extension[+].url = $sdc-templateExtractValue
+* specimen[0].extension[=].valueString = "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenDated'), %resource.descendants().where(linkId='specimenType').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenUndated')))"
+
+// ---------------------------------------------------------------------------
+// The sample itself (ChEkmSpecimen) — "Entnahmedatum" and "Material".
+//
+// TWO MUTUALLY EXCLUSIVE INSTANCES, of which at most one is ever emitted, and the split is FORCED
+// rather than chosen — the same obs-6 situation RuleSetImmunization.fsh describes at length.
+// `ChEkmSpecimen` puts `ch-ekm-dateTime` on `collection.collectedDateTime` ("at least YYYY-MM-DD",
+// i.e. `$this.toString().length() >= 10`), and an invariant on a VALUELESS element still runs: a
+// single template carrying a to-be-computed `collectedDateTime` fails it as a standalone example, and
+// — because the ServiceRequest referencing that Specimen then stops conforming, and with it
+// section[laboratory], the Composition and the Bundle's required entry:Composition slice — took three
+// further QA errors down with it. Giving the template a sentinel date instead would be worse: it
+// SURVIVES extraction whenever the date is unanswered, silently asserting a collection date nobody
+// reported.
+//
+// So each instance is unambiguous — the date is either always answered or statically absent:
+//
+//   ...Dated    date answered            collection.collectedDateTime = the answered date
+//                                        (`type` still optional: Material may be blank)
+//   ...Undated  date blank, Material set no `collection` element at all
+//   neither answered                     -> no Specimen (both gates empty)
+//
+// Both sit inside context-gated Bundle entries, so there is NO templateExtractContext below them and
+// every field is a plain, empty-safe value directive (see RuleSetEncounterHospitalisation).
+// ---------------------------------------------------------------------------
+Instance: ExtractedLabSpecimenDated
+InstanceOf: ChEkmSpecimen
+* subject.reference = "Patient/ExtractedPatient"
+// Material -> type.coding[0]: the answered Coding, passed through unchanged. Optional even here —
+// an empty result drops coding[0], and `type` disappears with its only child.
+* type.coding[0].extension[+].url = $sdc-templateExtractValue
+* type.coding[0].extension[=].valueString = "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
+// PLACEHOLDER DEFAULT — the Bundle.timestamp idiom, and safe here BECAUSE this instance's gate
+// requires the date to exist, so the directive below always fires and the 1900 sentinel never
+// survives a real extraction. It exists only so the template satisfies ch-ekm-dateTime.
+* collection.collectedDateTime = "1900-01-01"
+* collection.collectedDateTime.extension[+].url = $sdc-templateExtractValue
+* collection.collectedDateTime.extension[=].valueString = "%resource.descendants().where(linkId='specimenCollectionDate').answer.value.first()"
+
+Instance: ExtractedLabSpecimenUndated
+InstanceOf: ChEkmSpecimen
+* subject.reference = "Patient/ExtractedPatient"
+* type.coding[0].extension[+].url = $sdc-templateExtractValue
+* type.coding[0].extension[=].valueString = "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
 
 // ---------------------------------------------------------------------------
 // Treating physician — PractitionerRole linking the two above (static, fully owned by the template)

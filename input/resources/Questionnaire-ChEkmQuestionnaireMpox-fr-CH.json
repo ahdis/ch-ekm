@@ -7416,7 +7416,7 @@
                       "valueCoding": {
                         "system": "http://snomed.info/sct",
                         "code": "787859002",
-                        "display": "Vaccine product"
+                        "display": "vaccin"
                       }
                     },
                     {
@@ -9039,7 +9039,7 @@
                       "valueCoding": {
                         "system": "http://snomed.info/sct",
                         "code": "787859002",
-                        "display": "Vaccine product"
+                        "display": "vaccin"
                       }
                     },
                     {

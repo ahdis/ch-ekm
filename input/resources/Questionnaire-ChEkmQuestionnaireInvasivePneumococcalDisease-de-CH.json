@@ -96,15 +96,15 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratory|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratorySpecimen|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -949,6 +949,17 @@
               {
                 "reference": "Organization/ExtractedLabOrganization"
               }
+            ],
+            "specimen": [
+              {
+                "reference": "Specimen/ExtractedLabSpecimenDated",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenDated'), %resource.descendants().where(linkId='specimenType').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenUndated')))"
+                  }
+                ]
+              }
             ]
           }
         },
@@ -1085,6 +1096,89 @@
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                   "valueString": "%resource.descendants().where(linkId='labName').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenDated",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenDated'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Specimen",
+            "id": "ExtractedLabSpecimenDated",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "type": {
+              "coding": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
+                    }
+                  ]
+                }
+              ]
+            },
+            "collection": {
+              "collectedDateTime": "1900-01-01",
+              "_collectedDateTime": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='specimenCollectionDate').answer.value.first()"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists().not() and %resource.descendants().where(linkId='specimenType').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenUndated",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenUndated'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Specimen",
+            "id": "ExtractedLabSpecimenUndated",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "type": {
+              "coding": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
+                    }
+                  ]
                 }
               ]
             }
@@ -4813,30 +4907,6 @@
                   }
                 }
               ]
-            },
-            {
-              "linkId": "genderIdentity",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
-              "text": "Geschlechtsidentität (transgender)",
-              "type": "choice",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                  "valueExpression": {
-                    "language": "text/fhirpath",
-                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
-                  }
-                }
-              ],
-              "answerOption": [
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
-                    "code": "1384187000",
-                    "display": "Identifiziert sich als Transgender"
-                  }
-                }
-              ]
             }
           ]
         },
@@ -4886,7 +4956,7 @@
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "373572006",
-                    "display": "Klinischer Befund nicht vorhanden"
+                    "display": "Ohne vorliegenden klinischen Befund"
                   }
                 },
                 {
@@ -5002,6 +5072,538 @@
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.gln",
                   "text": "GLN",
                   "type": "string"
+                }
+              ]
+            },
+            {
+              "linkId": "specimen",
+              "text": "Probe",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "specimenCollectionDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabSpecimenForm#ChEkmLabSpecimenForm.collectionDate",
+                  "text": "Entnahmedatum",
+                  "type": "date"
+                },
+                {
+                  "linkId": "specimenType",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabSpecimenForm#ChEkmLabSpecimenForm.material",
+                  "text": "Material",
+                  "type": "choice",
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122592007",
+                        "display": "Azelluläre Blutprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119396006",
+                        "display": "Probenmaterial des Endometriums"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119341000",
+                        "display": "Gallensekretprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "397129002",
+                        "display": "Specimen from vulva"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258603007",
+                        "display": "Probenmaterial der Atemwege"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309051001",
+                        "display": "Körperflüssigkeitsprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119340004",
+                        "display": "Mekoniumprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "418932006",
+                        "display": "Mundabstrich"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119401005",
+                        "display": "Probenmaterial der Konjunktiva"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "127479004",
+                        "display": "Specimen from uterus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119378002",
+                        "display": "Endocardial specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119347001",
+                        "display": "Spermaprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119339001",
+                        "display": "Stuhlprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258580003",
+                        "display": "Vollblutprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119389009",
+                        "display": "Probenmaterial des Rachens"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258527002",
+                        "display": "Analabstrich"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119386002",
+                        "display": "Specimen from prostate"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258454002",
+                        "display": "Dialysatprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "430268003",
+                        "display": "Knochenprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119395005",
+                        "display": "Probenmaterial der Zervix"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309066003",
+                        "display": "Hautbiopsat"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258542004",
+                        "display": "Heart valve specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122575003",
+                        "display": "Urinprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258465007",
+                        "display": "Tränenflüssigkeitprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119359002",
+                        "display": "Knochenmarkprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "257261003",
+                        "display": "Abstrich"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119361006",
+                        "display": "Plasmaprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119368000",
+                        "display": "Probenmaterial aus Zyste"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258500001",
+                        "display": "Nasopharynxabstrich"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "168139001",
+                        "display": "Peritonealflüssigkeitsprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119300005",
+                        "display": "Probenmaterial aus Blutprodukt"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258604001",
+                        "display": "Probenmaterial der oberen Atemwege"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119393003",
+                        "display": "Probenmaterial der Urethra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119364003",
+                        "display": "Serumprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "418564007",
+                        "display": "Pleuraflüssigkeitprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119303007",
+                        "display": "Probenmaterial von mikrobiellem Isolat"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119369008",
+                        "display": "Probenmaterial eines Ulkus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119391001",
+                        "display": "Probenmaterial der Bronchien"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119323008",
+                        "display": "Eiterprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258606004",
+                        "display": "Probenmaterial der unteren Atemwege"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "399492000",
+                        "display": "Lungengewebeprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119332005",
+                        "display": "Synovialflüssigkeitsprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258589002",
+                        "display": "Lymphknotenprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "3040001000004107",
+                        "display": "Gewebeblock-Probenmaterial in Paraffin eingebettet"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119295008",
+                        "display": "Aspirat"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "447154002",
+                        "display": "Probenmaterial der Nase"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119399004",
+                        "display": "Probenmaterial des Auges"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309502007",
+                        "display": "Fetusprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119297000",
+                        "display": "Blutprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119394009",
+                        "display": "Probenmaterial der Vagina"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122736005",
+                        "display": "Gewebeprobenmaterial der Plazenta"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119344008",
+                        "display": "Probenmaterial des Genitals"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "447955000",
+                        "display": "Specimen from rectum"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119376003",
+                        "display": "Gewebeprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119343002",
+                        "display": "Pancreatic fluid specimen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "472904006",
+                        "display": "Abstrich vom Abdomen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122643008",
+                        "display": "Dickdarmgewebeprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119324002",
+                        "display": "Unbekanntes Probenmaterial"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122571007",
+                        "display": "Perikardflüssigkeitprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309165001",
+                        "display": "Probenmaterial vom Ohr"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258459007",
+                        "display": "Magenflüssigkeitprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "608969007",
+                        "display": "Hautprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122556008",
+                        "display": "Nabelschnurblutprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258450006",
+                        "display": "Liquorprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258607008",
+                        "display": "Probenmaterial der bronchoalveolären Lavageflüssigkeit"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258415003",
+                        "display": "Biopsieprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "445447003",
+                        "display": "Tracheaaspirat"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119398007",
+                        "display": "Probenmaterial vom Gehirn"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119342007",
+                        "display": "Speichelprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119365002",
+                        "display": "Probenmaterial einer Wunde"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119334006",
+                        "display": "Sputumprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119373006",
+                        "display": "Fruchtwasserprobe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119371008",
+                        "display": "Abszessprobe"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -6858,7 +7460,7 @@
                       "valueCoding": {
                         "system": "http://snomed.info/sct",
                         "code": "787859002",
-                        "display": "Vaccine product"
+                        "display": "Impfstoffprodukt"
                       }
                     },
                     {

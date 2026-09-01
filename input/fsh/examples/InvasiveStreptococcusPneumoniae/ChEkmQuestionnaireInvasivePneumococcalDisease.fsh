@@ -6,7 +6,8 @@
 //
 // STARTER SCOPE, exactly like the Hepatitis C root. Only the sections whose questions already exist
 // as reusable modules AND whose target profiles exist for this organism are assembled:
-//   Person (INITIALS)   ·  Diagnose/Manifestation + Labor  ·  Verlauf (Hospitalisation + Zustand)
+//   Person (INITIALS, no gender identity)  ·  Diagnose/Manifestation + Labor (incl. Probe)
+//   Verlauf (Hospitalisation + Zustand)
 //   Exposition Wo/Wann  ·  Impfstatus  ·  Behandelnde Ärztin/Arzt
 // The one block the CSV marks with an "X" that is NOT assembled — Risikofaktoren — is
 // listed under OPEN QUESTIONS at the bottom of this file. They are DELIBERATELY NOT MODELLED YET:
@@ -42,10 +43,11 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 * insert RuleSetQrGroupPerson
 * insert RuleSetQrPersonInitials
 * insert RuleSetQrPersonGeneral
-// Geschlechtsidentität: the CSV has NO row for it (only "Administratives Geschlecht", covered by
-// PersonGeneral). Assembled anyway, because all three existing forms ask it and the question is
-// optional — see OPEN QUESTIONS #6, this is one line to delete if the form must not ask it.
-* insert RuleSetQrPersonGenderIdentity
+// NO Geschlechtsidentität. The CSV has no row for it — only "Administratives Geschlecht", which
+// PersonGeneral covers — and unlike Gonorrhoea, Mpox and Hepatitis C this form does not ask it
+// (decided; was OPEN QUESTION #6). The shared ExtractedPatient reads `linkId='genderIdentity'` and
+// emits nothing when the item is absent, so no extraction change is needed:
+// * insert RuleSetQrPersonGenderIdentity
 
 // --- Diagnose und Manifestation -----------------------------------------------------------------
 // Manifestationen — multiple-choice, check-boxes, bound to
@@ -80,6 +82,12 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 // The rest of the paper form's Labor block (Anlass, Material, Entnahmedatum) is NOT asked — see
 // OPEN QUESTIONS #3.
 * insert RuleSetQrLaboratory
+// Entnahmedatum + Material — the SAMPLE half of the Labor block, an opt-in companion module. Only
+// this form asks them (the Hepatitis C CSV has no Entnahmedatum row and mentions Material only in
+// its un-mapped wish-list block), which is why they are their own sub-questionnaire rather than two
+// more items in the shared one. Material is a dropdown bound to the CH ELM specimen value set —
+// the same canonical ChEkmSpecimen binds `type.coding` to.
+* insert RuleSetQrLaboratorySpecimen
 
 // --- Verlauf (course of the disease) ------------------------------------------------------------
 // Hospitalisation + Zustand (Tot / Todesdatum / Todesursache). The CSV marks both blocks with an X
@@ -187,18 +195,27 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 //     ChEkmOrganizationLab, reached from ChEkmServiceRequest.performer in
 //     Composition.section[laboratory]. Hepatitis C assembles the same module unchanged — it is the
 //     first lab module in the IG and every further organism gets it with one insert.
-//     STILL OPEN, and specific to this organism:
-//       * "Material: Blut / Liquor / Pleurapunktat / Gelenkpunktat / Anderes" -> Specimen.type,
-//         X-marked, and the CSV notes it was "added by Yolanda Sabuco, appears in the PDF but not
-//         in the sheet. Do you want to include it? Anderes do we want it coded and if yes we have
-//         to choose the valueset". ChEkmSpecimenType exists but includes the WHOLE ch-elm specimen
-//         list, not those five concepts — so the answer list is not decided.
-//       * "Entnahmedatum" -> Specimen.collection.collectedDateTime (no X in the CSV).
+//     "Material" and "Entnahmedatum" are IMPLEMENTED TOO, as the opt-in companion module
+//     ChEkmQuestionnaireLaboratorySpecimen (logical model ChEkmLabSpecimenForm -> ChEkmSpecimen,
+//     referenced from ChEkmServiceRequest.specimen). Material is a dropdown bound DIRECTLY to
+//     http://fhir.ch/ig/ch-elm/ValueSet/ch-elm-results-complete-spec, the same canonical
+//     ChEkmSpecimen binds `type.coding` to. (The local ChEkmSpecimenType wrapper that used to sit in
+//     between is gone: it added no concepts, and its nested include made tx.fhir.ch refuse
+//     `useSupplement` with HTTP 422, which broke the de/fr/it preview build.) Only this form
+//     assembles the module; the Hepatitis C form has neither row.
+//     STILL OPEN:
+//       * The list has 73 concepts (the whole CH ELM specimen list), not the five the paper form
+//         prints (Blut, Liquor, Pleurapunktat, Gelenkpunktat, Anderes). All five are in it, so
+//         nothing is missing — but if the FOPH wants exactly those five, that is a value set
+//         decision, not a form change.
+//       * The dropdown shows ENGLISH displays in all four languages: the ch-ekm SNOMED language
+//         supplement carries designations for 41 curated codes, of which exactly one (74964007
+//         "Other") is a specimen code. Translating the list means adding designations, whichever
+//         value set it ends up being.
 //       * "Anlass" (klinischer Verdacht / Exposition / Screening / anderer / unbekannt ->
 //         ServiceRequest.reasonCode; ChEkmServiceRequestReason exists) appears TWICE in the CSV's
 //         "Questionnaire" wish-list block with two DIFFERENT answer lists — which one applies?
-//     All three attach to the ChEkmServiceRequest the form already extracts, so none of them
-//     disturbs the nine questions that are in place.
+//     All of these attach to the ChEkmServiceRequest / ChEkmSpecimen the form already extracts.
 //
 //  4. RISIKOFAKTOREN — marked X, and NEW: no other organism in this IG has this section.
 //     The example Bundle puts a plain (unprofiled) `Condition` with
@@ -223,9 +240,11 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 //     ChEkmExposureInvasivePneumococcalDisease profile; as for Hepatitis C the BASE ChEkmExposure is
 //     extracted into, which is fine for Wo/Wann and not enough for Wie.
 //
-//  6. GESCHLECHTSIDENTITÄT — the CSV's first row is an empty "Gender / Gender" placeholder with no
-//     X, no mapping and no value; there is no "Geschlechtsidentität" row. RuleSetQrPersonGenderIdentity
-//     is assembled above for consistency with the other three forms. Confirm, or delete that line.
+//  6. GESCHLECHTSIDENTITÄT — DECIDED: this form does NOT ask it. The CSV's first row is an empty
+//     "Gender / Gender" placeholder with no X, no mapping and no value, and there is no
+//     "Geschlechtsidentität" row; RuleSetQrPersonGenderIdentity is therefore not assembled (the
+//     other three forms still ask it). Nothing else changes — the shared ExtractedPatient builds the
+//     individual-genderIdentity extension only when the item is answered.
 //
 //  7. "WEITERE EXPONIERTE PERSONEN / FÄLLE" and "BERUFLICHE TÄTIGKEIT RELEVANT FÜR VOLLZUG" sit in
 //     the CSV's "Questionnaire" wish-list block (no X, no mapping, no value set). Same category as

@@ -302,6 +302,12 @@ RuleSet: RuleSetQrManifestationBeginUnknown
 RuleSet: RuleSetQrLaboratory
 * insert RuleSetQrLevel3SubQuestionnaire("laboratorygroup", "Laboratory", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratory")
 
+// The SAMPLE questions (Entnahmedatum + Material) — an OPT-IN companion to RuleSetQrLaboratory,
+// inserted directly after it by the roots whose form asks them. Today that is invasive pneumococcal
+// disease only; the Hepatitis C form has neither row. Targets ChEkmSpecimen, not the lab Organization.
+RuleSet: RuleSetQrLaboratorySpecimen
+* insert RuleSetQrLevel3SubQuestionnaire("laboratoryspecimengroup", "Laboratory: sample", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratorySpecimen")
+
 RuleSet: RuleSetQrGroupExposure
 * insert RuleSetQrLevel2Group("exposure", "Exposure details", "Angaben zur Exposition", "Données relatives à l'exposition", "Dati relativi all'esposizione")
 * insert RuleSetQrLevel2ShortText("Exposure", "Exposition", "Exposition", "Esposizione")

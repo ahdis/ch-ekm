@@ -96,15 +96,15 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratory|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratorySpecimen|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -949,6 +949,17 @@
               {
                 "reference": "Organization/ExtractedLabOrganization"
               }
+            ],
+            "specimen": [
+              {
+                "reference": "Specimen/ExtractedLabSpecimenDated",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenDated'), %resource.descendants().where(linkId='specimenType').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenUndated')))"
+                  }
+                ]
+              }
             ]
           }
         },
@@ -1085,6 +1096,89 @@
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                   "valueString": "%resource.descendants().where(linkId='labName').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenDated",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenDated'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Specimen",
+            "id": "ExtractedLabSpecimenDated",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "type": {
+              "coding": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
+                    }
+                  ]
+                }
+              ]
+            },
+            "collection": {
+              "collectedDateTime": "1900-01-01",
+              "_collectedDateTime": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='specimenCollectionDate').answer.value.first()"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists().not() and %resource.descendants().where(linkId='specimenType').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenUndated",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenUndated'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Specimen",
+            "id": "ExtractedLabSpecimenUndated",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "type": {
+              "coding": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
+                    }
+                  ]
                 }
               ]
             }
@@ -4813,30 +4907,6 @@
                   }
                 }
               ]
-            },
-            {
-              "linkId": "genderIdentity",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
-              "text": "Identité de genre (transgenre)",
-              "type": "choice",
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                  "valueExpression": {
-                    "language": "text/fhirpath",
-                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
-                  }
-                }
-              ],
-              "answerOption": [
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
-                    "code": "1384187000",
-                    "display": "S'identifie comme transgenre"
-                  }
-                }
-              ]
             }
           ]
         },
@@ -4879,21 +4949,21 @@
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "74964007",
-                    "display": "Autre"
+                    "display": "autre"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "373572006",
-                    "display": "Constatation clinique absente"
+                    "display": "constatation clinique indiquant une absence"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "261665006",
-                    "display": "Inconnu"
+                    "display": "inconnu"
                   }
                 },
                 {
@@ -4994,7 +5064,7 @@
                 {
                   "linkId": "labBer",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber",
-                  "text": "Numéro BUR",
+                  "text": "Numéro REE",
                   "type": "string"
                 },
                 {
@@ -5002,6 +5072,538 @@
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.gln",
                   "text": "GLN",
                   "type": "string"
+                }
+              ]
+            },
+            {
+              "linkId": "specimen",
+              "text": "Échantillon",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "specimenCollectionDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabSpecimenForm#ChEkmLabSpecimenForm.collectionDate",
+                  "text": "Date du prélèvement",
+                  "type": "date"
+                },
+                {
+                  "linkId": "specimenType",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabSpecimenForm#ChEkmLabSpecimenForm.material",
+                  "text": "Matériel",
+                  "type": "choice",
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122592007",
+                        "display": "échantillon sanguin acellulaire (sérum ou plasma)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119396006",
+                        "display": "échantillon provenant de l'endomètre"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119341000",
+                        "display": "échantillon de bile"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "397129002",
+                        "display": "échantillon de la vulve"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258603007",
+                        "display": "échantillon provenant de l'appareil respiratoire"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309051001",
+                        "display": "échantillon de liquide biologique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119340004",
+                        "display": "échantillon de méconium"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "418932006",
+                        "display": "échantillon buccal prélevé par écouvillonnage"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119401005",
+                        "display": "échantillon provenant d'une conjonctive"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "127479004",
+                        "display": "échantillon provenant de l'utérus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119378002",
+                        "display": "échantillon provenant de l'endocarde"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119347001",
+                        "display": "échantillon de sperme"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119339001",
+                        "display": "échantillon de selles"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258580003",
+                        "display": "échantillon de sang total"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119389009",
+                        "display": "échantillon provenant de la gorge"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258527002",
+                        "display": "échantillon anal prélevé par écouvillonnage"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119386002",
+                        "display": "échantillon provenant de la prostate"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258454002",
+                        "display": "échantillon de dialysat"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "430268003",
+                        "display": "échantillon d'un os"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119395005",
+                        "display": "échantillon provenant du col utérin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309066003",
+                        "display": "pièce de biopsie cutanée"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258542004",
+                        "display": "échantillon de valve cardiaque"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122575003",
+                        "display": "échantillon d'urine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258465007",
+                        "display": "échantillon de liquide lacrymal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119359002",
+                        "display": "échantillon de moelle osseuse"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "257261003",
+                        "display": "échantillon prélevé par écouvillonnage"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119361006",
+                        "display": "échantillon de plasma"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119368000",
+                        "display": "échantillon provenant d'un kyste"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258500001",
+                        "display": "échantillon nasopharyngien prélevé par écouvillonnage"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "168139001",
+                        "display": "échantillon de liquide péritonéal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119300005",
+                        "display": "échantillon provenant d'un produit sanguin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258604001",
+                        "display": "échantillon des voies respiratoires supérieures"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119393003",
+                        "display": "échantillon provenant de l'urètre"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119364003",
+                        "display": "échantillon de sérum"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "418564007",
+                        "display": "échantillon de liquide pleural"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119303007",
+                        "display": "échantillon provenant d'un isolat microbien"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119369008",
+                        "display": "échantillon d'ulcère"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119391001",
+                        "display": "échantillon bronchique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119323008",
+                        "display": "échantillon de pus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258606004",
+                        "display": "échantillon des voies respiratoires inférieures"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "399492000",
+                        "display": "échantillon tissulaire provenant d'un poumon"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119332005",
+                        "display": "échantillon de liquide synovial"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258589002",
+                        "display": "échantillon lymphonodulaire"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "3040001000004107",
+                        "display": "bloc de tissu enrobé de paraffine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119295008",
+                        "display": "échantillon prélevé par aspiration"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "447154002",
+                        "display": "échantillon provenant du nez"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119399004",
+                        "display": "échantillon provenant de l'oeil"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309502007",
+                        "display": "échantillon provenant d'un fœtus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119297000",
+                        "display": "échantillon sanguin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119394009",
+                        "display": "échantillon provenant du vagin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122736005",
+                        "display": "échantillon provenant de tissu du placenta"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119344008",
+                        "display": "échantillon provenant de l'appareil génital"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "447955000",
+                        "display": "échantillon de rectum"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119376003",
+                        "display": "échantillon tissulaire"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119343002",
+                        "display": "échantillon de liquide pancréatique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "472904006",
+                        "display": "échantillon de l'abdomen prélevé par écouvillonnage"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122643008",
+                        "display": "échantillon tissulaire provenant du gros intestin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119324002",
+                        "display": "échantillon de substance inconnue"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122571007",
+                        "display": "échantillon de liquide péricardique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "309165001",
+                        "display": "échantillon provenant de l'oreille"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258459007",
+                        "display": "échantillon de liquide gastrique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "608969007",
+                        "display": "échantillon provenant de la peau"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "122556008",
+                        "display": "échantillon de sang de cordon ombilical"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258450006",
+                        "display": "échantillon de liquide cérébrospinal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258607008",
+                        "display": "échantillon de liquide de lavage bronchoalvéolaire"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "258415003",
+                        "display": "pièce de biopsie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "445447003",
+                        "display": "échantillon de la trachée prélevé par aspiration"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119398007",
+                        "display": "échantillon provenant de l'encéphale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119342007",
+                        "display": "échantillon de salive"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119365002",
+                        "display": "échantillon provenant d'une plaie"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119334006",
+                        "display": "échantillon d'expectoration"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119373006",
+                        "display": "échantillon de liquide amniotique"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "119371008",
+                        "display": "échantillon d'abcès"
+                      }
+                    }
+                  ]
                 }
               ]
             }
@@ -6858,7 +7460,7 @@
                       "valueCoding": {
                         "system": "http://snomed.info/sct",
                         "code": "787859002",
-                        "display": "Vaccine product"
+                        "display": "vaccin"
                       }
                     },
                     {

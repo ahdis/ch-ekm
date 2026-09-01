@@ -96,15 +96,15 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratory|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratorySpecimen|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -949,6 +949,17 @@
               {
                 "reference": "Organization/ExtractedLabOrganization"
               }
+            ],
+            "specimen": [
+              {
+                "reference": "Specimen/ExtractedLabSpecimenDated",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), %factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenDated'), %resource.descendants().where(linkId='specimenType').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Specimen/ExtractedLabSpecimenUndated')))"
+                  }
+                ]
+              }
             ]
           }
         },
@@ -1085,6 +1096,89 @@
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                   "valueString": "%resource.descendants().where(linkId='labName').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenDated",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenDated'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Specimen",
+            "id": "ExtractedLabSpecimenDated",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "type": {
+              "coding": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
+                    }
+                  ]
+                }
+              ]
+            },
+            "collection": {
+              "collectedDateTime": "1900-01-01",
+              "_collectedDateTime": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='specimenCollectionDate').answer.value.first()"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='specimenCollectionDate').answer.value.exists().not() and %resource.descendants().where(linkId='specimenType').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenUndated",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Specimen/ExtractedLabSpecimenUndated'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Specimen",
+            "id": "ExtractedLabSpecimenUndated",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "type": {
+              "coding": [
+                {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='specimenType').answer.value.ofType(Coding).first()"
+                    }
+                  ]
                 }
               ]
             }
@@ -2464,82 +2558,6 @@
                   }
                 }
               ]
-            },
-            {
-              "linkId": "genderIdentity",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
-              "text": "Gender identity (transgender)",
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "de-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Geschlechtsidentität (transgender)"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "fr-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Identité de genre (transgenre)"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "it-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Identità di genere (transgender)"
-                      }
-                    ]
-                  }
-                ]
-              },
-              "type": "choice",
-              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGenderIdentity",
-              "_answerValueSet": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
-                    "extension": [
-                      {
-                        "url": "name",
-                        "valueCode": "useSupplement"
-                      },
-                      {
-                        "url": "expression",
-                        "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
-                      }
-                    ]
-                  }
-                ]
-              },
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
-                  "valueExpression": {
-                    "language": "text/fhirpath",
-                    "expression": "%patient.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity').extension.where(url = 'value').valueCodeableConcept.coding.first()"
-                  }
-                }
-              ]
             }
           ]
         },
@@ -3255,7 +3273,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Numéro BUR"
+                            "valueString": "Numéro REE"
                           }
                         ]
                       },
@@ -3268,7 +3286,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Numero BUR"
+                            "valueString": "Numero RIS"
                           }
                         ]
                       }
@@ -3324,6 +3342,172 @@
                     ]
                   },
                   "type": "string"
+                }
+              ]
+            },
+            {
+              "linkId": "specimen",
+              "text": "Sample",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Probe"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Échantillon"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Campione"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "specimenCollectionDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabSpecimenForm#ChEkmLabSpecimenForm.collectionDate",
+                  "text": "Sample collection date",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Entnahmedatum"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Date du prélèvement"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Data del prelievo"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "date"
+                },
+                {
+                  "linkId": "specimenType",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabSpecimenForm#ChEkmLabSpecimenForm.material",
+                  "text": "Material",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Material"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Matériel"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Materiale"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-elm/ValueSet/ch-elm-results-complete-spec",
+                  "_answerValueSet": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                        "extension": [
+                          {
+                            "url": "name",
+                            "valueCode": "useSupplement"
+                          },
+                          {
+                            "url": "expression",
+                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                          }
+                        ]
+                      }
+                    ]
+                  }
                 }
               ]
             }
