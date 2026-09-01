@@ -56,7 +56,15 @@ Description: "Modular sub-questionnaire for the 'Hospitalisation' group of the '
 * item[=].item[=].extension[=].valueCode = #horizontal
 * item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].extension[=].valueExpression.expression = "iif(%encounter.hospitalization.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/data-absent-reason').exists(), '261665006', iif(%encounter.exists(), '373066001', {}))"
+// The branches yield a CODING, not a bare code string. A `choice` item's answer must be a
+//    valueCoding, and $extract only ever tests `answer.value.ofType(Coding).where(system=… and
+//    code=…)` — a valueString answer is invisible to it and the hospitalisation Encounter is then
+//    silently dropped from the extracted document. @aehrc/sdc-populate does try to repair a string
+//    (parseStringToCoding looks it up in the expanded answerValueSet), but only when it could expand
+//    that value set; building the Coding here removes the dependency on terminology being reachable.
+//    `%factory.Coding(system, code)` omits `display` on purpose: the label is resolved from the value
+//    set (incl. the de/fr/it supplement), and populate fills it in when it can.
+* item[=].item[=].extension[=].valueExpression.expression = "iif(%encounter.hospitalization.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/data-absent-reason').exists(), %factory.Coding('http://snomed.info/sct', '261665006'), iif(%encounter.exists(), %factory.Coding('http://snomed.info/sct', '373066001'), {}))"
 
 // 2. Hospitalisationsgrund - the reported pathogen / another reason / unknown. Only asked when the
 //    person WAS hospitalised.
@@ -82,7 +90,12 @@ Description: "Modular sub-questionnaire for the 'Hospitalisation' group of the '
 * item[=].item[=].enableWhen[=].answerCoding = $sct#373066001 "Yes (qualifier value)"
 * item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].extension[=].valueExpression.expression = "iif(%encounter.reasonReference.exists(), 'reported-pathogen', %encounter.reasonCode.coding.first())"
+// Same Coding rule as hospitalisationStatus above. Only the reported-pathogen branch has to be
+//    built: the else branch already passes a real Coding through.
+//    This one DOES carry a `display`, unlike the SNOMED codes above: `ch-ekm-reported-pathogen` is
+//    an IG-LOCAL code system, so no terminology server can $lookup it and populate would otherwise
+//    leave the Coding display-less after a failed (and logged) lookup.
+* item[=].item[=].extension[=].valueExpression.expression = "iif(%encounter.reasonReference.exists(), %factory.Coding('http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen', 'reported-pathogen', 'Reported pathogen'), %encounter.reasonCode.coding.first())"
 
 // 3. Eintrittsdatum. Only asked when the person WAS hospitalised; a partial date is acceptable
 //    (Encounter.period.start is a dateTime).

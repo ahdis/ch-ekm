@@ -1,6 +1,6 @@
 {
   "resourceType": "Questionnaire",
-  "id": "ChEkmQuestionnaireGonorrhoea-fr-CH",
+  "id": "ChEkmQuestionnaireHepatitisC-it-CH",
   "meta": {
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp",
@@ -8,9 +8,9 @@
     ],
     "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
   },
-  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea-fr-CH",
+  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisC-it-CH",
   "status": "active",
-  "language": "fr-CH",
+  "language": "it-CH",
   "experimental": false,
   "subjectType": [
     "Patient"
@@ -66,8 +66,29 @@
       ]
     },
     {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "encounter",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "Encounter"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Encounter"
+        },
+        {
+          "url": "description",
+          "valueString": "The hospitalisation Encounter to pre-populate the form with"
+        }
+      ]
+    },
+    {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonName|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -83,7 +104,19 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHospitalisation|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireDeath|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhere|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhen|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -93,11 +126,11 @@
   "contained": [
     {
       "resourceType": "Bundle",
-      "id": "ChEkmDocumentGonorrhoeaTemplate",
+      "id": "ChEkmDocumentHepatitisCTemplate",
       "type": "document",
       "identifier": {
         "system": "urn:ietf:rfc:3986",
-        "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
+        "value": "urn:uuid:2b4f6f16-4c8a-4a1c-9c0e-7a1f2d3b5c88"
       },
       "timestamp": "1900-01-01T00:00:00Z",
       "_timestamp": {
@@ -110,10 +143,10 @@
       },
       "entry": [
         {
-          "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionGonorrhoea",
+          "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionHepatitisC",
           "resource": {
             "resourceType": "Composition",
-            "id": "ExtractedCompositionGonorrhoea",
+            "id": "ExtractedCompositionHepatitisC",
             "status": "final",
             "type": {
               "coding": [
@@ -137,7 +170,7 @@
                 "title": "Diagnosis section",
                 "entry": [
                   {
-                    "reference": "Condition/ExtractedConditionGonorrhoea"
+                    "reference": "Condition/ExtractedConditionHepatitisC"
                   }
                 ]
               },
@@ -153,7 +186,35 @@
                 },
                 "entry": [
                   {
-                    "reference": "Observation/ExtractedExposureGonorrhoea"
+                    "reference": "Observation/ExtractedExposureHepatitisC"
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
+                  }
+                ],
+                "title": "Cause of death section",
+                "code": {
+                  "coding": [
+                    {
+                      "code": "79378-6",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "entry": [
+                  {
+                    "reference": "Observation/ExtractedCauseOfDeathHepatitisC",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeathHepatitisC'))"
+                      }
+                    ]
                   }
                 ]
               }
@@ -172,12 +233,21 @@
             "subject": {
               "reference": "Patient/ExtractedPatient"
             },
+            "encounter": {
+              "reference": "Encounter/ExtractedEncounterHepatitisC",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounterHepatitisC'))"
+                }
+              ]
+            },
             "author": [
               {
                 "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
               }
             ],
-            "title": "Meldung zum klinischen Befund Gonorrhoea",
+            "title": "Meldung zum klinischen Befund Hepatitis C",
             "_date": {
               "extension": [
                 {
@@ -354,16 +424,16 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionGonorrhoea",
+          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionHepatitisC",
           "resource": {
             "resourceType": "Condition",
-            "id": "ExtractedConditionGonorrhoea",
+            "id": "ExtractedConditionHepatitisC",
             "code": {
               "coding": [
                 {
-                  "code": "15628003",
+                  "code": "50711007",
                   "system": "http://snomed.info/sct",
-                  "display": "Gonorrhea (disorder)"
+                  "display": "Viral hepatitis type C (disorder)"
                 }
               ]
             },
@@ -383,6 +453,15 @@
             "recorder": {
               "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
             },
+            "encounter": {
+              "reference": "Encounter/ExtractedEncounterHepatitisC",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounterHepatitisC'))"
+                }
+              ]
+            },
             "evidence": [
               {
                 "extension": [
@@ -401,9 +480,9 @@
                             "valueString": "ofType(Coding)"
                           }
                         ],
-                        "code": "15628003",
+                        "code": "18165001",
                         "system": "http://snomed.info/sct",
-                        "display": "Gonorrhea (disorder)"
+                        "display": "Jaundice"
                       }
                     ]
                   }
@@ -434,10 +513,10 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureGonorrhoea",
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureHepatitisC",
           "resource": {
             "resourceType": "Observation",
-            "id": "ExtractedExposureGonorrhoea",
+            "id": "ExtractedExposureHepatitisC",
             "code": {
               "coding": [
                 {
@@ -467,82 +546,19 @@
                 "code": {
                   "coding": [
                     {
-                      "code": "sexual-contact-partner",
-                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowSexualContactPartner').answer.value"
-                  }
-                ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "unknown",
-                      "system": "http://hl7.org/fhir/administrative-gender",
-                      "display": "Unknown",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "ofType(Coding)"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "228465009",
+                      "code": "161097008",
                       "system": "http://snomed.info/sct",
-                      "display": "Sexual relationship details (observable entity)"
+                      "display": "Date of return from travel"
                     }
                   ]
                 },
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowRelationshipType').answer.value"
+                    "valueString": "%resource.descendants().where(linkId='exposureWhenLastEntryDate').answer.value"
                   }
                 ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "steady-partner",
-                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                      "display": "Steady partner",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "ofType(Coding)"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "74964007",
-                      "system": "http://snomed.info/sct",
-                      "display": "Other (qualifier value)"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value"
-                  }
-                ],
-                "_valueString": {
+                "_valueDateTime": {
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -550,96 +566,44 @@
                     }
                   ]
                 }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "409496000",
-                      "system": "http://snomed.info/sct",
-                      "display": "Mode of transmission (observable entity)"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowUnknown').answer.value.where($this = true)"
-                  }
-                ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "261665006",
-                      "system": "http://snomed.info/sct",
-                      "display": "Unknown (qualifier value)",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "%factory.Coding('http://snomed.info/sct', '261665006', 'Unknown (qualifier value)')"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "iif(%resource.descendants().where(linkId='exposureHowUnknown').answer.value = true, {}, %resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value)"
-                  }
-                ],
-                "code": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
-                    }
-                  ]
-                },
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "%factory.Coding('http://snomed.info/sct', '74964007', 'Other (qualifier value)')"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "iif(%resource.descendants().where(linkId='exposureHowUnknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='exposureHowSexualContactPartner').answer.value))"
-                  }
-                ],
-                "code": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
-                    }
-                  ]
-                },
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "%factory.Coding('http://snomed.info/sct', '417564009', 'Sexual transmission (qualifier value)')"
-                        }
-                      ]
-                    }
-                  ]
-                }
               }
-            ]
+            ],
+            "extension": [
+              {
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists() or %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.exists(), true, {})"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.defineVariable('ctry', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='urn:iso:std:iso:3166').first()).defineVariable('ctryUnknown', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists()).defineVariable('loc', %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.ofType(string).first()).defineVariable('base', iif(%loc.empty() and %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists(), %factory.withProperty(%factory.Address({}), 'city', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %factory.Address({}, %loc))).select(%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address', iif(%ctry.exists(), %factory.withProperty(%base, 'country', %factory.string(%ctry.code, %factory.Extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString', %ctry))), iif(%ctryUnknown, %factory.withProperty(%base, 'country', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %base))))"
+                  }
+                ]
+              }
+            ],
+            "_effectiveDateTime": {
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                      "valueString": "%resource.descendants().where(linkId='exposureWhenLastEntryDate').answer.value"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown'))"
+                    }
+                  ]
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='exposureWhenDate').answer.value.first()"
+                }
+              ]
+            }
           }
         },
         {
@@ -907,15 +871,142 @@
               ]
             }
           }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Encounter/ExtractedEncounterHepatitisC",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Encounter/ExtractedEncounterHepatitisC'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Encounter",
+            "id": "ExtractedEncounterHepatitisC",
+            "class": {
+              "code": "IMP",
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+              "display": "inpatient encounter"
+            },
+            "status": "unknown",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "period": {
+              "_start": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationAdmissionDate').answer.value.first()"
+                  }
+                ]
+              }
+            },
+            "reasonReference": [
+              {
+                "reference": "Condition/ExtractedConditionHepatitisC",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedConditionHepatitisC'))"
+                  }
+                ]
+              }
+            ],
+            "reasonCode": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this))"
+                  }
+                ]
+              }
+            ],
+            "hospitalization": {
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').first().select(%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathHepatitisC",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathHepatitisC'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Observation",
+            "id": "ExtractedCauseOfDeathHepatitisC",
+            "status": "final",
+            "code": {
+              "coding": [
+                {
+                  "code": "79378-6",
+                  "system": "http://loinc.org",
+                  "display": "Cause of death"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "valueCodeableConcept": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '50711007', 'Viral hepatitis type C (disorder)')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this)))"
+                }
+              ]
+            },
+            "focus": [
+              {
+                "reference": "Condition/ExtractedConditionHepatitisC",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedConditionHepatitisC'))"
+                  }
+                ]
+              }
+            ]
+          }
         }
       ]
     }
   ],
   "item": [
     {
-      "linkId": "gonorrhoea-form",
+      "linkId": "hepatitisc-form",
       "type": "group",
-      "text": "Déclaration de résultat clinique : Gonorrhoea",
+      "text": "Notifica del referto clinico: epatite C",
       "extension": [
         {
           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract",
@@ -923,7 +1014,7 @@
             {
               "url": "template",
               "valueReference": {
-                "reference": "#ChEkmDocumentGonorrhoeaTemplate"
+                "reference": "#ChEkmDocumentHepatitisCTemplate"
               }
             }
           ]
@@ -952,44 +1043,42 @@
         {
           "linkId": "person",
           "type": "group",
-          "text": "Données relatives à la personne concernée",
+          "text": "Dati relativi alla persona interessata",
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
-              "valueString": "Personne"
+              "valueString": "Persona"
             }
           ],
           "item": [
             {
-              "linkId": "surnameInitial",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surnameInitial",
-              "text": "Initiale du nom",
+              "linkId": "surname",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surname",
+              "text": "Cognome",
               "type": "string",
               "required": true,
-              "maxLength": 1,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.name.first().family.substring(0,1)"
+                    "expression": "%patient.name.first().family"
                   }
                 }
               ]
             },
             {
-              "linkId": "givennameInitial",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givennameInitial",
-              "text": "Initiale du prénom",
+              "linkId": "givenname",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givenname",
+              "text": "Nome",
               "type": "string",
               "required": true,
-              "maxLength": 1,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.name.first().given.first().substring(0,1)"
+                    "expression": "%patient.name.first().given.join(' ')"
                   }
                 }
               ]
@@ -997,7 +1086,7 @@
             {
               "linkId": "dateOfBirth",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.dateOfBirth",
-              "text": "Date de naissance",
+              "text": "Data di nascita",
               "type": "date",
               "required": true,
               "extension": [
@@ -1013,7 +1102,7 @@
             {
               "linkId": "ahvn13",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.ahvn13",
-              "text": "Numéro AVS (OASI)",
+              "text": "Numero AVS (OASI)",
               "type": "string",
               "maxLength": 13,
               "extension": [
@@ -1033,7 +1122,7 @@
             {
               "linkId": "nationality",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.nationality",
-              "text": "Nationalité",
+              "text": "Nazionalità",
               "type": "choice",
               "extension": [
                 {
@@ -1060,7 +1149,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CH",
-                    "display": "Suisse"
+                    "display": "Svizzera"
                   }
                 },
                 {
@@ -1074,105 +1163,105 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AL",
-                    "display": "Albanie"
+                    "display": "Albania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AD",
-                    "display": "Andorre"
+                    "display": "Andorra"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BE",
-                    "display": "Belgique"
+                    "display": "Belgio"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BG",
-                    "display": "Bulgarie"
+                    "display": "Bulgaria"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DK",
-                    "display": "Danemark"
+                    "display": "Danimarca"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DE",
-                    "display": "Allemagne"
+                    "display": "Germania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "FI",
-                    "display": "Finlande"
+                    "display": "Finlandia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "FR",
-                    "display": "France"
+                    "display": "Francia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GR",
-                    "display": "Grèce"
+                    "display": "Grecia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GB",
-                    "display": "Royaume-Uni"
+                    "display": "Regno Unito"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IE",
-                    "display": "Irlande"
+                    "display": "Irlanda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IS",
-                    "display": "Islande"
+                    "display": "Islanda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IT",
-                    "display": "Italie"
+                    "display": "Italia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LU",
-                    "display": "Luxembourg"
+                    "display": "Lussemburgo"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MT",
-                    "display": "Malte"
+                    "display": "Malta"
                   }
                 },
                 {
@@ -1186,63 +1275,63 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NL",
-                    "display": "Pays-Bas"
+                    "display": "Paesi Bassi"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NO",
-                    "display": "Norvège"
+                    "display": "Norvegia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AT",
-                    "display": "Autriche"
+                    "display": "Austria"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PL",
-                    "display": "Pologne"
+                    "display": "Polonia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PT",
-                    "display": "Portugal"
+                    "display": "Portogallo"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "RO",
-                    "display": "Roumanie"
+                    "display": "Romania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SM",
-                    "display": "Saint-Marin"
+                    "display": "San Marino"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SE",
-                    "display": "Suède"
+                    "display": "Svezia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ES",
-                    "display": "Espagne"
+                    "display": "Spagna"
                   }
                 },
                 {
@@ -1256,77 +1345,77 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "HU",
-                    "display": "Hongrie"
+                    "display": "Ungheria"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "VA",
-                    "display": "Cité du Vatican"
+                    "display": "Città del Vaticano"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CY",
-                    "display": "Chypre"
+                    "display": "Cipro"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SK",
-                    "display": "Slovaquie"
+                    "display": "Slovacchia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CZ",
-                    "display": "Tchéquie"
+                    "display": "Cechia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "RS",
-                    "display": "Serbie"
+                    "display": "Serbia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "HR",
-                    "display": "Croatie"
+                    "display": "Croazia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SI",
-                    "display": "Slovénie"
+                    "display": "Slovenia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BA",
-                    "display": "Bosnie et Herzégovine"
+                    "display": "Bosnia e Erzegovina"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ME",
-                    "display": "Monténégro"
+                    "display": "Montenegro"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MK",
-                    "display": "Macédoine du Nord"
+                    "display": "Macedonia del Nord"
                   }
                 },
                 {
@@ -1340,21 +1429,21 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "EE",
-                    "display": "Estonie"
+                    "display": "Estonia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LV",
-                    "display": "Lettonie"
+                    "display": "Lettonia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LT",
-                    "display": "Lituanie"
+                    "display": "Lituania"
                   }
                 },
                 {
@@ -1368,49 +1457,49 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "RU",
-                    "display": "Russie"
+                    "display": "Russia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "UA",
-                    "display": "Ukraine"
+                    "display": "Ucraina"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BY",
-                    "display": "Bélarus"
+                    "display": "Belarus"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GQ",
-                    "display": "Guinée équatoriale"
+                    "display": "Guinea equatoriale"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ET",
-                    "display": "Éthiopie"
+                    "display": "Etiopia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DJ",
-                    "display": "Djibouti"
+                    "display": "Gibuti"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DZ",
-                    "display": "Algérie"
+                    "display": "Algeria"
                   }
                 },
                 {
@@ -1438,7 +1527,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BJ",
-                    "display": "Bénin"
+                    "display": "Benin"
                   }
                 },
                 {
@@ -1459,7 +1548,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GM",
-                    "display": "Gambie"
+                    "display": "Gambia"
                   }
                 },
                 {
@@ -1473,21 +1562,21 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GW",
-                    "display": "Guinée-Bissau"
+                    "display": "Guinea-Bissau"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GN",
-                    "display": "Guinée"
+                    "display": "Guinea"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CM",
-                    "display": "Cameroun"
+                    "display": "Camerun"
                   }
                 },
                 {
@@ -1501,14 +1590,14 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KE",
-                    "display": "Kenya"
+                    "display": "Kenia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KM",
-                    "display": "Comores"
+                    "display": "Comore"
                   }
                 },
                 {
@@ -1536,14 +1625,14 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LR",
-                    "display": "Libéria"
+                    "display": "Liberia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LY",
-                    "display": "Libye"
+                    "display": "Libia"
                   }
                 },
                 {
@@ -1571,28 +1660,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MA",
-                    "display": "Maroc"
+                    "display": "Marocco"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MR",
-                    "display": "Mauritanie"
+                    "display": "Mauritania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MU",
-                    "display": "Maurice"
+                    "display": "Maurizio"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MZ",
-                    "display": "Mozambique"
+                    "display": "Mozambico"
                   }
                 },
                 {
@@ -1606,7 +1695,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NG",
-                    "display": "Nigéria"
+                    "display": "Nigeria"
                   }
                 },
                 {
@@ -1627,35 +1716,35 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "RW",
-                    "display": "Rwanda"
+                    "display": "Ruanda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ZM",
-                    "display": "Zambie"
+                    "display": "Zambia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ST",
-                    "display": "Sao Tomé-et-Principe"
+                    "display": "São Tomé e Príncipe"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SN",
-                    "display": "Sénégal"
+                    "display": "Senegal"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SC",
-                    "display": "Seychelles"
+                    "display": "Seicelle"
                   }
                 },
                 {
@@ -1669,28 +1758,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SO",
-                    "display": "Somalie"
+                    "display": "Somalia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ZA",
-                    "display": "Afrique du Sud"
+                    "display": "Sudafrica"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SD",
-                    "display": "Soudan"
+                    "display": "Sudan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NA",
-                    "display": "Namibie"
+                    "display": "Namibia"
                   }
                 },
                 {
@@ -1704,7 +1793,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TZ",
-                    "display": "Tanzanie"
+                    "display": "Tanzania"
                   }
                 },
                 {
@@ -1718,56 +1807,56 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TD",
-                    "display": "Tchad"
+                    "display": "Ciad"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TN",
-                    "display": "Tunisie"
+                    "display": "Tunisia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "UG",
-                    "display": "Ouganda"
+                    "display": "Uganda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "EG",
-                    "display": "Égypte"
+                    "display": "Egitto"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CF",
-                    "display": "République centrafricaine"
+                    "display": "Repubblica centrafricana"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ER",
-                    "display": "Érythrée"
+                    "display": "Eritrea"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SS",
-                    "display": "Soudan du Sud"
+                    "display": "Sudan del Sud"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AR",
-                    "display": "Argentine"
+                    "display": "Argentina"
                   }
                 },
                 {
@@ -1781,28 +1870,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BB",
-                    "display": "Barbade"
+                    "display": "Barbados"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BO",
-                    "display": "Bolivie"
+                    "display": "Bolivia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BR",
-                    "display": "Brésil"
+                    "display": "Brasile"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CL",
-                    "display": "Chili"
+                    "display": "Cile"
                   }
                 },
                 {
@@ -1816,14 +1905,14 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DO",
-                    "display": "République dominicaine"
+                    "display": "Repubblica dominicana"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "EC",
-                    "display": "Équateur"
+                    "display": "Ecuador"
                   }
                 },
                 {
@@ -1851,7 +1940,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "HT",
-                    "display": "Haïti"
+                    "display": "Haiti"
                   }
                 },
                 {
@@ -1872,7 +1961,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "JM",
-                    "display": "Jamaïque"
+                    "display": "Giamaica"
                   }
                 },
                 {
@@ -1886,7 +1975,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CO",
-                    "display": "Colombie"
+                    "display": "Colombia"
                   }
                 },
                 {
@@ -1900,7 +1989,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MX",
-                    "display": "Mexique"
+                    "display": "Messico"
                   }
                 },
                 {
@@ -1928,7 +2017,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PE",
-                    "display": "Pérou"
+                    "display": "Perù"
                   }
                 },
                 {
@@ -1942,7 +2031,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TT",
-                    "display": "Trinité-et-Tobago"
+                    "display": "Trinidad e Tobago"
                   }
                 },
                 {
@@ -1963,49 +2052,49 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "US",
-                    "display": "États-Unis"
+                    "display": "Stati Uniti"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DM",
-                    "display": "Dominique"
+                    "display": "Dominica"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GD",
-                    "display": "Grenade"
+                    "display": "Grenada"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AG",
-                    "display": "Antigua-et-Barbuda"
+                    "display": "Antigua e Barbuda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LC",
-                    "display": "Sainte-Lucie"
+                    "display": "Saint Lucia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "VC",
-                    "display": "Saint-Vincent-et-les Grenadines"
+                    "display": "Saint Vincent e Grenadine"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KN",
-                    "display": "Saint-Kitts-et-Nevis"
+                    "display": "Saint Kitts e Nevis"
                   }
                 },
                 {
@@ -2019,21 +2108,21 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BH",
-                    "display": "Bahreïn"
+                    "display": "Bahrein"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BT",
-                    "display": "Bhoutan"
+                    "display": "Bhutan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BN",
-                    "display": "Brunéi Darussalam"
+                    "display": "Brunei Darussalam"
                   }
                 },
                 {
@@ -2054,28 +2143,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CN",
-                    "display": "Chine"
+                    "display": "Cina"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IN",
-                    "display": "Inde"
+                    "display": "India"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ID",
-                    "display": "Indonésie"
+                    "display": "Indonesia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IQ",
-                    "display": "Irak"
+                    "display": "Iraq"
                   }
                 },
                 {
@@ -2089,35 +2178,35 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IL",
-                    "display": "Israël"
+                    "display": "Israele"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "JP",
-                    "display": "Japon"
+                    "display": "Giappone"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "YE",
-                    "display": "Yémen"
+                    "display": "Yemen"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "JO",
-                    "display": "Jordanie"
+                    "display": "Giordania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KH",
-                    "display": "Cambodge"
+                    "display": "Cambogia"
                   }
                 },
                 {
@@ -2131,7 +2220,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KW",
-                    "display": "Koweït"
+                    "display": "Kuwait"
                   }
                 },
                 {
@@ -2145,21 +2234,21 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LB",
-                    "display": "Liban"
+                    "display": "Libano"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MY",
-                    "display": "Malaisie"
+                    "display": "Malaysia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MV",
-                    "display": "Maldives"
+                    "display": "Maldive"
                   }
                 },
                 {
@@ -2173,28 +2262,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MN",
-                    "display": "Mongolie"
+                    "display": "Mongolia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NP",
-                    "display": "Népal"
+                    "display": "Nepal"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KP",
-                    "display": "Corée (Nord)"
+                    "display": "Corea (Nord)"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AE",
-                    "display": "Émirats arabes unis"
+                    "display": "Emirati arabi uniti"
                   }
                 },
                 {
@@ -2208,42 +2297,42 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PH",
-                    "display": "Philippines"
+                    "display": "Filippine"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SA",
-                    "display": "Arabie saoudite"
+                    "display": "Arabia Saudita"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SG",
-                    "display": "Singapour"
+                    "display": "Singapore"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KR",
-                    "display": "Corée (Sud)"
+                    "display": "Corea (Sud)"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SY",
-                    "display": "Syrie"
+                    "display": "Siria"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TH",
-                    "display": "Thaïlande"
+                    "display": "Thailandia"
                   }
                 },
                 {
@@ -2271,28 +2360,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AM",
-                    "display": "Arménie"
+                    "display": "Armenia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AZ",
-                    "display": "Azerbaïdjan"
+                    "display": "Azerbaigian"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GE",
-                    "display": "Géorgie"
+                    "display": "Georgia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KZ",
-                    "display": "Kazakhstan"
+                    "display": "Kazakstan"
                   }
                 },
                 {
@@ -2306,35 +2395,35 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TJ",
-                    "display": "Tadjikistan"
+                    "display": "Tagikistan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TM",
-                    "display": "Turkménistan"
+                    "display": "Turkmenistan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "UZ",
-                    "display": "Ouzbékistan"
+                    "display": "Uzbekistan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AU",
-                    "display": "Australie"
+                    "display": "Australia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "FJ",
-                    "display": "Fidji"
+                    "display": "Figi"
                   }
                 },
                 {
@@ -2355,14 +2444,14 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NZ",
-                    "display": "Nouvelle-Zélande"
+                    "display": "Nuova Zelanda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PG",
-                    "display": "Papouasie-Nouvelle-Guinée"
+                    "display": "Papua Nuova Guinea"
                   }
                 },
                 {
@@ -2383,7 +2472,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SB",
-                    "display": "Îles Salomon"
+                    "display": "Isole Salomone"
                   }
                 },
                 {
@@ -2404,28 +2493,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MH",
-                    "display": "Îles Marshall"
+                    "display": "Isole Marshall"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "FM",
-                    "display": "Micronésie"
+                    "display": "Micronesia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PW",
-                    "display": "Palaos"
+                    "display": "Palau"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CK",
-                    "display": "Îles Cook"
+                    "display": "Isole Cook"
                   }
                 }
               ]
@@ -2433,7 +2522,7 @@
             {
               "linkId": "zipCode",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.zipCode",
-              "text": "NPA",
+              "text": "NAP",
               "type": "string",
               "extension": [
                 {
@@ -2448,7 +2537,7 @@
             {
               "linkId": "city",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.city",
-              "text": "Localité",
+              "text": "Località",
               "type": "string",
               "extension": [
                 {
@@ -2463,7 +2552,7 @@
             {
               "linkId": "country",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.country",
-              "text": "Pays",
+              "text": "Paese",
               "type": "choice",
               "extension": [
                 {
@@ -2490,7 +2579,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CH",
-                    "display": "Suisse"
+                    "display": "Svizzera"
                   }
                 },
                 {
@@ -2504,105 +2593,105 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AL",
-                    "display": "Albanie"
+                    "display": "Albania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AD",
-                    "display": "Andorre"
+                    "display": "Andorra"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BE",
-                    "display": "Belgique"
+                    "display": "Belgio"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BG",
-                    "display": "Bulgarie"
+                    "display": "Bulgaria"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DK",
-                    "display": "Danemark"
+                    "display": "Danimarca"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DE",
-                    "display": "Allemagne"
+                    "display": "Germania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "FI",
-                    "display": "Finlande"
+                    "display": "Finlandia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "FR",
-                    "display": "France"
+                    "display": "Francia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GR",
-                    "display": "Grèce"
+                    "display": "Grecia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GB",
-                    "display": "Royaume-Uni"
+                    "display": "Regno Unito"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IE",
-                    "display": "Irlande"
+                    "display": "Irlanda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IS",
-                    "display": "Islande"
+                    "display": "Islanda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IT",
-                    "display": "Italie"
+                    "display": "Italia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LU",
-                    "display": "Luxembourg"
+                    "display": "Lussemburgo"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MT",
-                    "display": "Malte"
+                    "display": "Malta"
                   }
                 },
                 {
@@ -2616,63 +2705,63 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NL",
-                    "display": "Pays-Bas"
+                    "display": "Paesi Bassi"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NO",
-                    "display": "Norvège"
+                    "display": "Norvegia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AT",
-                    "display": "Autriche"
+                    "display": "Austria"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PL",
-                    "display": "Pologne"
+                    "display": "Polonia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PT",
-                    "display": "Portugal"
+                    "display": "Portogallo"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "RO",
-                    "display": "Roumanie"
+                    "display": "Romania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SM",
-                    "display": "Saint-Marin"
+                    "display": "San Marino"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SE",
-                    "display": "Suède"
+                    "display": "Svezia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ES",
-                    "display": "Espagne"
+                    "display": "Spagna"
                   }
                 },
                 {
@@ -2686,77 +2775,77 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "HU",
-                    "display": "Hongrie"
+                    "display": "Ungheria"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "VA",
-                    "display": "Cité du Vatican"
+                    "display": "Città del Vaticano"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CY",
-                    "display": "Chypre"
+                    "display": "Cipro"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SK",
-                    "display": "Slovaquie"
+                    "display": "Slovacchia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CZ",
-                    "display": "Tchéquie"
+                    "display": "Cechia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "RS",
-                    "display": "Serbie"
+                    "display": "Serbia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "HR",
-                    "display": "Croatie"
+                    "display": "Croazia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SI",
-                    "display": "Slovénie"
+                    "display": "Slovenia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BA",
-                    "display": "Bosnie et Herzégovine"
+                    "display": "Bosnia e Erzegovina"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ME",
-                    "display": "Monténégro"
+                    "display": "Montenegro"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MK",
-                    "display": "Macédoine du Nord"
+                    "display": "Macedonia del Nord"
                   }
                 },
                 {
@@ -2770,21 +2859,21 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "EE",
-                    "display": "Estonie"
+                    "display": "Estonia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LV",
-                    "display": "Lettonie"
+                    "display": "Lettonia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LT",
-                    "display": "Lituanie"
+                    "display": "Lituania"
                   }
                 },
                 {
@@ -2798,49 +2887,49 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "RU",
-                    "display": "Russie"
+                    "display": "Russia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "UA",
-                    "display": "Ukraine"
+                    "display": "Ucraina"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BY",
-                    "display": "Bélarus"
+                    "display": "Belarus"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GQ",
-                    "display": "Guinée équatoriale"
+                    "display": "Guinea equatoriale"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ET",
-                    "display": "Éthiopie"
+                    "display": "Etiopia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DJ",
-                    "display": "Djibouti"
+                    "display": "Gibuti"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DZ",
-                    "display": "Algérie"
+                    "display": "Algeria"
                   }
                 },
                 {
@@ -2868,7 +2957,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BJ",
-                    "display": "Bénin"
+                    "display": "Benin"
                   }
                 },
                 {
@@ -2889,7 +2978,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GM",
-                    "display": "Gambie"
+                    "display": "Gambia"
                   }
                 },
                 {
@@ -2903,21 +2992,21 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GW",
-                    "display": "Guinée-Bissau"
+                    "display": "Guinea-Bissau"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GN",
-                    "display": "Guinée"
+                    "display": "Guinea"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CM",
-                    "display": "Cameroun"
+                    "display": "Camerun"
                   }
                 },
                 {
@@ -2931,14 +3020,14 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KE",
-                    "display": "Kenya"
+                    "display": "Kenia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KM",
-                    "display": "Comores"
+                    "display": "Comore"
                   }
                 },
                 {
@@ -2966,14 +3055,14 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LR",
-                    "display": "Libéria"
+                    "display": "Liberia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LY",
-                    "display": "Libye"
+                    "display": "Libia"
                   }
                 },
                 {
@@ -3001,28 +3090,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MA",
-                    "display": "Maroc"
+                    "display": "Marocco"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MR",
-                    "display": "Mauritanie"
+                    "display": "Mauritania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MU",
-                    "display": "Maurice"
+                    "display": "Maurizio"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MZ",
-                    "display": "Mozambique"
+                    "display": "Mozambico"
                   }
                 },
                 {
@@ -3036,7 +3125,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NG",
-                    "display": "Nigéria"
+                    "display": "Nigeria"
                   }
                 },
                 {
@@ -3057,35 +3146,35 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "RW",
-                    "display": "Rwanda"
+                    "display": "Ruanda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ZM",
-                    "display": "Zambie"
+                    "display": "Zambia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ST",
-                    "display": "Sao Tomé-et-Principe"
+                    "display": "São Tomé e Príncipe"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SN",
-                    "display": "Sénégal"
+                    "display": "Senegal"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SC",
-                    "display": "Seychelles"
+                    "display": "Seicelle"
                   }
                 },
                 {
@@ -3099,28 +3188,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SO",
-                    "display": "Somalie"
+                    "display": "Somalia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ZA",
-                    "display": "Afrique du Sud"
+                    "display": "Sudafrica"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SD",
-                    "display": "Soudan"
+                    "display": "Sudan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NA",
-                    "display": "Namibie"
+                    "display": "Namibia"
                   }
                 },
                 {
@@ -3134,7 +3223,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TZ",
-                    "display": "Tanzanie"
+                    "display": "Tanzania"
                   }
                 },
                 {
@@ -3148,56 +3237,56 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TD",
-                    "display": "Tchad"
+                    "display": "Ciad"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TN",
-                    "display": "Tunisie"
+                    "display": "Tunisia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "UG",
-                    "display": "Ouganda"
+                    "display": "Uganda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "EG",
-                    "display": "Égypte"
+                    "display": "Egitto"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CF",
-                    "display": "République centrafricaine"
+                    "display": "Repubblica centrafricana"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ER",
-                    "display": "Érythrée"
+                    "display": "Eritrea"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SS",
-                    "display": "Soudan du Sud"
+                    "display": "Sudan del Sud"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AR",
-                    "display": "Argentine"
+                    "display": "Argentina"
                   }
                 },
                 {
@@ -3211,28 +3300,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BB",
-                    "display": "Barbade"
+                    "display": "Barbados"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BO",
-                    "display": "Bolivie"
+                    "display": "Bolivia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BR",
-                    "display": "Brésil"
+                    "display": "Brasile"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CL",
-                    "display": "Chili"
+                    "display": "Cile"
                   }
                 },
                 {
@@ -3246,14 +3335,14 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DO",
-                    "display": "République dominicaine"
+                    "display": "Repubblica dominicana"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "EC",
-                    "display": "Équateur"
+                    "display": "Ecuador"
                   }
                 },
                 {
@@ -3281,7 +3370,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "HT",
-                    "display": "Haïti"
+                    "display": "Haiti"
                   }
                 },
                 {
@@ -3302,7 +3391,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "JM",
-                    "display": "Jamaïque"
+                    "display": "Giamaica"
                   }
                 },
                 {
@@ -3316,7 +3405,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CO",
-                    "display": "Colombie"
+                    "display": "Colombia"
                   }
                 },
                 {
@@ -3330,7 +3419,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MX",
-                    "display": "Mexique"
+                    "display": "Messico"
                   }
                 },
                 {
@@ -3358,7 +3447,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PE",
-                    "display": "Pérou"
+                    "display": "Perù"
                   }
                 },
                 {
@@ -3372,7 +3461,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TT",
-                    "display": "Trinité-et-Tobago"
+                    "display": "Trinidad e Tobago"
                   }
                 },
                 {
@@ -3393,49 +3482,49 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "US",
-                    "display": "États-Unis"
+                    "display": "Stati Uniti"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "DM",
-                    "display": "Dominique"
+                    "display": "Dominica"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GD",
-                    "display": "Grenade"
+                    "display": "Grenada"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AG",
-                    "display": "Antigua-et-Barbuda"
+                    "display": "Antigua e Barbuda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LC",
-                    "display": "Sainte-Lucie"
+                    "display": "Saint Lucia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "VC",
-                    "display": "Saint-Vincent-et-les Grenadines"
+                    "display": "Saint Vincent e Grenadine"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KN",
-                    "display": "Saint-Kitts-et-Nevis"
+                    "display": "Saint Kitts e Nevis"
                   }
                 },
                 {
@@ -3449,21 +3538,21 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BH",
-                    "display": "Bahreïn"
+                    "display": "Bahrein"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BT",
-                    "display": "Bhoutan"
+                    "display": "Bhutan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "BN",
-                    "display": "Brunéi Darussalam"
+                    "display": "Brunei Darussalam"
                   }
                 },
                 {
@@ -3484,28 +3573,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CN",
-                    "display": "Chine"
+                    "display": "Cina"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IN",
-                    "display": "Inde"
+                    "display": "India"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "ID",
-                    "display": "Indonésie"
+                    "display": "Indonesia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IQ",
-                    "display": "Irak"
+                    "display": "Iraq"
                   }
                 },
                 {
@@ -3519,35 +3608,35 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "IL",
-                    "display": "Israël"
+                    "display": "Israele"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "JP",
-                    "display": "Japon"
+                    "display": "Giappone"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "YE",
-                    "display": "Yémen"
+                    "display": "Yemen"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "JO",
-                    "display": "Jordanie"
+                    "display": "Giordania"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KH",
-                    "display": "Cambodge"
+                    "display": "Cambogia"
                   }
                 },
                 {
@@ -3561,7 +3650,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KW",
-                    "display": "Koweït"
+                    "display": "Kuwait"
                   }
                 },
                 {
@@ -3575,21 +3664,21 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "LB",
-                    "display": "Liban"
+                    "display": "Libano"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MY",
-                    "display": "Malaisie"
+                    "display": "Malaysia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MV",
-                    "display": "Maldives"
+                    "display": "Maldive"
                   }
                 },
                 {
@@ -3603,28 +3692,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MN",
-                    "display": "Mongolie"
+                    "display": "Mongolia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NP",
-                    "display": "Népal"
+                    "display": "Nepal"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KP",
-                    "display": "Corée (Nord)"
+                    "display": "Corea (Nord)"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AE",
-                    "display": "Émirats arabes unis"
+                    "display": "Emirati arabi uniti"
                   }
                 },
                 {
@@ -3638,42 +3727,42 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PH",
-                    "display": "Philippines"
+                    "display": "Filippine"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SA",
-                    "display": "Arabie saoudite"
+                    "display": "Arabia Saudita"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SG",
-                    "display": "Singapour"
+                    "display": "Singapore"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KR",
-                    "display": "Corée (Sud)"
+                    "display": "Corea (Sud)"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SY",
-                    "display": "Syrie"
+                    "display": "Siria"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TH",
-                    "display": "Thaïlande"
+                    "display": "Thailandia"
                   }
                 },
                 {
@@ -3701,28 +3790,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AM",
-                    "display": "Arménie"
+                    "display": "Armenia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AZ",
-                    "display": "Azerbaïdjan"
+                    "display": "Azerbaigian"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "GE",
-                    "display": "Géorgie"
+                    "display": "Georgia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "KZ",
-                    "display": "Kazakhstan"
+                    "display": "Kazakstan"
                   }
                 },
                 {
@@ -3736,35 +3825,35 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TJ",
-                    "display": "Tadjikistan"
+                    "display": "Tagikistan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "TM",
-                    "display": "Turkménistan"
+                    "display": "Turkmenistan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "UZ",
-                    "display": "Ouzbékistan"
+                    "display": "Uzbekistan"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "AU",
-                    "display": "Australie"
+                    "display": "Australia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "FJ",
-                    "display": "Fidji"
+                    "display": "Figi"
                   }
                 },
                 {
@@ -3785,14 +3874,14 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "NZ",
-                    "display": "Nouvelle-Zélande"
+                    "display": "Nuova Zelanda"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PG",
-                    "display": "Papouasie-Nouvelle-Guinée"
+                    "display": "Papua Nuova Guinea"
                   }
                 },
                 {
@@ -3813,7 +3902,7 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "SB",
-                    "display": "Îles Salomon"
+                    "display": "Isole Salomone"
                   }
                 },
                 {
@@ -3834,28 +3923,28 @@
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "MH",
-                    "display": "Îles Marshall"
+                    "display": "Isole Marshall"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "FM",
-                    "display": "Micronésie"
+                    "display": "Micronesia"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "PW",
-                    "display": "Palaos"
+                    "display": "Palau"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "urn:iso:std:iso:3166",
                     "code": "CK",
-                    "display": "Îles Cook"
+                    "display": "Isole Cook"
                   }
                 }
               ]
@@ -3863,7 +3952,7 @@
             {
               "linkId": "canton",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.canton",
-              "text": "Canton",
+              "text": "Cantone",
               "type": "open-choice",
               "extension": [
                 {
@@ -4036,7 +4125,7 @@
             {
               "linkId": "administrativeGender",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.administrativeGender",
-              "text": "Sexe",
+              "text": "Sesso",
               "type": "choice",
               "required": true,
               "extension": [
@@ -4068,21 +4157,21 @@
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "male",
-                    "display": "masculin"
+                    "display": "sesso maschile"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "female",
-                    "display": "féminin"
+                    "display": "sesso femminile"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://hl7.org/fhir/administrative-gender",
                     "code": "other",
-                    "display": "indéterminé"
+                    "display": "indeterminato"
                   }
                 }
               ]
@@ -4090,7 +4179,7 @@
             {
               "linkId": "genderIdentity",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
-              "text": "Identité de genre (transgenre)",
+              "text": "Identità di genere (transgender)",
               "type": "choice",
               "extension": [
                 {
@@ -4106,7 +4195,7 @@
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "1384187000",
-                    "display": "S'identifie comme transgenre"
+                    "display": "Si identifica come transgender"
                   }
                 }
               ]
@@ -4116,30 +4205,31 @@
         {
           "linkId": "manifestation-group",
           "type": "group",
-          "text": "Diagnostic et manifestation",
+          "text": "Diagnosi e manifestazione",
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
-              "valueString": "Diagnostic"
+              "valueString": "Diagnosi"
             }
           ],
           "item": [
             {
               "linkId": "manifestation",
-              "text": "Manifestations",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
+              "text": "Manifestazioni",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestation",
               "type": "choice",
+              "repeats": true,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                  "valueCode": "horizontal"
+                  "valueCode": "vertical"
                 },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "code": "radio-button",
+                        "code": "check-box",
                         "system": "http://hl7.org/fhir/questionnaire-item-control"
                       }
                     ]
@@ -4150,15 +4240,50 @@
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
-                    "code": "264931009",
-                    "display": "Symptomatique"
+                    "code": "74964007",
+                    "display": "Other"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
-                    "code": "84387000",
-                    "display": "Asymptomatique"
+                    "code": "373572006",
+                    "display": "Clinical finding absent"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "261665006",
+                    "display": "Unknown"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "18165001",
+                    "display": "Ittero"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "707724006",
+                    "display": "Livello degli enzimi epatici superiore all'intervallo di riferimento"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "409673008",
+                    "display": "Alanina aminotransferasi superiore all'intervallo di riferimento"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "166669000",
+                    "display": "Livello sierico di aspartato aminotransferasi superiore all'intervallo di riferimento"
                   }
                 }
               ]
@@ -4166,7 +4291,7 @@
             {
               "linkId": "manifestationBeginUnknown",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationBeginUnknown",
-              "text": "Début des manifestations inconnu",
+              "text": "Inizio delle manifestazioni sconosciuto",
               "type": "boolean",
               "initial": [
                 {
@@ -4177,7 +4302,7 @@
             {
               "linkId": "manifestationBeginDate",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationBeginDate",
-              "text": "Début des manifestations (date)",
+              "text": "Inizio delle manifestazioni (data)",
               "type": "date",
               "enableWhen": [
                 {
@@ -4190,25 +4315,25 @@
           ]
         },
         {
-          "linkId": "exposure",
+          "linkId": "course",
           "type": "group",
-          "text": "Données relatives à l'exposition",
+          "text": "Decorso",
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
-              "valueString": "Exposition"
+              "valueString": "Decorso"
             }
           ],
           "item": [
             {
-              "linkId": "exposureHow",
-              "text": "Comment (voie de transmission)",
+              "linkId": "hospitalisation",
+              "text": "Ospedalizzazione",
               "type": "group",
               "item": [
                 {
-                  "linkId": "exposureHowSexualContactPartner",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.sexualContactPartner",
-                  "text": "Rapport sexuel avec une personne infectée (sexe)",
+                  "linkId": "hospitalisationStatus",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.hospitalisation",
+                  "text": "La persona interessata è stata ospedalizzata?",
                   "type": "choice",
                   "extension": [
                     {
@@ -4225,36 +4350,43 @@
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
                       "valueCode": "horizontal"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "iif(%encounter.hospitalization.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/data-absent-reason').exists(), %factory.Coding('http://snomed.info/sct', '261665006'), iif(%encounter.exists(), %factory.Coding('http://snomed.info/sct', '373066001'), {}))"
+                      }
                     }
                   ],
                   "answerOption": [
                     {
                       "valueCoding": {
-                        "system": "http://hl7.org/fhir/administrative-gender",
-                        "code": "male",
-                        "display": "masculin"
+                        "system": "http://snomed.info/sct",
+                        "code": "373066001",
+                        "display": "Sì"
                       }
                     },
                     {
                       "valueCoding": {
-                        "system": "http://hl7.org/fhir/administrative-gender",
-                        "code": "female",
-                        "display": "féminin"
+                        "system": "http://snomed.info/sct",
+                        "code": "373067005",
+                        "display": "No"
                       }
                     },
                     {
                       "valueCoding": {
-                        "system": "http://hl7.org/fhir/administrative-gender",
-                        "code": "other",
-                        "display": "indéterminé"
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Sconosciuto"
                       }
                     }
                   ]
                 },
                 {
-                  "linkId": "exposureHowRelationshipType",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.relationshipType",
-                  "text": "Type de relation",
+                  "linkId": "hospitalisationReason",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.reason",
+                  "text": "Motivo dell'ospedalizzazione",
                   "type": "choice",
                   "extension": [
                     {
@@ -4270,51 +4402,1628 @@
                     },
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                      "valueCode": "horizontal"
+                      "valueCode": "vertical"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "iif(%encounter.reasonReference.exists(), %factory.Coding('http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen', 'reported-pathogen', 'Reported pathogen'), %encounter.reasonCode.coding.first())"
+                      }
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "hospitalisationStatus",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
                     }
                   ],
                   "answerOption": [
                     {
                       "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                        "code": "steady-partner",
-                        "display": "Partenaire stable"
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen",
+                        "code": "reported-pathogen",
+                        "display": "Agente patogeno notificato"
                       }
                     },
                     {
                       "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                        "code": "non-steady-partner",
-                        "display": "Partenaire non stable"
+                        "system": "http://snomed.info/sct",
+                        "code": "74964007",
+                        "display": "Altro"
                       }
                     },
                     {
                       "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                        "code": "offered-paid-sex",
-                        "display": "Offre de sexe rémunéré"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                        "code": "used-paid-sex",
-                        "display": "Recours à du sexe rémunéré"
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Sconosciuto"
                       }
                     }
                   ]
                 },
                 {
-                  "linkId": "exposureHowOtherTransmission",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.otherTransmission",
-                  "text": "Autre voie de transmission (texte libre)",
-                  "type": "string"
+                  "linkId": "hospitalisationAdmissionDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.admissionDate",
+                  "text": "Data di ricovero",
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "hospitalisationStatus",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ],
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%encounter.period.start"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "death",
+              "text": "Stato",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "deceased",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmDeathForm#ChEkmDeathForm.deceased",
+                  "text": "La persona interessata è deceduta?",
+                  "type": "boolean",
+                  "initial": [
+                    {
+                      "valueBoolean": false
+                    }
+                  ],
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%patient.deceasedDateTime.exists() or %patient.deceasedDateTime.extension.exists()"
+                      }
+                    }
+                  ]
                 },
                 {
-                  "linkId": "exposureHowUnknown",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.unknown",
-                  "text": "Voie de transmission inconnue",
-                  "type": "boolean"
+                  "linkId": "deathDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmDeathForm#ChEkmDeathForm.deathDate",
+                  "text": "Data del decesso",
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "deceased",
+                      "operator": "=",
+                      "answerBoolean": true
+                    }
+                  ],
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%patient.deceasedDateTime"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "deathCause",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmDeathForm#ChEkmDeathForm.causeOfDeath",
+                  "text": "Causa del decesso",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "vertical"
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "deceased",
+                      "operator": "=",
+                      "answerBoolean": true
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen",
+                        "code": "reported-pathogen",
+                        "display": "Agente patogeno notificato"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "74964007",
+                        "display": "Altro"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Sconosciuto"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "linkId": "exposure",
+          "type": "group",
+          "text": "Dati relativi all'esposizione",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Esposizione"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "exposureWhere",
+              "text": "Qual è il luogo di contagio più probabile?",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "exposureWhereCountry",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.country",
+                  "text": "Paese",
+                  "type": "choice",
+                  "required": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "drop-down",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CH",
+                        "display": "Svizzera"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LI",
+                        "display": "Liechtenstein"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Sconosciuto"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AL",
+                        "display": "Albania"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AD",
+                        "display": "Andorra"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BE",
+                        "display": "Belgio"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BG",
+                        "display": "Bulgaria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DK",
+                        "display": "Danimarca"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DE",
+                        "display": "Germania"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "FI",
+                        "display": "Finlandia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "FR",
+                        "display": "Francia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GR",
+                        "display": "Grecia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GB",
+                        "display": "Regno Unito"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IE",
+                        "display": "Irlanda"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IS",
+                        "display": "Islanda"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IT",
+                        "display": "Italia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LU",
+                        "display": "Lussemburgo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MT",
+                        "display": "Malta"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MC",
+                        "display": "Monaco"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NL",
+                        "display": "Paesi Bassi"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NO",
+                        "display": "Norvegia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AT",
+                        "display": "Austria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PL",
+                        "display": "Polonia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PT",
+                        "display": "Portogallo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "RO",
+                        "display": "Romania"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SM",
+                        "display": "San Marino"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SE",
+                        "display": "Svezia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ES",
+                        "display": "Spagna"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TR",
+                        "display": "Türkiye"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "HU",
+                        "display": "Ungheria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VA",
+                        "display": "Città del Vaticano"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CY",
+                        "display": "Cipro"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SK",
+                        "display": "Slovacchia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CZ",
+                        "display": "Cechia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "RS",
+                        "display": "Serbia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "HR",
+                        "display": "Croazia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SI",
+                        "display": "Slovenia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BA",
+                        "display": "Bosnia e Erzegovina"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ME",
+                        "display": "Montenegro"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MK",
+                        "display": "Macedonia del Nord"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "XK",
+                        "display": "Kosovo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "EE",
+                        "display": "Estonia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LV",
+                        "display": "Lettonia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LT",
+                        "display": "Lituania"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MD",
+                        "display": "Moldova"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "RU",
+                        "display": "Russia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "UA",
+                        "display": "Ucraina"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BY",
+                        "display": "Belarus"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GQ",
+                        "display": "Guinea equatoriale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ET",
+                        "display": "Etiopia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DJ",
+                        "display": "Gibuti"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DZ",
+                        "display": "Algeria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AO",
+                        "display": "Angola"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BW",
+                        "display": "Botswana"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BI",
+                        "display": "Burundi"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BJ",
+                        "display": "Benin"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CI",
+                        "display": "Côte d'Ivoire"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GA",
+                        "display": "Gabon"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GM",
+                        "display": "Gambia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GH",
+                        "display": "Ghana"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GW",
+                        "display": "Guinea-Bissau"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GN",
+                        "display": "Guinea"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CM",
+                        "display": "Camerun"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CV",
+                        "display": "Cabo Verde"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KE",
+                        "display": "Kenia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KM",
+                        "display": "Comore"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CG",
+                        "display": "Congo (Brazzaville)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CD",
+                        "display": "Congo (Kinshasa)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LS",
+                        "display": "Lesotho"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LR",
+                        "display": "Liberia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LY",
+                        "display": "Libia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MG",
+                        "display": "Madagascar"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MW",
+                        "display": "Malawi"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ML",
+                        "display": "Mali"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MA",
+                        "display": "Marocco"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MR",
+                        "display": "Mauritania"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MU",
+                        "display": "Maurizio"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MZ",
+                        "display": "Mozambico"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NE",
+                        "display": "Niger"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NG",
+                        "display": "Nigeria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BF",
+                        "display": "Burkina Faso"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ZW",
+                        "display": "Zimbabwe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "RW",
+                        "display": "Ruanda"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ZM",
+                        "display": "Zambia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ST",
+                        "display": "São Tomé e Príncipe"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SN",
+                        "display": "Senegal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SC",
+                        "display": "Seicelle"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SL",
+                        "display": "Sierra Leone"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SO",
+                        "display": "Somalia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ZA",
+                        "display": "Sudafrica"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SD",
+                        "display": "Sudan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NA",
+                        "display": "Namibia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SZ",
+                        "display": "Eswatini"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TZ",
+                        "display": "Tanzania"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TG",
+                        "display": "Togo"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TD",
+                        "display": "Ciad"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TN",
+                        "display": "Tunisia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "UG",
+                        "display": "Uganda"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "EG",
+                        "display": "Egitto"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CF",
+                        "display": "Repubblica centrafricana"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ER",
+                        "display": "Eritrea"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SS",
+                        "display": "Sudan del Sud"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AR",
+                        "display": "Argentina"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BS",
+                        "display": "Bahamas"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BB",
+                        "display": "Barbados"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BO",
+                        "display": "Bolivia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BR",
+                        "display": "Brasile"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CL",
+                        "display": "Cile"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CR",
+                        "display": "Costa Rica"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DO",
+                        "display": "Repubblica dominicana"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "EC",
+                        "display": "Ecuador"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SV",
+                        "display": "El Salvador"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GT",
+                        "display": "Guatemala"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GY",
+                        "display": "Guyana"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "HT",
+                        "display": "Haiti"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BZ",
+                        "display": "Belize"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "HN",
+                        "display": "Honduras"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "JM",
+                        "display": "Giamaica"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CA",
+                        "display": "Canada"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CO",
+                        "display": "Colombia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CU",
+                        "display": "Cuba"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MX",
+                        "display": "Messico"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NI",
+                        "display": "Nicaragua"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PA",
+                        "display": "Panama"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PY",
+                        "display": "Paraguay"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PE",
+                        "display": "Perù"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SR",
+                        "display": "Suriname"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TT",
+                        "display": "Trinidad e Tobago"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "UY",
+                        "display": "Uruguay"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VE",
+                        "display": "Venezuela"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "US",
+                        "display": "Stati Uniti"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "DM",
+                        "display": "Dominica"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GD",
+                        "display": "Grenada"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AG",
+                        "display": "Antigua e Barbuda"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LC",
+                        "display": "Saint Lucia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VC",
+                        "display": "Saint Vincent e Grenadine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KN",
+                        "display": "Saint Kitts e Nevis"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AF",
+                        "display": "Afghanistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BH",
+                        "display": "Bahrein"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BT",
+                        "display": "Bhutan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BN",
+                        "display": "Brunei Darussalam"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MM",
+                        "display": "Myanmar"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LK",
+                        "display": "Sri Lanka"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CN",
+                        "display": "Cina"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IN",
+                        "display": "India"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "ID",
+                        "display": "Indonesia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IQ",
+                        "display": "Iraq"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IR",
+                        "display": "Iran"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "IL",
+                        "display": "Israele"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "JP",
+                        "display": "Giappone"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "YE",
+                        "display": "Yemen"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "JO",
+                        "display": "Giordania"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KH",
+                        "display": "Cambogia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "QA",
+                        "display": "Qatar"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KW",
+                        "display": "Kuwait"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LA",
+                        "display": "Laos"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "LB",
+                        "display": "Libano"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MY",
+                        "display": "Malaysia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MV",
+                        "display": "Maldive"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "OM",
+                        "display": "Oman"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MN",
+                        "display": "Mongolia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NP",
+                        "display": "Nepal"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KP",
+                        "display": "Corea (Nord)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AE",
+                        "display": "Emirati arabi uniti"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PK",
+                        "display": "Pakistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PH",
+                        "display": "Filippine"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SA",
+                        "display": "Arabia Saudita"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SG",
+                        "display": "Singapore"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KR",
+                        "display": "Corea (Sud)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SY",
+                        "display": "Siria"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TH",
+                        "display": "Thailandia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VN",
+                        "display": "Vietnam"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "BD",
+                        "display": "Bangladesh"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TL",
+                        "display": "Timor-Leste"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AM",
+                        "display": "Armenia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AZ",
+                        "display": "Azerbaigian"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "GE",
+                        "display": "Georgia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KZ",
+                        "display": "Kazakstan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KG",
+                        "display": "Kirghizistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TJ",
+                        "display": "Tagikistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TM",
+                        "display": "Turkmenistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "UZ",
+                        "display": "Uzbekistan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "AU",
+                        "display": "Australia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "FJ",
+                        "display": "Figi"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NR",
+                        "display": "Nauru"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "VU",
+                        "display": "Vanuatu"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "NZ",
+                        "display": "Nuova Zelanda"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PG",
+                        "display": "Papua Nuova Guinea"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TO",
+                        "display": "Tonga"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "WS",
+                        "display": "Samoa"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "SB",
+                        "display": "Isole Salomone"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "TV",
+                        "display": "Tuvalu"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "KI",
+                        "display": "Kiribati"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "MH",
+                        "display": "Isole Marshall"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "FM",
+                        "display": "Micronesia"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "PW",
+                        "display": "Palau"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "urn:iso:std:iso:3166",
+                        "code": "CK",
+                        "display": "Isole Cook"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "exposureWherePreciseLocation",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.preciseLocation",
+                  "text": "Luogo preciso",
+                  "required": true,
+                  "type": "open-choice",
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Sconosciuto"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "exposureWhen",
+              "text": "Quando (momento del contagio)",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "exposureWhenDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.when.exposureDate",
+                  "text": "Quando è avvenuto il momento più probabile del contagio?",
+                  "type": "date"
                 }
               ]
             }
@@ -4322,24 +6031,24 @@
         },
         {
           "linkId": "treatingPhysician",
-          "text": "Médecin traitant",
+          "text": "Medico curante",
           "type": "group",
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
-              "valueString": "Médecin"
+              "valueString": "Medico"
             }
           ],
           "item": [
             {
               "linkId": "treatingPhysicianPractitioner",
-              "text": "Médecin traitant",
+              "text": "Medico curante",
               "type": "group",
               "item": [
                 {
                   "linkId": "physicianGivenname",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.givenname",
-                  "text": "Prénom",
+                  "text": "Nome",
                   "type": "string",
                   "required": true,
                   "extension": [
@@ -4355,7 +6064,7 @@
                 {
                   "linkId": "physicianSurname",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.surname",
-                  "text": "Nom",
+                  "text": "Cognome",
                   "type": "string",
                   "required": true,
                   "extension": [
@@ -4371,7 +6080,7 @@
                 {
                   "linkId": "physicianStreetLine",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.streetLine",
-                  "text": "Adresse (rue, numéro)",
+                  "text": "Indirizzo (via, numero civico)",
                   "type": "string",
                   "extension": [
                     {
@@ -4386,7 +6095,7 @@
                 {
                   "linkId": "physicianZipCode",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.zipCode",
-                  "text": "NPA",
+                  "text": "NAP",
                   "type": "string",
                   "required": true,
                   "extension": [
@@ -4402,7 +6111,7 @@
                 {
                   "linkId": "physicianCity",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.city",
-                  "text": "Localité",
+                  "text": "Località",
                   "type": "string",
                   "required": true,
                   "extension": [
@@ -4418,7 +6127,7 @@
                 {
                   "linkId": "physicianPhone",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianPractitionerForm#ChEkmTreatingPhysicianPractitionerForm.phone",
-                  "text": "Numéro de téléphone",
+                  "text": "Numero di telefono",
                   "type": "string",
                   "required": true,
                   "extension": [
@@ -4465,13 +6174,13 @@
             },
             {
               "linkId": "treatingPhysicianOrganization",
-              "text": "Organisation émettrice",
+              "text": "Organizzazione mittente",
               "type": "group",
               "item": [
                 {
                   "linkId": "orgName",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.name",
-                  "text": "Nom",
+                  "text": "Nome",
                   "type": "string",
                   "required": true,
                   "extension": [
@@ -4487,7 +6196,7 @@
                 {
                   "linkId": "orgDepartment",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.department",
-                  "text": "Service",
+                  "text": "Reparto",
                   "type": "string",
                   "extension": [
                     {
@@ -4502,7 +6211,7 @@
                 {
                   "linkId": "orgStreetLine",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.streetLine",
-                  "text": "Adresse (rue, numéro)",
+                  "text": "Indirizzo (via, numero civico)",
                   "type": "string",
                   "extension": [
                     {
@@ -4517,7 +6226,7 @@
                 {
                   "linkId": "orgZipCode",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.zipCode",
-                  "text": "NPA",
+                  "text": "NAP",
                   "type": "string",
                   "required": true,
                   "extension": [
@@ -4533,7 +6242,7 @@
                 {
                   "linkId": "orgCity",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.city",
-                  "text": "Localité",
+                  "text": "Località",
                   "type": "string",
                   "required": true,
                   "extension": [
@@ -4549,7 +6258,7 @@
                 {
                   "linkId": "orgPhone",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.phone",
-                  "text": "Numéro de téléphone",
+                  "text": "Numero di telefono",
                   "type": "string",
                   "required": true,
                   "extension": [
@@ -4580,7 +6289,7 @@
                 {
                   "linkId": "orgBer",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmTreatingPhysicianOrganizationForm#ChEkmTreatingPhysicianOrganizationForm.ber",
-                  "text": "REE",
+                  "text": "RIS",
                   "type": "string",
                   "extension": [
                     {
@@ -4615,7 +6324,7 @@
     }
   ],
   "version": "0.0.1",
-  "name": "ChEkmQuestionnaireGonorrhoeafrCH",
-  "title": "CH EKM Questionnaire: Gonorrhoea (assembled) (preview fr-CH, pre-expanded)",
-  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+  "name": "ChEkmQuestionnaireHepatitisCitCH",
+  "title": "CH EKM Questionnaire: HepatitisC (assembled) (preview it-CH, pre-expanded)",
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisC and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

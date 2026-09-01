@@ -123,7 +123,17 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 * item[=].extension[=].valueCodeableConcept = $item-control#autocomplete
 * item[=].extension[+].url = $sdc-initialExpression
 * item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].extension[=].valueExpression.expression = "%homeOrFirstAddress.country"
+// A CODING, not the bare Address.country string: `country` is a `choice` item, whose answer must
+// be a valueCoding (a valueString is an invalid answer AND invisible to the $extract gates).
+// Two sources, in order of trust:
+//   1. `country.extension[iso21090-codedString]` — the coded country CH Core's ch-core-address
+//      carries alongside the string. Already a real Coding, so it is used verbatim. This is the
+//      same shape `nationality` above reads out of patient-citizenship.
+//   2. the plain string, but ONLY when it looks like an ISO 3166 alpha-2/alpha-3 code — the
+//      extension is 0..1 in ch-core, and `Address.country` is not required to hold a code at all.
+//      A country NAME ("Deutschland") must NOT be wrapped into an ISO 3166 Coding, so it yields
+//      nothing and the user picks the country themselves.
+* item[=].extension[=].valueExpression.expression = "iif(%homeOrFirstAddress.country.extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString').value.ofType(Coding).exists(), %homeOrFirstAddress.country.extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString').value.ofType(Coding).first(), %homeOrFirstAddress.country.where($this.matches('^[A-Za-z]{2,3}$')).select(%factory.Coding('urn:iso:std:iso:3166', $this.upper())).first())"
 
 // Kanton - open-choice with a PREFERRED binding to the eCH-0007 canton abbreviations
 // (http://fhir.ch/ig/ch-core/ValueSet/ech-7-cantonabbreviation, from ch-term): the renderer
@@ -159,4 +169,8 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 * item[=].extension[=].valueCode = #horizontal
 * item[=].extension[+].url = $sdc-initialExpression
 * item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].extension[=].valueExpression.expression = "%patient.gender"
+// A CODING, not the bare `code` %patient.gender returns — same reason as `country` above.
+// `Patient.gender` IS the administrative-gender code system, so the Coding is exact rather than a
+// guess. `unknown` is filtered out: ChEkmPatientAdministrativeSex offers only male/female/other, and
+// pre-filling an answer that is not in the item's own value set is worse than leaving it blank.
+* item[=].extension[=].valueExpression.expression = "%patient.gender.where($this = 'male' or $this = 'female' or $this = 'other').select(%factory.Coding('http://hl7.org/fhir/administrative-gender', $this)).first()"

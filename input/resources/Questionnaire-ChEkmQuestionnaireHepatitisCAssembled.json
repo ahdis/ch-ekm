@@ -1,6 +1,6 @@
 {
   "resourceType": "Questionnaire",
-  "id": "ChEkmQuestionnaireGonorrhoeaAssembled",
+  "id": "ChEkmQuestionnaireHepatitisCAssembled",
   "meta": {
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp",
@@ -8,7 +8,7 @@
     ],
     "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
   },
-  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoeaAssembled",
+  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCAssembled",
   "status": "active",
   "language": "en",
   "experimental": false,
@@ -66,8 +66,29 @@
       ]
     },
     {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
+      "extension": [
+        {
+          "url": "name",
+          "valueCoding": {
+            "code": "encounter",
+            "system": "http://hl7.org/fhir/uv/sdc/CodeSystem/launchContext",
+            "display": "Encounter"
+          }
+        },
+        {
+          "url": "type",
+          "valueCode": "Encounter"
+        },
+        {
+          "url": "description",
+          "valueString": "The hospitalisation Encounter to pre-populate the form with"
+        }
+      ]
+    },
+    {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonName|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -83,7 +104,19 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHospitalisation|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireDeath|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhere|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhen|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -93,11 +126,11 @@
   "contained": [
     {
       "resourceType": "Bundle",
-      "id": "ChEkmDocumentGonorrhoeaTemplate",
+      "id": "ChEkmDocumentHepatitisCTemplate",
       "type": "document",
       "identifier": {
         "system": "urn:ietf:rfc:3986",
-        "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
+        "value": "urn:uuid:2b4f6f16-4c8a-4a1c-9c0e-7a1f2d3b5c88"
       },
       "timestamp": "1900-01-01T00:00:00Z",
       "_timestamp": {
@@ -110,10 +143,10 @@
       },
       "entry": [
         {
-          "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionGonorrhoea",
+          "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionHepatitisC",
           "resource": {
             "resourceType": "Composition",
-            "id": "ExtractedCompositionGonorrhoea",
+            "id": "ExtractedCompositionHepatitisC",
             "status": "final",
             "type": {
               "coding": [
@@ -137,7 +170,7 @@
                 "title": "Diagnosis section",
                 "entry": [
                   {
-                    "reference": "Condition/ExtractedConditionGonorrhoea"
+                    "reference": "Condition/ExtractedConditionHepatitisC"
                   }
                 ]
               },
@@ -153,7 +186,35 @@
                 },
                 "entry": [
                   {
-                    "reference": "Observation/ExtractedExposureGonorrhoea"
+                    "reference": "Observation/ExtractedExposureHepatitisC"
+                  }
+                ]
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
+                  }
+                ],
+                "title": "Cause of death section",
+                "code": {
+                  "coding": [
+                    {
+                      "code": "79378-6",
+                      "system": "http://loinc.org"
+                    }
+                  ]
+                },
+                "entry": [
+                  {
+                    "reference": "Observation/ExtractedCauseOfDeathHepatitisC",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeathHepatitisC'))"
+                      }
+                    ]
                   }
                 ]
               }
@@ -172,12 +233,21 @@
             "subject": {
               "reference": "Patient/ExtractedPatient"
             },
+            "encounter": {
+              "reference": "Encounter/ExtractedEncounterHepatitisC",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounterHepatitisC'))"
+                }
+              ]
+            },
             "author": [
               {
                 "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
               }
             ],
-            "title": "Meldung zum klinischen Befund Gonorrhoea",
+            "title": "Meldung zum klinischen Befund Hepatitis C",
             "_date": {
               "extension": [
                 {
@@ -354,16 +424,16 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionGonorrhoea",
+          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionHepatitisC",
           "resource": {
             "resourceType": "Condition",
-            "id": "ExtractedConditionGonorrhoea",
+            "id": "ExtractedConditionHepatitisC",
             "code": {
               "coding": [
                 {
-                  "code": "15628003",
+                  "code": "50711007",
                   "system": "http://snomed.info/sct",
-                  "display": "Gonorrhea (disorder)"
+                  "display": "Viral hepatitis type C (disorder)"
                 }
               ]
             },
@@ -383,6 +453,15 @@
             "recorder": {
               "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
             },
+            "encounter": {
+              "reference": "Encounter/ExtractedEncounterHepatitisC",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounterHepatitisC'))"
+                }
+              ]
+            },
             "evidence": [
               {
                 "extension": [
@@ -401,9 +480,9 @@
                             "valueString": "ofType(Coding)"
                           }
                         ],
-                        "code": "15628003",
+                        "code": "18165001",
                         "system": "http://snomed.info/sct",
-                        "display": "Gonorrhea (disorder)"
+                        "display": "Jaundice"
                       }
                     ]
                   }
@@ -434,10 +513,10 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureGonorrhoea",
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureHepatitisC",
           "resource": {
             "resourceType": "Observation",
-            "id": "ExtractedExposureGonorrhoea",
+            "id": "ExtractedExposureHepatitisC",
             "code": {
               "coding": [
                 {
@@ -467,82 +546,19 @@
                 "code": {
                   "coding": [
                     {
-                      "code": "sexual-contact-partner",
-                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowSexualContactPartner').answer.value"
-                  }
-                ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "unknown",
-                      "system": "http://hl7.org/fhir/administrative-gender",
-                      "display": "Unknown",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "ofType(Coding)"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "228465009",
+                      "code": "161097008",
                       "system": "http://snomed.info/sct",
-                      "display": "Sexual relationship details (observable entity)"
+                      "display": "Date of return from travel"
                     }
                   ]
                 },
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowRelationshipType').answer.value"
+                    "valueString": "%resource.descendants().where(linkId='exposureWhenLastEntryDate').answer.value"
                   }
                 ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "steady-partner",
-                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                      "display": "Steady partner",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "ofType(Coding)"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "74964007",
-                      "system": "http://snomed.info/sct",
-                      "display": "Other (qualifier value)"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value"
-                  }
-                ],
-                "_valueString": {
+                "_valueDateTime": {
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -550,96 +566,44 @@
                     }
                   ]
                 }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "409496000",
-                      "system": "http://snomed.info/sct",
-                      "display": "Mode of transmission (observable entity)"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowUnknown').answer.value.where($this = true)"
-                  }
-                ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "261665006",
-                      "system": "http://snomed.info/sct",
-                      "display": "Unknown (qualifier value)",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "%factory.Coding('http://snomed.info/sct', '261665006', 'Unknown (qualifier value)')"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "iif(%resource.descendants().where(linkId='exposureHowUnknown').answer.value = true, {}, %resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value)"
-                  }
-                ],
-                "code": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
-                    }
-                  ]
-                },
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "%factory.Coding('http://snomed.info/sct', '74964007', 'Other (qualifier value)')"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "iif(%resource.descendants().where(linkId='exposureHowUnknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='exposureHowSexualContactPartner').answer.value))"
-                  }
-                ],
-                "code": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
-                    }
-                  ]
-                },
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "%factory.Coding('http://snomed.info/sct', '417564009', 'Sexual transmission (qualifier value)')"
-                        }
-                      ]
-                    }
-                  ]
-                }
               }
-            ]
+            ],
+            "extension": [
+              {
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "iif(%resource.descendants().where(linkId='exposureWhereCountry').answer.value.exists() or %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.exists(), true, {})"
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.defineVariable('ctry', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='urn:iso:std:iso:3166').first()).defineVariable('ctryUnknown', %resource.descendants().where(linkId='exposureWhereCountry').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists()).defineVariable('loc', %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.ofType(string).first()).defineVariable('base', iif(%loc.empty() and %resource.descendants().where(linkId='exposureWherePreciseLocation').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').exists(), %factory.withProperty(%factory.Address({}), 'city', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %factory.Address({}, %loc))).select(%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address', iif(%ctry.exists(), %factory.withProperty(%base, 'country', %factory.string(%ctry.code, %factory.Extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString', %ctry))), iif(%ctryUnknown, %factory.withProperty(%base, 'country', %factory.string({}, %factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))), %base))))"
+                  }
+                ]
+              }
+            ],
+            "_effectiveDateTime": {
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                      "valueString": "%resource.descendants().where(linkId='exposureWhenLastEntryDate').answer.value"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown'))"
+                    }
+                  ]
+                },
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='exposureWhenDate').answer.value.first()"
+                }
+              ]
+            }
           }
         },
         {
@@ -907,15 +871,142 @@
               ]
             }
           }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Encounter/ExtractedEncounterHepatitisC",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Encounter/ExtractedEncounterHepatitisC'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Encounter",
+            "id": "ExtractedEncounterHepatitisC",
+            "class": {
+              "code": "IMP",
+              "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+              "display": "inpatient encounter"
+            },
+            "status": "unknown",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "period": {
+              "_start": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationAdmissionDate').answer.value.first()"
+                  }
+                ]
+              }
+            },
+            "reasonReference": [
+              {
+                "reference": "Condition/ExtractedConditionHepatitisC",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedConditionHepatitisC'))"
+                  }
+                ]
+              }
+            ],
+            "reasonCode": [
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this))"
+                  }
+                ]
+              }
+            ],
+            "hospitalization": {
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').first().select(%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathHepatitisC",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathHepatitisC'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Observation",
+            "id": "ExtractedCauseOfDeathHepatitisC",
+            "status": "final",
+            "code": {
+              "coding": [
+                {
+                  "code": "79378-6",
+                  "system": "http://loinc.org",
+                  "display": "Cause of death"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "valueCodeableConcept": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '50711007', 'Viral hepatitis type C (disorder)')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this)))"
+                }
+              ]
+            },
+            "focus": [
+              {
+                "reference": "Condition/ExtractedConditionHepatitisC",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedConditionHepatitisC'))"
+                  }
+                ]
+              }
+            ]
+          }
         }
       ]
     }
   ],
   "item": [
     {
-      "linkId": "gonorrhoea-form",
+      "linkId": "hepatitisc-form",
       "type": "group",
-      "text": "Clinical findings report: gonorrhoea",
+      "text": "Clinical findings report: hepatitis C",
       "_text": {
         "extension": [
           {
@@ -927,7 +1018,7 @@
               },
               {
                 "url": "content",
-                "valueString": "Meldung zum klinischen Befund: Gonorrhoea"
+                "valueString": "Meldung zum klinischen Befund: Hepatitis C"
               }
             ]
           },
@@ -940,7 +1031,7 @@
               },
               {
                 "url": "content",
-                "valueString": "Déclaration de résultat clinique : Gonorrhoea"
+                "valueString": "Déclaration de résultat clinique : hépatite C"
               }
             ]
           },
@@ -953,7 +1044,7 @@
               },
               {
                 "url": "content",
-                "valueString": "Notifica del referto clinico: Gonorrhoea"
+                "valueString": "Notifica del referto clinico: epatite C"
               }
             ]
           }
@@ -966,7 +1057,7 @@
             {
               "url": "template",
               "valueReference": {
-                "reference": "#ChEkmDocumentGonorrhoeaTemplate"
+                "reference": "#ChEkmDocumentHepatitisCTemplate"
               }
             }
           ]
@@ -1090,9 +1181,9 @@
           ],
           "item": [
             {
-              "linkId": "surnameInitial",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surnameInitial",
-              "text": "Surname initial",
+              "linkId": "surname",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surname",
+              "text": "Surname",
               "_text": {
                 "extension": [
                   {
@@ -1104,7 +1195,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Initiale Name"
+                        "valueString": "Name"
                       }
                     ]
                   },
@@ -1117,7 +1208,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Initiale du nom"
+                        "valueString": "Nom"
                       }
                     ]
                   },
@@ -1130,7 +1221,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Iniziale del cognome"
+                        "valueString": "Cognome"
                       }
                     ]
                   }
@@ -1138,21 +1229,20 @@
               },
               "type": "string",
               "required": true,
-              "maxLength": 1,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.name.first().family.substring(0,1)"
+                    "expression": "%patient.name.first().family"
                   }
                 }
               ]
             },
             {
-              "linkId": "givennameInitial",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givennameInitial",
-              "text": "First name initial",
+              "linkId": "givenname",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givenname",
+              "text": "First name",
               "_text": {
                 "extension": [
                   {
@@ -1164,7 +1254,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Initiale Vorname"
+                        "valueString": "Vorname"
                       }
                     ]
                   },
@@ -1177,7 +1267,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Initiale du prénom"
+                        "valueString": "Prénom"
                       }
                     ]
                   },
@@ -1190,7 +1280,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Iniziale del nome"
+                        "valueString": "Nome"
                       }
                     ]
                   }
@@ -1198,13 +1288,12 @@
               },
               "type": "string",
               "required": true,
-              "maxLength": 1,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.name.first().given.first().substring(0,1)"
+                    "expression": "%patient.name.first().given.join(' ')"
                   }
                 }
               ]
@@ -1959,26 +2048,27 @@
                   }
                 ]
               },
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaManifestationForm#ChEkmGonorrhoeaManifestationForm.manifestation",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestation",
               "type": "choice",
+              "repeats": true,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                  "valueCode": "horizontal"
+                  "valueCode": "vertical"
                 },
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                   "valueCodeableConcept": {
                     "coding": [
                       {
-                        "code": "radio-button",
+                        "code": "check-box",
                         "system": "http://hl7.org/fhir/questionnaire-item-control"
                       }
                     ]
                   }
                 }
               ],
-              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGonorrhoeaManifestationFormChoice",
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmHepatitisCManifestation",
               "_answerValueSet": {
                 "extension": [
                   {
@@ -2110,6 +2200,686 @@
           ]
         },
         {
+          "linkId": "course",
+          "type": "group",
+          "text": "Course of the disease",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "de-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Verlauf"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "fr-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Évolution"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "it-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Decorso"
+                  }
+                ]
+              }
+            ]
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Course",
+              "_valueString": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Verlauf"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Évolution"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Decorso"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
+          "item": [
+            {
+              "linkId": "hospitalisation",
+              "text": "Hospitalisation",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Hospitalisation"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Hospitalisation"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Ospedalizzazione"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "hospitalisationStatus",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.hospitalisation",
+                  "text": "Was the affected person hospitalised?",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Wurde die betroffene Person hospitalisiert?"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "La personne concernée a-t-elle été hospitalisée ?"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "La persona interessata è stata ospedalizzata?"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
+                  "_answerValueSet": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                        "extension": [
+                          {
+                            "url": "name",
+                            "valueCode": "useSupplement"
+                          },
+                          {
+                            "url": "expression",
+                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "iif(%encounter.hospitalization.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/data-absent-reason').exists(), %factory.Coding('http://snomed.info/sct', '261665006'), iif(%encounter.exists(), %factory.Coding('http://snomed.info/sct', '373066001'), {}))"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "hospitalisationReason",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.reason",
+                  "text": "Reason for the hospitalisation",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Hospitalisationsgrund"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Motif de l'hospitalisation"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Motivo dell'ospedalizzazione"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmHospitalisationReasonChoice",
+                  "_answerValueSet": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                        "extension": [
+                          {
+                            "url": "name",
+                            "valueCode": "useSupplement"
+                          },
+                          {
+                            "url": "expression",
+                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "vertical"
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "iif(%encounter.reasonReference.exists(), %factory.Coding('http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen', 'reported-pathogen', 'Reported pathogen'), %encounter.reasonCode.coding.first())"
+                      }
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "hospitalisationStatus",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "hospitalisationAdmissionDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHospitalisationForm#ChEkmHospitalisationForm.admissionDate",
+                  "text": "Admission date",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Eintrittsdatum"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Date d'admission"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Data di ricovero"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "hospitalisationStatus",
+                      "operator": "=",
+                      "answerCoding": {
+                        "code": "373066001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Yes (qualifier value)"
+                      }
+                    }
+                  ],
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%encounter.period.start"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "death",
+              "text": "Death",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Zustand"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "État"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Stato"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "deceased",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmDeathForm#ChEkmDeathForm.deceased",
+                  "text": "Has the affected person died?",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Ist die betroffene Person verstorben?"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "La personne concernée est-elle décédée ?"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "La persona interessata è deceduta?"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "boolean",
+                  "initial": [
+                    {
+                      "valueBoolean": false
+                    }
+                  ],
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%patient.deceasedDateTime.exists() or %patient.deceasedDateTime.extension.exists()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "deathDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmDeathForm#ChEkmDeathForm.deathDate",
+                  "text": "Date of death",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Todesdatum"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Date du décès"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Data del decesso"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "date",
+                  "enableWhen": [
+                    {
+                      "question": "deceased",
+                      "operator": "=",
+                      "answerBoolean": true
+                    }
+                  ],
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%patient.deceasedDateTime"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "deathCause",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmDeathForm#ChEkmDeathForm.causeOfDeath",
+                  "text": "Cause of death",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Todesursache"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Cause du décès"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Causa del decesso"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCauseOfDeathChoice",
+                  "_answerValueSet": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                        "extension": [
+                          {
+                            "url": "name",
+                            "valueCode": "useSupplement"
+                          },
+                          {
+                            "url": "expression",
+                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "vertical"
+                    }
+                  ],
+                  "enableWhen": [
+                    {
+                      "question": "deceased",
+                      "operator": "=",
+                      "answerBoolean": true
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
           "linkId": "exposure",
           "type": "group",
           "text": "Exposure details",
@@ -2207,8 +2977,8 @@
           ],
           "item": [
             {
-              "linkId": "exposureHow",
-              "text": "How (route of transmission)",
+              "linkId": "exposureWhere",
+              "text": "What is the most probable place of infection?",
               "_text": {
                 "extension": [
                   {
@@ -2220,7 +2990,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Wie (Übertragungsweg)"
+                        "valueString": "Was ist der meistwahrscheinlichste Ort der Ansteckung?"
                       }
                     ]
                   },
@@ -2233,7 +3003,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Comment (voie de transmission)"
+                        "valueString": "Quel est le lieu de contamination le plus probable ?"
                       }
                     ]
                   },
@@ -2246,7 +3016,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Come (via di trasmissione)"
+                        "valueString": "Qual è il luogo di contagio più probabile?"
                       }
                     ]
                   }
@@ -2255,9 +3025,9 @@
               "type": "group",
               "item": [
                 {
-                  "linkId": "exposureHowSexualContactPartner",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.sexualContactPartner",
-                  "text": "Sexual contact with an infected person (gender)",
+                  "linkId": "exposureWhereCountry",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.country",
+                  "text": "Country",
                   "_text": {
                     "extension": [
                       {
@@ -2269,7 +3039,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Sexualkontakt mit infizierter Person (Geschlecht)"
+                            "valueString": "Land"
                           }
                         ]
                       },
@@ -2282,7 +3052,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Rapport sexuel avec une personne infectée (sexe)"
+                            "valueString": "Pays"
                           }
                         ]
                       },
@@ -2295,36 +3065,33 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Rapporto sessuale con una persona infetta (sesso)"
+                            "valueString": "Paese"
                           }
                         ]
                       }
                     ]
                   },
                   "type": "choice",
-                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex",
+                  "required": true,
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmCountryCodesInclUnknown",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
                       "valueCodeableConcept": {
                         "coding": [
                           {
-                            "code": "radio-button",
+                            "code": "autocomplete",
                             "system": "http://hl7.org/fhir/questionnaire-item-control"
                           }
                         ]
                       }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                      "valueCode": "horizontal"
                     }
                   ]
                 },
                 {
-                  "linkId": "exposureHowRelationshipType",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.relationshipType",
-                  "text": "Type of relationship",
+                  "linkId": "exposureWherePreciseLocation",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.preciseLocation",
+                  "text": "Precise location",
                   "_text": {
                     "extension": [
                       {
@@ -2336,7 +3103,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Art der Beziehung"
+                            "valueString": "Genauer Ort"
                           }
                         ]
                       },
@@ -2349,7 +3116,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Type de relation"
+                            "valueString": "Lieu précis"
                           }
                         ]
                       },
@@ -2362,36 +3129,70 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Tipo di relazione"
+                            "valueString": "Luogo preciso"
                           }
                         ]
                       }
                     ]
                   },
-                  "type": "choice",
-                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureRelationshipType",
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "code": "radio-button",
-                            "system": "http://hl7.org/fhir/questionnaire-item-control"
-                          }
-                        ]
+                  "required": true,
+                  "type": "open-choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmUnknown"
+                }
+              ]
+            },
+            {
+              "linkId": "exposureWhen",
+              "text": "When (point in time of infection)",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Wann (Zeitpunkt der Ansteckung)"
                       }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                      "valueCode": "horizontal"
-                    }
-                  ]
-                },
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Quand (moment de l'infection)"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Quando (momento del contagio)"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "group",
+              "item": [
                 {
-                  "linkId": "exposureHowOtherTransmission",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.otherTransmission",
-                  "text": "Other route of transmission (free text)",
+                  "linkId": "exposureWhenDate",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.when.exposureDate",
+                  "text": "When was the most probable point in time of infection?",
                   "_text": {
                     "extension": [
                       {
@@ -2403,7 +3204,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Anderer Übertragungsweg (Freitext)"
+                            "valueString": "Wann war der meistwahrscheinliche Zeitpunkt der Ansteckung?"
                           }
                         ]
                       },
@@ -2416,7 +3217,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Autre voie de transmission (texte libre)"
+                            "valueString": "Quand a eu lieu le moment le plus probable de l'infection ?"
                           }
                         ]
                       },
@@ -2429,62 +3230,13 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Altra via di trasmissione (testo libero)"
+                            "valueString": "Quando è avvenuto il momento più probabile del contagio?"
                           }
                         ]
                       }
                     ]
                   },
-                  "type": "string"
-                },
-                {
-                  "linkId": "exposureHowUnknown",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.unknown",
-                  "text": "Route of transmission unknown",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Übertragungsweg unbekannt"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Voie de transmission inconnue"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Via di trasmissione sconosciuta"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "boolean"
+                  "type": "date"
                 }
               ]
             }
@@ -3688,7 +4440,7 @@
     }
   ],
   "version": "0.0.1",
-  "name": "ChEkmQuestionnaireGonorrhoeaAssembled",
-  "title": "CH EKM Questionnaire: Gonorrhoea (assembled)",
-  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+  "name": "ChEkmQuestionnaireHepatitisCAssembled",
+  "title": "CH EKM Questionnaire: HepatitisC (assembled)",
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisC and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

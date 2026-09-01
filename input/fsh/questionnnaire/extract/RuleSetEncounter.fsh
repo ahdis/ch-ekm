@@ -1,4 +1,7 @@
-RuleSet: RuleSetEncounterHospitalisation
+// PARAMETERISED so a second organism can reuse it: {conditionId} is the id of THIS document's
+// diagnosis Condition instance (Mpox: ExtractedCondition, Hepatitis C: ExtractedConditionHepatitisC).
+// The reference cannot be derived from the template, so it has to be passed in.
+RuleSet: RuleSetEncounterHospitalisation(conditionId)
 // Hospitalisation -> ChEkmEncounter. Three form answers, three shapes:
 //
 //   yes (373066001)       -> this Encounter, with period.start = Eintrittsdatum and the
@@ -55,9 +58,9 @@ RuleSet: RuleSetEncounterHospitalisation
 // without an actual reference or identifier should have a display". The engine deletes the whole
 // `reasonReference[0]` element when it strips the artifacts (a lone extension in the array collapses
 // to its parent), before the clean template is taken, so this placeholder never survives extraction.
-* reasonReference[0].reference = "Condition/ExtractedCondition"
+* reasonReference[0].reference = "Condition/{conditionId}"
 * reasonReference[0].extension[+].url = $sdc-templateExtractValue
-* reasonReference[0].extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedCondition'))"
+* reasonReference[0].extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/{conditionId}'))"
 * reasonCode[0].extension[+].url = $sdc-templateExtractValue
 * reasonCode[0].extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this))"
 
@@ -73,7 +76,7 @@ RuleSet: RuleSetEncounterHospitalisation
 * hospitalization.extension[0].extension[0].url = $sdc-templateExtractValue
 * hospitalization.extension[0].extension[0].valueString = "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='261665006').first().select(%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown')))"
 
-RuleSet: RuleSetEncounterReference(target)
+RuleSet: RuleSetEncounterReference(target, encounterId)
 // The reference TO the hospitalisation Encounter, used twice: on Composition.encounter and on
 // Condition.encounter  "we add it in Composition.encounter … and we add a
 // reference in the Condition.encounter in the condition created for the diagnosis").
@@ -92,6 +95,6 @@ RuleSet: RuleSetEncounterReference(target)
 // PLACEHOLDER DEFAULT — replaced at extraction, exactly as for reasonReference above. Without it the
 // TEMPLATE has a Composition that does not point at the Encounter, and the publisher reports the
 // Encounter entry as "isn't reachable by traversing forwards from the Composition".
-* {target}.reference = "Encounter/ExtractedEncounter"
+* {target}.reference = "Encounter/{encounterId}"
 * {target}.extension[+].url = $sdc-templateExtractValue
-* {target}.extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounter'))"
+* {target}.extension[=].valueString = "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/{encounterId}'))"

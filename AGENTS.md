@@ -158,7 +158,8 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
   Gonorrhoea (e.g. `surnameInitial 1..1`, `surname 0..0`; adds the Gonorrhoea
   transmission sub-structure `transmission.sexualContactPartner / relationshipType /
   otherTransmission / unknown`).
-- **`CHEkmHepatitisCForm`** — analogous for Hepatitis C.
+- **`CHEkmHepatitisCForm`** — Person and Exposure only; there is no disease-level aggregate and no
+  `ChEkmHepatitisCManifestationForm` (see TODO.md).
 
 These logical models are the **master** for building the SDC Questionnaires — see
 [forms-summary.md](forms-summary.md).
@@ -251,9 +252,19 @@ sushi .                                    # FSH -> fsh-generated/
 ./scripts/assemble-gonorrhoea.sh           # $assemble  -> input/resources/…Assembled.json
 ./scripts/populate-gonorrhoea.sh           # $populate  -> pre-filled QuestionnaireResponse
 ./scripts/populate-mpox.sh                 # $populate, incl. the `encounter` launch context
+./scripts/populate-hepatitisc.sh           # $populate, same three launch contexts as Mpox
 ./scripts/extract-gonorrhoea.sh            # $extract   -> input/resources/Bundle-…-extracted.json
 ./scripts/extract-mpox.sh                  # $extract, incl. the conditional Encounter entry
+./scripts/extract-hepatitisc.sh            # $extract, the CLOSED state of both conditional entries
 ```
+
+Three organisms have a modular root today: **Gonorrhoea**, **Mpox** and **Hepatitis C**.
+`scripts/assemble.sh` discovers them by the `assemble-expectation = assemble-root` extension, so
+adding a fourth needs no script change. The Hepatitis C root is a **starter**: it assembles only the
+sections whose modules and target profiles already exist, and the questions the paper form asks on
+top of that (Labor, Serokonversion, antivirale Therapie, Krankheitsverlauf, Impfstatus, Exposition
+"Wie") are listed, with the blocking decision for each, in the `OPEN QUESTIONS` block at the bottom
+of `input/fsh/examples/HepatitisC/ChEkmQuestionnaireHepatitisC.fsh` and in TODO.md.
 
 Sub-questionnaires are disease-agnostic and live in `input/fsh/questionnnaire/`; the per-disease
 root (`input/fsh/examples/<Organism>/ChEkmQuestionnaire<Organism>.fsh`) assembles the ones its form
@@ -262,8 +273,8 @@ sub-questionnaire, so the reuse lives in the FSH rule sets `RuleSetQrImmunizatio
 `RuleSetImmunizationRow` (extraction), each inserted once per vaccination type by a per-disease child
 (`examples/Mpox/ChEkmQuestionnaireImmunizationMpox.fsh`). Fixed rows, not a repeating group — see
 forms-summary.md §8 for why variable cardinality breaks the single-Bundle-template extraction.
-Only Mpox currently
-has the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation` +
+Mpox and Hepatitis C
+have the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation` +
 `RuleSetQrDeath`); Gonorrhoea has none. That section is also the only one needing a third launch context (`encounter`), which is why
 it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.
 
@@ -278,7 +289,9 @@ and the Practitioner/Organization fields read `%user.practitioner.resolve()` /
 
 ```bash
 ./scripts/start_hapi.sh              # HAPI FHIR at http://localhost:8080/fhir  (docker)
-./scripts/load_examples.sh   # PUTs Practitioner/Organization/PractitionerRole/Patient into it
+# ALWAYS pass the base URL: load_examples.sh defaults to the REMOTE Forms Server
+# (https://smartforms.ahdis.ch/api/fhir), not to the local HAPI just started above.
+./scripts/load_examples.sh http://localhost:8080/fhir   # PUTs Practitioner/Organization/PractitionerRole/Patient/Condition/Encounter into it
 ```
 
 In the **playground** (https://smartforms.csiro.au/playground) additionally set *Source FHIR

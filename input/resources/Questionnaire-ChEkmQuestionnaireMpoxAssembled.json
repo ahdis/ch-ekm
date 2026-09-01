@@ -2818,7 +2818,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%homeOrFirstAddress.country"
+                    "expression": "iif(%homeOrFirstAddress.country.extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString').value.ofType(Coding).exists(), %homeOrFirstAddress.country.extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString').value.ofType(Coding).first(), %homeOrFirstAddress.country.where($this.matches('^[A-Za-z]{2,3}$')).select(%factory.Coding('urn:iso:std:iso:3166', $this.upper())).first())"
                   }
                 }
               ]
@@ -2969,7 +2969,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.gender"
+                    "expression": "%patient.gender.where($this = 'male' or $this = 'female' or $this = 'other').select(%factory.Coding('http://hl7.org/fhir/administrative-gender', $this)).first()"
                   }
                 }
               ]
@@ -3576,7 +3576,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "iif(%encounter.hospitalization.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/data-absent-reason').exists(), '261665006', iif(%encounter.exists(), '373066001', {}))"
+                        "expression": "iif(%encounter.hospitalization.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/data-absent-reason').exists(), %factory.Coding('http://snomed.info/sct', '261665006'), iif(%encounter.exists(), %factory.Coding('http://snomed.info/sct', '373066001'), {}))"
                       }
                     }
                   ]
@@ -3667,7 +3667,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "iif(%encounter.reasonReference.exists(), 'reported-pathogen', %encounter.reasonCode.coding.first())"
+                        "expression": "iif(%encounter.reasonReference.exists(), %factory.Coding('http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen', 'reported-pathogen', 'Reported pathogen'), %encounter.reasonCode.coding.first())"
                       }
                     }
                   ],

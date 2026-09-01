@@ -1,0 +1,199 @@
+Hepatitis C,Block,Coded,Cardinality,Frage,Value,FHIR mapping,Comments,Value Sets,References,Column 1,Column 2,Column 3,Column 4,Column 5,Column 6,Column 7,Column 8,Column 9,Column 10,Column 11,Column 12,Column 13,Column 14,Column 15,Column 16,Column 17,Column 18
+X,Betroffene Person,,??,Gender,w,"Bundle.entry[0].resource.subject.resolve().extension.where(url = ""http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender"").where(type=""76689-9"")
+Bundle.entry[0].resource.subject.resolve().extension.where(url = ""http://hl7.org/fhir/StructureDefinition/individual-recordedSexOrGender"").where(type=""46098-0"") 
+
+",,"- w (female) 
+- m (male) 
+- trans (MtF): Assigned male at birth, with a female or non-binary gender identity 
+- trans (FtM): Assigned female at birth, with a male or non-binary gender identity 
+- VGE: Variation of sex development (intersex) 
+- anderes (other)
+
+",,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,,0..1 (MS),AHV-Nr,,Bundle.entry[0].resource.subject.resolve().identifier(system='urn:oid:2.16.756.5.32').value,,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,,1..1 ,Geburtsdatum,01 01 2000,Bundle.entry[0].resource.subject.resolve().birthdate,,,,,,,,,,,,,,,,,,,,,
+,Betroffene Person,,,Name,,,,,,,,,,,,,,,,,,,,,,,
+,Betroffene Person,,,Vorname,,,,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,X,0..1 (MS),Kanton,BE,Bundle.entry[0].resource.subject.resolve().state,,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,X,0..1 (MS),Nationalität,CH,Bundle.entry[0].resource.subject.extension.where(url = 'http://hl7.org/fhir/StructureDefinition/patient-citizenship').valueCodeableConcept.coding.code,,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,,0..1 (MS),PLZ/Wohnort,3097 / Liebefeld,"Bundle.entry[0].resource.subject.resolve().address.where(use='home').postalCode
+Bundle.entry[0].resource.subject.resolve().address.where(use='home').city",,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,X,0..1 (MS),"Wohnsitzland, falls nicht CH",,Bundle.entry[0].resource.subject.resolve().address.where(use='home').country,,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,,1..1,Vorname,Muster,Bundle.entry[0].resource.subject.resolve().name.given[0],,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,,1..1,Nachname,Beispielin,Bundle.entry[0].resource.subject.resolve().name.family,,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,,0..1 MS,Adresse (line and phone),,"Bundle.entry[0].resource.subject.resolve().address.where(use='home').line[0]
+Bundle.entry[0].resource.subject.resolve().telecom.where(system='phone')",,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,,1..1,Administratives geschlecht,???,Bundle.entry[0].resource.subject.resolve().gender,,,,,,,,,,,,,,,,,,,,,
+,Betroffene Person,,,Aus Vorname gebildeter Code,,,,,,,,,,,,,,,,,,,,,,,
+X,Betroffene Person,X,,Herkunftsland,Niederlande,"Bundle.entry[0].resource.subject.resolve().extension.where(url = ""http://fhir.ch/ig/ch-core/StructureDefinition/ch-core-address-ech-11-placeofbirth"").country",,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Practitioner,,1..1,Name,Potagon,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().practitioner.resolve().name.given[0],,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Practitioner,,1..1,Surname,Brachialis,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().practitioner.resolve().name.family,,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Practitioner,,0..1 (MS),Address line,Sodaweg 55,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().practitioner.resolve().address.where(use='work').line[0],,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Practitioner,,1..1,Postal code and city,3921 Flammingen,"Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().practitioner.resolve().address.where(use='work').postalCode
+Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().practitioner.resolve().address.where(use='work').city",,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Practitioner,,1..1,Phone,24 74 200 88 77,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().practitioner.resolve().telecom.where(system='phone').value,,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Practitioner,,0..1 (MS),Email,p.brach@sampledoc.com,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().practitioner.resolve().telecom.where(system='email').value,,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Practitioner,,0..1 (MS),GLN,7601000435666,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().practitioner.resolve().identifier.where(system='urn:oid:2.51.1.3').value,,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Organization,,1..1,Name,Regionalspital Genesis,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().organization.resolve().name,,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Organization,,0..1 (MS),Department,Immunologie,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().organization.resolve().where(url ='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString,,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Organization,,0..1 (MS),Address line,Radixstrasse 88,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().organization.resolve().address[0].line[0],,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Organization,,1..1,Postal code and city,4088 Pankreas,"Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().organization.resolve().address[0].postalCode
+Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().organization.resolve().address[0].city",,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Organization,,1..1,Phone,26 34 876 54 33,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().organization.resolve().telecom.where(system='phone').value,,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Organization,,0..1 (MS),Email,immuno@hospidoc.com,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').recorder().organization.resolve().telecom.where(system='email').value,,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Organization,,0..1 (MS),BUR,A99086600,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().organization.resolve().identifier.where(system='').value,,,,,,,,,,,,,,,,,,,,,
+X,Treating Physician: Organization,,0..1 (MS),GLN,7601000435777,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type='Condition').resolve().recorder.resolve().organization.resolve().identifier.where(system='urn:oid:2.51.1.3').value,,,,,,,,,,,,,,,,,,,,,
+,"Ich habe für diese(n) Patient/in bereits eine Arztmeldung vollständig ausgefüllt und versendet: (Falls «ja», senden Sie dieses Formular bitte direkt an den Kantonsarzt, OHNE die nachfolgenden Fragen zu beantworten)",,,ja,,QuestionnaireResponse level,"QuestionnaireResponse level ?? This row is added by Yolanda Sabuco, does not appear in the Google sheet.",,,,,,,,,,,,,,,,,,,,
+,Diagnose dem/r Arzt/Ärztin oder dem/r Patient/in seit mehr als 1 Jahr bekannt:,,,"ja, Jahr/ nein",,,"QuestionnaireResponse level?? This row is added by Yolanda Sabuco, does not appear in the Google sheet.",,,,,,,,,,,,,,,,,,,,
+X,Manifestation,,,Manifestationsbeginn,unbekannt,"Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type= 'Condition').resolve().onsetDateTime.extension.where(url=""http://hl7.org/fhir/StructureDefinition/data-absent-reason"").valueCode ",if unknown - extension[dataabsent].valueCode = #unknown,,,,,,,,,,,,,,,,,,,,
+X,Manifestation,,,Manifestation,Transaminase ≥ 2.5x  ,Bundle.entry[0].resource.section.where(code='29308-4').entry.where(type= 'Condition').resolve().evidence[x].coding.code,"Do we want Anderes as free text or coded ? If coded, here we have to decide which Valueset we enable.
+
+We need to understand in which moment of the time the diagnosis and manifestation are sent ... is this already confirmed ? or suspected diagnosis ?","Ikterus - 18165001 Jaundice (finding)
+Transaminase >=2.5 - 166642001 ""Elevated transaminases (finding)"" Codify this option literally is a bit difficult. Strictly is not an lab observation because you do not have the value.
+Keine = $sct#160245001 ""No current problems or disability (situation)""
+Unbekannt = $sct#3219008 ""Disease type AND/OR category unknown (finding)""
+","Proposal based on International Patient Summary Valuset. for codes of Confition for modeling  ""keine"" and ""unbekannt""  https://build.fhir.org/ig/HL7/fhir-ips/en/ValueSet-problems-uv-ips.html
+
+Meeting 4.5:
+Nur kodierte Manifestationen. “Andere” kann angegeben werden, aber ohne Freitext. SNOMED code für “andere” braucht es. 
+Keine: SNOMED CT Code für keine Diagnosen/Manifestationen? Ev? Clinical finding absent (situation) SCTID: 373572006
+Unbekannt: http://terminology.hl7.org/CodeSystem/data-absent-reason, oder unknown SNOMED CT 261665006. 
+Was sind genau die Unterschiede?",,,,,,,,,,,,,,,,,,
+X,Manifestation,,,Krankheitsverlauf ,akut,,"This question appears in the QuestionnaireResponse section.
+","235866006 | Acute hepatitis C (disorder) 
+76783007 | Chronic hepatitis (disorder) 
+831000119103 | Cirrhosis of liver due to chronic hepatitis C (disorder) 
+109841003 | Liver cell carcinoma (disorder)
+363800008 | General wellbeing ","Als QuestionnaireResponse in Condition hinterlegt, to be continued",,,,,,,,,,,,,,,,,,
+X,Labor,,1..1,Name,LabSan GmbH,Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().performer.resolve().name,,,,,,,,,,,,,,,,,,,,,
+X,Labor,,0..1,Department,??,Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().performer.resolve().where(url ='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString,,,,,,,,,,,,,,,,,,,,,
+X,Labor,,0..1,Address line,Petriweg 88,Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().performer.resolve().address[0].line[0],,,,,,,,,,,,,,,,,,,,,
+X,Labor,,0..1,Postal code and city,7575 Rumplikon,"Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().performer.resolve().address[0].postalCode
+Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().performer.resolve().address[0].city",,,,,,,,,,,,,,,,,,,,,
+X,Labor,,0..1 MS,Phone,36 87 987 65 43,Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().performer.resolve().telecom.where(system='phone').value,,,,,,,,,,,,,,,,,,,,,
+X,Labor,,0..1 MS,Email,patho@automation.org,Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().performer.resolve().telecom.where(system='email').value,,,,,,,,,,,,,,,,,,,,,
+X,Labor,,0..1,BUR,A99082200,Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().performer.resolve().identifier.where(system='').value,,,,,,,,,,,,,,,,,,,,,
+X,Labor,,0..1,GLN,7601000435111,Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().performer.resolve().identifier.where(system='urn:oid:2.51.1.3').value,,,,,,,,,,,,,,,,,,,,,
+X,Anlass,,,"klinisher verdacht, exposition, screening, anderer,unbekannt",Screening,Bundle.entry[0].resource.section.where(code= '30954-2').entry.where(type= 'ServiceRequest').resolve().reasonCode,,"Klinischer Verdacht - 415684004 | Suspected (qualifier)
+Screening - 171112000 | Screening due (finding) 
+Exposition - 444071008 | Exposure to organism (event) 
+Unbekannt - 373068000 | Undetermined (qualifier value) 
+Anderer - 74964007 | Other (qualifier value)",,,,,,,,,,,,,,,,,,,
+X,Dokumentierte Serokonversion,,,"ja, zuletzt negative Serologie anti-HCV vor der Diagnose am: _ / nein / unbekannt",unbekannt,,,,,,,,,,,,,,,,,,,,,,
+X,Therapie: Erhielt die betroffene Person jemals eine antivirale Therapie?,,,"ja, Therapiebeginn/ nein / Therapiestart wird erwogen",Therapiestart wird erwogen,"Bundle.entry[0].resource.section.where(code='10160-0').entry.where(type= 'Observation').resolve().code
+Bundle.entry[0].resource.section.where(code='10160-0').entry.where(type= 'Observation').resolve().effectiveDateTime",Not sure about if this codification fits Therapiestrat wird erwogen - 386053000 | Evaluation procedure (procedure),"ja - 373066001 | Yes (qualifier value)
+nein - 373067005 | No (qualifier value) 
+Therapiestrat wird erwogen - 386053000 | Evaluation procedure (procedure)",,,,,,,,,,,,,,,,,,,
+,Hospitalisation,,,"Ja, nein, unbekannt",,,,,,,,,,,,,,,,,,,,,,,
+,Hospitalisation,,,"Hospitalisationsgrund: gemeldete Erreger, anderer, unbekannt",,,,,,,,,,,,,,,,,,,,,,,
+,Hospitalisation,,,Eintrittsdatum,,,,,,,,,,,,,,,,,,,,,,,
+,Hospitalisation,,,Spital,,,,,,,,,,,,,,,,,,,,,,,
+,Zustand,,,"Todesursache == Gemeldete Erreger: ja, nein, unbekannt",,,,,,,,,,,,,,,,,,,,,,,
+,Zustand,,,Tot,,,,,,,,,,,,,,,,,,,,,,,
+,Zustand,,,Todesdatum,,,Appears in the sheet but not in the PDF. We need here an example. ,,,,,,,,,,,,,,,,,,,,
+,Exposition,,,,,,,,"
+
+",,,,,,,,,,,,,,,,,,
+X,Exposition: wo,,,"Meist wahrscheinliche Ort der Ansteckung: 
+ CH/LI
+ Ausland, Land: …
+ Genauer Ort (CH/LI und Ausland): … 
+ Unbekannt","Ausland, Land: Nepal","Bundle.entry[0].resource.section.where(code= '29762-2').section.entry[0].resolve().component.where(code='LOC')
+Bundle.entry[0].resource.section.where(code= '29762-2').section.entry[0].resolve().extension.where(url='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-exposition-address').valueAddress",,,,,,,,,,,,,,,,,,,,,
+X,Exposition: wann,,,"Wann war der meistwarscheinliche Zeitpunkt der Ansteckung? 
+ Wenn unbekannt, wann war der letzte Einreise in der Schweiz?",01/12/2025 - 01/12/2025 ,Bundle.entry[0].resource.section.where(code= '29762-2').section.entry[0].resolve().effectiveDateTime,,,,,,,,,,,,,,,,,,,,,
+,Exposition: wie,,,Valueset für exposition Wie,Gesundheitsberuf: Ärztin,"Bundle.entry[0].resource.section.where(code= '29762-2').section.entry[0].resolve().code
+Bundle.entry[0].resource.section.where(code= '29762-2').section.entry.[1].resolve().valueString","This field is not marked in the google sheet but appears in the form
+
+(Observation.code will cover How and if there is more coded information, will be placed in Observation.component)
+
+","perinatal - 1381730000 | Perinatal fetal and/or neonatal infection (disorder) 
+Kontakt mit infizierter Person - 409753000 | Contact with person with contagious disease (finding)
+if contact with infected person fill Observation.component where Observation.component.code EXSRC  and Observation.coponent.valueCodeableConcept in Familie, am Arbeitsplatz (fill address extension), anderer (do we want this free text or codified?))
+Sexualkontakt mit infizierter Person - 8098009 | Sexually transmitted infectious disease (disorder) 
+if  sexual contact with infected person fill  where Observation.component.code EXSRC and  and Observation.coponent.valueCodeableConcept  (frau, mann, trans (MtF), trans (FtM), anderes, unbekannt)
+Konsum von Drogen (injiziert oder durch die Nase) - 226034001 | Injecting drug user (finding)  or 228381000 | Sniffs drugs (finding)  (more generic or mor specific?)
+Transfusion(en) - 119426009 | Transfusion-transmitted infectious disease (disorder) 
+if transfusion fill Observation.component where Observation.component.code pending to find and Observation.component.valueQuantity (years) 
+Gesundheitsberuf - 223366009 | Healthcare professional (occupation) 
+if healthecare practitioner (the occupation is twice, I have put it outside in a section in Social History Section, maybe is needed to add a reference from here)
+Dialisis - 216933008 | Failure of sterile precautions during kidney dialysis (event) 
+Andere -   74964007 | Other (qualifier value) (do we want this coded or free text)
+Unbekannt - 61665006 | Unknown (qualifier value) 
+
+",,,,,,,,,,,,,,,,,,,
+X,Exposition: weitere,,,"ja/nein/unbekannt
+
+Falls ja, welche:
+Sexualpartner
+ungeborenes oder neugeborened Kind
+Haushaltangehörige
+andere",unbekannt,"Bundle.entry[0].resource.section.where(code= '29762-2').section.entry[0].resolve().component.where(code='PART')
+",Andere (do we want this coded or free text ?),"Sexualpartner ungeborenes oder neugeborened Kind -
+Haushaltangehörige -
+nein - 373067005 | No (qualifier value) 
+unbekannt - 61665006 | Unknown (qualifier value) 
+andere - 74964007 | Other (qualifier value)",,,,,,,,,,,,,,,,,,,
+,Impfstatus,,,"Gemäss: Impfausweis, Hausarzt, Anamnese",,,,,,,,,,,,,,,,,,,,,,,
+,Impfstatus,,,targetDisease = gemeldete Erreger,,,,,,,,,,,,,,,,,,,,,,,
+,Impfstatus,,,targetDisease is in valueset,,,,,,,,,,,,,,,,,,,,,,,
+,Impfstatus,,,Anzahl Dosen,,,,,,,,,,,,,,,,,,,,,,,
+,Impfstatus,,,Datum (jahr/monat) letzte Dosis,,,,,,,,,,,,,,,,,,,,,,,
+X,Impfstatus,,,Impfstoff / Markenname,???,,"This field does not appear in the pdf, we need an example ",,,,,,,,,,,,,,,,,,,,
+,Behandlung?,,,"Therapie, datum, type",,,,,,,,,,,,,,,,,,,,,,,
+,Vorangegangene Erkrankungen,,,Vorangegangene Erkrankungen,,,,,,,,,,,,,,,,,,,,,,,
+,Risikofaktoren,,,Risikofaktoren,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Potentiale Questionnaire Fragen:,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Weitere exponierte Personen / Fälle,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Berufliche Tätigkeit relevant für Vollzug,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Labor Anlass: Klinischer Verdacht
+ Exposition
+ Individueller Checkup
+ Screening
+ anderer: …
+ Unbekannt",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Labor Anlass: Infektion, Screening, anderer: …",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Labor Dokumentierte Serokonversion: ja, nein",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Labor würde vorab informiert,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Zustand: geheilt, Residuen, anderer: …",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Frühere STI (ausser HIV): …,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Wurde jemals ein HIV-Test durchgeführt?,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Wird/wurde die Behandlung der Sexualpartner gegen X veranlasst?,,,,,,,,,,,,,,,,,,,,,,,
+X,Questionnaire,,,War Ihrer Meinung nach bereits vor der Impfung eine Infektion vorhanden?,,,,,,,,,,,,,,,,,,,,,,,
+X,Questionnaire,,,"Krankheitsverlauf: akut, chronisch, Zirrhose, Hepatokarzinom",,,,,,,,,,,,,,,,,,,,,,,
+X,Questionnaire,,,Ich habe für diese(n) Patient/in bereits eine Arztmeldung vorgenommen,,,,,,,,,,,,,,,,,,,,,,,
+X,Questionnaire,,,"Diagnose im Rahmen von Blutspende: ja, nein, unbekannt",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Wurden die Sexualpartner über die Diagnose informiert?,,,,,,,,,,,,,,,,,,,,,,,
+X,Questionnaire,,,Nimmt die betroffene Person and der Schweizerischen HIV-Kohorte Teil?,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Hat die betroffene Person klinische Zeichen einer akuten HIV-Infektion (Serokonversionkrankheit)?,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Hat die betroffene Person Symptome, die auf eine fortgeschrittene HIV-Infektion hinweisen?",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Anamnese: War ein frühere Test jemals positiv?,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Anamnese: War ein frühere Test jemals negativ?,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,HIV-Labor: Viraemie,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,HIV-Labor: CD4+,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Schnelltest: Urinantigen: positiv, negativ",,,,,,,,,,,,,,,,,,,,,,,
+X,Questionnaire,,,Warscheinlichste Risikokategorie für Malaria,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Malaria: Methode: Mikroskopie
+ schnelltest
+ andere: …",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Malaria: Resultat:
+ P. falciparum
+ P. vivax
+ P.ovale
+ P. malariae
+ Plasmodium ohne Typisierung
+ Parasitämie: … %",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Masern: Komplikationen,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Masern: Epidemiologischer Zusammenhang mit einem laborebestätigten Fall:,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Labor: Material,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Fluginformation,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Patient isoliert, Beginn
+ Kontaktpersonen identifiziert:
+ andere massnamen",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Kontakt mit laborbestätigtem Fall,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,"Kongenitale Röteln: Ende der Schwangerschaft:
+ Neugeborene",,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Begin einer Syphilis-Behandlung,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Abort auf Grund einer Syphilis-Infektion,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Seronarbe?,,,,,,,,,,,,,,,,,,,,,,,
+,Questionnaire,,,Wie: hat sich die person beim ungeschützen Geschlechtsverkehr exponiert?,,,,,,,,,,,,,,,,,,,,,,,

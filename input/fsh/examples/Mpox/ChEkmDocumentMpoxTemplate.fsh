@@ -10,7 +10,7 @@ Usage: #inline
 * subject.reference = "Patient/ExtractedPatient"
 * recorder.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
 // Hospitalisation: reference the Encounter, gated on there being one (see RuleSetEncounterReference)
-* insert RuleSetEncounterReference(encounter)
+* insert RuleSetEncounterReference(encounter, ExtractedEncounter)
 * insert RuleSetOnsetDateManifestationBeginUnknown
 * insert RuleSetEvidenceManifestation
 * evidence[0].code[0].coding[0] = $sct#95324001 "Skin lesion (disorder)"
@@ -40,7 +40,7 @@ Usage: #inline
 Instance: ExtractedEncounter
 InstanceOf: ChEkmEncounter
 Usage: #inline
-* insert RuleSetEncounterHospitalisation
+* insert RuleSetEncounterHospitalisation(ExtractedCondition)
 
 // ---------------------------------------------------------------------------
 // Cause of death (ChEkmObservationCauseOfDeath) — the "Zustand" half of the Verlauf section.
@@ -53,7 +53,7 @@ Usage: #inline
 Instance: ExtractedCauseOfDeath
 InstanceOf: ChEkmObservationCauseOfDeath
 Usage: #inline
-* insert RuleSetObservationCauseOfDeath
+* insert RuleSetObservationCauseOfDeath(359814004, Mpox, ExtractedCondition)
 
 // ---------------------------------------------------------------------------
 // "Impfstatus" / vaccination status (issue #29) - ChEkmImmunizationMpox for "yes",
@@ -141,7 +141,7 @@ Usage: #inline
 * subject.reference = "Patient/ExtractedPatient"
 // Hospitalisation: the one place the Encounter is referenced from the Composition — there is no
 // section[hospitalization] any more (see ChEkmComposition / ChEkmEncounter).
-* insert RuleSetEncounterReference(encounter)
+* insert RuleSetEncounterReference(encounter, ExtractedEncounter)
 * date.extension[+].url = $sdc-templateExtractValue
 * date.extension[=].valueString = "%resource.authored"
 * author.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
@@ -154,7 +154,7 @@ Usage: #inline
 * section[1].entry.reference = "Observation/ExtractedExposure"
 // Cause of death — gated on the person having died, and LAST for the same index-shift reason as the
 // conditional Bundle entries (see RuleSetCauseOfDeathSection).
-* insert RuleSetCauseOfDeathSection
+* insert RuleSetCauseOfDeathSection(ExtractedCauseOfDeath)
 // Impfstatus — the second gated section, and therefore after the cause of death. Same
 // last-element rule; see RuleSetImmunizationSectionMpox.
 * insert RuleSetImmunizationSectionMpox

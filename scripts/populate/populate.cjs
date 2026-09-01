@@ -53,6 +53,36 @@ if (!qPath || !patPath || !rolePath || !outPath) {
 
 const fhirServerUrl = fhirServerUrlArg || process.env.CH_EKM_FHIR_BASE || 'http://localhost:8080/fhir';
 
+// TERMINOLOGY SERVER — tx.fhir.ch, the same one scripts/build-lang-questionnaire.py expands the
+// answer value sets against (it hosts ch-term + the SNOMED CT Swiss Extension). @aehrc/sdc-populate
+// otherwise defaults to https://tx.ontoserver.csiro.au/fhir, which knows neither our ValueSets nor
+// urn:iso:std:iso:3166, and whose built-in callback REJECTS on a 404 — an unhandled rejection that
+// takes the whole process down as soon as an answer Coding has no `display` to fill in.
+//
+// The callback below REJECTS on failure rather than resolving null — that is the contract the
+// library documents (index.d.ts) and the only one it handles: resolveLookupPromises() skips a
+// `status === 'rejected'` promise, but dereferences `.data` on a resolved one, so returning null
+// crashes it instead. Terminology being unreachable then costs a display, not the run.
+const terminologyServerUrl =
+  process.env.CH_EKM_TX_BASE || 'https://tx.fhir.ch/r4';
+
+const ABSOLUTE_URL_REGEX = /^(https?):\/\//;
+const fetchTerminologyCallback = async (query, requestConfig) => {
+  const base = (requestConfig?.terminologyServerUrl || terminologyServerUrl).replace(/\/$/, '');
+  const url = ABSOLUTE_URL_REGEX.test(query) ? query : `${base}/${String(query).replace(/^\//, '')}`;
+  try {
+    const res = await fetch(url, { headers: { Accept: 'application/fhir+json' } });
+    if (!res.ok) {
+      console.warn(`  (terminology: GET ${url} -> HTTP ${res.status}, ignored)`);
+      throw new Error(`terminology lookup failed: HTTP ${res.status}`);
+    }
+    return await res.json();
+  } catch (err) {
+    console.warn(`  (terminology: GET ${url} failed: ${err.message}, ignored)`);
+    throw err;
+  }
+};
+
 const questionnaire = JSON.parse(readFileSync(qPath, 'utf8'));
 const patient = JSON.parse(readFileSync(patPath, 'utf8'));
 const practitionerRole = JSON.parse(readFileSync(rolePath, 'utf8'));
@@ -73,6 +103,8 @@ const fetchResourceCallback = async (query) => {
     questionnaire,
     fetchResourceCallback,
     fetchResourceRequestConfig: { sourceServerUrl: fhirServerUrl },
+    fetchTerminologyCallback,
+    fetchTerminologyRequestConfig: { terminologyServerUrl },
     patient,
     ...(encounter ? { encounter } : {}),
     fhirContext: [

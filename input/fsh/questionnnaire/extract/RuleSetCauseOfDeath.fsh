@@ -62,13 +62,19 @@ RuleSet: RuleSetPatientDeceased
 // `.first().select(%factory.…)`; `select()` on an empty collection returns empty, so "not
 // applicable" and "no element emitted" are the same thing. See RuleSetEncounterHospitalisation.
 //
-// DISEASE-SPECIFIC: the reported-pathogen branch writes the disease code and the focus names this
-// document's diagnosis Condition. Both are spelled out for Mpox, exactly as
-// RuleSetEncounterHospitalisation names `Condition/ExtractedCondition`. A second organism needs its
-// own copy — the FHIRPath cannot read the code off the template.
+// DISEASE-SPECIFIC, THEREFORE PARAMETERISED: the reported-pathogen branch has to write the SNOMED CT
+// code of THIS report's disease, and the focus has to name THIS document's diagnosis Condition —
+// neither can be read off the template by FHIRPath. Both are arguments now, so a second organism
+// reuses the rule set instead of copying it:
+//   {diseaseCode} / {diseaseDisplay}  the reported disease  (Mpox: 359814004 / Mpox)
+//   {conditionId}                     the diagnosis Condition instance (Mpox: ExtractedCondition)
+// NB the FSH rule-set escaping rule: a `,` or a CLOSING `)` inside an argument must be
+// backslash-escaped (an opening `(` must NOT be — `\(` is not a valid FSH escape and fails to
+// parse), so a display like "Viral hepatitis type C (disorder)" is passed as
+// `Viral hepatitis type C (disorder\)`.
 // =================================================================================================
 
-RuleSet: RuleSetObservationCauseOfDeath
+RuleSet: RuleSetObservationCauseOfDeath(diseaseCode, diseaseDisplay, conditionId)
 * status = #final
 * code = $loinc#79378-6 "Cause of death"
 * subject.reference = "Patient/ExtractedPatient"
@@ -80,7 +86,7 @@ RuleSet: RuleSetObservationCauseOfDeath
 //                        on the where(): both qualifiers are values now, so both pass, and a third
 //                        one added to ChEkmCauseOfDeathChoice would need no change here.
 * valueCodeableConcept.extension[+].url = $sdc-templateExtractValue
-* valueCodeableConcept.extension[=].valueString = "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '359814004', 'Mpox')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this)))"
+* valueCodeableConcept.extension[=].valueString = "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '{diseaseCode}', '{diseaseDisplay}')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this)))"
 // "The cause of death is the disease this report is about" — made machine-checkable by pointing at
 // the diagnosis Condition instead of leaving a consumer to compare codes.
 //
@@ -88,11 +94,11 @@ RuleSet: RuleSetObservationCauseOfDeath
 // Reference carrying nothing but a templateExtractValue makes the TEMPLATE flag "a Reference without
 // an actual reference or identifier should have a display". The engine deletes the whole `focus[0]`
 // element when it strips the artifacts, before the clean template is taken, so this never survives.
-* focus[0].reference = "Condition/ExtractedCondition"
+* focus[0].reference = "Condition/{conditionId}"
 * focus[0].extension[+].url = $sdc-templateExtractValue
-* focus[0].extension[=].valueString = "%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedCondition'))"
+* focus[0].extension[=].valueString = "%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/{conditionId}'))"
 
-RuleSet: RuleSetCauseOfDeathSection
+RuleSet: RuleSetCauseOfDeathSection(observationId)
 // Composition.section[cause-death] — present only when the person died AND a cause was answered,
 // because the section is 0..1 with `entry` 1..1: an empty section would be invalid, and a section
 // whose entry points at an Observation that was never emitted would dangle.
@@ -116,6 +122,6 @@ RuleSet: RuleSetCauseOfDeathSection
 * section[=].extension[0].valueString = "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
 * section[=].title = "Cause of death section"
 * section[=].code = $loinc#79378-6
-* section[=].entry[0].reference = "Observation/ExtractedCauseOfDeath"
+* section[=].entry[0].reference = "Observation/{observationId}"
 * section[=].entry[0].extension[0].url = $sdc-templateExtractValue
-* section[=].entry[0].extension[0].valueString = "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeath'))"
+* section[=].entry[0].extension[0].valueString = "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/{observationId}'))"

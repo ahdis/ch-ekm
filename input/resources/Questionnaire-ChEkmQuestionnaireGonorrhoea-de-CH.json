@@ -2481,7 +2481,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%homeOrFirstAddress.country"
+                    "expression": "iif(%homeOrFirstAddress.country.extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString').value.ofType(Coding).exists(), %homeOrFirstAddress.country.extension('http://hl7.org/fhir/StructureDefinition/iso21090-codedString').value.ofType(Coding).first(), %homeOrFirstAddress.country.where($this.matches('^[A-Za-z]{2,3}$')).select(%factory.Coding('urn:iso:std:iso:3166', $this.upper())).first())"
                   }
                 }
               ],
@@ -4059,7 +4059,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.gender"
+                    "expression": "%patient.gender.where($this = 'male' or $this = 'female' or $this = 'other').select(%factory.Coding('http://hl7.org/fhir/administrative-gender', $this)).first()"
                   }
                 }
               ],

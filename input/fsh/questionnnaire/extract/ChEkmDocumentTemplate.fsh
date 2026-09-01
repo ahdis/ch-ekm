@@ -50,8 +50,15 @@ InstanceOf: ChEkmPatient
 * extension[0].extension[0].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
 * extension[0].extension[0].valueCodeableConcept.coding[0].extension[=].valueString = "ofType(Coding)"
 // Geschlechtsidentität -> individual-genderIdentity.value (identity pass-through of the answered
-// Coding). Same Coding idiom; if genderIdentity is unanswered the context is empty and the
-// extension is omitted.
+// Coding). Same Coding idiom — INCLUDING the unanswered caveat documented for patient-citizenship
+// above, and here it is not merely cosmetic: an unanswered genderIdentity leaves the shell
+// `{url: individual-genderIdentity, extension: [{url: "value"}]}`, whose `value` sub-extension has
+// neither a value nor children and therefore FAILS ext-1. The invalid Patient then does not conform
+// to ChEkmPatient, so `Composition.subject only Reference(ChEkmPatient)` fails too and the document
+// Bundle's required `entry:Composition` slice stops matching — three QA errors from one skipped
+// optional question. Both Questionnaire responses therefore answer genderIdentity today; a real
+// form cannot be relied on to. See TODO.md ("Extraction: an unanswered optional coded extension
+// emits an invalid shell").
 * extension[1].url = $individual-genderIdentity
 * extension[1].extension[0].url = "value"
 * extension[1].extension[0].valueCodeableConcept.extension[+].url = $sdc-templateExtractContext
