@@ -17,24 +17,3 @@ TODO.md
 Meldung zum klinischen Befund Infektionskrankheit - Pneumokokkenerkrankung.csv
 Meldung zum klinischen Befund Infektionskrankheit - Hepatitis C.csv
 AGENTS.md
-input/fsh/examples/HepatitisC/ChEkmDocumentHepatitisCTemplate.fsh
-input/fsh/examples/HepatitisC/ChEkmQuestionnaireHepatitisC.fsh
-input/fsh/examples/HepatitisC/ChEkmQuestionnaireResponseHepatitisC.fsh
-input/fsh/examples/InvasiveStreptococcusPneumoniae/ChEkmDocumentInvasivePneumococcalDiseaseTemplate.fsh
-input/fsh/examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireInvasivePneumococcalDisease.fsh
-input/fsh/examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireResponseInvasivePneumococcalDisease.fsh
-input/fsh/profiles/Organization.fsh
-input/fsh/questionnnaire/RuleSets.fsh
-input/fsh/questionnnaire/extract/ChEkmDocumentTemplate.fsh
-input/resources/Bundle-ChEkmDocumentHepatitisC-extracted.json
-input/resources/Bundle-ChEkmDocumentInvasivePneumococcalDisease-extracted.json
-input/resources/Questionnaire-ChEkmQuestionnaireHepatitisC-de-CH.json
-input/resources/Questionnaire-ChEkmQuestionnaireHepatitisC-fr-CH.json
-input/resources/Questionnaire-ChEkmQuestionnaireHepatitisC-it-CH.json
-input/resources/Questionnaire-ChEkmQuestionnaireHepatitisCAssembled.json
-input/resources/Questionnaire-ChEkmQuestionnaireInvasivePneumococcalDisease-de-CH.json
-input/resources/Questionnaire-ChEkmQuestionnaireInvasivePneumococcalDisease-fr-CH.json
-input/resources/Questionnaire-ChEkmQuestionnaireInvasivePneumococcalDisease-it-CH.json
-input/resources/Questionnaire-ChEkmQuestionnaireInvasivePneumococcalDiseaseAssembled.json
-scripts/extract-hepatitisc.sh
-scripts/extract-invasivepneumococcaldisease.sh
