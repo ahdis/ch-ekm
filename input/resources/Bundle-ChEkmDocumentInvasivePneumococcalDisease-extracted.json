@@ -57,6 +57,22 @@
             ]
           },
           {
+            "title": "Laboratory section",
+            "code": {
+              "coding": [
+                {
+                  "code": "30954-2",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "ServiceRequest/ExtractedLabServiceRequest"
+              }
+            ]
+          },
+          {
             "title": "Cause of death section",
             "code": {
               "coding": [
@@ -390,6 +406,66 @@
           }
         ],
         "name": "Regionalspital Genesis"
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/ServiceRequest/ExtractedLabServiceRequest",
+      "resource": {
+        "resourceType": "ServiceRequest",
+        "id": "ExtractedLabServiceRequest",
+        "status": "completed",
+        "intent": "order",
+        "subject": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "performer": [
+          {
+            "reference": "Organization/ExtractedLabOrganization"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Organization/ExtractedLabOrganization",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "ExtractedLabOrganization",
+        "identifier": [
+          {
+            "system": "urn:oid:2.51.1.3",
+            "value": "7601000435111"
+          },
+          {
+            "system": "urn:oid:2.16.756.5.45",
+            "value": "A99082200"
+          }
+        ],
+        "extension": [
+          {
+            "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department",
+            "valueString": "Mikrobiologie"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "Petriweg 88"
+            ],
+            "postalCode": "7575",
+            "city": "Rumplikon"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+36 87 987 65 43"
+          },
+          {
+            "system": "email",
+            "value": "patho@automation.org"
+          }
+        ],
+        "name": "LabSan GmbH"
       }
     },
     {

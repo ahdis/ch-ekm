@@ -55,6 +55,22 @@
                 "reference": "Observation/ExtractedExposureHepatitisC"
               }
             ]
+          },
+          {
+            "title": "Laboratory section",
+            "code": {
+              "coding": [
+                {
+                  "code": "30954-2",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "ServiceRequest/ExtractedLabServiceRequest"
+              }
+            ]
           }
         ],
         "category": [
@@ -347,6 +363,37 @@
           }
         ],
         "name": "Regionalspital Genesis"
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/ServiceRequest/ExtractedLabServiceRequest",
+      "resource": {
+        "resourceType": "ServiceRequest",
+        "id": "ExtractedLabServiceRequest",
+        "status": "completed",
+        "intent": "order",
+        "subject": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "performer": [
+          {
+            "reference": "Organization/ExtractedLabOrganization"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Organization/ExtractedLabOrganization",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "ExtractedLabOrganization",
+        "telecom": [
+          {
+            "system": "email",
+            "value": "patho@automation.org"
+          }
+        ],
+        "name": "LabSan GmbH"
       }
     },
     {

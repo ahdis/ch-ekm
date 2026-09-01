@@ -24,6 +24,9 @@
 #     plus `_city` with a data-absent-reason (Mpox: both given, Hepatitis C: the opposite).
 #   * The Exposure is the BASE ChEkmExposure: no "Wie" components (see OPEN QUESTIONS #5 in
 #     ChEkmQuestionnaireInvasivePneumococcalDisease.fsh).
+#   * Labor: ALL nine fields answered -> every context-gated element of the shared
+#     ExtractedLabOrganization fires (GLN, BUR, department, address, phone, email). The Hepatitis C
+#     round trip covers the closed state of each.
 #   * Impfstatus (issue #29): "ja" with a TOTAL of 2 doses, NO last-dose date and the product TYPED
 #     rather than picked -> the UndatedDosed Immunization variant (occurrenceDateTime valueless with
 #     a data-absent-reason) and the `ofType(string)` leg of the vaccineCode expression
@@ -111,6 +114,19 @@ if command -v jq >/dev/null 2>&1; then
   echo "Todesursache unbekannt (expect value = sct#261665006 and NO focus):"
   jq -r '([.entry[].resource | select(.resourceType == "Observation" and .code.coding[0].code == "79378-6")][0]
          | "    value = \(.valueCodeableConcept.coding[0].code) (\(.valueCodeableConcept.coding[0].display))  focus = \(.focus // "(absent)" | tostring)") // "    (no cause-of-death Observation emitted)"' "$OUT" || true
+  echo
+  echo "Labor (ALL nine fields answered — expect every gated element present):"
+  jq -r '([.entry[].resource | select(.resourceType == "Organization" and .id == "ExtractedLabOrganization")][0]
+         | "    name       = \(.name // "(absent)")",
+           "    department = \(.extension[0].valueString // "(none)")",
+           "    address    = \(if .address then (.address[0] | "\(.line[0] // "-") / \(.postalCode // "-") \(.city // "-")") else "(none)" end)",
+           "    telecom    = \(if .telecom then (.telecom | map("\(.system)=\(.value)") | join(", ")) else "(none)" end)",
+           "    identifier = \(if .identifier then (.identifier | map(.value) | join(", ")) else "(none)" end)") // "    (no lab Organization emitted)"' "$OUT" || true
+  echo
+  echo "section[laboratory] (expect one entry -> the ServiceRequest that carries the lab):"
+  jq -r '([.entry[].resource | select(.resourceType == "Composition")][0].section[]
+         | select(.code.coding[0].code == "30954-2")
+         | "    entries: \(.entry | map(.reference) | join(", "))") // "    (no laboratory section)"' "$OUT" || true
   echo
   echo "Impfstatus (expect ONE Immunization: total 2 doses, occurrence DAR, typed brand in .text):"
   jq -r '([.entry[].resource | select(.resourceType == "Immunization")]

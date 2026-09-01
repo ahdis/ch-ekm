@@ -157,6 +157,9 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
   of the "Impfstatus" section (target disease, yes/no/unknown, doses, last dose date, product); a
   disease instantiates it once per vaccination type it asks about.
 - **`ChEkmTreatingPhysicianForm`** → `Practitioner` + `Organization` form models.
+- **`ChEkmLabForm`** → `ChEkmOrganizationLab` (the "Labor" block: the analysing laboratory).
+  Disease-agnostic; the sibling of `ChEkmTreatingPhysicianOrganizationForm`, differing only in what
+  is mandatory (here: the name alone).
 - **`CHEkmGonorrhoeaForm`** — the disease-level aggregate: `person`, `exposure`,
   `manifestation`, `treatingPhysician`, each refining the generic form models for
   Gonorrhoea (e.g. `surnameInitial 1..1`, `surname 0..0`; adds the Gonorrhoea
@@ -271,12 +274,14 @@ pneumococcal disease**. `scripts/assemble.sh` discovers them by the
 Two of them are **starters**: they assemble only the sections whose modules and target profiles
 already exist, and everything the paper form asks on top of that is listed, with the blocking
 decision for each, in an `OPEN QUESTIONS` block at the bottom of the root's FSH file and in TODO.md.
-- **Hepatitis C** (`examples/HepatitisC/ChEkmQuestionnaireHepatitisC.fsh`) — open: Labor,
-  Serokonversion, antivirale Therapie, Krankheitsverlauf, Impfstatus, Exposition "Wie".
+- **Hepatitis C** (`examples/HepatitisC/ChEkmQuestionnaireHepatitisC.fsh`) — open: Serokonversion,
+  antivirale Therapie, Krankheitsverlauf, Impfstatus, Exposition "Wie", and the Labor block's
+  "Anlass".
 - **Invasive pneumococcal disease**
   (`examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireInvasivePneumococcalDisease.fsh`) —
-  open: Labor, Risikofaktoren (a section no other organism has), Exposition "Wie", and *which* of the
-  two pneumococcal manifestation value sets is authoritative. **Impfstatus is implemented**: one row
+  open: Risikofaktoren (a section no other organism has), Exposition "Wie", the Labor block's
+  Material/Entnahmedatum/Anlass, and *which* of the two pneumococcal manifestation value sets is
+  authoritative. **Impfstatus is implemented**: one row
   (`Pneumokokkenimpfung`), the same one-row/total-doses model as Mpox, so an answered row extracts to
   exactly one `ChEkmImmunizationInvasivePneumococcalDisease` — note the example Bundle still carries
   the other, one-resource-per-dose shape. Apart from that section it reuses every shared module
@@ -293,7 +298,9 @@ sub-questionnaire, so the reuse lives in the FSH rule sets `RuleSetQrImmunizatio
 — one). Fixed rows, not a repeating group — see forms-summary.md §8 for why variable cardinality
 breaks the single-Bundle-template extraction. **One row = one resource carrying the TOTAL dose
 count**, never one resource per dose.
-Mpox, Hepatitis C and invasive pneumococcal disease
+The **"Labor"** section (`RuleSetQrLaboratory` -> `ChEkmQuestionnaireLaboratory`) is a LEVEL-3 child
+of the Diagnose section, inserted right after the Manifestationsbeginn; Hepatitis C and invasive
+pneumococcal disease assemble it, Gonorrhoea and Mpox do not. Mpox, Hepatitis C and invasive pneumococcal disease
 have the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation` +
 `RuleSetQrDeath`); Gonorrhoea has none. That section is also the only one needing a third launch context (`encounter`), which is why
 it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.

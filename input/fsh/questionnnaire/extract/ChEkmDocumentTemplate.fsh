@@ -226,6 +226,85 @@ InstanceOf: ChEkmOrganizationTreatingPhysician
 * telecom[1].value.extension[=].valueString = "$this"
 
 // ---------------------------------------------------------------------------
+// "Labor" — the analysing laboratory (ChEkmOrganizationLab) from the `laboratory` group, plus the
+// ChEkmServiceRequest that carries it. Shared, like the treating physician above: every organism
+// whose root inserts RuleSetQrLaboratory extracts into exactly these two instances, and adds them
+// to its Bundle and its Composition with RuleSetLaboratoryEntries / RuleSetLaboratorySection
+// (extract/RuleSetLaboratory.fsh).
+//
+// UNGATED, for the same reason the treating physician is: `labName` is a REQUIRED form item, so a
+// completed QuestionnaireResponse always answers it. The optional fields are context-gated one by
+// one (identifier, department, address, email) exactly as on ExtractedTreatingOrganization, which
+// is only possible BECAUSE the two Bundle entries carry no gate of their own — a
+// templateExtractContext nested inside a gated entry is what RuleSetEncounterHospitalisation warns
+// about. A form that made the whole laboratory optional would have to give all of this up and go
+// back to the six-instances-per-answer shape the Impfstatus rows use.
+//
+// Department (ch-ekm-ext-department, a SIMPLE valueString extension) is built via the
+// SdcTemplateExtractExtension carrier + %factory.Extension — see the note on
+// ExtractedTreatingOrganization for why it cannot be pre-declared.
+// ---------------------------------------------------------------------------
+Instance: ExtractedLabOrganization
+InstanceOf: ChEkmOrganizationLab
+// GLN (optional) -> identifier[GLN], gated on labGln
+* identifier[0].extension[0].url = $sdc-templateExtractContext
+* identifier[0].extension[0].valueString = "%resource.descendants().where(linkId='labGln').answer.value"
+* identifier[0].system = "urn:oid:2.51.1.3"
+* identifier[0].value.extension[0].url = $sdc-templateExtractValue
+* identifier[0].value.extension[0].valueString = "$this"
+// BER/BUR (optional) -> identifier[BER], gated on labBer
+* identifier[1].extension[0].url = $sdc-templateExtractContext
+* identifier[1].extension[0].valueString = "%resource.descendants().where(linkId='labBer').answer.value"
+* identifier[1].system = "urn:oid:2.16.756.5.45"
+* identifier[1].value.extension[0].url = $sdc-templateExtractValue
+* identifier[1].value.extension[0].valueString = "$this"
+// Department (optional, ch-ekm-ext-department) -> gated on labDepartment
+* extension[0].url = $sdc-templateExtractExtension
+* extension[0].extension[0].url = $sdc-templateExtractContext
+* extension[0].extension[0].valueString = "%resource.descendants().where(linkId='labDepartment').answer.value"
+* extension[0].extension[1].url = $sdc-templateExtractValue
+* extension[0].extension[1].valueString = "%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department', %resource.descendants().where(linkId='labDepartment').answer.value.first())"
+// name (required, single)
+* name.extension[+].url = $sdc-templateExtractValue
+* name.extension[=].valueString = "%resource.descendants().where(linkId='labName').answer.value.first()"
+// address — GATED AS A WHOLE, unlike the treating physician's: every one of its three parts is
+// optional here, so an unanswered address must not leave an empty Address behind. The context is
+// the `laboratory` group scoped to "at least one address answer exists"; inside it the relative
+// `item.where(...)` paths resolve, which is also what `line` (an array primitive) needs.
+* address[0].extension[+].url = $sdc-templateExtractContext
+* address[0].extension[=].valueString = "%resource.descendants().where(linkId='laboratory').where(item.where(linkId='labStreetLine' or linkId='labZipCode' or linkId='labCity').answer.value.exists())"
+* address[0].line[0].extension[+].url = $sdc-templateExtractValue
+* address[0].line[0].extension[=].valueString = "item.where(linkId='labStreetLine').answer.value"
+* address[0].postalCode.extension[+].url = $sdc-templateExtractValue
+* address[0].postalCode.extension[=].valueString = "item.where(linkId='labZipCode').answer.value.first()"
+* address[0].city.extension[+].url = $sdc-templateExtractValue
+* address[0].city.extension[=].valueString = "item.where(linkId='labCity').answer.value.first()"
+// telecom phone (optional here, unlike the treating physician) -> gated on labPhone
+* telecom[0].extension[+].url = $sdc-templateExtractContext
+* telecom[0].extension[=].valueString = "%resource.descendants().where(linkId='labPhone').answer.value"
+* telecom[0].system = #phone
+* telecom[0].value.extension[+].url = $sdc-templateExtractValue
+* telecom[0].value.extension[=].valueString = "$this"
+// telecom email (optional) -> gated on labEmail
+* telecom[1].extension[+].url = $sdc-templateExtractContext
+* telecom[1].extension[=].valueString = "%resource.descendants().where(linkId='labEmail').answer.value"
+* telecom[1].system = #email
+* telecom[1].value.extension[+].url = $sdc-templateExtractValue
+* telecom[1].value.extension[=].valueString = "$this"
+
+// The ServiceRequest is entirely STATIC: it exists to carry `performer` -> the laboratory, which is
+// how ChEkmComposition.section[laboratory] reaches an Organization at all (the section's mandatory
+// entry slice is `lab-order`, a ChEkmServiceRequest). Nothing on it is a form answer today —
+// `reasonCode` (the "Anlass" question) and `specimen` (Material / Entnahmedatum) are the parts of
+// the paper form's Labor block that are still open, and both attach here when they are decided.
+Instance: ExtractedLabServiceRequest
+InstanceOf: ChEkmServiceRequest
+* status = #completed
+* intent = #order
+* subject.reference = "Patient/ExtractedPatient"
+* performer[0].reference = "Organization/ExtractedLabOrganization"
+
+// ---------------------------------------------------------------------------
 // Treating physician — PractitionerRole linking the two above (static, fully owned by the template)
 // ---------------------------------------------------------------------------
 Instance: ExtractedTreatingPractitionerRole

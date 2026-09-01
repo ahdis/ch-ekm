@@ -23,7 +23,9 @@
 //      "unbekannt" -> Address.country = "CH" plus `_city` with a data-absent-reason. Mpox gives
 //      both, Hepatitis C the opposite combination — this is the third of the four states.
 //   7. Exposure "Wann": answered, so effectiveDateTime is asserted.
-//   8. Impfstatus: "ja", 2 doses, NO last-dose date, and the product TYPED as free text rather than
+//   8. Labor: all nine fields answered, so every context-gated element of the shared
+//      ExtractedLabOrganization fires at once (GLN, BUR, department, address, phone, email).
+//   9. Impfstatus: "ja", 2 doses, NO last-dose date, and the product TYPED as free text rather than
 //      picked from the Swiss vaccine list. Two Immunization branches that no other round-trip
 //      reaches: the UndatedDosed template instance (occurrenceDateTime valueless with a
 //      data-absent-reason, doseNumberPositiveInt = the answered total) and the `ofType(string)` leg
@@ -88,6 +90,29 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 * item[0].item[1].item[1].answer.valueBoolean = false
 * item[0].item[1].item[2].linkId = "manifestationBeginDate"
 * item[0].item[1].item[2].answer.valueDate = "2026-01-27"
+// Labor — the analysing laboratory, which sits INSIDE this section, after the Manifestationsbeginn.
+// All nine values come from the CSV's example column. Only `labName` is required; the rest are
+// answered here so the round trip exercises every context-gated element of ExtractedLabOrganization
+// (GLN, BUR, department, address, phone, email) at once.
+* item[0].item[1].item[3].linkId = "laboratory"
+* item[0].item[1].item[3].item[0].linkId = "labName"
+* item[0].item[1].item[3].item[0].answer.valueString = "LabSan GmbH"
+* item[0].item[1].item[3].item[1].linkId = "labDepartment"
+* item[0].item[1].item[3].item[1].answer.valueString = "Mikrobiologie"
+* item[0].item[1].item[3].item[2].linkId = "labStreetLine"
+* item[0].item[1].item[3].item[2].answer.valueString = "Petriweg 88"
+* item[0].item[1].item[3].item[3].linkId = "labZipCode"
+* item[0].item[1].item[3].item[3].answer.valueString = "7575"
+* item[0].item[1].item[3].item[4].linkId = "labCity"
+* item[0].item[1].item[3].item[4].answer.valueString = "Rumplikon"
+* item[0].item[1].item[3].item[5].linkId = "labPhone"
+* item[0].item[1].item[3].item[5].answer.valueString = "+36 87 987 65 43"
+* item[0].item[1].item[3].item[6].linkId = "labEmail"
+* item[0].item[1].item[3].item[6].answer.valueString = "patho@automation.org"
+* item[0].item[1].item[3].item[7].linkId = "labBer"
+* item[0].item[1].item[3].item[7].answer.valueString = "A99082200"
+* item[0].item[1].item[3].item[8].linkId = "labGln"
+* item[0].item[1].item[3].item[8].answer.valueString = "7601000435111"
 
 // --- Verlauf ---
 // Hospitalisation "nein" -> the context on the Encounter Bundle entry is empty, so NO Encounter is

@@ -71,11 +71,12 @@ Usage: #inline
 // Composition (ChEkmCompositionHepatitisC) — static structure, references the entries above,
 // author = the treating physician's PractitionerRole, date taken from QR.authored.
 //
-// NOT emitted (see OPEN QUESTIONS in ChEkmQuestionnaireHepatitisC.fsh): section[laboratory] (#4),
-// section[medication] (#6), section[immunization] (#8), and
-// section[diagnosis].entry[questionnaire-response] for the Krankheitsverlauf (#7). All four are
-// optional in ChEkmComposition / ChEkmCompositionHepatitisC, so the extracted document is valid
-// without them.
+// section[laboratory] IS emitted now (the analysing laboratory — see RuleSetLaboratorySection); its
+// optional `entry[seroconversion]` is not (OPEN QUESTION #5).
+// NOT emitted (see OPEN QUESTIONS in ChEkmQuestionnaireHepatitisC.fsh): section[medication] (#6),
+// section[immunization] (#8), and section[diagnosis].entry[questionnaire-response] for the
+// Krankheitsverlauf (#7). All three are optional in ChEkmComposition / ChEkmCompositionHepatitisC,
+// so the extracted document is valid without them.
 // ---------------------------------------------------------------------------
 Instance: ExtractedCompositionHepatitisC
 InstanceOf: ChEkmCompositionHepatitisC
@@ -96,6 +97,8 @@ Usage: #inline
 * section[1].title = "Social history section"
 * section[1].code = $loinc#29762-2
 * section[1].entry.reference = "Observation/ExtractedExposureHepatitisC"
+// Labor — UNGATED (labName is a required form item), so it is declared before the gated sections.
+* insert RuleSetLaboratorySection
 // Cause of death — gated, and therefore LAST (a gated array element that is not re-inserted shifts
 // every later element; see RuleSetCauseOfDeathSection).
 * insert RuleSetCauseOfDeathSection(ExtractedCauseOfDeathHepatitisC)
@@ -130,6 +133,10 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentH
 * entry[=].resource = ExtractedTreatingPractitioner
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ExtractedTreatingOrganization"
 * entry[=].resource = ExtractedTreatingOrganization
+
+// Labor — the ServiceRequest carrying the analysing laboratory. Ungated, hence before the
+// conditional entries below.
+* insert RuleSetLaboratoryEntries
 
 // --- CONDITIONAL ENTRIES, LAST ON PURPOSE -------------------------------------------------------
 // The engine deletes a context-gated array element from the template and re-inserts it once per

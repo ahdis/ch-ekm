@@ -6,7 +6,7 @@
 //
 // STARTER SCOPE. Only the sections whose questions already exist as reusable modules AND whose
 // target profiles exist for Hepatitis C are assembled here:
-//   Person (FULL name)  ·  Diagnose/Manifestation  ·  Verlauf (Hospitalisation + Zustand)
+//   Person (FULL name)  ·  Diagnose/Manifestation + Labor  ·  Verlauf (Hospitalisation + Zustand)
 //   Exposition Wo/Wann  ·  Behandelnde Ärztin/Arzt
 // Everything the Hepatitis C paper form asks on top of that is listed under OPEN QUESTIONS at the
 // bottom of this file. Those are DELIBERATELY NOT MODELLED YET — each one needs a decision before a
@@ -62,6 +62,15 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 * item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
 
 * insert RuleSetQrManifestationBeginUnknown
+
+// --- Labor -------------------------------------------------------------------------------------
+// The analysing laboratory, INSIDE the "Diagnose und Manifestation" section and directly after the
+// Manifestationsbeginn — so it is a sub-heading of the Diagnose tab, not a tab of its own. The nine
+// CSV rows are all X-marked and identical to the invasive pneumococcal disease ones, so the module
+// (ChEkmQuestionnaireLaboratory) is disease-agnostic and both roots assemble it unchanged. This
+// closes the first half of OPEN QUESTION #4; "Anlass" is still open, and so is the seroconversion
+// Observation the same section can carry (#5).
+* insert RuleSetQrLaboratory
 
 // --- Verlauf (course of the disease) ------------------------------------------------------------
 // Hospitalisation + Zustand (Tot / Todesdatum / Todesursache). The Hepatitis C paper form has both
@@ -121,13 +130,17 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     household members / andere, plus ja-nein-unbekannt). No form item, no model element, no
 //     target element. The CSV maps it to `component.where(code='PART')`, which is not in any profile.
 //
-//  4. LABOR — the whole block (lab name, department, address, phone, email, BUR, GLN) and "Anlass"
-//     (klinischer Verdacht / Exposition / Screening / anderer / unbekannt ->
-//     ServiceRequest.reasonCode, value set ChEkmServiceRequestReason exists). The profiles are
-//     there (ChEkmServiceRequest, ChEkmSpecimen, ChEkmOrganizationLab) and the example Bundle uses
-//     them, but there is NO logical model and NO sub-questionnaire for a laboratory — this would be
-//     the first one, and it is reusable across all organisms (a sibling of
-//     ChEkmQuestionnaireTreatingPhysician).
+//  4. LABOR — the ORGANISATION half is now IMPLEMENTED. The nine X-marked rows (lab name,
+//     department, address, phone, email, BUR, GLN) are the shared, disease-agnostic
+//     sub-questionnaire ChEkmQuestionnaireLaboratory, assembled INSIDE the Diagnose section right
+//     after the Manifestationsbeginn, with the logical model ChEkmLabForm behind it; they extract
+//     into ChEkmOrganizationLab, reached from ChEkmServiceRequest.performer in
+//     Composition.section[laboratory]. It is the first lab module in the IG and is shared with the
+//     invasive pneumococcal disease root unchanged.
+//     STILL OPEN: "Anlass" (klinischer Verdacht / Exposition / Screening / anderer / unbekannt ->
+//     ServiceRequest.reasonCode, value set ChEkmServiceRequestReason exists) — the CSV gives two
+//     different answer lists for it. It attaches to the ChEkmServiceRequest the form already
+//     extracts, so adding it later disturbs nothing.
 //
 //  5. DOKUMENTIERTE SEROKONVERSION — "ja, zuletzt negative Serologie anti-HCV vor der Diagnose am:
 //     __ / nein / unbekannt". ChEkmComposition already has the slot

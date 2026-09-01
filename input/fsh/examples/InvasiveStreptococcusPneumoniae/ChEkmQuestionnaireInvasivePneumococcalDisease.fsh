@@ -6,9 +6,9 @@
 //
 // STARTER SCOPE, exactly like the Hepatitis C root. Only the sections whose questions already exist
 // as reusable modules AND whose target profiles exist for this organism are assembled:
-//   Person (INITIALS)   ·  Diagnose/Manifestation  ·  Verlauf (Hospitalisation + Zustand)
+//   Person (INITIALS)   ·  Diagnose/Manifestation + Labor  ·  Verlauf (Hospitalisation + Zustand)
 //   Exposition Wo/Wann  ·  Impfstatus  ·  Behandelnde Ärztin/Arzt
-// The two blocks the CSV marks with an "X" that are NOT assembled — Labor and Risikofaktoren — are
+// The one block the CSV marks with an "X" that is NOT assembled — Risikofaktoren — is
 // listed under OPEN QUESTIONS at the bottom of this file. They are DELIBERATELY NOT MODELLED YET:
 // each needs a decision first, and guessing would bake the guess into the extraction template.
 //
@@ -72,6 +72,14 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 * item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
 
 * insert RuleSetQrManifestationBeginUnknown
+
+// --- Labor -------------------------------------------------------------------------------------
+// The analysing laboratory, INSIDE the "Diagnose und Manifestation" section and directly after the
+// Manifestationsbeginn — so it is a sub-heading of the Diagnose tab, not a tab of its own. All nine
+// CSV rows are X-marked and identical to the Hepatitis C ones, so the module is disease-agnostic.
+// The rest of the paper form's Labor block (Anlass, Material, Entnahmedatum) is NOT asked — see
+// OPEN QUESTIONS #3.
+* insert RuleSetQrLaboratory
 
 // --- Verlauf (course of the disease) ------------------------------------------------------------
 // Hospitalisation + Zustand (Tot / Todesdatum / Todesursache). The CSV marks both blocks with an X
@@ -172,21 +180,25 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 //     NOT ASKED, per the decision: "Gemäss: Impfausweis / Hausarzt / Anamnese" — the CSV itself
 //     annotates it "Questionnaire Response level", i.e. it has no FHIR target.
 //
-//  3. LABOR — the whole block is marked X (lab name, department, address, phone, email, BUR, GLN)
-//     and the example Bundle uses ChEkmServiceRequest / ChEkmSpecimen / ChEkmOrganizationLab — but
-//     there is NO logical model and NO sub-questionnaire for a laboratory. This is the same gap as
-//     Hepatitis C OPEN QUESTION #4, and it would be the FIRST lab module, reusable by every
-//     organism (a sibling of ChEkmQuestionnaireTreatingPhysician).
-//     On top of the shared block, two rows are specific here:
+//  3. LABOR — the ORGANISATION half is now IMPLEMENTED. The nine X-marked rows (name, department,
+//     address, phone, email, BUR, GLN) are the shared, disease-agnostic sub-questionnaire
+//     ChEkmQuestionnaireLaboratory, assembled INSIDE this section right after the
+//     Manifestationsbeginn, with the logical model ChEkmLabForm behind it; they extract into
+//     ChEkmOrganizationLab, reached from ChEkmServiceRequest.performer in
+//     Composition.section[laboratory]. Hepatitis C assembles the same module unchanged — it is the
+//     first lab module in the IG and every further organism gets it with one insert.
+//     STILL OPEN, and specific to this organism:
+//       * "Material: Blut / Liquor / Pleurapunktat / Gelenkpunktat / Anderes" -> Specimen.type,
+//         X-marked, and the CSV notes it was "added by Yolanda Sabuco, appears in the PDF but not
+//         in the sheet. Do you want to include it? Anderes do we want it coded and if yes we have
+//         to choose the valueset". ChEkmSpecimenType exists but includes the WHOLE ch-elm specimen
+//         list, not those five concepts — so the answer list is not decided.
 //       * "Entnahmedatum" -> Specimen.collection.collectedDateTime (no X in the CSV).
-//       * "Material: Blut / Liquor / Pleurapunktat / Gelenkpunktat / Anderes" ->
-//         Specimen.type, X-marked, with the CSV noting it was "added by Yolanda Sabuco, appears in
-//         the PDF but not in the sheet. Do you want to include it? Anderes do we want it coded and
-//         if yes we have to choose the valueset". A ChEkmSpecimenType value set already exists —
-//         does it hold exactly these five concepts?
-//     "Anlass" (klinischer Verdacht / Exposition / Screening / anderer / unbekannt ->
-//     ServiceRequest.reasonCode, value set ChEkmServiceRequestReason) appears twice in the CSV's
-//     "Questionnaire" wish-list block with two DIFFERENT answer lists — which one applies?
+//       * "Anlass" (klinischer Verdacht / Exposition / Screening / anderer / unbekannt ->
+//         ServiceRequest.reasonCode; ChEkmServiceRequestReason exists) appears TWICE in the CSV's
+//         "Questionnaire" wish-list block with two DIFFERENT answer lists — which one applies?
+//     All three attach to the ChEkmServiceRequest the form already extracts, so none of them
+//     disturbs the nine questions that are in place.
 //
 //  4. RISIKOFAKTOREN — marked X, and NEW: no other organism in this IG has this section.
 //     The example Bundle puts a plain (unprofiled) `Condition` with

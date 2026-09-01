@@ -295,6 +295,13 @@ RuleSet: RuleSetQrGroupManifestation
 RuleSet: RuleSetQrManifestationBeginUnknown
 * insert RuleSetQrLevel3SubQuestionnaire("manifestationBeginUnknown", "Onset of manifestation unknown", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown")
 
+// "Labor" — the analysing laboratory. A LEVEL-3 child of the "Diagnose und Manifestation" section,
+// inserted directly after RuleSetQrManifestationBeginUnknown, so it renders as a sub-heading inside
+// the Diagnose tab rather than as a tab of its own. Disease-agnostic: Hepatitis C and invasive
+// pneumococcal disease assemble the identical nine questions.
+RuleSet: RuleSetQrLaboratory
+* insert RuleSetQrLevel3SubQuestionnaire("laboratorygroup", "Laboratory", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratory")
+
 RuleSet: RuleSetQrGroupExposure
 * insert RuleSetQrLevel2Group("exposure", "Exposure details", "Angaben zur Exposition", "Données relatives à l'exposition", "Dati relativi all'esposizione")
 * insert RuleSetQrLevel2ShortText("Exposure", "Exposition", "Exposition", "Esposizione")

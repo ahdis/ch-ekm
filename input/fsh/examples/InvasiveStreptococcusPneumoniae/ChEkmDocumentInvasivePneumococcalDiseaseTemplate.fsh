@@ -6,10 +6,10 @@
 // same rule sets Mpox and Hepatitis C do. Read the header of that file first: it documents the
 // idioms (context-gating, %factory, the "conditional entries LAST" rule) that this file relies on.
 //
-// STARTER SCOPE, mirroring the questionnaire root: no section[laboratory] and no
-// section[risk-factors] — both are optional in ChEkmComposition, so the extracted document is valid
-// without them. See OPEN QUESTIONS #2/#3 in ChEkmQuestionnaireInvasivePneumococcalDisease.fsh.
-// section[immunization] IS produced (issue #29, one row).
+// STARTER SCOPE, mirroring the questionnaire root: no section[risk-factors] — it is optional in
+// ChEkmComposition, so the extracted document is valid without it. See OPEN QUESTIONS #3 in
+// ChEkmQuestionnaireInvasivePneumococcalDisease.fsh. section[immunization] (issue #29, one row) and
+// section[laboratory] (the analysing laboratory) ARE produced.
 //
 // Run:  ./scripts/extract-invasivepneumococcaldisease.sh
 
@@ -145,6 +145,8 @@ Usage: #inline
 * section[1].title = "Social history section"
 * section[1].code = $loinc#29762-2
 * section[1].entry.reference = "Observation/ExtractedExposureInvasivePneumococcalDisease"
+// Labor — UNGATED (labName is a required form item), so it is declared before the gated sections.
+* insert RuleSetLaboratorySection
 // Cause of death — gated, and therefore LAST (a gated array element that is not re-inserted shifts
 // every later element; see RuleSetCauseOfDeathSection).
 * insert RuleSetCauseOfDeathSection(ExtractedCauseOfDeathInvasivePneumococcalDisease)
@@ -181,6 +183,10 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentI
 * entry[=].resource = ExtractedTreatingPractitioner
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ExtractedTreatingOrganization"
 * entry[=].resource = ExtractedTreatingOrganization
+
+// Labor — the ServiceRequest carrying the analysing laboratory. Ungated, hence before the
+// conditional entries below.
+* insert RuleSetLaboratoryEntries
 
 // --- CONDITIONAL ENTRIES, LAST ON PURPOSE -------------------------------------------------------
 // The engine deletes a context-gated array element from the template and re-inserts it once per

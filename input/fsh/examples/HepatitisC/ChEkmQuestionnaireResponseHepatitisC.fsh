@@ -17,7 +17,10 @@
 //      data-absent-reason instead of an ISO code, while the precise location IS given. Mpox covers
 //      the opposite combination.
 //   6. Exposure "Wann": answered, so effectiveDateTime is asserted.
-//   7. `genderIdentity` left UNANSWERED -> the individual-genderIdentity extension must be absent
+//   7. Labor: ONLY the mandatory `labName` and the email are answered, so the eight optional,
+//      context-gated elements of the shared ExtractedLabOrganization must all be absent — the
+//      closed state of each (the invasive pneumococcal disease QR covers the open one).
+//   8. `genderIdentity` left UNANSWERED -> the individual-genderIdentity extension must be absent
 //      from the extracted Patient, not an empty shell (Mpox answers it and covers the other branch).
 // The person group uses the full-name module (surname / givenname), as ChEkmHepatitisCPersonForm
 // requires.
@@ -76,6 +79,16 @@ Description: "Example Hepatitis C QuestionnaireResponse used as input to SDC tem
 // data-absent-reason#asked-unknown; manifestationBeginDate is enableWhen-disabled and unanswered.
 * item[0].item[1].item[1].linkId = "manifestationBeginUnknown"
 * item[0].item[1].item[1].answer.valueBoolean = true
+// Labor — the analysing laboratory, which sits INSIDE this section, after the Manifestationsbeginn.
+// Values from the CSV's example column. Deliberately answers ONLY the mandatory `labName` plus the
+// email: the eight optional fields stay blank, so this round trip covers the CLOSED state of every
+// context-gated element of ExtractedLabOrganization (no identifier, no department, no address, no
+// phone) — the invasive pneumococcal disease QR answers all of them and covers the open state.
+* item[0].item[1].item[2].linkId = "laboratory"
+* item[0].item[1].item[2].item[0].linkId = "labName"
+* item[0].item[1].item[2].item[0].answer.valueString = "LabSan GmbH"
+* item[0].item[1].item[2].item[1].linkId = "labEmail"
+* item[0].item[1].item[2].item[1].answer.valueString = "patho@automation.org"
 
 // --- Verlauf ---
 // Hospitalisation "unbekannt" -> an Encounter exists but carries nothing except
