@@ -1334,7 +1334,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
                 }
               ]
             },
@@ -1406,7 +1406,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
                 }
               ]
             },
@@ -1479,7 +1479,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
                 }
               ]
             },
@@ -1550,7 +1550,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
                 }
               ]
             },
@@ -1752,7 +1752,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
                 }
               ]
             },
@@ -1824,7 +1824,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
                 }
               ]
             },
@@ -1897,7 +1897,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
                 }
               ]
             },
@@ -1968,7 +1968,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
                 }
               ]
             },

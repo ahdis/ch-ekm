@@ -27,10 +27,8 @@ Description: "Example for a CH EKM Bundle: Invasive Streptococcus Pneumoniae"
 * entry[=].resource = ChEkmSpecimenExampleInvasivePneumococcalDisease
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ChEkmOrganizationLabExample" // Organization - Lab
 * entry[=].resource = ChEkmOrganizationLabExample
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Immunization/ChEkmImmunizationExample-Pneumococcal1" // Immunization
-* entry[=].resource = ChEkmImmunizationExample-Pneumococcal1
-* entry[+].fullUrl = "http://test.fhir.ch/r4/Immunization/ChEkmImmunizationExample-Pneumococcal2" // Immunization
-* entry[=].resource = ChEkmImmunizationExample-Pneumococcal2
+* entry[+].fullUrl = "http://test.fhir.ch/r4/Immunization/ChEkmImmunizationExample-Pneumococcal" // Immunization
+* entry[=].resource = ChEkmImmunizationExample-Pneumococcal
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ChEkmConditionExample-Immunosuppression" // Condition
 * entry[=].resource = ChEkmConditionExample-Immunosuppression
 
@@ -60,11 +58,10 @@ Description: "Example for a CH EKM Composition: Invasive Streptococcus Pneumonia
 // No hospitalization section: the Encounter is referenced from Composition.encounter above and
 // from Condition.encounter — see ChEkmEncounter.
 
-// Immunization Section
+// Immunization Section — ONE entry per FORM ROW, not per dose (see the Immunization below).
 * section[immunization].title = "Immunization section"
 * section[immunization].code = $loinc#11369-6
-* section[immunization].entry[0] = Reference(ChEkmImmunizationExample-Pneumococcal1)
-* section[immunization].entry[1] = Reference(ChEkmImmunizationExample-Pneumococcal2)
+* section[immunization].entry[immunization][0] = Reference(ChEkmImmunizationExample-Pneumococcal)
 
 // Risk Factors Section (Direct Entry)
 * section[risk-factors].title = "Risk factors section"
@@ -93,26 +90,33 @@ Description: "Example for a CH EKM Encounter: Invasive Streptococcus Pneumoniae"
 * period.start = "2026-01-19"
 * reasonReference = Reference(ChEkmConditionExample-InvasivePneumococcalDisease)
 
-Instance: ChEkmImmunizationExample-Pneumococcal1
-InstanceOf: Immunization
+// "Impfstatus" (issue #29) — ONE RESOURCE PER FORM ROW, CARRYING THE TOTAL DOSE COUNT.
+//
+// This example used to hold TWO unprofiled Immunizations, one per dose (doseNumber 1 and 2, with
+// their own occurrence dates), which is the CH VACD vaccination-RECORD shape. The reporting form
+// does not ask for a vaccination record: it asks one row, "geimpft? — ja, mit total ___ Dosen,
+// letzte Dosis am ___, mit Impfstoff ___". So one answered row is one Immunization whose
+// `protocolApplied.doseNumberPositiveInt` is the TOTAL number of doses and whose
+// `occurrenceDateTime` is the date of the LAST one — the shape ChEkmImmunization documents,
+// ChEkmQuestionnaireImmunizationInvasivePneumococcalDisease asks for, and the $extract template
+// produces. The example now shows that same shape, so the IG gives one answer to "what does an
+// Impfstatus row look like?" instead of two.
+//
+// Consequence of the model, visible here: the date of the FIRST dose (2000-03-01) is not reported.
+// The form never asked for it.
+Instance: ChEkmImmunizationExample-Pneumococcal
+InstanceOf: ChEkmImmunizationInvasivePneumococcalDisease
 Usage: #example
-Description: "Example for a CH EKM Immunization: Pneumococcal Dose 1"
+Description: "Example for a CH EKM Immunization: pneumococcal vaccination, two doses in total, last dose 2000-05-01"
 * status = #completed
-* vaccineCode = $ch-vacd-swissmedic-cs#60129
+// The brand the physician picked from the Swiss vaccine list. Had none been picked, this would be
+// the SNOMED CT fallback sct#836398006 the profile's value set holds.
+* vaccineCode = $ch-vacd-swissmedic-cs#60129 "Prevenar 13"
 * patient = Reference(ChEkmPatientInitialsExample)
-* occurrenceDateTime = "2000-03-01"
-* protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
-* protocolApplied.doseNumberPositiveInt = 1
-
-Instance: ChEkmImmunizationExample-Pneumococcal2
-InstanceOf: Immunization
-Usage: #example
-Description: "Example for a CH EKM Immunization: Pneumococcal Dose 2"
-* status = #completed
-* vaccineCode = $ch-vacd-swissmedic-cs#60129
-* patient = Reference(ChEkmPatientInitialsExample)
+// Date of the LAST dose, not of a single administration.
 * occurrenceDateTime = "2000-05-01"
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
+// The TOTAL number of doses of the series.
 * protocolApplied.doseNumberPositiveInt = 2
 
 

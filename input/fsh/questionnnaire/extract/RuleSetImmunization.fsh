@@ -84,14 +84,25 @@ RuleSet: RuleSetImmunizationBase(diseaseCode, diseaseDisplay, vaccineCode, vacci
 // The product, for the "yes" instances only - the form item is enableWhen-gated on "yes", so on the
 // other branches the answer cannot exist and the static fallback above already says the right thing.
 // ONE directive, because the open-choice item has three possible outcomes and `vaccineCode` is 1..1:
-//   picked from the Swiss vaccine list -> answer is a Coding -> that Coding replaces coding[0]
-//   typed by hand                      -> answer is a string -> only `text` is produced, and the
-//                                         static fallback coding stays where it is
+//   picked from the Swiss vaccine list -> answer is a Coding -> a CodeableConcept holding it
+//   typed by hand                      -> answer is a string -> a CodeableConcept holding the
+//                                         FALLBACK CODING **and** the typed name in `text`
 //   not answered                       -> an empty result DELETES the element, so the expression
 //                                         must be total and end with the fallback
+//
+// EVERY BRANCH BUILDS THE COMPLETE CodeableConcept, and that is not optional. A factory value that
+// produces a complete element REPLACES the static one rather than merging into it - the same engine
+// behaviour the shared template documents for `%factory.HumanName` on Patient.name[0]. So the typed
+// branch cannot rely on the static `vaccineCode` above surviving underneath it: written as a bare
+// `withProperty(create(CodeableConcept), 'text', ...)` it extracts to `{text: "Prevenar 13"}` with
+// NO coding at all, which contradicts ChEkmImmunization.vaccineCode ("a typed brand name is carried
+// in vaccineCode.text" - alongside the SNOMED CT product, not instead of it). Hence the fallback
+// Coding is built into the typed branch too.
+// (Not reachable from the Mpox round-trip, whose QR picks a brand from the list; the invasive
+// pneumococcal disease QR types one, which is what surfaced this.)
 RuleSet: RuleSetImmunizationVaccineAnswered(suffix, vaccineCode, vaccineDisplayRaw)
 * vaccineCode.extension[+].url = $sdc-templateExtractValue
-* vaccineCode.extension[=].valueString = "iif(%resource.descendants().where(linkId='immunizationVaccine{suffix}').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccine{suffix}').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccine{suffix}').answer.value.ofType(string).exists(), %factory.withProperty(%factory.create(CodeableConcept), 'text', %resource.descendants().where(linkId='immunizationVaccine{suffix}').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '{vaccineCode}', '{vaccineDisplayRaw}'))))"
+* vaccineCode.extension[=].valueString = "iif(%resource.descendants().where(linkId='immunizationVaccine{suffix}').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccine{suffix}').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccine{suffix}').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '{vaccineCode}', '{vaccineDisplayRaw}')), 'text', %resource.descendants().where(linkId='immunizationVaccine{suffix}').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '{vaccineCode}', '{vaccineDisplayRaw}'))))"
 
 // Date of the last dose, answered. PLACEHOLDER DEFAULT - the same idiom as Bundle.timestamp:
 // `occurrence[x]` is 1..1 so the template needs a real value to validate, and the directive below
@@ -322,3 +333,25 @@ RuleSet: RuleSetImmunizationSectionMpox
 * section[=].code = $loinc#11369-6
 * insert RuleSetImmunizationSectionEntries(Smallpox)
 * insert RuleSetImmunizationSectionEntries(Mpox)
+
+
+RuleSet: RuleSetImmunizationSectionInvasivePneumococcalDisease
+// Composition.section[immunization] for the invasive pneumococcal disease report - the same shape as
+// RuleSetImmunizationSectionMpox, with ONE row instead of two.
+//
+// Present only when the row was answered, because the section is 0..1 with `entry` 1..*: an empty
+// section would be invalid, and a section whose entry points at a resource that was never emitted
+// would dangle. One computed entry per INSTANCE, so at most one of the six references survives;
+// each carries its instance's gate verbatim, so a reference can never outlive its resource.
+//
+// The gate is NOT parameterisable and the section rule set therefore not shareable across diseases:
+// it has to name the row linkIds of THIS form, and a rule set argument cannot carry the `(`/`)` of
+// the expressions below. Two organisms, two four-line rule sets.
+//
+// `section[+]` appends after the sections the caller has already declared, so this rule set has to
+// be inserted LAST in the Composition template and stay last.
+* section[+].extension[0].url = $sdc-templateExtractContext
+* section[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.first()"
+* section[=].title = "Immunization section"
+* section[=].code = $loinc#11369-6
+* insert RuleSetImmunizationSectionEntries(Pneumococcal)

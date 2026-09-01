@@ -281,3 +281,35 @@ Description: "This CH EKM value set contains the SNOMED CT vaccine products of t
 
 * $sct#1290624003 "Variola virus antigen-containing vaccine product"
 * $sct#1293025000 "Modified Vaccinia virus Ankara antigen only vaccine product"
+
+// The vaccination type the invasive pneumococcal disease form asks about
+// (Immunization.protocolApplied.targetDisease). ONE row on the form - "Pneumokokkenimpfung" - so
+// one concept, the disease the vaccine protects against. This is the broader
+// sct#16814004 "Pneumococcal infectious disease" and NOT the reported diagnosis code
+// sct#406617004 "Invasive Streptococcus pneumoniae disease": a pneumococcal vaccine protects
+// against pneumococcal disease as such, not only against its invasive forms, and it is the CSV's
+// own proposal for the pathogen.
+ValueSet: ChEkmInvasivePneumococcalDiseaseImmunizationTargetDisease
+Title: "CH EKM Invasive Pneumococcal Disease Immunization Target Disease"
+Description: "This CH EKM value set contains the vaccination type asked about on the invasive pneumococcal disease reporting form, identified by the disease it targets: pneumococcal infectious disease."
+* ^status = #active
+* ^experimental = false
+
+* $sct#16814004 "Pneumococcal infectious disease"
+
+// The vaccine product of the single pneumococcal form row, used as
+// ChEkmObservationVaccinationStatusInvasivePneumococcalDisease.component.code to say WHICH
+// vaccination the answer is about, and as the ChEkmImmunizationInvasivePneumococcalDisease
+// `vaccineCode` fallback when the physician did not name a brand. The ANTIGEN-CONTAINING concept
+// (the same shape Mpox uses for the smallpox row) rather than one of the serotype-specific
+// products, because ONE form row covers both families of pneumococcal vaccine in use in
+// Switzerland - the conjugate vaccines (Prevenar 13/20) and the polysaccharide one (Pneumovax 23) -
+// and the question does not ask which of them was given. The brand, when picked or typed, lands in
+// Immunization.vaccineCode anyway.
+ValueSet: ChEkmInvasivePneumococcalDiseaseVaccineProduct
+Title: "CH EKM Invasive Pneumococcal Disease Vaccine Product"
+Description: "This CH EKM value set contains the SNOMED CT vaccine product of the single vaccination row on the invasive pneumococcal disease reporting form: a vaccine product containing Streptococcus pneumoniae antigen (both the conjugate and the polysaccharide vaccines)."
+* ^status = #active
+* ^experimental = false
+
+* $sct#836398006 "Streptococcus pneumoniae antigen-containing vaccine product"

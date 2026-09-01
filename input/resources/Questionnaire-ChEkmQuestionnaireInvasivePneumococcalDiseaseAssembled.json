@@ -1,6 +1,6 @@
 {
   "resourceType": "Questionnaire",
-  "id": "ChEkmQuestionnaireMpoxAssembled",
+  "id": "ChEkmQuestionnaireInvasivePneumococcalDiseaseAssembled",
   "meta": {
     "profile": [
       "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-pop-exp",
@@ -8,7 +8,7 @@
     ],
     "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
   },
-  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxAssembled",
+  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireInvasivePneumococcalDiseaseAssembled",
   "status": "active",
   "language": "en",
   "experimental": false,
@@ -88,7 +88,7 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonName|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonInitials|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -120,11 +120,7 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow|0.0.1"
-    },
-    {
-      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationMpox|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationInvasivePneumococcalDisease|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -134,11 +130,11 @@
   "contained": [
     {
       "resourceType": "Bundle",
-      "id": "ChEkmDocumentMpoxTemplate",
+      "id": "ChEkmDocumentInvasivePneumococcalDiseaseTemplate",
       "type": "document",
       "identifier": {
         "system": "urn:ietf:rfc:3986",
-        "value": "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
+        "value": "urn:uuid:9d4c1b02-3f77-4f56-9e21-5a8c6e0b74d1"
       },
       "timestamp": "1900-01-01T00:00:00Z",
       "_timestamp": {
@@ -151,10 +147,10 @@
       },
       "entry": [
         {
-          "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionMpox",
+          "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionInvasivePneumococcalDisease",
           "resource": {
             "resourceType": "Composition",
-            "id": "ExtractedCompositionMpox",
+            "id": "ExtractedCompositionInvasivePneumococcalDisease",
             "status": "final",
             "type": {
               "coding": [
@@ -178,7 +174,7 @@
                 "title": "Diagnosis section",
                 "entry": [
                   {
-                    "reference": "Condition/ExtractedCondition"
+                    "reference": "Condition/ExtractedConditionInvasivePneumococcalDisease"
                   }
                 ]
               },
@@ -194,7 +190,7 @@
                 },
                 "entry": [
                   {
-                    "reference": "Observation/ExtractedExposure"
+                    "reference": "Observation/ExtractedExposureInvasivePneumococcalDisease"
                   }
                 ]
               },
@@ -216,11 +212,11 @@
                 },
                 "entry": [
                   {
-                    "reference": "Observation/ExtractedCauseOfDeath",
+                    "reference": "Observation/ExtractedCauseOfDeathInvasivePneumococcalDisease",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeath'))"
+                        "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedCauseOfDeathInvasivePneumococcalDisease'))"
                       }
                     ]
                   }
@@ -230,7 +226,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox' or linkId='immunizationStatusMpox').answer.value.first()"
+                    "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.first()"
                   }
                 ],
                 "title": "Immunization section",
@@ -244,110 +240,56 @@
                 },
                 "entry": [
                   {
-                    "reference": "Immunization/ExtractedImmunizationSmallpoxDatedDosed",
+                    "reference": "Immunization/ExtractedImmunizationPneumococcalDatedDosed",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxDatedDosed'))"
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalDatedDosed'))"
                       }
                     ]
                   },
                   {
-                    "reference": "Immunization/ExtractedImmunizationSmallpoxDatedNoDose",
+                    "reference": "Immunization/ExtractedImmunizationPneumococcalDatedNoDose",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxDatedNoDose'))"
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalDatedNoDose'))"
                       }
                     ]
                   },
                   {
-                    "reference": "Immunization/ExtractedImmunizationSmallpoxUndatedDosed",
+                    "reference": "Immunization/ExtractedImmunizationPneumococcalUndatedDosed",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxUndatedDosed'))"
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalUndatedDosed'))"
                       }
                     ]
                   },
                   {
-                    "reference": "Immunization/ExtractedImmunizationSmallpoxUndatedNoDose",
+                    "reference": "Immunization/ExtractedImmunizationPneumococcalUndatedNoDose",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationSmallpoxUndatedNoDose'))"
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalUndatedNoDose'))"
                       }
                     ]
                   },
                   {
-                    "reference": "Observation/ExtractedVaccinationStatusSmallpoxNo",
+                    "reference": "Observation/ExtractedVaccinationStatusPneumococcalNo",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatusSmallpoxNo'))"
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatusPneumococcalNo'))"
                       }
                     ]
                   },
                   {
-                    "reference": "Observation/ExtractedVaccinationStatusSmallpoxUnknown",
+                    "reference": "Observation/ExtractedVaccinationStatusPneumococcalUnknown",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatusSmallpoxUnknown'))"
-                      }
-                    ]
-                  },
-                  {
-                    "reference": "Immunization/ExtractedImmunizationMpoxDatedDosed",
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxDatedDosed'))"
-                      }
-                    ]
-                  },
-                  {
-                    "reference": "Immunization/ExtractedImmunizationMpoxDatedNoDose",
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxDatedNoDose'))"
-                      }
-                    ]
-                  },
-                  {
-                    "reference": "Immunization/ExtractedImmunizationMpoxUndatedDosed",
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxUndatedDosed'))"
-                      }
-                    ]
-                  },
-                  {
-                    "reference": "Immunization/ExtractedImmunizationMpoxUndatedNoDose",
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationMpoxUndatedNoDose'))"
-                      }
-                    ]
-                  },
-                  {
-                    "reference": "Observation/ExtractedVaccinationStatusMpoxNo",
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatusMpoxNo'))"
-                      }
-                    ]
-                  },
-                  {
-                    "reference": "Observation/ExtractedVaccinationStatusMpoxUnknown",
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatusMpoxUnknown'))"
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatusPneumococcalUnknown'))"
                       }
                     ]
                   }
@@ -369,11 +311,11 @@
               "reference": "Patient/ExtractedPatient"
             },
             "encounter": {
-              "reference": "Encounter/ExtractedEncounter",
+              "reference": "Encounter/ExtractedEncounterInvasivePneumococcalDisease",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounter'))"
+                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounterInvasivePneumococcalDisease'))"
                 }
               ]
             },
@@ -382,7 +324,7 @@
                 "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
               }
             ],
-            "title": "Meldung zum klinischen Befund MPox",
+            "title": "Meldung zum klinischen Befund Invasive Pneumokokkenerkrankung",
             "_date": {
               "extension": [
                 {
@@ -525,16 +467,16 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedCondition",
+          "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedConditionInvasivePneumococcalDisease",
           "resource": {
             "resourceType": "Condition",
-            "id": "ExtractedCondition",
+            "id": "ExtractedConditionInvasivePneumococcalDisease",
             "code": {
               "coding": [
                 {
-                  "code": "359814004",
+                  "code": "406617004",
                   "system": "http://snomed.info/sct",
-                  "display": "Mpox"
+                  "display": "Invasive Streptococcus pneumoniae disease (disorder)"
                 }
               ]
             },
@@ -555,11 +497,11 @@
               "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
             },
             "encounter": {
-              "reference": "Encounter/ExtractedEncounter",
+              "reference": "Encounter/ExtractedEncounterInvasivePneumococcalDisease",
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounter'))"
+                  "valueString": "%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Encounter/ExtractedEncounterInvasivePneumococcalDisease'))"
                 }
               ]
             },
@@ -581,9 +523,9 @@
                             "valueString": "ofType(Coding)"
                           }
                         ],
-                        "code": "95324001",
+                        "code": "91302008",
                         "system": "http://snomed.info/sct",
-                        "display": "Skin lesion (disorder)"
+                        "display": "Sepsis (disorder)"
                       }
                     ]
                   }
@@ -614,10 +556,10 @@
           }
         },
         {
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposure",
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposureInvasivePneumococcalDisease",
           "resource": {
             "resourceType": "Observation",
-            "id": "ExtractedExposure",
+            "id": "ExtractedExposureInvasivePneumococcalDisease",
             "code": {
               "coding": [
                 {
@@ -643,182 +585,6 @@
               "reference": "Patient/ExtractedPatient"
             },
             "component": [
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "sexual-contact-partner",
-                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowSexualContactPartner').answer.value"
-                  }
-                ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "unknown",
-                      "system": "http://hl7.org/fhir/administrative-gender",
-                      "display": "Unknown",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "ofType(Coding)"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "228465009",
-                      "system": "http://snomed.info/sct",
-                      "display": "Sexual relationship details (observable entity)"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowRelationshipType').answer.value"
-                  }
-                ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "steady-partner",
-                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
-                      "display": "Steady partner",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "ofType(Coding)"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "74964007",
-                      "system": "http://snomed.info/sct",
-                      "display": "Other (qualifier value)"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value"
-                  }
-                ],
-                "_valueString": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "$this"
-                    }
-                  ]
-                }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "409496000",
-                      "system": "http://snomed.info/sct",
-                      "display": "Mode of transmission (observable entity)"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowUnknown').answer.value.where($this = true)"
-                  }
-                ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "261665006",
-                      "system": "http://snomed.info/sct",
-                      "display": "Unknown (qualifier value)",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "%factory.Coding('http://snomed.info/sct', '261665006', 'Unknown (qualifier value)')"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "iif(%resource.descendants().where(linkId='exposureHowUnknown').answer.value = true, {}, %resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value)"
-                  }
-                ],
-                "code": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
-                    }
-                  ]
-                },
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "%factory.Coding('http://snomed.info/sct', '74964007', 'Other (qualifier value)')"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "iif(%resource.descendants().where(linkId='exposureHowUnknown').answer.value = true, {}, iif(%resource.descendants().where(linkId='exposureHowOtherTransmission').answer.value.exists(), {}, %resource.descendants().where(linkId='exposureHowSexualContactPartner').answer.value))"
-                  }
-                ],
-                "code": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '409496000', 'Mode of transmission (observable entity)'))"
-                    }
-                  ]
-                },
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "%factory.Coding('http://snomed.info/sct', '417564009', 'Sexual transmission (qualifier value)')"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              },
               {
                 "code": {
                   "coding": [
@@ -1156,18 +922,18 @@
               "valueString": "iif(%resource.descendants().where(linkId='hospitalisationStatus').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and (code='373066001' or code='261665006')).exists(), true, {})"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Encounter/ExtractedEncounter",
+          "fullUrl": "http://test.fhir.ch/r4/Encounter/ExtractedEncounterInvasivePneumococcalDisease",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Encounter/ExtractedEncounter'"
+                "valueString": "'http://test.fhir.ch/r4/Encounter/ExtractedEncounterInvasivePneumococcalDisease'"
               }
             ]
           },
           "resource": {
             "resourceType": "Encounter",
-            "id": "ExtractedEncounter",
+            "id": "ExtractedEncounterInvasivePneumococcalDisease",
             "class": {
               "code": "IMP",
               "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
@@ -1189,11 +955,11 @@
             },
             "reasonReference": [
               {
-                "reference": "Condition/ExtractedCondition",
+                "reference": "Condition/ExtractedConditionInvasivePneumococcalDisease",
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                    "valueString": "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedCondition'))"
+                    "valueString": "%resource.descendants().where(linkId='hospitalisationReason').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedConditionInvasivePneumococcalDisease'))"
                   }
                 ]
               }
@@ -1230,18 +996,18 @@
               "valueString": "iif(%resource.descendants().where(linkId='deceased').answer.value.first() = true and %resource.descendants().where(linkId='deathCause').answer.value.exists(), true, {})"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath",
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathInvasivePneumococcalDisease",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath'"
+                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathInvasivePneumococcalDisease'"
               }
             ]
           },
           "resource": {
             "resourceType": "Observation",
-            "id": "ExtractedCauseOfDeath",
+            "id": "ExtractedCauseOfDeathInvasivePneumococcalDisease",
             "status": "final",
             "code": {
               "coding": [
@@ -1259,17 +1025,17 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '359814004', 'Mpox')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this)))"
+                  "valueString": "iif(%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').exists(), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '406617004', 'Invasive Streptococcus pneumoniae disease (disorder)')), %resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://snomed.info/sct').first().select(%factory.CodeableConcept($this)))"
                 }
               ]
             },
             "focus": [
               {
-                "reference": "Condition/ExtractedCondition",
+                "reference": "Condition/ExtractedConditionInvasivePneumococcalDisease",
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                    "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedCondition'))"
+                    "valueString": "%resource.descendants().where(linkId='deathCause').answer.value.ofType(Coding).where(system='http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-reported-pathogen' and code='reported-pathogen').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Condition/ExtractedConditionInvasivePneumococcalDisease'))"
                   }
                 ]
               }
@@ -1280,21 +1046,21 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists())"
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists())"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedDosed",
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDatedDosed",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedDosed'"
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDatedDosed'"
               }
             ]
           },
           "resource": {
             "resourceType": "Immunization",
-            "id": "ExtractedImmunizationSmallpoxDatedDosed",
+            "id": "ExtractedImmunizationPneumococcalDatedDosed",
             "status": "completed",
             "patient": {
               "reference": "Patient/ExtractedPatient"
@@ -1305,9 +1071,9 @@
                   {
                     "coding": [
                       {
-                        "code": "67924001",
+                        "code": "16814004",
                         "system": "http://snomed.info/sct",
-                        "display": "Smallpox"
+                        "display": "Pneumococcal infectious disease"
                       }
                     ]
                   }
@@ -1317,7 +1083,7 @@
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.first()"
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.first()"
                     }
                   ]
                 }
@@ -1326,15 +1092,15 @@
             "vaccineCode": {
               "coding": [
                 {
-                  "code": "1290624003",
+                  "code": "836398006",
                   "system": "http://snomed.info/sct",
-                  "display": "Variola virus antigen-containing vaccine product"
+                  "display": "Streptococcus pneumoniae antigen-containing vaccine product"
                 }
               ],
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product'))))"
                 }
               ]
             },
@@ -1343,7 +1109,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.first()"
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.first()"
                 }
               ]
             }
@@ -1353,21 +1119,21 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not())"
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists().not())"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedNoDose",
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDatedNoDose",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxDatedNoDose'"
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDatedNoDose'"
               }
             ]
           },
           "resource": {
             "resourceType": "Immunization",
-            "id": "ExtractedImmunizationSmallpoxDatedNoDose",
+            "id": "ExtractedImmunizationPneumococcalDatedNoDose",
             "status": "completed",
             "patient": {
               "reference": "Patient/ExtractedPatient"
@@ -1378,9 +1144,9 @@
                   {
                     "coding": [
                       {
-                        "code": "67924001",
+                        "code": "16814004",
                         "system": "http://snomed.info/sct",
-                        "display": "Smallpox"
+                        "display": "Pneumococcal infectious disease"
                       }
                     ]
                   }
@@ -1398,15 +1164,15 @@
             "vaccineCode": {
               "coding": [
                 {
-                  "code": "1290624003",
+                  "code": "836398006",
                   "system": "http://snomed.info/sct",
-                  "display": "Variola virus antigen-containing vaccine product"
+                  "display": "Streptococcus pneumoniae antigen-containing vaccine product"
                 }
               ],
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product'))))"
                 }
               ]
             },
@@ -1415,7 +1181,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.first()"
+                  "valueString": "%resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.first()"
                 }
               ]
             }
@@ -1425,21 +1191,21 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists())"
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists())"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedDosed",
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndatedDosed",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedDosed'"
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndatedDosed'"
               }
             ]
           },
           "resource": {
             "resourceType": "Immunization",
-            "id": "ExtractedImmunizationSmallpoxUndatedDosed",
+            "id": "ExtractedImmunizationPneumococcalUndatedDosed",
             "status": "completed",
             "patient": {
               "reference": "Patient/ExtractedPatient"
@@ -1450,9 +1216,9 @@
                   {
                     "coding": [
                       {
-                        "code": "67924001",
+                        "code": "16814004",
                         "system": "http://snomed.info/sct",
-                        "display": "Smallpox"
+                        "display": "Pneumococcal infectious disease"
                       }
                     ]
                   }
@@ -1462,7 +1228,7 @@
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.first()"
+                      "valueString": "%resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.first()"
                     }
                   ]
                 }
@@ -1471,15 +1237,15 @@
             "vaccineCode": {
               "coding": [
                 {
-                  "code": "1290624003",
+                  "code": "836398006",
                   "system": "http://snomed.info/sct",
-                  "display": "Variola virus antigen-containing vaccine product"
+                  "display": "Streptococcus pneumoniae antigen-containing vaccine product"
                 }
               ],
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product'))))"
                 }
               ]
             },
@@ -1497,21 +1263,21 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseSmallpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesSmallpox').answer.value.exists().not())"
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists().not())"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedNoDose",
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndatedNoDose",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationSmallpoxUndatedNoDose'"
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndatedNoDose'"
               }
             ]
           },
           "resource": {
             "resourceType": "Immunization",
-            "id": "ExtractedImmunizationSmallpoxUndatedNoDose",
+            "id": "ExtractedImmunizationPneumococcalUndatedNoDose",
             "status": "completed",
             "patient": {
               "reference": "Patient/ExtractedPatient"
@@ -1522,9 +1288,9 @@
                   {
                     "coding": [
                       {
-                        "code": "67924001",
+                        "code": "16814004",
                         "system": "http://snomed.info/sct",
-                        "display": "Smallpox"
+                        "display": "Pneumococcal infectious disease"
                       }
                     ]
                   }
@@ -1542,15 +1308,15 @@
             "vaccineCode": {
               "coding": [
                 {
-                  "code": "1290624003",
+                  "code": "836398006",
                   "system": "http://snomed.info/sct",
-                  "display": "Variola virus antigen-containing vaccine product"
+                  "display": "Streptococcus pneumoniae antigen-containing vaccine product"
                 }
               ],
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineSmallpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1290624003', 'Variola virus antigen-containing vaccine product'))))"
+                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product'))))"
                 }
               ]
             },
@@ -1568,21 +1334,21 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='373067005')"
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373067005')"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusSmallpoxNo",
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusPneumococcalNo",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusSmallpoxNo'"
+                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusPneumococcalNo'"
               }
             ]
           },
           "resource": {
             "resourceType": "Observation",
-            "id": "ExtractedVaccinationStatusSmallpoxNo",
+            "id": "ExtractedVaccinationStatusPneumococcalNo",
             "status": "final",
             "code": {
               "coding": [
@@ -1601,18 +1367,18 @@
                 "code": {
                   "coding": [
                     {
-                      "code": "1290624003",
+                      "code": "836398006",
                       "system": "http://snomed.info/sct",
-                      "display": "Variola virus antigen-containing vaccine product"
+                      "display": "Streptococcus pneumoniae antigen-containing vaccine product"
                     }
                   ]
                 },
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "code": "67924001",
+                      "code": "16814004",
                       "system": "http://snomed.info/sct",
-                      "display": "Smallpox"
+                      "display": "Pneumococcal infectious disease"
                     }
                   ]
                 }
@@ -1633,21 +1399,21 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusSmallpox').answer.value.ofType(Coding).where(code='261665006')"
+              "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='261665006')"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusSmallpoxUnknown",
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusPneumococcalUnknown",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusSmallpoxUnknown'"
+                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusPneumococcalUnknown'"
               }
             ]
           },
           "resource": {
             "resourceType": "Observation",
-            "id": "ExtractedVaccinationStatusSmallpoxUnknown",
+            "id": "ExtractedVaccinationStatusPneumococcalUnknown",
             "status": "final",
             "code": {
               "coding": [
@@ -1666,436 +1432,18 @@
                 "code": {
                   "coding": [
                     {
-                      "code": "1290624003",
+                      "code": "836398006",
                       "system": "http://snomed.info/sct",
-                      "display": "Variola virus antigen-containing vaccine product"
+                      "display": "Streptococcus pneumoniae antigen-containing vaccine product"
                     }
                   ]
                 },
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "code": "67924001",
+                      "code": "16814004",
                       "system": "http://snomed.info/sct",
-                      "display": "Smallpox"
-                    }
-                  ]
-                }
-              }
-            ],
-            "valueCodeableConcept": {
-              "coding": [
-                {
-                  "code": "261665006",
-                  "system": "http://snomed.info/sct",
-                  "display": "Unknown (qualifier value)"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists())"
-            }
-          ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedDosed",
-          "_fullUrl": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedDosed'"
-              }
-            ]
-          },
-          "resource": {
-            "resourceType": "Immunization",
-            "id": "ExtractedImmunizationMpoxDatedDosed",
-            "status": "completed",
-            "patient": {
-              "reference": "Patient/ExtractedPatient"
-            },
-            "protocolApplied": [
-              {
-                "targetDisease": [
-                  {
-                    "coding": [
-                      {
-                        "code": "359814004",
-                        "system": "http://snomed.info/sct",
-                        "display": "Mpox"
-                      }
-                    ]
-                  }
-                ],
-                "doseNumberPositiveInt": 1,
-                "_doseNumberPositiveInt": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%resource.descendants().where(linkId='immunizationDosesMpox').answer.value.first()"
-                    }
-                  ]
-                }
-              }
-            ],
-            "vaccineCode": {
-              "coding": [
-                {
-                  "code": "1293025000",
-                  "system": "http://snomed.info/sct",
-                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
-                }
-              ],
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
-                }
-              ]
-            },
-            "occurrenceDateTime": "1900-01-01",
-            "_occurrenceDateTime": {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.first()"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not())"
-            }
-          ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedNoDose",
-          "_fullUrl": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedNoDose'"
-              }
-            ]
-          },
-          "resource": {
-            "resourceType": "Immunization",
-            "id": "ExtractedImmunizationMpoxDatedNoDose",
-            "status": "completed",
-            "patient": {
-              "reference": "Patient/ExtractedPatient"
-            },
-            "protocolApplied": [
-              {
-                "targetDisease": [
-                  {
-                    "coding": [
-                      {
-                        "code": "359814004",
-                        "system": "http://snomed.info/sct",
-                        "display": "Mpox"
-                      }
-                    ]
-                  }
-                ],
-                "_doseNumberPositiveInt": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                      "valueCode": "asked-unknown"
-                    }
-                  ]
-                }
-              }
-            ],
-            "vaccineCode": {
-              "coding": [
-                {
-                  "code": "1293025000",
-                  "system": "http://snomed.info/sct",
-                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
-                }
-              ],
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
-                }
-              ]
-            },
-            "occurrenceDateTime": "1900-01-01",
-            "_occurrenceDateTime": {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.first()"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists())"
-            }
-          ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedDosed",
-          "_fullUrl": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedDosed'"
-              }
-            ]
-          },
-          "resource": {
-            "resourceType": "Immunization",
-            "id": "ExtractedImmunizationMpoxUndatedDosed",
-            "status": "completed",
-            "patient": {
-              "reference": "Patient/ExtractedPatient"
-            },
-            "protocolApplied": [
-              {
-                "targetDisease": [
-                  {
-                    "coding": [
-                      {
-                        "code": "359814004",
-                        "system": "http://snomed.info/sct",
-                        "display": "Mpox"
-                      }
-                    ]
-                  }
-                ],
-                "doseNumberPositiveInt": 1,
-                "_doseNumberPositiveInt": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "%resource.descendants().where(linkId='immunizationDosesMpox').answer.value.first()"
-                    }
-                  ]
-                }
-              }
-            ],
-            "vaccineCode": {
-              "coding": [
-                {
-                  "code": "1293025000",
-                  "system": "http://snomed.info/sct",
-                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
-                }
-              ],
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
-                }
-              ]
-            },
-            "_occurrenceDateTime": {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                  "valueCode": "asked-unknown"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDoseMpox').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesMpox').answer.value.exists().not())"
-            }
-          ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedNoDose",
-          "_fullUrl": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxUndatedNoDose'"
-              }
-            ]
-          },
-          "resource": {
-            "resourceType": "Immunization",
-            "id": "ExtractedImmunizationMpoxUndatedNoDose",
-            "status": "completed",
-            "patient": {
-              "reference": "Patient/ExtractedPatient"
-            },
-            "protocolApplied": [
-              {
-                "targetDisease": [
-                  {
-                    "coding": [
-                      {
-                        "code": "359814004",
-                        "system": "http://snomed.info/sct",
-                        "display": "Mpox"
-                      }
-                    ]
-                  }
-                ],
-                "_doseNumberPositiveInt": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                      "valueCode": "asked-unknown"
-                    }
-                  ]
-                }
-              }
-            ],
-            "vaccineCode": {
-              "coding": [
-                {
-                  "code": "1293025000",
-                  "system": "http://snomed.info/sct",
-                  "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
-                }
-              ],
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccineMpox').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '1293025000', 'Modified Vaccinia virus Ankara antigen only vaccine product'))))"
-                }
-              ]
-            },
-            "_occurrenceDateTime": {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                  "valueCode": "asked-unknown"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='373067005')"
-            }
-          ],
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusMpoxNo",
-          "_fullUrl": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusMpoxNo'"
-              }
-            ]
-          },
-          "resource": {
-            "resourceType": "Observation",
-            "id": "ExtractedVaccinationStatusMpoxNo",
-            "status": "final",
-            "code": {
-              "coding": [
-                {
-                  "code": "408864009",
-                  "system": "http://snomed.info/sct",
-                  "display": "Vaccination status (observable entity)"
-                }
-              ]
-            },
-            "subject": {
-              "reference": "Patient/ExtractedPatient"
-            },
-            "component": [
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "1293025000",
-                      "system": "http://snomed.info/sct",
-                      "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
-                    }
-                  ]
-                },
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "359814004",
-                      "system": "http://snomed.info/sct",
-                      "display": "Mpox"
-                    }
-                  ]
-                }
-              }
-            ],
-            "valueCodeableConcept": {
-              "coding": [
-                {
-                  "code": "373067005",
-                  "system": "http://snomed.info/sct",
-                  "display": "No (qualifier value)"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusMpox').answer.value.ofType(Coding).where(code='261665006')"
-            }
-          ],
-          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusMpoxUnknown",
-          "_fullUrl": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusMpoxUnknown'"
-              }
-            ]
-          },
-          "resource": {
-            "resourceType": "Observation",
-            "id": "ExtractedVaccinationStatusMpoxUnknown",
-            "status": "final",
-            "code": {
-              "coding": [
-                {
-                  "code": "408864009",
-                  "system": "http://snomed.info/sct",
-                  "display": "Vaccination status (observable entity)"
-                }
-              ]
-            },
-            "subject": {
-              "reference": "Patient/ExtractedPatient"
-            },
-            "component": [
-              {
-                "code": {
-                  "coding": [
-                    {
-                      "code": "1293025000",
-                      "system": "http://snomed.info/sct",
-                      "display": "Modified Vaccinia virus Ankara antigen only vaccine product"
-                    }
-                  ]
-                },
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "359814004",
-                      "system": "http://snomed.info/sct",
-                      "display": "Mpox"
+                      "display": "Pneumococcal infectious disease"
                     }
                   ]
                 }
@@ -2117,9 +1465,9 @@
   ],
   "item": [
     {
-      "linkId": "mpox-form",
+      "linkId": "invasivepneumococcaldisease-form",
       "type": "group",
-      "text": "Clinical findings report: mpox",
+      "text": "Clinical findings report: invasive pneumococcal disease",
       "_text": {
         "extension": [
           {
@@ -2131,7 +1479,7 @@
               },
               {
                 "url": "content",
-                "valueString": "Meldung zum klinischen Befund: Mpox"
+                "valueString": "Meldung zum klinischen Befund: Invasive Pneumokokkenerkrankung"
               }
             ]
           },
@@ -2144,7 +1492,7 @@
               },
               {
                 "url": "content",
-                "valueString": "Déclaration de résultat clinique : Mpox"
+                "valueString": "Déclaration de résultat clinique : infection invasive à pneumocoques"
               }
             ]
           },
@@ -2157,7 +1505,7 @@
               },
               {
                 "url": "content",
-                "valueString": "Notifica del referto clinico: Mpox"
+                "valueString": "Notifica del referto clinico: malattia pneumococcica invasiva"
               }
             ]
           }
@@ -2170,7 +1518,7 @@
             {
               "url": "template",
               "valueReference": {
-                "reference": "#ChEkmDocumentMpoxTemplate"
+                "reference": "#ChEkmDocumentInvasivePneumococcalDiseaseTemplate"
               }
             }
           ]
@@ -2294,9 +1642,9 @@
           ],
           "item": [
             {
-              "linkId": "surname",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surname",
-              "text": "Surname",
+              "linkId": "surnameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.surnameInitial",
+              "text": "Surname initial",
               "_text": {
                 "extension": [
                   {
@@ -2308,7 +1656,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Name"
+                        "valueString": "Initiale Name"
                       }
                     ]
                   },
@@ -2321,7 +1669,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Nom"
+                        "valueString": "Initiale du nom"
                       }
                     ]
                   },
@@ -2334,7 +1682,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Cognome"
+                        "valueString": "Iniziale del cognome"
                       }
                     ]
                   }
@@ -2342,20 +1690,21 @@
               },
               "type": "string",
               "required": true,
+              "maxLength": 1,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.name.first().family"
+                    "expression": "%patient.name.first().family.substring(0,1)"
                   }
                 }
               ]
             },
             {
-              "linkId": "givenname",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givenname",
-              "text": "First name",
+              "linkId": "givennameInitial",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.givennameInitial",
+              "text": "First name initial",
               "_text": {
                 "extension": [
                   {
@@ -2367,7 +1716,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Vorname"
+                        "valueString": "Initiale Vorname"
                       }
                     ]
                   },
@@ -2380,7 +1729,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Prénom"
+                        "valueString": "Initiale du prénom"
                       }
                     ]
                   },
@@ -2393,7 +1742,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Nome"
+                        "valueString": "Iniziale del nome"
                       }
                     ]
                   }
@@ -2401,12 +1750,13 @@
               },
               "type": "string",
               "required": true,
+              "maxLength": 1,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.name.first().given.join(' ')"
+                    "expression": "%patient.name.first().given.first().substring(0,1)"
                   }
                 }
               ]
@@ -3161,6 +2511,7 @@
                   }
                 ]
               },
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestation",
               "type": "choice",
               "repeats": true,
               "extension": [
@@ -3180,7 +2531,7 @@
                   }
                 }
               ],
-              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmMpoxManifestation",
+              "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmInvasivePneumococcalDiseaseManifestation",
               "_answerValueSet": {
                 "extension": [
                   {
@@ -4351,288 +3702,6 @@
                   "type": "date"
                 }
               ]
-            },
-            {
-              "linkId": "exposureHow",
-              "text": "How (route of transmission)",
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "de-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Wie (Übertragungsweg)"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "fr-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Comment (voie de transmission)"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "it-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Come (via di trasmissione)"
-                      }
-                    ]
-                  }
-                ]
-              },
-              "type": "group",
-              "item": [
-                {
-                  "linkId": "exposureHowSexualContactPartner",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.sexualContactPartner",
-                  "text": "Sexual contact with an infected person (gender)",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Sexualkontakt mit infizierter Person (Geschlecht)"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Rapport sexuel avec une personne infectée (sexe)"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Rapporto sessuale con una persona infetta (sesso)"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "choice",
-                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex",
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "code": "radio-button",
-                            "system": "http://hl7.org/fhir/questionnaire-item-control"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                      "valueCode": "horizontal"
-                    }
-                  ]
-                },
-                {
-                  "linkId": "exposureHowRelationshipType",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.relationshipType",
-                  "text": "Type of relationship",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Art der Beziehung"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Type de relation"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Tipo di relazione"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "choice",
-                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureRelationshipType",
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "code": "radio-button",
-                            "system": "http://hl7.org/fhir/questionnaire-item-control"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                      "valueCode": "horizontal"
-                    }
-                  ]
-                },
-                {
-                  "linkId": "exposureHowOtherTransmission",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.otherTransmission",
-                  "text": "Other route of transmission (free text)",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Anderer Übertragungsweg (Freitext)"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Autre voie de transmission (texte libre)"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Altra via di trasmissione (testo libero)"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "string"
-                },
-                {
-                  "linkId": "exposureHowUnknown",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.unknown",
-                  "text": "Route of transmission unknown",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Übertragungsweg unbekannt"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Voie de transmission inconnue"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Via di trasmissione sconosciuta"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "boolean"
-                }
-              ]
             }
           ]
         },
@@ -4734,8 +3803,8 @@
           "type": "group",
           "item": [
             {
-              "linkId": "immunizationSmallpox",
-              "text": "Smallpox vaccination — earlier smallpox vaccination programmes",
+              "linkId": "immunizationPneumococcal",
+              "text": "Pneumococcal vaccination",
               "_text": {
                 "extension": [
                   {
@@ -4747,7 +3816,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Pockenimpfung — frühere Pockenimpfprogramme"
+                        "valueString": "Pneumokokkenimpfung"
                       }
                     ]
                   },
@@ -4760,7 +3829,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Vaccination contre la variole — anciens programmes de vaccination"
+                        "valueString": "Vaccination contre les pneumocoques"
                       }
                     ]
                   },
@@ -4773,7 +3842,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Vaccinazione antivaiolosa — precedenti programmi di vaccinazione"
+                        "valueString": "Vaccinazione antipneumococcica"
                       }
                     ]
                   }
@@ -4782,7 +3851,7 @@
               "type": "group",
               "item": [
                 {
-                  "linkId": "immunizationStatusSmallpox",
+                  "linkId": "immunizationStatusPneumococcal",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.status",
                   "text": "Vaccinated?",
                   "_text": {
@@ -4866,7 +3935,7 @@
                   ]
                 },
                 {
-                  "linkId": "immunizationDosesSmallpox",
+                  "linkId": "immunizationDosesPneumococcal",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses",
                   "text": "Total number of doses",
                   "_text": {
@@ -4921,7 +3990,7 @@
                   ],
                   "enableWhen": [
                     {
-                      "question": "immunizationStatusSmallpox",
+                      "question": "immunizationStatusPneumococcal",
                       "operator": "=",
                       "answerCoding": {
                         "code": "373066001",
@@ -4932,7 +4001,7 @@
                   ]
                 },
                 {
-                  "linkId": "immunizationLastDoseSmallpox",
+                  "linkId": "immunizationLastDosePneumococcal",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.lastDoseDate",
                   "text": "Date of the last dose",
                   "_text": {
@@ -4981,7 +4050,7 @@
                   "type": "date",
                   "enableWhen": [
                     {
-                      "question": "immunizationStatusSmallpox",
+                      "question": "immunizationStatusPneumococcal",
                       "operator": "=",
                       "answerCoding": {
                         "code": "373066001",
@@ -4992,7 +4061,7 @@
                   ]
                 },
                 {
-                  "linkId": "immunizationVaccineSmallpox",
+                  "linkId": "immunizationVaccinePneumococcal",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.vaccine",
                   "text": "Vaccine — brand name",
                   "_text": {
@@ -5055,341 +4124,7 @@
                   ],
                   "enableWhen": [
                     {
-                      "question": "immunizationStatusSmallpox",
-                      "operator": "=",
-                      "answerCoding": {
-                        "code": "373066001",
-                        "system": "http://snomed.info/sct",
-                        "display": "Yes (qualifier value)"
-                      }
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "linkId": "immunizationMpox",
-              "text": "Mpox vaccination",
-              "_text": {
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "de-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Affenpockenimpfung"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "fr-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Vaccination contre le mpox"
-                      }
-                    ]
-                  },
-                  {
-                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                    "extension": [
-                      {
-                        "url": "lang",
-                        "valueCode": "it-CH"
-                      },
-                      {
-                        "url": "content",
-                        "valueString": "Vaccinazione contro il vaiolo delle scimmie"
-                      }
-                    ]
-                  }
-                ]
-              },
-              "type": "group",
-              "item": [
-                {
-                  "linkId": "immunizationStatusMpox",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.status",
-                  "text": "Vaccinated?",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Geimpft?"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Vacciné ?"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Vaccinato?"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "choice",
-                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
-                  "_answerValueSet": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
-                        "extension": [
-                          {
-                            "url": "name",
-                            "valueCode": "useSupplement"
-                          },
-                          {
-                            "url": "expression",
-                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "code": "radio-button",
-                            "system": "http://hl7.org/fhir/questionnaire-item-control"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                      "valueCode": "horizontal"
-                    }
-                  ]
-                },
-                {
-                  "linkId": "immunizationDosesMpox",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses",
-                  "text": "Total number of doses",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Total Anzahl Dosen"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Nombre total de doses"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Numero totale di dosi"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "integer",
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/minValue",
-                      "valueInteger": 1
-                    }
-                  ],
-                  "enableWhen": [
-                    {
-                      "question": "immunizationStatusMpox",
-                      "operator": "=",
-                      "answerCoding": {
-                        "code": "373066001",
-                        "system": "http://snomed.info/sct",
-                        "display": "Yes (qualifier value)"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "linkId": "immunizationLastDoseMpox",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.lastDoseDate",
-                  "text": "Date of the last dose",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Letzte Dosis, Datum"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Date de la dernière dose"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Data dell'ultima dose"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "date",
-                  "enableWhen": [
-                    {
-                      "question": "immunizationStatusMpox",
-                      "operator": "=",
-                      "answerCoding": {
-                        "code": "373066001",
-                        "system": "http://snomed.info/sct",
-                        "display": "Yes (qualifier value)"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "linkId": "immunizationVaccineMpox",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.vaccine",
-                  "text": "Vaccine — brand name",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Impfstoff — Markenname"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Vaccin — nom de marque"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Vaccino — nome commerciale"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "open-choice",
-                  "answerValueSet": "http://fhir.ch/ig/ch-vacd/ValueSet/ch-vacd-vaccines-vs",
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "code": "autocomplete",
-                            "system": "http://hl7.org/fhir/questionnaire-item-control"
-                          }
-                        ]
-                      }
-                    }
-                  ],
-                  "enableWhen": [
-                    {
-                      "question": "immunizationStatusMpox",
+                      "question": "immunizationStatusPneumococcal",
                       "operator": "=",
                       "answerCoding": {
                         "code": "373066001",
@@ -6601,7 +5336,7 @@
     }
   ],
   "version": "0.0.1",
-  "name": "ChEkmQuestionnaireMpoxAssembled",
-  "title": "CH EKM Questionnaire: Mpox (assembled)",
-  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+  "name": "ChEkmQuestionnaireInvasivePneumococcalDiseaseAssembled",
+  "title": "CH EKM Questionnaire: InvasivePneumococcalDisease (assembled)",
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireInvasivePneumococcalDisease and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

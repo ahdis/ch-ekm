@@ -438,3 +438,9 @@ RuleSet: RuleSetQrImmunizationRow(suffix, text, text-de-CH, text-fr-CH, text-it-
 //   mpox-form > immunization > immunizationSmallpox > immunizationStatusSmallpox …
 RuleSet: RuleSetQrGroupImmunizationMpox
 * insert RuleSetQrLevel2SubQuestionnaire("immunization", "Immunisation status", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationMpox")
+
+// The same placeholder for the invasive pneumococcal disease form, whose Impfstatus section has a
+// single row (Pneumokokkenimpfung). Assembled shape:
+//   invasivepneumococcaldisease-form > immunization > immunizationPneumococcal > immunizationStatusPneumococcal …
+RuleSet: RuleSetQrGroupImmunizationInvasivePneumococcalDisease
+* insert RuleSetQrLevel2SubQuestionnaire("immunization", "Immunisation status", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationInvasivePneumococcalDisease")

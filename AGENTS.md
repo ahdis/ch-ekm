@@ -130,7 +130,11 @@ HepatitisC and InvasiveStreptococcusPneumoniae follow the same shape.
 Mpox additionally constrains `section[immunization]` to `ChEkmImmunizationMpox` (target diseases
 fixed to `ChEkmMpoxImmunizationTargetDisease`, smallpox + mpox) and
 `ChEkmObservationVaccinationStatusMpox` (the same two target diseases, plus the two vaccine products
-in `ChEkmMpoxVaccineProduct` as the component code).
+in `ChEkmMpoxVaccineProduct` as the component code). Invasive pneumococcal disease does the same for
+its single row: `ChEkmImmunizationInvasivePneumococcalDisease` /
+`ChEkmObservationVaccinationStatusInvasivePneumococcal`, with
+`ChEkmInvasivePneumococcalDiseaseImmunizationTargetDisease` (`sct#16814004`) and
+`ChEkmInvasivePneumococcalDiseaseVaccineProduct` (`sct#836398006`).
 
 ### Extensions & invariants
 - Extensions (`profiles/Extensions.fsh`): `ChEkmExtHivCode`, `ChEkmExtExposureAddress`,
@@ -253,27 +257,43 @@ sushi .                                    # FSH -> fsh-generated/
 ./scripts/populate-gonorrhoea.sh           # $populate  -> pre-filled QuestionnaireResponse
 ./scripts/populate-mpox.sh                 # $populate, incl. the `encounter` launch context
 ./scripts/populate-hepatitisc.sh           # $populate, same three launch contexts as Mpox
+./scripts/populate-invasivepneumococcaldisease.sh  # $populate, same three launch contexts
 ./scripts/extract-gonorrhoea.sh            # $extract   -> input/resources/Bundle-…-extracted.json
 ./scripts/extract-mpox.sh                  # $extract, incl. the conditional Encounter entry
 ./scripts/extract-hepatitisc.sh            # $extract, the CLOSED state of both conditional entries
+./scripts/extract-invasivepneumococcaldisease.sh  # $extract, hospitalisation "nein" + death without a date
 ```
 
-Three organisms have a modular root today: **Gonorrhoea**, **Mpox** and **Hepatitis C**.
-`scripts/assemble.sh` discovers them by the `assemble-expectation = assemble-root` extension, so
-adding a fourth needs no script change. The Hepatitis C root is a **starter**: it assembles only the
-sections whose modules and target profiles already exist, and the questions the paper form asks on
-top of that (Labor, Serokonversion, antivirale Therapie, Krankheitsverlauf, Impfstatus, Exposition
-"Wie") are listed, with the blocking decision for each, in the `OPEN QUESTIONS` block at the bottom
-of `input/fsh/examples/HepatitisC/ChEkmQuestionnaireHepatitisC.fsh` and in TODO.md.
+Four organisms have a modular root today: **Gonorrhoea**, **Mpox**, **Hepatitis C** and **invasive
+pneumococcal disease**. `scripts/assemble.sh` discovers them by the
+`assemble-expectation = assemble-root` extension, so adding a fifth needs no script change.
+
+Two of them are **starters**: they assemble only the sections whose modules and target profiles
+already exist, and everything the paper form asks on top of that is listed, with the blocking
+decision for each, in an `OPEN QUESTIONS` block at the bottom of the root's FSH file and in TODO.md.
+- **Hepatitis C** (`examples/HepatitisC/ChEkmQuestionnaireHepatitisC.fsh`) — open: Labor,
+  Serokonversion, antivirale Therapie, Krankheitsverlauf, Impfstatus, Exposition "Wie".
+- **Invasive pneumococcal disease**
+  (`examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireInvasivePneumococcalDisease.fsh`) —
+  open: Labor, Risikofaktoren (a section no other organism has), Exposition "Wie", and *which* of the
+  two pneumococcal manifestation value sets is authoritative. **Impfstatus is implemented**: one row
+  (`Pneumokokkenimpfung`), the same one-row/total-doses model as Mpox, so an answered row extracts to
+  exactly one `ChEkmImmunizationInvasivePneumococcalDisease` — note the example Bundle still carries
+  the other, one-resource-per-dose shape. Apart from that section it reuses every shared module
+  unchanged. NB the naming: the folder is `InvasiveStreptococcusPneumoniae/`, the profiles and
+  instances in it are `…InvasivePneumococcalDisease`.
 
 Sub-questionnaires are disease-agnostic and live in `input/fsh/questionnnaire/`; the per-disease
 root (`input/fsh/examples/<Organism>/ChEkmQuestionnaire<Organism>.fsh`) assembles the ones its form
 needs via the `RuleSetQr…` rule sets in `input/fsh/questionnnaire/RuleSets.fsh`. The **"Impfstatus"** section is modular one level further down: SDC `$assemble` cannot parameterise a
 sub-questionnaire, so the reuse lives in the FSH rule sets `RuleSetQrImmunizationRow` (form) and
 `RuleSetImmunizationRow` (extraction), each inserted once per vaccination type by a per-disease child
-(`examples/Mpox/ChEkmQuestionnaireImmunizationMpox.fsh`). Fixed rows, not a repeating group — see
-forms-summary.md §8 for why variable cardinality breaks the single-Bundle-template extraction.
-Mpox and Hepatitis C
+(`examples/Mpox/ChEkmQuestionnaireImmunizationMpox.fsh` — two rows;
+`examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireImmunizationInvasivePneumococcalDisease.fsh`
+— one). Fixed rows, not a repeating group — see forms-summary.md §8 for why variable cardinality
+breaks the single-Bundle-template extraction. **One row = one resource carrying the TOTAL dose
+count**, never one resource per dose.
+Mpox, Hepatitis C and invasive pneumococcal disease
 have the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation` +
 `RuleSetQrDeath`); Gonorrhoea has none. That section is also the only one needing a third launch context (`encounter`), which is why
 it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.
