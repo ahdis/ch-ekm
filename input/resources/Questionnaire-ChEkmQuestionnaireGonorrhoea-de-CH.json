@@ -195,54 +195,20 @@
             "id": "ExtractedPatient",
             "extension": [
               {
-                "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship",
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
                 "extension": [
                   {
-                    "url": "code",
-                    "valueCodeableConcept": {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                          "valueString": "%resource.descendants().where(linkId='nationality').answer.value"
-                        }
-                      ],
-                      "coding": [
-                        {
-                          "extension": [
-                            {
-                              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                              "valueString": "ofType(Coding)"
-                            }
-                          ]
-                        }
-                      ]
-                    }
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='nationality').answer.value.ofType(Coding).first().select(%factory.withExtension(%factory.withProperty(%factory.create(Extension), 'url', 'http://hl7.org/fhir/StructureDefinition/patient-citizenship'), 'code', %factory.CodeableConcept($this)))"
                   }
                 ]
               },
               {
-                "url": "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity",
+                "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension",
                 "extension": [
                   {
-                    "url": "value",
-                    "valueCodeableConcept": {
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                          "valueString": "%resource.descendants().where(linkId='genderIdentity').answer.value"
-                        }
-                      ],
-                      "coding": [
-                        {
-                          "extension": [
-                            {
-                              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                              "valueString": "ofType(Coding)"
-                            }
-                          ]
-                        }
-                      ]
-                    }
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.descendants().where(linkId='genderIdentity').answer.value.ofType(Coding).first().select(%factory.withExtension(%factory.withProperty(%factory.create(Extension), 'url', 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity'), 'value', %factory.CodeableConcept($this)))"
                   }
                 ]
               }

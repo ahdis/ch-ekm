@@ -97,26 +97,9 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "system": "urn:iso:std:iso:3166",
                       "code": "CH",
+                      "system": "urn:iso:std:iso:3166",
                       "display": "Switzerland"
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "url": "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity",
-            "extension": [
-              {
-                "url": "value",
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "system": "http://snomed.info/sct",
-                      "code": "1384187000",
-                      "display": "Identifies as transgender (finding)"
                     }
                   ]
                 }

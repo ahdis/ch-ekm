@@ -132,8 +132,8 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "system": "urn:iso:std:iso:3166",
                       "code": "CH",
+                      "system": "urn:iso:std:iso:3166",
                       "display": "Switzerland"
                     }
                   ]
@@ -149,8 +149,8 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "system": "http://snomed.info/sct",
                       "code": "1384187000",
+                      "system": "http://snomed.info/sct",
                       "display": "Identifies as transgender (finding)"
                     }
                   ]

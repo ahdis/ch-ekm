@@ -17,6 +17,8 @@
 //      data-absent-reason instead of an ISO code, while the precise location IS given. Mpox covers
 //      the opposite combination.
 //   6. Exposure "Wann": answered, so effectiveDateTime is asserted.
+//   7. `genderIdentity` left UNANSWERED -> the individual-genderIdentity extension must be absent
+//      from the extracted Patient, not an empty shell (Mpox answers it and covers the other branch).
 // The person group uses the full-name module (surname / givenname), as ChEkmHepatitisCPersonForm
 // requires.
 //
@@ -58,12 +60,11 @@ Description: "Example Hepatitis C QuestionnaireResponse used as input to SDC tem
 * item[0].item[0].item[7].answer.valueString = "BE"
 * item[0].item[0].item[8].linkId = "administrativeGender"
 * item[0].item[0].item[8].answer.valueCoding = $administrative-gender#female "female"
-// genderIdentity is answered on purpose even though the question is optional: leaving it blank makes
-// the shared ExtractedPatient template emit an empty `individual-genderIdentity` shell that fails
-// ext-1, which cascades into the document Bundle's `entry:Composition` slice no longer matching.
-// See the note on that extension in questionnnaire/extract/ChEkmDocumentTemplate.fsh and TODO.md.
-* item[0].item[0].item[9].linkId = "genderIdentity"
-* item[0].item[0].item[9].answer.valueCoding = $sct#1384187000 "Identifies as transgender (finding)"
+// genderIdentity is deliberately LEFT UNANSWERED — it is an optional question, and this is the
+// regression test for it: the shared ExtractedPatient template must then emit NO
+// individual-genderIdentity extension at all, rather than an empty shell that fails ext-1. Mpox
+// answers it, so the two round-trips cover both branches. See the note on that extension in
+// questionnnaire/extract/ChEkmDocumentTemplate.fsh.
 
 // --- Diagnose und Manifestation ---
 // TWO manifestations (repeats = true) -> two Condition.evidence entries after $extract.

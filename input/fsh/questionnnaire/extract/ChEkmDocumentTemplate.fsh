@@ -31,40 +31,42 @@
 Instance: ExtractedPatient
 InstanceOf: ChEkmPatient
 // Usage: #inline
-// Nationalität -> patient-citizenship.code (identity pass-through of the answered Coding).
-// Coding idiom: templateExtractContext on the value CodeableConcept sets the answer.value scope,
-// templateExtractValue `ofType(Coding)` on coding[0] writes the Coding.
+// Nationalität -> patient-citizenship.code, Geschlechtsidentität -> individual-genderIdentity.value.
 //
-// NB: the gate is at the valueCodeableConcept level, NOT the whole patient-citizenship extension.
-// Gating the whole extension (context as a sibling of the static `code` sub-extension) DOES drop it
-// cleanly when unanswered, but the extract engine's sibling-strip bug then loses `code`'s `url` in
-// the ANSWERED case (it corrupts the data-bearing sibling left behind in the same `extension` array
-// — see forms-summary §8/§11). The identifier above CAN be fully gated only because system/value
-// are plain Identifier fields, not sibling extensions. Consequence here: if nationality is
-// unanswered the engine still emits an empty `{url: patient-citizenship, extension:[{url: code}]}`
-// shell (the parent is not pruned). Acceptable for now; the form normally answers nationality.
-* extension[0].url = $patient-citizenship
-* extension[0].extension[0].url = "code"
-* extension[0].extension[0].valueCodeableConcept.extension[+].url = $sdc-templateExtractContext
-* extension[0].extension[0].valueCodeableConcept.extension[=].valueString = "%resource.descendants().where(linkId='nationality').answer.value"
-* extension[0].extension[0].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
-* extension[0].extension[0].valueCodeableConcept.coding[0].extension[=].valueString = "ofType(Coding)"
-// Geschlechtsidentität -> individual-genderIdentity.value (identity pass-through of the answered
-// Coding). Same Coding idiom — INCLUDING the unanswered caveat documented for patient-citizenship
-// above, and here it is not merely cosmetic: an unanswered genderIdentity leaves the shell
-// `{url: individual-genderIdentity, extension: [{url: "value"}]}`, whose `value` sub-extension has
-// neither a value nor children and therefore FAILS ext-1. The invalid Patient then does not conform
-// to ChEkmPatient, so `Composition.subject only Reference(ChEkmPatient)` fails too and the document
-// Bundle's required `entry:Composition` slice stops matching — three QA errors from one skipped
-// optional question. Both Questionnaire responses therefore answer genderIdentity today; a real
-// form cannot be relied on to. See TODO.md ("Extraction: an unanswered optional coded extension
-// emits an invalid shell").
-* extension[1].url = $individual-genderIdentity
-* extension[1].extension[0].url = "value"
-* extension[1].extension[0].valueCodeableConcept.extension[+].url = $sdc-templateExtractContext
-* extension[1].extension[0].valueCodeableConcept.extension[=].valueString = "%resource.descendants().where(linkId='genderIdentity').answer.value"
-* extension[1].extension[0].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
-* extension[1].extension[0].valueCodeableConcept.coding[0].extension[=].valueString = "ofType(Coding)"
+// BOTH ARE BUILT WHOLE AT EXTRACTION, on the ch-ekm SdcTemplateExtractExtension carrier — the same
+// idiom as the onsetDateTime data-absent-reason and the exposure address (forms-summary §8), and
+// NOT the field-level gating this used to do. The old shape declared the extension statically and
+// put a templateExtractContext on the inner valueCodeableConcept:
+//
+//     {url: patient-citizenship, extension: [{url: code, valueCodeableConcept: <gated>}]}
+//
+// which drops the VALUE when the question is unanswered but never prunes the parent, leaving
+// `{url: …, extension: [{url: "code"}]}` — a sub-extension with neither a value nor children, i.e.
+// a FAILED ext-1. That is not cosmetic: the invalid Patient stops conforming to ChEkmPatient, so
+// `Composition.subject only Reference(ChEkmPatient)` fails, and the document Bundle's required
+// `entry:Composition` slice stops matching. Three QA errors from one skipped OPTIONAL question.
+//
+// Gating the whole extension instead was not an option either: a templateExtractContext as a
+// SIBLING of the static `code`/`value` sub-extension trips the engine's sibling-strip bug, which
+// corrupts the data-bearing sibling (loses its `url`) in the ANSWERED case.
+//
+// Building the complete Extension in ONE templateExtractValue avoids both. There is no
+// templateExtractContext at all: a value-only carrier whose expression yields empty is dropped
+// together with its carrier, so "unanswered" and "no extension emitted" are the same thing — the
+// shape already proven by `hospitalization.extension[0]` in RuleSetEncounterHospitalisation.
+//
+// Why this particular factory chain: `%factory.Extension(url, value)` can only build a SIMPLE
+// extension (url + value[x]), and these two are COMPLEX (url + a nested `extension` array).
+// `%factory.withProperty(…, 'extension', …)` does not work — it writes the child as a bare object
+// rather than an array and leaves a stray `"_extension": {}` behind. `%factory.withExtension(el,
+// url, value)` appends a proper array element, so: create the Extension, set its `url` with
+// withProperty, then add the single named sub-extension with withExtension.
+* extension[0].url = $sdc-templateExtractExtension
+* extension[0].extension[0].url = $sdc-templateExtractValue
+* extension[0].extension[0].valueString = "%resource.descendants().where(linkId='nationality').answer.value.ofType(Coding).first().select(%factory.withExtension(%factory.withProperty(%factory.create(Extension), 'url', 'http://hl7.org/fhir/StructureDefinition/patient-citizenship'), 'code', %factory.CodeableConcept($this)))"
+* extension[1].url = $sdc-templateExtractExtension
+* extension[1].extension[0].url = $sdc-templateExtractValue
+* extension[1].extension[0].valueString = "%resource.descendants().where(linkId='genderIdentity').answer.value.ofType(Coding).first().select(%factory.withExtension(%factory.withProperty(%factory.create(Extension), 'url', 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity'), 'value', %factory.CodeableConcept($this)))"
 // Name. Two parts working together:
 //  1. Static placeholders `family="X"` / `given=["Y"]` (each 1 char) so the ChEkmPatientInitials
 //     `name-initials` invariant (family length 1 AND given.first() length 1) validates on the template.
