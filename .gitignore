@@ -23,12 +23,9 @@ input/fsh/examples/HepatitisC/ChEkmQuestionnaireResponseHepatitisC.fsh
 input/fsh/examples/InvasiveStreptococcusPneumoniae/ChEkmDocumentInvasivePneumococcalDiseaseTemplate.fsh
 input/fsh/examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireInvasivePneumococcalDisease.fsh
 input/fsh/examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireResponseInvasivePneumococcalDisease.fsh
-input/fsh/logical/ChEkmLabForm.fsh
 input/fsh/profiles/Organization.fsh
-input/fsh/questionnnaire/ChEkmQuestionnaireLaboratory.fsh
 input/fsh/questionnnaire/RuleSets.fsh
 input/fsh/questionnnaire/extract/ChEkmDocumentTemplate.fsh
-input/fsh/questionnnaire/extract/RuleSetLaboratory.fsh
 input/resources/Bundle-ChEkmDocumentHepatitisC-extracted.json
 input/resources/Bundle-ChEkmDocumentInvasivePneumococcalDisease-extracted.json
 input/resources/Questionnaire-ChEkmQuestionnaireHepatitisC-de-CH.json
