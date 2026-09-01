@@ -172,10 +172,26 @@ def expand(canonical):
     out = []
     for c in localized.get("expansion", {}).get("contains", []):
         coding = {"system": c["system"], "code": c["code"]}
-        display = c.get("display") or base_display.get((c["system"], c["code"]))
-        # Post-coordinated expressions do not get the supplement designation from tx; override
-        # from the local supplement so the expression option is localized (see SUPPLEMENT_DESIGNATIONS).
-        if ":" in c["code"]:
+        base = base_display.get((c["system"], c["code"]))
+        display = c.get("display") or base
+        # tx does not always apply the supplement, and then silently returns the SOURCE-language
+        # display. Two known cases, handled identically by falling back to the local supplement:
+        #   * post-coordinated SNOMED expressions ("95324001:{363698007=73897004}") — tx returns the
+        #     normal-form display and never a supplement designation;
+        #   * codes that reach the value set through `include codes from valueset <local VS>` — e.g.
+        #     the three ChEkmOtherNoneUnknown codes inside ChEkmHepatitisCManifestation. tx does NOT
+        #     propagate useSupplement into the nested expansion, so "Other" / "Clinical finding
+        #     absent" / "Unknown" came out English while the value set's own directly-listed codes
+        #     were translated. (Expanding ChEkmOtherNoneUnknown on its own translates all three, so
+        #     the supplement itself is complete — it is the nesting that loses it.)
+        # Post-coordinated expressions are matched STRUCTURALLY (a ":" in the code) and always take
+        # the supplement: for them tx returns the normal-form rendering, which is neither the base
+        # display nor a translation, so an "is it localized?" test cannot recognise it.
+        # The nested-include case is matched by "the localized pass returned exactly what the
+        # untranslated pass did", which is what "not localized" looks like. An authentic SNOMED CH
+        # designation from tx therefore still wins over our DRAFT supplement value, as
+        # CodeSystemSupplements.fsh asks.
+        if ":" in c["code"] or display is None or display == base:
             supp = SUPPLEMENT_DESIGNATIONS.get((c["system"], c["code"], LANG))
             if supp:
                 display = supp

@@ -4207,21 +4207,21 @@
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "74964007",
-                    "display": "Other"
+                    "display": "Altro"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "373572006",
-                    "display": "Clinical finding absent"
+                    "display": "Reperto clinico assente"
                   }
                 },
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
                     "code": "261665006",
-                    "display": "Unknown"
+                    "display": "Sconosciuto"
                   }
                 },
                 {
