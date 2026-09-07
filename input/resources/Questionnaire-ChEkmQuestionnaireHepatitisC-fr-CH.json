@@ -104,6 +104,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCCourseOfDisease|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratory|0.0.1"
     },
     {
@@ -175,6 +179,9 @@
                 "entry": [
                   {
                     "reference": "Condition/ExtractedConditionHepatitisC"
+                  },
+                  {
+                    "reference": "QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC"
                   }
                 ]
               },
@@ -1019,6 +1026,44 @@
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                   "valueString": "%resource.descendants().where(linkId='labName').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "fullUrl": "http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC",
+          "resource": {
+            "resourceType": "QuestionnaireResponse",
+            "id": "ExtractedQuestionnaireResponseHepatitisC",
+            "status": "completed",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "item": [
+              {
+                "linkId": "template-questionnaire-response",
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                    "valueString": "%resource.item"
+                  }
+                ]
+              }
+            ],
+            "_questionnaire": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.questionnaire"
+                }
+              ]
+            },
+            "_authored": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.authored"
                 }
               ]
             }
@@ -4461,6 +4506,66 @@
                   "question": "manifestationBeginUnknown",
                   "operator": "=",
                   "answerBoolean": false
+                }
+              ]
+            },
+            {
+              "linkId": "course-of-disease",
+              "text": "Évolution de la maladie",
+              "type": "choice",
+              "repeats": true,
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "vertical"
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "check-box",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "235866006",
+                    "display": "Hépatite C aiguë"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "76783007",
+                    "display": "Hépatite chronique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "831000119103",
+                    "display": "Cirrhose du foie due à une hépatite C chronique"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "109841003",
+                    "display": "Carcinome hépatocellulaire"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "363800008",
+                    "display": "Bien-être général"
+                  }
                 }
               ]
             },

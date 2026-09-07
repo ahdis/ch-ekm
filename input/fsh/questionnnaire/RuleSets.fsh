@@ -457,3 +457,12 @@ RuleSet: RuleSetQrGroupImmunizationMpox
 //   invasivepneumococcaldisease-form > immunization > immunizationPneumococcal > immunizationStatusPneumococcal …
 RuleSet: RuleSetQrGroupImmunizationInvasivePneumococcalDisease
 * insert RuleSetQrLevel2SubQuestionnaire("immunization", "Immunisation status", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationInvasivePneumococcalDisease")
+
+// "Krankheitsverlauf" for Hepatitis C — a LEVEL-3 child of the "Diagnose und Manifestation"
+// section, inserted between RuleSetQrManifestationBeginUnknown and RuleSetQrLaboratory. Disease-
+// SPECIFIC (the answer list is ChEkmHepatitisCCourseOfDisease), hence the name and the child living
+// next to the Hepatitis C examples rather than in input/fsh/questionnnaire/. The answer is NOT
+// extracted into a resource; it travels in the QuestionnaireResponse the document carries — see
+// ChEkmQuestionnaireHepatitisCCourseOfDisease.fsh.
+RuleSet: RuleSetQrCourseOfDiseaseHepatitisC
+* insert RuleSetQrLevel3SubQuestionnaire("courseofdisease", "Course of the disease", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCCourseOfDisease")

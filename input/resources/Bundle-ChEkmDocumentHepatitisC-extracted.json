@@ -37,6 +37,9 @@
             "entry": [
               {
                 "reference": "Condition/ExtractedConditionHepatitisC"
+              },
+              {
+                "reference": "QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC"
               }
             ]
           },
@@ -394,6 +397,412 @@
           }
         ],
         "name": "LabSan GmbH"
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC",
+      "resource": {
+        "resourceType": "QuestionnaireResponse",
+        "id": "ExtractedQuestionnaireResponseHepatitisC",
+        "status": "completed",
+        "subject": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "item": [
+          {
+            "linkId": "hepatitisc-form",
+            "item": [
+              {
+                "linkId": "person",
+                "item": [
+                  {
+                    "linkId": "surname",
+                    "answer": [
+                      {
+                        "valueString": "Beispielin"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "givenname",
+                    "answer": [
+                      {
+                        "valueString": "Muster"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "dateOfBirth",
+                    "answer": [
+                      {
+                        "valueDate": "2000-01-01"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "ahvn13",
+                    "answer": [
+                      {
+                        "valueString": "7560000000000"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "nationality",
+                    "answer": [
+                      {
+                        "valueCoding": {
+                          "code": "CH",
+                          "system": "urn:iso:std:iso:3166",
+                          "display": "Switzerland"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "zipCode",
+                    "answer": [
+                      {
+                        "valueString": "3097"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "city",
+                    "answer": [
+                      {
+                        "valueString": "Liebefeld"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "canton",
+                    "answer": [
+                      {
+                        "valueString": "BE"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "administrativeGender",
+                    "answer": [
+                      {
+                        "valueCoding": {
+                          "code": "female",
+                          "system": "http://hl7.org/fhir/administrative-gender",
+                          "display": "female"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "linkId": "manifestation-group",
+                "item": [
+                  {
+                    "linkId": "manifestation",
+                    "answer": [
+                      {
+                        "valueCoding": {
+                          "code": "18165001",
+                          "system": "http://snomed.info/sct",
+                          "display": "Jaundice"
+                        }
+                      },
+                      {
+                        "valueCoding": {
+                          "code": "707724006",
+                          "system": "http://snomed.info/sct",
+                          "display": "Liver enzymes level above reference range"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "manifestationBeginUnknown",
+                    "answer": [
+                      {
+                        "valueBoolean": true
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "course-of-disease",
+                    "answer": [
+                      {
+                        "valueCoding": {
+                          "code": "235866006",
+                          "system": "http://snomed.info/sct",
+                          "display": "Acute hepatitis C (disorder)"
+                        }
+                      },
+                      {
+                        "valueCoding": {
+                          "code": "76783007",
+                          "system": "http://snomed.info/sct",
+                          "display": "Chronic hepatitis (disorder)"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "laboratory",
+                    "item": [
+                      {
+                        "linkId": "labName",
+                        "answer": [
+                          {
+                            "valueString": "LabSan GmbH"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "labEmail",
+                        "answer": [
+                          {
+                            "valueString": "patho@automation.org"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "linkId": "course",
+                "item": [
+                  {
+                    "linkId": "hospitalisation",
+                    "item": [
+                      {
+                        "linkId": "hospitalisationStatus",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "code": "261665006",
+                              "system": "http://snomed.info/sct",
+                              "display": "Unknown (qualifier value)"
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "death",
+                    "item": [
+                      {
+                        "linkId": "deceased",
+                        "answer": [
+                          {
+                            "valueBoolean": false
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "linkId": "exposure",
+                "item": [
+                  {
+                    "linkId": "exposureWhere",
+                    "item": [
+                      {
+                        "linkId": "exposureWhereCountry",
+                        "answer": [
+                          {
+                            "valueCoding": {
+                              "code": "261665006",
+                              "system": "http://snomed.info/sct",
+                              "display": "Unknown (qualifier value)"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "exposureWherePreciseLocation",
+                        "answer": [
+                          {
+                            "valueString": "Bern"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "exposureWhen",
+                    "item": [
+                      {
+                        "linkId": "exposureWhenDate",
+                        "answer": [
+                          {
+                            "valueDate": "2025-12-01"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "linkId": "treatingPhysician",
+                "item": [
+                  {
+                    "linkId": "treatingPhysicianPractitioner",
+                    "item": [
+                      {
+                        "linkId": "physicianGivenname",
+                        "answer": [
+                          {
+                            "valueString": "Potagon"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "physicianSurname",
+                        "answer": [
+                          {
+                            "valueString": "Brachialis"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "physicianStreetLine",
+                        "answer": [
+                          {
+                            "valueString": "Sodaweg 55"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "physicianZipCode",
+                        "answer": [
+                          {
+                            "valueString": "3921"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "physicianCity",
+                        "answer": [
+                          {
+                            "valueString": "Flammingen"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "physicianPhone",
+                        "answer": [
+                          {
+                            "valueString": "+24 74 200 88 77"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "physicianEmail",
+                        "answer": [
+                          {
+                            "valueString": "p.brach@sampledoc.com"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "physicianGln",
+                        "answer": [
+                          {
+                            "valueString": "7601000435666"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "treatingPhysicianOrganization",
+                    "item": [
+                      {
+                        "linkId": "orgName",
+                        "answer": [
+                          {
+                            "valueString": "Regionalspital Genesis"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "orgDepartment",
+                        "answer": [
+                          {
+                            "valueString": "Hepatologie"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "orgStreetLine",
+                        "answer": [
+                          {
+                            "valueString": "Radixstrasse 88"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "orgZipCode",
+                        "answer": [
+                          {
+                            "valueString": "4088"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "orgCity",
+                        "answer": [
+                          {
+                            "valueString": "Pankreas"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "orgPhone",
+                        "answer": [
+                          {
+                            "valueString": "+26 34 876 54 33"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "orgEmail",
+                        "answer": [
+                          {
+                            "valueString": "hepato@hospidoc.com"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "orgBer",
+                        "answer": [
+                          {
+                            "valueString": "A99086600"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "orgGln",
+                        "answer": [
+                          {
+                            "valueString": "7601000435777"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "questionnaire": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCAssembled",
+        "authored": "2026-01-27T11:30:00+02:00"
       }
     },
     {

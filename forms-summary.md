@@ -1163,7 +1163,95 @@ deceased (no Observation, no section, no `deceasedDateTime`), deceased without a
 > `WARNING`/`INFORMATION` remain (e.g. the carrier extension's `context = Element` advisory) — those
 > are expected for a template.
 
+### Carrying the WHOLE QuestionnaireResponse into the document (Hepatitis C Krankheitsverlauf)
+
+Not every form question has a resource to be extracted into. The Hepatitis C "Krankheitsverlauf"
+(akut / chronisch / Zirrhose / Hepatokarzinom / General wellbeing) is the IG's first such question:
+there is no Condition or Observation for it, and inventing one would bake a guess into the profiles.
+The design chosen instead — the resolution of TODO.md #7 — is to let **the QuestionnaireResponse
+itself be the carrier**, as `Composition.section[diagnosis].entry[questionnaire-response]`:
+
+| | |
+| --- | --- |
+| Question | `course-of-disease`, an assemble-child (`ChEkmQuestionnaireHepatitisCCourseOfDisease`) inside the *Diagnose und Manifestation* section |
+| Extraction | none — no target profile, no `definition` on the item |
+| Document entry | `ExtractedQuestionnaireResponseHepatitisC`, the source response copied verbatim |
+| Guarantee | `ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC` + invariant `ch-ekm-qr-hepatitisc-course`, and `entry[questionnaire-response] 1..1` on `ChEkmCompositionHepatitisC` |
+
+**The copy is one `templateExtractValue`, and it works for a non-obvious reason.** The template
+carries a placeholder `item[0]` whose value expression is `%resource.item`:
+
+```
+* item[0].linkId = "template-questionnaire-response"
+* item[0].extension[+].url = $sdc-templateExtractValue
+* item[0].extension[=].valueString = "%resource.item"
+```
+
+The engine inserts a value only when the FHIRPath result has **exactly one** element
+(`getValueFromResult` in `@aehrc/sdc-template-extract`). That holds here precisely because every
+root questionnaire in this IG wraps its whole form in ONE top-level item — a root with two
+top-level items could not be copied this way; `%resource.item.item` would return five groups and
+insert nothing. The placeholder must also set no key the incoming item does not set: static template
+data is merged with the value by a shallow spread in which the value wins **per key**, so a
+placeholder `answer` on the top-level item would survive into the extracted response.
+
+`scripts/extract-hepatitisc.sh` asserts the round trip: the extracted `item` tree must be
+byte-identical to the source response's.
+
+#### Three validator traps, in the order they were hit
+
+Embedding a QuestionnaireResponse in a template that is itself `contained` in a Questionnaire is
+squeezed between rules that were not written with each other in mind. All three were measured with
+the IG Publisher against a 20-error baseline.
+
+**1. The placeholder may not reuse the form's linkIds (+5 errors).** `que-2` is
+`descendants().linkId.isDistinct()` evaluated on the Questionnaire, and `descendants()` walks into
+`contained` — i.e. into the extraction template. A placeholder called `hepatitisc-form` therefore
+reads as a duplicate of the form's own root item, on the root, the assembled and all three language
+questionnaires. It cannot be suppressed: `input/ignoreWarnings.txt` does not apply to errors in this
+Publisher, and the pre-existing `tab-container` line in that file is the standing proof — those 20
+baseline errors are listed there and still counted.
+
+**2. …but an invented linkId is only safe if the template names no questionnaire (+12 errors).** A
+QuestionnaireResponse may only use linkIds that exist in the questionnaire it names, so an invented
+placeholder gives "LinkId 'x' not found in questionnaire" — and because that makes the response
+non-conformant, the diagnosis entry stops matching its slice, which takes the Composition out of
+conformance and with it the Bundle's required `entry:Composition` slice. The escape is that the check
+only runs when there *is* a questionnaire: the template's `questionnaire` carries the value
+expression and **no value** (`_questionnaire` alone — the same value-less-carrier idiom
+`Composition.date` uses), so the linkId check is skipped with an INFORMATION and the invented linkId
+is free. This is why the profile leaves `questionnaire` at 0..1 rather than 1..1.
+
+**3. The invariant must guard on `hasValue()`, not `exists()` (+1 error).** With `questionnaire`
+value-less, `questionnaire.exists()` is still **true** — the element node is there, only the value is
+missing — so a guard written that way opens on the template and the template fails its own
+invariant. And it fails *silently*: the profile is reached through the `$this.resolve()` slice
+discriminator, so the only symptom is the same "Slice 'Bundle.entry:Composition': a matching slice is
+required, but not found" as trap 2, with nothing said about the response. The invariant is therefore:
+
+```
+questionnaire.hasValue() implies descendants().where(linkId = 'course-of-disease').answer.value.exists()
+```
+
+`descendants()` from the resource rather than a fixed path, so re-ordering the assembled sections
+cannot invalidate documents already sent and a top-level `course-of-disease` would match too; an
+invariant rather than a slice, because `QuestionnaireResponse.item` cannot be sliced by `linkId` at
+an arbitrary depth.
+
+**What the guard costs.** A response that omits `questionnaire` escapes the check. Every real
+response names the form it answers — the extracted one gets it from `%resource.questionnaire` — so
+the guard is open for all of them, but this is a weaker statement than an unconditional invariant
+with `questionnaire 1..1`. That stronger pair is a one-line change; it costs the 5 `que-2` errors of
+trap 1, because the template would then have to reuse the form's linkIds to satisfy it.
+
+**One more ordering rule.** The entry is ungated and therefore declared BEFORE the conditional
+entries. Appending it after the Encounter / cause-of-death entries silently produces an *empty*
+QuestionnaireResponse as soon as one of those gates does not fire — the index-shift failure
+documented above, and the first thing to check if the copy ever comes back blank.
+
+
 ---
+
 
 ## 9. Uploading the questionnaire to our Forms Server
 

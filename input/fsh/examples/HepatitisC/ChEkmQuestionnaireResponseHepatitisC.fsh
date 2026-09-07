@@ -22,6 +22,11 @@
 //      closed state of each (the invasive pneumococcal disease QR covers the open one).
 //   8. `genderIdentity` left UNANSWERED -> the individual-genderIdentity extension must be absent
 //      from the extracted Patient, not an empty shell (Mpox answers it and covers the other branch).
+//   9. Krankheitsverlauf answered (two codes) -> the ONE thing this form does not extract into a
+//      resource. THIS RESPONSE ITSELF is copied verbatim into the document Bundle and referenced
+//      from Composition.section[diagnosis].entry[questionnaire-response]; the profile on it
+//      (ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC) has the invariant that the linkId must
+//      be answered. No other round trip in the IG carries its own response.
 // The person group uses the full-name module (surname / givenname), as ChEkmHepatitisCPersonForm
 // requires.
 //
@@ -79,16 +84,24 @@ Description: "Example Hepatitis C QuestionnaireResponse used as input to SDC tem
 // data-absent-reason#asked-unknown; manifestationBeginDate is enableWhen-disabled and unanswered.
 * item[0].item[1].item[1].linkId = "manifestationBeginUnknown"
 * item[0].item[1].item[1].answer.valueBoolean = true
+// Krankheitsverlauf — TWO answers (repeats = true). Nothing is extracted from them: this item is
+// the reason the whole QuestionnaireResponse is copied into the document, and it is what the
+// invariant ch-ekm-qr-hepatitisc-course on ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC
+// looks for. See OPEN QUESTIONS #7 in ChEkmQuestionnaireHepatitisC.fsh.
+* item[0].item[1].item[2].linkId = "course-of-disease"
+* item[0].item[1].item[2].answer[0].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
+* item[0].item[1].item[2].answer[1].valueCoding = $sct#76783007 "Chronic hepatitis (disorder)"
+
 // Labor — the analysing laboratory, which sits INSIDE this section, after the Manifestationsbeginn.
 // Values from the CSV's example column. Deliberately answers ONLY the mandatory `labName` plus the
 // email: the eight optional fields stay blank, so this round trip covers the CLOSED state of every
 // context-gated element of ExtractedLabOrganization (no identifier, no department, no address, no
 // phone) — the invasive pneumococcal disease QR answers all of them and covers the open state.
-* item[0].item[1].item[2].linkId = "laboratory"
-* item[0].item[1].item[2].item[0].linkId = "labName"
-* item[0].item[1].item[2].item[0].answer.valueString = "LabSan GmbH"
-* item[0].item[1].item[2].item[1].linkId = "labEmail"
-* item[0].item[1].item[2].item[1].answer.valueString = "patho@automation.org"
+* item[0].item[1].item[3].linkId = "laboratory"
+* item[0].item[1].item[3].item[0].linkId = "labName"
+* item[0].item[1].item[3].item[0].answer.valueString = "LabSan GmbH"
+* item[0].item[1].item[3].item[1].linkId = "labEmail"
+* item[0].item[1].item[3].item[1].answer.valueString = "patho@automation.org"
 
 // --- Verlauf ---
 // Hospitalisation "unbekannt" -> an Encounter exists but carries nothing except

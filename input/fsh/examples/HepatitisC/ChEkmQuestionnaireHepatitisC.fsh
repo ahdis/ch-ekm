@@ -63,9 +63,20 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 
 * insert RuleSetQrManifestationBeginUnknown
 
+// --- Krankheitsverlauf --------------------------------------------------------------------------
+// akut / chronisch / Zirrhose / Hepatokarzinom / General wellbeing. A LEVEL-3 child of this section,
+// like the Labor block below it. NOT extracted into a resource: the answer travels in the
+// QuestionnaireResponse that the document itself carries, as
+// Composition.section[diagnosis].entry[questionnaire-response], and the profile on it
+// (ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC) has an invariant requiring exactly this
+// linkId to be answered. See ChEkmQuestionnaireHepatitisCCourseOfDisease.fsh for the reasoning and
+// ChEkmDocumentHepatitisCTemplate.fsh for how the QuestionnaireResponse gets into the Bundle.
+* insert RuleSetQrCourseOfDiseaseHepatitisC
+
 // --- Labor -------------------------------------------------------------------------------------
-// The analysing laboratory, INSIDE the "Diagnose und Manifestation" section and directly after the
-// Manifestationsbeginn — so it is a sub-heading of the Diagnose tab, not a tab of its own. The nine
+// The analysing laboratory, INSIDE the "Diagnose und Manifestation" section and after the
+// Manifestationsbeginn/Krankheitsverlauf — so it is a sub-heading of the Diagnose tab, not a tab of
+// its own. The nine
 // CSV rows are all X-marked and identical to the invasive pneumococcal disease ones, so the module
 // (ChEkmQuestionnaireLaboratory) is disease-agnostic and both roots assemble it unchanged. This
 // closes the first half of OPEN QUESTION #4; "Anlass" is still open, and so is the seroconversion
@@ -153,21 +164,22 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     `sct#386053000 Evaluation procedure`) in section[medication], and the CSV itself flags that
 //     codification as uncertain. No profile, no model element, no question.
 //
-//  7. KRANKHEITSVERLAUF (akut / chronisch / Zirrhose / Hepatokarzinom / General wellbeing) is
-//     currently a SEPARATE, non-modular questionnaire — ChEkmQuestionnaireHepatitisCCourseOfDisease
-//     — referenced from `section[diagnosis].entry[questionnaire-response]` via the profile
-//     ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC. Two incompatible designs are in the repo
-//     at once: a nested QuestionnaireResponse inside the document, versus a question in THIS form
-//     whose answer is extracted into a resource. Decide before wiring it in; the value set
-//     (ChEkmHepatitisCCourseOfDisease) exists either way.
+//  7. KRANKHEITSVERLAUF — DECIDED AND IMPLEMENTED, see the section above. The two competing
+//     designs (a standalone questionnaire + a nested QuestionnaireResponse in the document, versus
+//     a question in this form extracted into a resource) are resolved into a third one:
+//     ChEkmQuestionnaireHepatitisCCourseOfDisease is now an assemble-child of THIS form, and the
+//     answer is NOT extracted — the QuestionnaireResponse of the whole form is what
+//     `section[diagnosis].entry[questionnaire-response]` carries, and
+//     ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC makes that entry mandatory and constrains
+//     it with the invariant `ch-ekm-qr-hepatitisc-course` (the linkId must be answered inside it).
 //
-//  8. IMPFSTATUS — the CSV has the block, but it cannot be filled in as-is: it says
-//     "targetDisease = gemeldete Erreger", and there is no hepatitis C vaccine. Presumably this
-//     means the hepatitis A / hepatitis B vaccinations. The machinery is ready (issue #29:
-//     RuleSetQrImmunizationRow + RuleSetImmunizationRow, one insert per vaccination type, plus a
-//     per-disease ChEkmImmunizationHepatitisC / ChEkmObservationVaccinationStatusHepatitisC pair
-//     fixing the target diseases and vaccine products) — only the question "which vaccinations does
-//     the Hepatitis C form ask about?" is open.
+//  8. IMPFSTATUS — DECIDED: NOT ASKED. Hepatitis C has no vaccine, so the CSV's
+//     "targetDisease = gemeldete Erreger" cannot be filled in, and asking about the hepatitis A /
+//     hepatitis B vaccinations instead would be a different question than the form states. No
+//     ChEkmImmunizationHepatitisC / ChEkmObservationVaccinationStatusHepatitisC pair is created and
+//     `Composition.section[immunization]` stays empty for this organism. The shared machinery
+//     (issue #29: RuleSetQrImmunizationRow + RuleSetImmunizationRow) is untouched and remains
+//     available should the FOPH later decide the form asks about hepatitis A/B after all.
 //
 //  9. PERSON — three CSV fields have no element in ChEkmPersonForm and therefore no question:
 //     Herkunftsland (place of birth, ch-core-address-ech-11-placeofbirth), Adresse (address line)

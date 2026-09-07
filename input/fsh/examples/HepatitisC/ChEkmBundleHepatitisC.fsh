@@ -74,16 +74,24 @@ Description: "Example for a CH EKM Composition: Hepatitis C"
 * section[social-history].entry[0] = Reference(ChEkmObservationExample-ExposureViralDisease)
 * section[social-history].entry[1] = Reference(ChEkmObservationExample-Occupation)
 
+// The response to the Hepatitis C reporting FORM — not to a questionnaire of its own: since the
+// Krankheitsverlauf became an assemble-child of ChEkmQuestionnaireHepatitisC it sits three levels
+// deep, at hepatitisc-form > manifestation-group > course-of-disease. Only that one question is
+// answered here, because it is the only one this example is about and the only one the profile's
+// invariant requires; a real report's response carries every answered item of the form (see
+// ChEkmQuestionnaireResponseHepatitisC, the $extract test input, for a full one).
 Instance: ChEkmQuestionnaireResponseHepatitisCCourseOfDisease
-InstanceOf: QuestionnaireResponse
+InstanceOf: ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC
 Usage: #example
 Title: "CH EKM QuestionnaireResponse: HepatitisC - Course of Disease"
-Description: "Example QuestionnaireResponse for the course of disease for Hepatitis C."
-* questionnaire = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCCourseOfDisease"
+Description: "Example QuestionnaireResponse for the Hepatitis C report, answering the course of disease question that the document has no other place for."
+* questionnaire = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCAssembled"
 * status = #completed
 * subject = Reference(ChEkmPatientExample)
-* item[+].linkId = "course-of-disease"
-* item[=].answer[+].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
+* item[0].linkId = "hepatitisc-form"
+* item[0].item[0].linkId = "manifestation-group"
+* item[0].item[0].item[0].linkId = "course-of-disease"
+* item[0].item[0].item[0].answer[+].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
 
 Instance: ChEkmConditionExample-HepatitisC
 InstanceOf: Condition
