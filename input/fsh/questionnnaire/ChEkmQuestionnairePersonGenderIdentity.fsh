@@ -10,7 +10,7 @@
 Instance: ChEkmQuestionnairePersonGenderIdentity
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Geschlechtsidentität der betroffenen Person"
+Title: "CH EKM Questionnaire: Person - Gender identity"
 Description: "Modular sub-questionnaire for the gender identity of the affected person. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnairePersonGenderIdentity)
 

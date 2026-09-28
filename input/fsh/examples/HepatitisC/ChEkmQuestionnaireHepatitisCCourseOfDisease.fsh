@@ -26,7 +26,7 @@
 Instance: ChEkmQuestionnaireHepatitisCCourseOfDisease
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: HepatitisC - Course of Disease"
+Title: "CH EKM Questionnaire: Hepatitis C - Course of Disease"
 Description: "Modular sub-questionnaire for the 'Krankheitsverlauf' question of the Hepatitis C clinical findings report. Reusable as an SDC assemble-child; NOT extracted into a resource — the QuestionnaireResponse itself is carried in the document, see ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireHepatitisCCourseOfDisease)
 

@@ -6,6 +6,8 @@ Usage: #example
 Title: "CH EKM Questionnaire: Gonorrhoea (modular)"
 Description: "Modular root questionnaire for the Gonorrhoea clinical findings report. Use Questionnaire/$assemble to produce the renderable form."
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea"
+* name = "ChEkmQuestionnaireGonorrhoea"
+* title = "CH EKM Questionnaire: Gonorrhoea (modular)"
 
 * insert RuleSetQrHeader("gonorrhoea-form", "Clinical findings report: gonorrhoea", "Meldung zum klinischen Befund: Gonorrhoea", "Déclaration de résultat clinique : Gonorrhoea", "Notifica del referto clinico: Gonorrhoea", ChEkmDocumentGonorrhoeaTemplate)
 // Render the sections below (person / diagnosis / exposure / physician) as tabs on the left

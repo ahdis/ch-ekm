@@ -45,7 +45,7 @@ This path suits an EHR that already holds the reported information in structured
 
 #### Path 2: Use the Questionnaire
 
-The Questionnaires follow the paper reporting forms and are linked from the [examples](examples.html) page, as the assembled Questionnaire (the one to render) and with German, French and Italian texts. Besides the questions, each one carries the pre-population rules and the template for extraction, so the knowledge of how answers map to the profiles ships with the form rather than having to be implemented in the EHR. A report built from a Questionnaire goes through four phases:
+The Questionnaires follow the paper reporting forms and are listed on the [Questionnaires](questionnaire.html) page, which also explains how they are assembled from modular parts, which variants are published and why rendering them needs a terminology server. Besides the questions, each one carries the pre-population rules and the template for extraction, so the knowledge of how answers map to the profiles ships with the form rather than having to be implemented in the EHR. A report built from a Questionnaire goes through four phases:
 
 <div><img src="ekm-form-phases.svg" alt="The four phases of a form: 1. launch context (Patient, treating physician as PractitionerRole, hospitalisation Encounter), 2. pre-population with initialExpression, 3. completion by the clinician, 4. template-based extraction. The Gonorrhoea example shows a completed form, the Bundle template with Patient, Condition and exposure Observation, and the resulting FHIR Document." style="width:100%; max-width:900px"/></div>
 

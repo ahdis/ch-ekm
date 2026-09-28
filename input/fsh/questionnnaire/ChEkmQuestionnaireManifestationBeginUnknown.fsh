@@ -1,11 +1,11 @@
-// Modular sub-questionnaire: "Diagnose und Manifestation" -> Manifestationen (Gonorrhoea green section)
-// Source of truth: logical model ChEkmManifestationForm (-> ChEkmConditionGonorrhoea)
+// Modular sub-questionnaire: "Diagnose und Manifestation" -> Manifestationsbeginn (onset, or unknown)
+// Source of truth: logical model ChEkmManifestationForm (-> ChEkmCondition)
 
 Instance: ChEkmQuestionnaireManifestationBeginUnknown
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Gonorrhoea - Manifestation"
-Description: "Modular sub-questionnaire for the 'Manifestationen' part of the 'Diagnose und Manifestation' section of the Gonorrhoea clinical findings report. Reusable as an SDC assemble-child."
+Title: "CH EKM Questionnaire: Manifestation - Onset"
+Description: "Modular sub-questionnaire for the onset of the manifestations ('Manifestationsbeginn', with 'unknown' as an option) in the 'Diagnose und Manifestation' section of the clinical findings report. Reusable as an SDC assemble-child."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireManifestationBeginUnknown)
 
 // "Manifestationsbeginn unbekannt" (onset of manifestation unknown) - default false; when checked

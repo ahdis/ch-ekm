@@ -28,7 +28,7 @@
 Instance: ChEkmQuestionnaireImmunizationMpox
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Immunization Mpox"
+Title: "CH EKM Questionnaire: Immunization - Mpox"
 Description: "Modular sub-questionnaire for the 'Impfstatus' section of the Mpox report: per vaccination type asked about (smallpox vaccination, mpox vaccination) whether the affected person was vaccinated, with how many doses in total, when the last dose was given and with which product. Reusable as an SDC assemble-child."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireImmunizationMpox)
 

@@ -129,6 +129,8 @@ pages:
     title: Home
   document.md:
     title: FHIR Document (Bundle)
+  questionnaire.md:
+    title: Questionnaires
   usecase.md:
     title: Use Case
   examples.md:
@@ -145,6 +147,7 @@ menu:
   Table of Contents: toc.html
   Home: index.html
   FHIR Document: document.html
+  Questionnaires: questionnaire.html
   Use Case: usecase.html
   Examples: examples.html
   Profiles: profiles.html

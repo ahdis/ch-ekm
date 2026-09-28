@@ -14,7 +14,7 @@
 Instance: ChEkmQuestionnairePersonGeneral
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Angaben zur betroffenen Person"
+Title: "CH EKM Questionnaire: Person - General information"
 Description: "Modular sub-questionnaire for the general data of the affected person (birth date, AHVN13, nationality, address, canton, administrative gender). Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnairePersonGeneral)
 

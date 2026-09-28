@@ -79,8 +79,10 @@ ROOT_FILE="$DIR/Questionnaire-$ROOT_ID.json"
 # a distinct id/url so it does not collide with the modular root example.
 ASSEMBLED_ID="${ROOT_ID}Assembled"
 OUT="input/resources/Questionnaire-$ASSEMBLED_ID.json"
-# Human-readable disease label, derived from the root id (ChEkmQuestionnaire<Disease>).
-DISEASE="${ROOT_ID#ChEkmQuestionnaire}"
+# Human-readable disease label, taken from the root's title ("CH EKM Questionnaire: <Disease> (modular)");
+# falls back to the root id (ChEkmQuestionnaire<Disease>) when the root carries no title.
+DISEASE=$(jq -r '.title // empty' "$ROOT_FILE" | sed -e 's/^CH EKM Questionnaire: //' -e 's/ (modular)$//')
+[ -n "$DISEASE" ] || DISEASE="${ROOT_ID#ChEkmQuestionnaire}"
 SCRIPT_URL="https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
 WRAPPER="scripts/assemble/assemble.cjs"
 [ -f "$WRAPPER" ] || { echo "ERROR: missing $WRAPPER"; exit 1; }

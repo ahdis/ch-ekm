@@ -27,9 +27,11 @@
 Instance: ChEkmQuestionnaireInvasivePneumococcalDisease
 InstanceOf: Questionnaire
 Usage: #example
-Title: "CH EKM Questionnaire: Invasive pneumococcal disease (modular)"
+Title: "CH EKM Questionnaire: Invasive Pneumococcal Disease (modular)"
 Description: "Modular root questionnaire for the invasive pneumococcal disease (invasive Streptococcus pneumoniae) clinical findings report. Use Questionnaire/$assemble to produce the renderable form."
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireInvasivePneumococcalDisease"
+* name = "ChEkmQuestionnaireInvasivePneumococcalDisease"
+* title = "CH EKM Questionnaire: Invasive Pneumococcal Disease (modular)"
 
 * insert RuleSetQrHeader("invasivepneumococcaldisease-form", "Clinical findings report: invasive pneumococcal disease", "Meldung zum klinischen Befund: Invasive Pneumokokkenerkrankung", "Déclaration de résultat clinique : infection invasive à pneumocoques", "Notifica del referto clinico: malattia pneumococcica invasiva", ChEkmDocumentInvasivePneumococcalDiseaseTemplate)
 // Render the sections below (person / diagnosis / course / exposure / physician) as tabs on the left

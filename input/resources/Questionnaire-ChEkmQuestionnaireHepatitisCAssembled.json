@@ -9,6 +9,8 @@
     "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCAssembled",
+  "name": "ChEkmQuestionnaireHepatitisCAssembled",
+  "title": "CH EKM Questionnaire: Hepatitis C (assembled)",
   "status": "active",
   "language": "en",
   "experimental": false,
@@ -5213,7 +5215,5 @@
     }
   ],
   "version": "0.0.1",
-  "name": "ChEkmQuestionnaireHepatitisCAssembled",
-  "title": "CH EKM Questionnaire: HepatitisC (assembled)",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisC and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

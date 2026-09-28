@@ -9,6 +9,8 @@
     "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxAssembled",
+  "name": "ChEkmQuestionnaireMpoxAssembled",
+  "title": "CH EKM Questionnaire: Mpox (assembled)",
   "status": "active",
   "language": "en",
   "experimental": false,
@@ -6601,7 +6603,5 @@
     }
   ],
   "version": "0.0.1",
-  "name": "ChEkmQuestionnaireMpoxAssembled",
-  "title": "CH EKM Questionnaire: Mpox (assembled)",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

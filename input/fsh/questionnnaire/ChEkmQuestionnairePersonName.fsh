@@ -11,7 +11,7 @@
 Instance: ChEkmQuestionnairePersonName
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Name der betroffenen Person"
+Title: "CH EKM Questionnaire: Person - Name"
 Description: "Modular sub-questionnaire for the name (surname / given name) of the affected person. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnairePersonName)
 

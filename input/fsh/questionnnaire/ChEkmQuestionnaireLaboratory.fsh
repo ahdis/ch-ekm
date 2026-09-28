@@ -39,7 +39,7 @@
 Instance: ChEkmQuestionnaireLaboratory
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Labor"
+Title: "CH EKM Questionnaire: Laboratory"
 Description: "Modular sub-questionnaire for the 'Labor' section of the clinical findings report: the laboratory that analysed the sample (name, department, address, phone, email, BUR, GLN). Reusable as an SDC assemble-child; extracted into ChEkmOrganizationLab via ChEkmServiceRequest.performer."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireLaboratory)
 

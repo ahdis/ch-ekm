@@ -41,7 +41,7 @@
 Instance: ChEkmQuestionnaireImmunizationInvasivePneumococcalDisease
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Immunization invasive pneumococcal disease"
+Title: "CH EKM Questionnaire: Immunization - Invasive Pneumococcal Disease"
 Description: "Modular sub-questionnaire for the 'Impfstatus' section of the invasive pneumococcal disease report: for the pneumococcal vaccination, whether the affected person was vaccinated, with how many doses in total, when the last dose was given and with which product. Reusable as an SDC assemble-child."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireImmunizationInvasivePneumococcalDisease)
 

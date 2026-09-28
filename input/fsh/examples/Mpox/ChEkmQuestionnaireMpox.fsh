@@ -4,6 +4,8 @@ Usage: #example
 Title: "CH EKM Questionnaire: Mpox (modular)"
 Description: "Modular root questionnaire for the Mpox clinical findings report. Use Questionnaire/$assemble to produce the renderable form."
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpox"
+* name = "ChEkmQuestionnaireMpox"
+* title = "CH EKM Questionnaire: Mpox (modular)"
 
 * insert RuleSetQrHeader("mpox-form", "Clinical findings report: mpox", "Meldung zum klinischen Befund: Mpox", "Déclaration de résultat clinique : Mpox", "Notifica del referto clinico: Mpox", ChEkmDocumentMpoxTemplate)
 // Render the sections below (person / diagnosis / exposure / physician) as tabs on the left

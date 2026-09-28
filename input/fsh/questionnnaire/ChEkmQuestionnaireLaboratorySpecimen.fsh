@@ -28,7 +28,7 @@
 Instance: ChEkmQuestionnaireLaboratorySpecimen
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Labor - Probe"
+Title: "CH EKM Questionnaire: Laboratory - Specimen"
 Description: "Modular sub-questionnaire for the sample analysed by the laboratory: the collection date (Entnahmedatum) and the material (Material). Reusable as an SDC assemble-child; extracted into ChEkmSpecimen via ChEkmServiceRequest.specimen. Assembled only by organisms whose form asks for the sample."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireLaboratorySpecimen)
 
