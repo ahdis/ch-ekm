@@ -1,0 +1,153 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 425" font-family="Arial, Helvetica, sans-serif">
+  <title>How a CH EKM questionnaire works: from the form to the FHIR Document</title>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#3B73AA"/>
+    </marker>
+    <filter id="sh" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#3D4960">From the form to the FHIR Document</text>
+
+  <!-- ============================================================ -->
+  <!-- TOP ROW: 4 phases -->
+  <!-- ============================================================ -->
+
+  <!-- Phase 1: Launch context -->
+  <rect x="20" y="50" width="195" height="105" rx="8" fill="#3B73AA" filter="url(#sh)"/>
+  <text x="117" y="72" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">1. Launch context</text>
+  <line x1="35" y1="80" x2="200" y2="80" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="117" y="97" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Patient</text>
+  <text x="117" y="112" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Treating physician (PractitionerRole)</text>
+  <text x="117" y="127" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Hospitalisation (Encounter)</text>
+  <text x="117" y="147" text-anchor="middle" font-size="8" fill="#ffffff" font-style="italic">launchContext: %patient, %user, %encounter</text>
+
+  <line x1="215" y1="102" x2="238" y2="102" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Phase 2: Pre-population -->
+  <rect x="243" y="50" width="195" height="105" rx="8" fill="#3B73AA" filter="url(#sh)"/>
+  <text x="340" y="72" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">2. Pre-populate</text>
+  <line x1="258" y1="80" x2="423" y2="80" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="340" y="97" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Person, address, AHV number</text>
+  <text x="340" y="112" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Physician and organisation</text>
+  <text x="340" y="127" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Hospitalisation, date of death</text>
+  <text x="340" y="147" text-anchor="middle" font-size="8" fill="#ffffff" font-style="italic">initialExpression (FHIRPath) · $populate</text>
+
+  <line x1="438" y1="102" x2="461" y2="102" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Phase 3: Complete -->
+  <rect x="466" y="50" width="195" height="105" rx="8" fill="#3B73AA" filter="url(#sh)"/>
+  <text x="563" y="72" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">3. Complete</text>
+  <line x1="481" y1="80" x2="646" y2="80" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="563" y="97" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Disease-specific questions</text>
+  <text x="563" y="112" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Follow-up questions on demand</text>
+  <text x="563" y="127" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Coded answers in de / fr / it</text>
+  <text x="563" y="147" text-anchor="middle" font-size="8" fill="#ffffff" font-style="italic">enableWhen, answerValueSet</text>
+
+  <line x1="661" y1="102" x2="684" y2="102" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Phase 4: Extraction -->
+  <rect x="689" y="50" width="195" height="105" rx="8" fill="#2B5081" filter="url(#sh)"/>
+  <text x="786" y="72" text-anchor="middle" font-size="12" font-weight="bold" fill="#ffffff">4. Extract</text>
+  <line x1="704" y1="80" x2="869" y2="80" stroke="#ffffff" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="786" y="97" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Template-based extraction</text>
+  <text x="786" y="112" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Bundle template in the Questionnaire</text>
+  <text x="786" y="127" text-anchor="middle" font-size="9.5" fill="#E9EEF6">Placeholders replaced by answers</text>
+  <text x="786" y="147" text-anchor="middle" font-size="8" fill="#ffffff" font-style="italic">templateExtract, templateExtractValue · $extract</text>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM: Example - Gonorrhoea -->
+  <!-- ============================================================ -->
+
+  <text x="450" y="176" text-anchor="middle" font-size="13" font-weight="bold" fill="#3B73AA">Example: Gonorrhoea</text>
+
+  <!-- Left: filled form -->
+  <rect x="20" y="198" width="280" height="185" rx="8" fill="#ffffff" stroke="#B9C8E1" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="160" y="219" text-anchor="middle" font-size="11" font-weight="bold" fill="#3B73AA">Completed form (QuestionnaireResponse)</text>
+
+  <rect x="40" y="230" width="240" height="18" rx="3" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="0.5"/>
+  <text x="48" y="242" font-size="8.5" fill="#555555">Initials: M. B.</text>
+  <text x="272" y="242" text-anchor="end" font-size="7.5" fill="#B43968" font-style="italic">pre-filled</text>
+
+  <rect x="40" y="254" width="240" height="18" rx="3" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="0.5"/>
+  <text x="48" y="266" font-size="8.5" fill="#555555">Date of birth: 01.01.2000</text>
+  <text x="272" y="266" text-anchor="end" font-size="7.5" fill="#B43968" font-style="italic">pre-filled</text>
+
+  <rect x="40" y="278" width="240" height="18" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="0.5"/>
+  <text x="48" y="290" font-size="8.5" fill="#555555">Manifestation: ◉ symptomatic  ○ asymptomatic</text>
+
+  <rect x="40" y="302" width="240" height="18" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="0.5"/>
+  <text x="48" y="314" font-size="8.5" fill="#555555">Sexual contact with: Man ▾</text>
+
+  <rect x="40" y="326" width="240" height="18" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="0.5"/>
+  <text x="48" y="338" font-size="8.5" fill="#555555">Type of relationship: Offered paid sex ▾</text>
+
+  <rect x="40" y="350" width="240" height="18" rx="3" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="0.5"/>
+  <text x="48" y="362" font-size="8.5" fill="#555555">Treating physician: Potagon Brachialis</text>
+  <text x="272" y="362" text-anchor="end" font-size="7.5" fill="#B43968" font-style="italic">pre-filled</text>
+
+  <!-- Arrow form → template -->
+  <line x1="300" y1="290" x2="335" y2="290" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Middle: Bundle template -->
+  <rect x="340" y="198" width="260" height="185" rx="8" fill="#F1F4F9" stroke="#2B5081" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="470" y="219" text-anchor="middle" font-size="11" font-weight="bold" fill="#2B5081">Bundle template (contained)</text>
+
+  <rect x="355" y="230" width="230" height="44" rx="5" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <rect x="355" y="230" width="230" height="16" rx="5" fill="#2B5081"/>
+  <text x="470" y="241" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#ffffff">Patient</text>
+  <text x="365" y="261" font-size="8" fill="#555555" font-style="italic">name ← initials · birthDate ← dateOfBirth</text>
+
+  <rect x="355" y="281" width="230" height="44" rx="5" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <rect x="355" y="281" width="230" height="16" rx="5" fill="#2B5081"/>
+  <text x="470" y="292" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#ffffff">Condition</text>
+  <text x="365" y="309" font-size="8" fill="#555555">code = 15628003 Gonorrhoea (fixed)</text>
+  <text x="365" y="320" font-size="8" fill="#555555" font-style="italic">evidence.code ← manifestation</text>
+
+  <rect x="355" y="332" width="230" height="44" rx="5" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <rect x="355" y="332" width="230" height="16" rx="5" fill="#2B5081"/>
+  <text x="470" y="343" text-anchor="middle" font-size="8.5" font-weight="bold" fill="#ffffff">Observation (exposure)</text>
+  <text x="365" y="360" font-size="8" fill="#555555" font-style="italic">component ← sexual contact with,</text>
+  <text x="365" y="371" font-size="8" fill="#555555" font-style="italic">                    type of relationship</text>
+
+  <!-- Arrow template → document -->
+  <line x1="600" y1="290" x2="635" y2="290" stroke="#2B5081" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Right: extracted FHIR Document -->
+  <rect x="640" y="198" width="244" height="185" rx="8" fill="#E9EEF6" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <text x="762" y="219" text-anchor="middle" font-size="11" font-weight="bold" fill="#3B73AA">FHIR Document (Bundle)</text>
+
+  <rect x="660" y="229" width="205" height="30" rx="5" fill="#3B73AA"/>
+  <text x="762" y="242" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">Patient: M. B.</text>
+  <text x="762" y="254" text-anchor="middle" font-size="7" fill="#E9EEF6">birthDate 2000-01-01</text>
+
+  <rect x="660" y="264" width="205" height="30" rx="5" fill="#3B73AA"/>
+  <text x="762" y="277" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">Condition: Gonorrhoea</text>
+  <text x="762" y="289" text-anchor="middle" font-size="7" fill="#E9EEF6">evidence → Symptomatic · subject → Patient</text>
+
+  <rect x="660" y="299" width="205" height="30" rx="5" fill="#3B73AA"/>
+  <text x="762" y="312" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">Observation: Exposure</text>
+  <text x="762" y="324" text-anchor="middle" font-size="7" fill="#E9EEF6">male partner · offered paid sex</text>
+
+  <rect x="660" y="334" width="205" height="30" rx="5" fill="#3B73AA"/>
+  <text x="762" y="347" text-anchor="middle" font-size="9" font-weight="bold" fill="#ffffff">PractitionerRole</text>
+  <text x="762" y="359" text-anchor="middle" font-size="7" fill="#E9EEF6">+ Practitioner, Organization</text>
+
+  <text x="762" y="377" text-anchor="middle" font-size="7.5" fill="#555555">Composition references all entries</text>
+
+  <!-- Legend -->
+  <text x="450" y="410" text-anchor="middle" font-size="9" fill="#555555">One Questionnaire → one Bundle template → one CH EKM FHIR Document, validated against the disease profile</text>
+
+  <!-- Bracket labels connecting to the phases above -->
+  <line x1="290" y1="155" x2="290" y2="198" stroke="#B9C8E1" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="294" y="192" text-anchor="start" font-size="8" fill="#999999">Phases 2 + 3</text>
+
+  <line x1="470" y1="181" x2="470" y2="198" stroke="#B9C8E1" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="474" y="192" text-anchor="start" font-size="8" fill="#999999">Phase 4</text>
+
+  <line x1="762" y1="155" x2="762" y2="198" stroke="#B9C8E1" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="766" y="192" text-anchor="start" font-size="8" fill="#999999">Result</text>
+</svg>
