@@ -115,7 +115,7 @@ The bundle resource contains a consistent set of entries representing FHIR resou
     <td>a hospitalization or outpatient visit related to the disease ("hospitalization" section)</td>
 </tr>
 <tr>
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"resourceType": "Observation"<br>&nbsp;&nbsp;&nbsp;&nbsp;},</td>
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"resourceType": "MedicationStatement"<br>&nbsp;&nbsp;&nbsp;&nbsp;},</td>
     <td>medication relevant to the disease, e.g. antiviral therapy ("medication" section)</td>
 </tr>
 <tr>
@@ -150,10 +150,17 @@ Resource profiles are a way to customize and constrain FHIR resources to meet sp
 
 Example: the FHIR resource «Organization» is used to map the organization of the treating physician, the organization of the broker, and the performing laboratory – each of which having its own profile.
 
-Disease-specific profiles for the [CH EKM-Document](StructureDefinition-ch-ekm-document.html), [Composition](StructureDefinition-ch-ekm-composition.html) and [Condition](StructureDefinition-ch-ekm-condition.html) further constrain these base profiles, e.g. fixing the diagnosis code or required sections for a particular disease (see [Gonorrhoea](StructureDefinition-ch-ekm-document-gonorrhoea.html), [Hepatitis C](StructureDefinition-ch-ekm-document-hepatitisc.html) and [Invasive Pneumococcal Disease](StructureDefinition-ch-ekm-document-invasivepneumococcaldisease.html)).
+### Disease specific reports
+
+Disease-specific profiles for the [CH EKM-Document](StructureDefinition-ch-ekm-document.html), [Composition](StructureDefinition-ch-ekm-composition.html) and [Condition](StructureDefinition-ch-ekm-condition.html) further constrain these base profiles, e.g. fixing the diagnosis code or required sections for a particular disease. The following disease-specific document profiles are derived from the [CH EKM-Document](StructureDefinition-ch-ekm-document.html):
+
+<ul>
+{%- for sd_hash in site.data.structuredefinitions -%}
+{%- assign sd = sd_hash[1] -%}
+{%- if sd.base == "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document" %}
+  <li><a href="{{sd.path}}">{{sd.title}}</a></li>
+{%- endif -%}
+{%- endfor %}
+</ul>
 
 See the [profiles](profiles.html) page for the full resource overview, and the [examples](examples.html) page for example FHIR documents per disease.
-
-### Example FHIR documents
-
-See the [examples](examples.html) page for the list of example FHIR documents (one per supported disease), together with the diagnosed condition, the document profile they conform to, the related logical models (forms) and questionnaires.

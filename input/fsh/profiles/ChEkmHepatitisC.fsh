@@ -1,14 +1,14 @@
 Profile: ChEkmDocumentHepatitisC
 Parent: ChEkmDocument
 Id: ch-ekm-document-hepatitisc
-Title: "CH EKM-Document: Clinical findings HepatitisC"
+Title: "CH EKM-Document: Clinical findings Hepatitis C"
 Description: "This profile constrains the Bundle resource for the purpose of clinical findings for Hepatitis C."
 * entry[Composition].resource only ChEkmCompositionHepatitisC
 
 Profile: ChEkmCompositionHepatitisC
 Parent: ChEkmComposition
 Id: ch-ekm-composition-hepatitisc
-Title: "CH EKM Composition: Clinical Findings HepatitisC"
+Title: "CH EKM Composition: Clinical Findings Hepatitis C"
 Description: "This CH EKM base profile constrains the Composition resource for the purpose of clinical findings for Hepatitis C."
 * subject only Reference(ChEkmPatient)
 * section[diagnosis].entry[condition] only Reference(ChEkmConditionHepatitisC)
@@ -41,7 +41,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 Profile: ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC
 Parent: QuestionnaireResponse
 Id: ch-ekm-questionnaireresponse-hepatitisc-courseofdisease
-Title: "CH EKM Questionnaire Response: Course of Disease - HepatitisC"
+Title: "CH EKM Questionnaire Response: Course of Disease - Hepatitis C"
 Description: "This CH EKM base profile constrains the QuestionnaireResponse resource carried in the Hepatitis C document: it is the response to the Hepatitis C reporting form, and it must answer the 'course-of-disease' question, which has no other target in the document."
 * obeys ch-ekm-qr-hepatitisc-course
 * questionnaire ^short = "The Hepatitis C reporting form this is a response to (the $assemble output of ChEkmQuestionnaireHepatitisC). Present on every real response; absent only in the $extract template."
@@ -50,7 +50,7 @@ Description: "This CH EKM base profile constrains the QuestionnaireResponse reso
 Profile: ChEkmConditionHepatitisC
 Parent: ChEkmCondition
 Id: ch-ekm-condition-hepatitisc
-Title: "CH EKM Condition: HepatitisC"
+Title: "CH EKM Condition: Hepatitis C"
 Description: "This CH EKM base profile constrains the Condition resource for the purpose of clinical findings for Hepatitis C."
 * code = $sct#50711007 "Viral hepatitis type C (disorder)"
 * evidence.code from ChEkmHepatitisCManifestation (required)

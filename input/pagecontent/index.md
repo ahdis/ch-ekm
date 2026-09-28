@@ -85,6 +85,7 @@ HL7®, HEALTH LEVEL SEVEN®, FHIR® and the FHIR <img src="icon-fhir-16.png" sty
 
 #### Dependency Table
 
+{% include dependency-table.xhtml %}
 
 ### Globals Table
 
