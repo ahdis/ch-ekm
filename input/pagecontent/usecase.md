@@ -16,7 +16,8 @@ The treating physician directly sends the report to FOPH:
 - [**Composition.author**](StructureDefinition-ch-ekm-composition.html) will be populated with the **treating physician information**.
 - **Condition.recorder** referenced in "Diagnosis section" of the Composition will be populated with the **treating physician information**.
 
-{% include scenario1-treating-physician.svg%}
+<div>{% include scenario1-treating-physician.svg %}</div>
+
 *Fig. 1: treating Physician scenario*
 
 ##### Hepatitic C example
@@ -34,7 +35,8 @@ A private service provider (so-called brokers) who transmit the clinical finding
 - [**Composition.author**](StructureDefinition-ch-ekm-composition.html) will be populated with the **service provider information**.
 - **Condition.recorder** referenced in "Diagnosis section" of the Composition will be populated with the **treating physician information**.
 
-{% include scenario1-broker.svg%}
+<div>{% include scenario1-broker.svg %}</div>
+
 *Fig. 2: Broker scenario*
 
 ##### Invasive Pneumococcal Infection example
