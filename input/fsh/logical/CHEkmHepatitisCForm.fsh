@@ -1,13 +1,45 @@
+// Logical model for the Hepatitis C clinical findings report — the master for
+// ChEkmQuestionnaireHepatitisC.
+//
+// Only the sections where the Hepatitis C form differs from the generic models get their own
+// sub-form (Person, Diagnose/Manifestation incl. Krankheitsverlauf); Labor, Verlauf, Exposition Wo/Wann
+// and the treating physician reuse the generic models unchanged, exactly as the questionnaire reuses
+// the shared sub-questionnaires. The form has no Impfstatus section.
+//
+// NOT MODELLED, because the form item has no agreed answer list or FHIR target yet (see the OPEN
+// QUESTIONS in ChEkmQuestionnaireHepatitisC.fsh): Exposition "Wie" (ChEkmHepatitisCExposureForm below
+// still carries the Gonorrhoea STI block and is therefore NOT part of the aggregate), Exposition
+// "weitere", the Labor "Anlass", Serokonversion and antivirale Therapie.
+
+Logical: ChEkmHepatitisCForm
+Parent: Base
+Title: "CH EKM Form: Hepatitis C"
+Description: "Logical model for the form ChEkmHepatitisCForm."
+Characteristics: #can-be-target
+
+* person 1..1 ChEkmHepatitisCPersonForm "Affected person"
+* manifestation 1..1 ChEkmHepatitisCManifestationForm "Diagnosis and manifestation"
+* laboratory 0..1 Base "Laboratory"
+  * organization 0..1 ChEkmLabForm "Analysing laboratory"
+* course 0..1 Base "Course of the disease (Verlauf)"
+  * hospitalisation 0..1 ChEkmHospitalisationForm "Hospitalisation"
+  * death 0..1 ChEkmDeathForm "State (Zustand)"
+// Wo and Wann only, see the header.
+* exposure 0..1 ChEkmExposureForm "Exposure"
+* treatingPhysician 1..1 Base "Treating physician"
+  * practitioner 1..1 ChEkmTreatingPhysicianPractitionerForm "Practitioner"
+  * organization 1..1 ChEkmTreatingPhysicianOrganizationForm "Organization"
+
 Logical: ChEkmHepatitisCPersonForm
 Parent: ChEkmPersonForm
-Title: "CH EKM Form: HepatitisC - Angaben zur betroffenen Person"
-Description: "Logical model for the form section 'Angaben zur betroffenen Person' of the HepatitisC clinical findings report. One element per form item."
+Title: "CH EKM Form: Hepatitis C - Affected Person"
+Description: "Logical model for the form section 'Affected person' (German form: 'Angaben zur betroffenen Person') of the Hepatitis C clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
 * surnameInitial 0..0
-* surname 0..1
+* surname 1..1
 * givennameInitial 0..0
-* givenname 0..1
+* givenname 1..1
 * dateOfBirth 1..1
 * nationality 0..1
 * zipCode 0..1
@@ -19,8 +51,8 @@ Characteristics: #can-be-target
 
 Logical: ChEkmHepatitisCExposureForm
 Parent: ChEkmExposureForm
-Title: "CH EKM Form: HepatitisC - Exposure"
-Description: "Logical model for the form section 'Exposure' (German form: 'Exposition') of the HepatitisC clinical findings report. One element per form item."
+Title: "CH EKM Form: Hepatitis C - Exposure"
+Description: "Logical model for the form section 'Exposure' (German form: 'Exposition') of the Hepatitis C clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
 // Wo on the structured level we will not have inland/ausland as separate items (discussed June 1st)
@@ -43,5 +75,35 @@ Title: "Exposure Form to CH EKM Exposure"
 * -> "Observation" "Maps the form section to the ChEkmExposureHepatitisC profile"
 * transmission.sexualContactPartner -> "Observation.component[sexualContactPartner].valueCodeableConcept"
 * transmission.relationshipType -> "Observation.component[relationshipType].valueCodeableConcept"
-* transmission.unknown -> "Observation.component[transmissionRoute]" "unknown -> component[transmissionRoute].dataAbsentReason #unknown"
-* transmission.otherTransmission -> "Observation.component[transmissionRoute].text" "other transmission route"
+* transmission.otherTransmission -> "Observation.component[otherTransmission].valueString" "Other transmission route (component code sct#74964007)"
+* transmission.unknown -> "Observation.component[transmissionRoute].valueCodeableConcept" "Ticked: sct#261665006 'Unknown'; the other transmission components are then not emitted"
+
+// Krankheitsverlauf is asked in this section, directly after the Manifestationsbeginn. It has no
+// resource target: the answer travels in the QuestionnaireResponse the document carries in
+// Composition.section[diagnosis], hence the second mapping.
+Logical: ChEkmHepatitisCManifestationForm
+Parent: ChEkmManifestationForm
+Title: "CH EKM Form: Hepatitis C - Diagnosis and Manifestation"
+Description: "Logical model for the form section 'Diagnosis and manifestation' (German form: 'Diagnose und Manifestation') of the Hepatitis C clinical findings report, including the course of the disease (German form: 'Krankheitsverlauf'). One element per form item."
+Characteristics: #can-be-target
+
+* manifestation ^short = "Manifestations (jaundice / elevated liver enzymes / elevated ALT / elevated AST / other / none / unknown)"
+* manifestation from ChEkmHepatitisCManifestation (required)
+* courseOfDisease 0..* CodeableConcept "Course of the disease (Krankheitsverlauf): acute / chronic / cirrhosis / hepatocellular carcinoma / general wellbeing"
+* courseOfDisease from ChEkmHepatitisCCourseOfDisease (required)
+
+Mapping: HepatitisCManifestationToCondition
+Source: ChEkmHepatitisCManifestationForm
+Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-condition-hepatitisc"
+Id: hepatitisc-manifestation-to-condition
+Title: "Manifestation Form to CH EKM Condition Hepatitis C"
+* -> "Condition" "Maps the form section to the ChEkmConditionHepatitisC profile; Condition.code is fixed to sct#50711007"
+* manifestation -> "Condition.evidence.code" "Manifestation coded from ChEkmHepatitisCManifestation"
+
+Mapping: HepatitisCManifestationToQuestionnaireResponse
+Source: ChEkmHepatitisCManifestationForm
+Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-questionnaireresponse-hepatitisc-courseofdisease"
+Id: hepatitisc-manifestation-to-questionnaireresponse
+Title: "Manifestation Form to CH EKM Questionnaire Response Course of Disease Hepatitis C"
+* -> "QuestionnaireResponse" "The response to the whole form, carried in Composition.section[diagnosis].entry[questionnaire-response]"
+* courseOfDisease -> "QuestionnaireResponse.item.answer.valueCoding" "The answers of the item with linkId 'course-of-disease' (invariant ch-ekm-qr-hepatitisc-course)"

@@ -13,8 +13,8 @@ Characteristics: #can-be-target
 
 Logical: ChEkmGonorrhoeaPersonForm
 Parent: ChEkmPersonForm
-Title: "CH EKM Form: Gonorrhoea - Angaben zur betroffenen Person"
-Description: "Logical model for the form section 'Angaben zur betroffenen Person' of the Gonorrhoea clinical findings report. One element per form item."
+Title: "CH EKM Form: Gonorrhoea - Affected Person"
+Description: "Logical model for the form section 'Affected person' (German form: 'Angaben zur betroffenen Person') of the Gonorrhoea clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
 * surnameInitial 1..1
@@ -58,12 +58,12 @@ Title: "Exposure Form to CH EKM Exposure"
 * -> "Observation" "Maps the form section to the ChEkmExposureGonorrhoea profile"
 * transmission.sexualContactPartner -> "Observation.component[sexualContactPartner].valueCodeableConcept"
 * transmission.relationshipType -> "Observation.component[relationshipType].valueCodeableConcept"
-* transmission.unknown -> "Observation.component[transmissionRoute]" "unknown -> component[transmissionRoute].dataAbsentReason #unknown"
-* transmission.otherTransmission -> "Observation.component[transmissionRoute].text" "other transmission route"
+* transmission.otherTransmission -> "Observation.component[otherTransmission].valueString" "Other transmission route (component code sct#74964007)"
+* transmission.unknown -> "Observation.component[transmissionRoute].valueCodeableConcept" "Ticked: sct#261665006 'Unknown'; the other transmission components are then not emitted"
 
 Logical: ChEkmGonorrhoeaManifestationForm
 Parent: ChEkmManifestationForm
 Title: "CH EKM Form: Gonorrhoea - Diagnosis and Manifestation"
-Description: "Logical model for the form section 'Diagnosis and Manifestation' of the Gonorrhoea clinical findings report. One element per form item."
+Description: "Logical model for the form section 'Diagnosis and manifestation' (German form: 'Diagnose und Manifestation') of the Gonorrhoea clinical findings report. One element per form item."
 
 * manifestation ^short = "Manifestations (symptomatic / oral / genital / anal / systemic / none / unknown)"

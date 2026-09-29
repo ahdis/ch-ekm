@@ -15,8 +15,9 @@
 // ChEkmCompositionHepatitisC; instead THE QUESTIONNAIRERESPONSE ITSELF travels in the document, as
 // `Composition.section[diagnosis].entry[questionnaire-response]`, and the profile
 // ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC (input/fsh/profiles/ChEkmHepatitisC.fsh)
-// carries the invariant that says this linkId must be answered inside it. That is why the item has
-// no `definition`: there is no logical-model element behind it, because there is no mapping target.
+// carries the invariant that says this linkId must be answered inside it. The item's `definition` is
+// ChEkmHepatitisCManifestationForm.courseOfDisease, whose mapping targets exactly that
+// QuestionnaireResponse.
 // The extraction template copies the whole QuestionnaireResponse into the Bundle — see
 // ChEkmDocumentHepatitisCTemplate.fsh.
 //
@@ -32,6 +33,7 @@ Description: "Modular sub-questionnaire for the 'Krankheitsverlauf' question of 
 
 * item[+].linkId = "course-of-disease"
 * insert RuleSetQrLevel1Text("Course of the disease", "Krankheitsverlauf", "Évolution de la maladie", "Decorso della malattia")
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.courseOfDisease"
 * item[=].type = #choice
 * item[=].repeats = true
 * item[=].extension[+].url = $choiceOrientation

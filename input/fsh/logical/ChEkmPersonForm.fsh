@@ -1,7 +1,7 @@
 Logical: ChEkmPersonForm
 Parent: Base
-Title: "CH EKM Form: Angaben zur betroffenen Person"
-Description: "Logical model for the form section 'Angaben zur betroffenen Person' One element per form item."
+Title: "CH EKM Form: Affected Person"
+Description: "Logical model for the form section 'Affected person' (German form: 'Angaben zur betroffenen Person'). One element per form item."
 Characteristics: #can-be-target
 
 * surnameInitial 0..1 string "Surname (initial)"
@@ -26,8 +26,8 @@ Mapping: PersonToPatient
 Source: ChEkmPersonForm
 Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-patient"
 Id: person-to-patient
-Title: "Person Form to CH EKM Patient Initials"
-* -> "Patient" "Maps the form section to the ChEkmPatientInitials profile"
+Title: "Person Form to CH EKM Patient"
+* -> "Patient" "Maps the form section to the ChEkmPatient profile"
 * surnameInitial -> "Patient.name.family" "Initial of the family name"
 * surname -> "Patient.name.family" "Family name"
 * givennameInitial -> "Patient.name.given" "Initial of the given name"

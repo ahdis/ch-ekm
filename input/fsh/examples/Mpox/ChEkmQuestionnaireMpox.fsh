@@ -19,7 +19,7 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * insert RuleSetQrGroupManifestation
 // Manifestationen - multiple-choice, radio buttons
 * insert RuleSetQrLevel3Item("manifestation", "Manifestations", "Manifestationen", "Manifestations", "Manifestazioni")
-// TODO? * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxManifestationForm#ChEkmMpoxManifestationForm.manifestation"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxManifestationForm#ChEkmMpoxManifestationForm.manifestation"
 * item[=].item[=].item[=].type = #choice
 * item[=].item[=].item[=].repeats = true
 * item[=].item[=].item[=].extension[+].url = $choiceOrientation

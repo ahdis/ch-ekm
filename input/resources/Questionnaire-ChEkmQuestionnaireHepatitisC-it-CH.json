@@ -4415,7 +4415,7 @@
             {
               "linkId": "manifestation",
               "text": "Manifestazioni",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestation",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.manifestation",
               "type": "choice",
               "repeats": true,
               "extension": [
@@ -4514,6 +4514,7 @@
             {
               "linkId": "course-of-disease",
               "text": "Decorso della malattia",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.courseOfDisease",
               "type": "choice",
               "repeats": true,
               "extension": [

@@ -76,7 +76,7 @@ Description: "This CH EKM base profile constrains the Patient resource."
 Profile: ChEkmPatientInitials
 Parent: ChEkmPatient
 Id: ch-ekm-patient-initials
-Title: "CH Ekm Patient Initials"
+Title: "CH EKM Patient Initials"
 Description: "This CH EKM base profile constrains the Patient resource for patient representation via Initials."
 * name obeys name-initials
 * identifier[LocalPid] 0..0

@@ -19,7 +19,7 @@ Logical: ChEkmImmunizationForm
 Parent: Base
 Characteristics: #can-be-target
 Title: "CH EKM Form: Immunization"
-Description: "Logical model for one row of the form section 'Impfstatus' (vaccination status): which vaccination, whether it was given, with how many doses, when the last dose was given and with which product. One element per form item."
+Description: "Logical model for one row of the form section 'Vaccination status' (German form: 'Impfstatus'): which vaccination, whether it was given, with how many doses, when the last dose was given and with which product. One element per form item."
 
 // Which vaccination the row is about. Not asked on the form — it IS the row, printed as its
 // heading ("Pockenimpfung", "Affenpockenimpfung") — but it is the element that identifies the row

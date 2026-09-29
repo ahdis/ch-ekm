@@ -167,8 +167,20 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
   Gonorrhoea (e.g. `surnameInitial 1..1`, `surname 0..0`; adds the Gonorrhoea
   transmission sub-structure `transmission.sexualContactPartner / relationshipType /
   otherTransmission / unknown`).
-- **`CHEkmHepatitisCForm`** — Person and Exposure only; there is no disease-level aggregate and no
-  `ChEkmHepatitisCManifestationForm` (see TODO.md).
+- **`ChEkmInvasivePneumococcalDiseaseForm`** — the disease-level aggregate: its own `person`
+  (initials, no gender identity), `manifestation` and one-row `immunization` sub-forms, plus the
+  generic `ChEkmLabForm` / `ChEkmLabSpecimenForm`, `ChEkmHospitalisationForm`, `ChEkmDeathForm`,
+  `ChEkmExposureForm` and treating-physician models.
+- **`ChEkmMpoxForm`** — the disease-level aggregate: its own `person` (full name + gender identity),
+  `manifestation`, `exposure` (adds the "Wie" transmission block, → `ChEkmExposureMpox`) and a
+  two-row `immunization` (`smallpox`, `mpox`), plus the generic `ChEkmHospitalisationForm`,
+  `ChEkmDeathForm` and treating-physician models. No Labor block.
+- **`ChEkmHepatitisCForm`** (file `CHEkmHepatitisCForm.fsh`) — the disease-level aggregate: its own
+  `person` (full name) and `manifestation` (incl. `courseOfDisease`, mapped to the
+  QuestionnaireResponse the document carries), plus the generic `ChEkmLabForm`,
+  `ChEkmHospitalisationForm`, `ChEkmDeathForm`, `ChEkmExposureForm` and treating-physician models.
+  `ChEkmHepatitisCExposureForm` (a copy of the Gonorrhoea "Wie" block) is NOT in the aggregate — the
+  Hepatitis C "Wie" is still open (TODO.md).
 
 These logical models are the **master** for building the SDC Questionnaires — see
 [forms-summary.md](forms-summary.md).
@@ -224,6 +236,16 @@ Terminology expansion uses the SNOMED CT Swiss Extension via `expansion-params.j
   manifestation begin date, masked names).
 - New organism → add: a manifestation `ValueSet`, disease `Document/Composition/Condition
   (/Exposure)` profiles, a `…Form` logical model + mappings, and an example `Bundle`.
+- The table on `examples.md` is GENERATED at build time (`{% sql %}` over the Publisher's
+  `package.db`): one row per profile whose base is `ch-ekm-document`, the rest found by name from
+  `ChEkmDocument<Disease>` — `ChEkmCondition<Disease>` (its fixed `code`), `ChEkm<Disease>Form`,
+  `ChEkmQuestionnaire<Disease>Assembled` / `-de-CH` / `-fr-CH` / `-it-CH`,
+  `ChEkmDocument<Disease>-extracted`, `ChEkmBundle<Disease>`, plus every QuestionnaireResponse whose
+  `questionnaire` is `…/ChEkmQuestionnaire<Disease>Assembled`. `logical.md` is generated the same way:
+  per disease the aggregate `ChEkm<Disease>Form` and every logical model named `ChEkm<Disease>…Form`
+  that derives from a shared `ChEkm…Form` (labelled by that parent); the shared table lists the
+  logical models whose base is `Base` and that are not a disease aggregate, with the targets of their
+  `Mapping`s. Keep to those names and a new organism appears on both pages without editing them.
 
 ## Build & validation
 

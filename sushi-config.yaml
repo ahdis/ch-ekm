@@ -131,6 +131,8 @@ pages:
     title: FHIR Document (Bundle)
   questionnaire.md:
     title: Questionnaires
+  logical.md:
+    title: Logical Models
   usecase.md:
     title: Use Case
   examples.md:
@@ -146,8 +148,10 @@ pages:
 menu:
   Table of Contents: toc.html
   Home: index.html
-  FHIR Document: document.html
-  Questionnaires: questionnaire.html
+  Clinical Report:
+    FHIR Document: document.html
+    Questionnaires: questionnaire.html
+    Logical Models: logical.html
   Use Case: usecase.html
   Examples: examples.html
   Profiles: profiles.html

@@ -44,12 +44,11 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 // (Ikterus, erhöhte Leberenzyme/Transaminasen, plus Andere/Keine/Unbekannt from
 // ChEkmOtherNoneUnknown). Same shape as Mpox; Gonorrhoea is the single-choice variant.
 //
-// `definition` points at the GENERIC ChEkmManifestationForm: there is no
-// ChEkmHepatitisCManifestationForm logical model (Gonorrhoea has one, Hepatitis C does not) —
-// see OPEN QUESTIONS #1.
+// `definition` points at ChEkmHepatitisCManifestationForm, as the Gonorrhoea root does at its own
+// manifestation sub-form.
 * insert RuleSetQrGroupManifestation
 * insert RuleSetQrLevel3Item("manifestation", "Manifestations", "Manifestationen", "Manifestations", "Manifestazioni")
-* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestation"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.manifestation"
 * item[=].item[=].item[=].type = #choice
 * item[=].item[=].item[=].repeats = true
 * item[=].item[=].item[=].extension[+].url = $choiceOrientation
@@ -120,11 +119,10 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 // OPEN QUESTIONS — Hepatitis C diverges from Gonorrhoea/Mpox here. NOTHING BELOW IS IMPLEMENTED.
 // Mirrored in TODO.md; kept here too so the gap is visible next to the form it belongs to.
 //
-//  1. NO ChEkmHepatitisCManifestationForm logical model. Gonorrhoea and Mpox each refine
-//     ChEkmManifestationForm per disease; CHEkmHepatitisCForm.fsh only defines the Person and the
-//     Exposure sub-forms, and no disease-level aggregate `ChEkmHepatitisCForm` at all. The
-//     manifestation item above therefore points at the generic model. Also unresolved: the
-//     manifestation value set mixes real findings with "Keine"/"Unbekannt" from
+//  1. LOGICAL MODEL — IMPLEMENTED. ChEkmHepatitisCForm is the disease-level aggregate, with
+//     ChEkmHepatitisCPersonForm and ChEkmHepatitisCManifestationForm (incl. Krankheitsverlauf) as its
+//     own sub-forms; the manifestation and course-of-disease items point at the latter. Still
+//     unresolved: the manifestation value set mixes real findings with "Keine"/"Unbekannt" from
 //     ChEkmOtherNoneUnknown while the item is `repeats = true`, so "Ikterus + keine" is tickable.
 //     (Same latent problem in Gonorrhoea; Mpox has the ChEkmOtherNoneUnknown include commented out.)
 //

@@ -1,7 +1,7 @@
 Profile: ChEkmCondition
 Parent: CHCoreCondition
 Id: ch-ekm-condition
-Title: "CH Ekm Condition"
+Title: "CH EKM Condition"
 Description: "This CH EKM base profile constrains the Condition resource to represent the diagnosis and manifestations"
 * code MS
 * encounter only Reference(ChEkmEncounter)

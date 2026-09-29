@@ -5331,6 +5331,7 @@
             {
               "linkId": "manifestation",
               "text": "Manifestations",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxManifestationForm#ChEkmMpoxManifestationForm.manifestation",
               "type": "choice",
               "repeats": true,
               "extension": [

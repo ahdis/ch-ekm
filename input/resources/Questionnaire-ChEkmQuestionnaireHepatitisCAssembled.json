@@ -2247,7 +2247,7 @@
                   }
                 ]
               },
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestation",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.manifestation",
               "type": "choice",
               "repeats": true,
               "extension": [
@@ -2442,6 +2442,7 @@
                   }
                 ]
               },
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.courseOfDisease",
               "type": "choice",
               "repeats": true,
               "extension": [

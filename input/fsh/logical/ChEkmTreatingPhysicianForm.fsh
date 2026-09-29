@@ -1,7 +1,7 @@
 Logical: ChEkmTreatingPhysicianPractitionerForm
 Parent: Base
 Title: "CH EKM Form: Treating Physician - Practitioner"
-Description: "Logical model for the form section 'Treating Physician: Practitioner' in the clinical findings report. One element per form item."
+Description: "Logical model for the form section 'Treating physician: practitioner' in the clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
 * givenname 1..1 string "Given name"
@@ -30,7 +30,7 @@ Title: "Treating Physician Practitioner Form to CH EKM Practitioner"
 Logical: ChEkmTreatingPhysicianOrganizationForm
 Parent: Base
 Title: "CH EKM Form: Treating Physician - Organization"
-Description: "Logical model for the form section 'Treating Physician: Organization' in the clinical findings report. One element per form item."
+Description: "Logical model for the form section 'Treating physician: organization' in the clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
 * name 1..1 string "Name"

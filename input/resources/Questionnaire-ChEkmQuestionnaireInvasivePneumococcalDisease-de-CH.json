@@ -4926,7 +4926,7 @@
             {
               "linkId": "manifestation",
               "text": "Manifestationen",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestation",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmInvasivePneumococcalDiseaseManifestationForm#ChEkmInvasivePneumococcalDiseaseManifestationForm.manifestation",
               "type": "choice",
               "repeats": true,
               "extension": [

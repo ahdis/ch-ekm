@@ -17,9 +17,7 @@
 //   * profiles       input/fsh/profiles/ChEkmInvasiveStreptococcusPneumoniae.fsh
 //   * example Bundle input/fsh/examples/InvasiveStreptococcusPneumoniae/ChEkmBundleInvasiveStreptococcusPneumoniae.fsh
 //   * paper form CSV "Meldung zum klinischen Befund Infektionskrankheit - Pneumokokkenerkrankung.csv"
-//   * logical model  — THERE IS NONE for this organism (no ChEkmInvasivePneumococcalDiseaseForm,
-//                      no manifestation sub-form), which AGENTS.md names as the master for the
-//                      forms work. See OPEN QUESTIONS #1.
+//   * logical model  input/fsh/logical/ChEkmInvasivePneumococcalDiseaseForm.fsh
 //
 // NAMING: the folder is `InvasiveStreptococcusPneumoniae/` but every profile and example instance
 // in it is called `…InvasivePneumococcalDisease`. This file follows the instances/profiles.
@@ -57,11 +55,11 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 // Andere/Keine/Unbekannt from ChEkmOtherNoneUnknown). Same shape as Mpox and Hepatitis C;
 // Gonorrhoea is the single-choice variant.
 //
-// `definition` points at the GENERIC ChEkmManifestationForm: there is no
-// ChEkmInvasivePneumococcalDiseaseManifestationForm logical model — see OPEN QUESTIONS #1.
+// `definition` points at ChEkmInvasivePneumococcalDiseaseManifestationForm, as the Gonorrhoea root
+// does at its own manifestation sub-form.
 * insert RuleSetQrGroupManifestation
 * insert RuleSetQrLevel3Item("manifestation", "Manifestations", "Manifestationen", "Manifestations", "Manifestazioni")
-* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestation"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmInvasivePneumococcalDiseaseManifestationForm#ChEkmInvasivePneumococcalDiseaseManifestationForm.manifestation"
 * item[=].item[=].item[=].type = #choice
 * item[=].item[=].item[=].repeats = true
 * item[=].item[=].item[=].extension[+].url = $choiceOrientation
@@ -139,13 +137,13 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 // NOTHING BELOW IS IMPLEMENTED. Mirrored in TODO.md; kept here too so the gap is visible next to
 // the form it belongs to.
 //
-//  1. NO LOGICAL MODEL AT ALL for this organism. AGENTS.md names the logical models in
-//     input/fsh/logical/ as the MASTER for the forms work, and there is neither a disease-level
-//     `ChEkmInvasivePneumococcalDiseaseForm` aggregate (Gonorrhoea has one) nor a
-//     `…ManifestationForm` / `…PersonForm` / `…ExposureForm` sub-form (Gonorrhoea and Hepatitis C
-//     have theirs). Every `definition` in this root therefore points at a GENERIC model, and the
-//     "initials, not full name" decision is taken from the Composition profile rather than from a
-//     model that states it. Same open point as Hepatitis C OPEN QUESTION #1, one step worse.
+//  1. LOGICAL MODEL — IMPLEMENTED. ChEkmInvasivePneumococcalDiseaseForm is the disease-level
+//     aggregate, with its own sub-forms only where this form differs from the generic models:
+//     ChEkmInvasivePneumococcalDiseasePersonForm (initials, no gender identity),
+//     …ManifestationForm (bound to ChEkmInvasivePneumococcalDiseaseManifestation) and
+//     …ImmunizationForm (the one Pneumokokkenimpfung row). Labor, Verlauf, Exposition and the
+//     treating physician are the generic models. The manifestation item's `definition` now points
+//     at the disease sub-form; the shared sub-questionnaires keep pointing at the generic ones.
 //     Also unresolved, identically to Hepatitis C: ChEkmInvasivePneumococcalDiseaseManifestation
 //     mixes real findings with "Keine"/"Unbekannt"/"Anderes" from ChEkmOtherNoneUnknown while the
 //     item is `repeats = true`, so "Sepsis + keine" is tickable.

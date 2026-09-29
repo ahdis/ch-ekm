@@ -1,7 +1,7 @@
 Logical: ChEkmManifestationForm
 Parent: Base
-Title: "CH EKM Form: Diagnose und Manifestation"
-Description: "Logical model for the form section 'Diagnose und Manifestation' in the clinical findings report. One element per form item."
+Title: "CH EKM Form: Diagnosis and Manifestation"
+Description: "Logical model for the form section 'Diagnosis and manifestation' (German form: 'Diagnose und Manifestation') in the clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
 * manifestation 0..* CodeableConcept "Manifestations"

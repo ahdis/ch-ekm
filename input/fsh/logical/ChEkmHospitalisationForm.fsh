@@ -9,7 +9,7 @@ Logical: ChEkmHospitalisationForm
 Parent: Base
 Characteristics: #can-be-target
 Title: "CH EKM Form: Hospitalisation"
-Description: "Logical model for the form section 'Hospitalisation' (part of the 'Verlauf' section of the reporting form). One element per form item."
+Description: "Logical model for the form section 'Hospitalisation', part of the section 'Course of the disease' (German form: 'Verlauf'). One element per form item."
 
 // Yes / No / Unknown. This is not a field of the Encounter, it is the question whether an
 // Encounter exists at all: "yes" creates one, "no" creates none, "unknown" creates one whose

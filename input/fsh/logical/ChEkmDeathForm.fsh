@@ -12,7 +12,7 @@ Logical: ChEkmDeathForm
 Parent: Base
 Characteristics: #can-be-target
 Title: "CH EKM Form: Death"
-Description: "Logical model for the form section 'Zustand' (death), part of the 'Verlauf' section of the reporting form. One element per form item."
+Description: "Logical model for the form section 'State' (German form: 'Zustand'), part of the section 'Course of the disease' (German form: 'Verlauf'). Whether the person died, when, and of what. One element per form item."
 
 // Whether the person died. A plain flag: the form has no "unknown" answer here, unlike the
 // hospitalisation question - a reporting physician either knows of the death or does not report one.

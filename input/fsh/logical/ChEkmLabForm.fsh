@@ -16,7 +16,7 @@
 Logical: ChEkmLabForm
 Parent: Base
 Title: "CH EKM Form: Laboratory"
-Description: "Logical model for the form section 'Labor' (the analysing laboratory) in the clinical findings report. One element per form item."
+Description: "Logical model for the form section 'Laboratory' (German form: 'Labor'), the analysing laboratory, in the clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
 * name 1..1 string "Name"
@@ -52,7 +52,7 @@ Title: "Lab Form to CH EKM Organization Lab"
 Logical: ChEkmLabSpecimenForm
 Parent: Base
 Title: "CH EKM Form: Laboratory - Sample"
-Description: "Logical model for the sample questions of the form section 'Labor' (Entnahmedatum, Material). One element per form item."
+Description: "Logical model for the sample questions of the form section 'Laboratory' (German form: 'Labor'): collection date and material. One element per form item."
 Characteristics: #can-be-target
 
 * collectionDate 0..1 dateTime "Sample collection date (Entnahmedatum)"
