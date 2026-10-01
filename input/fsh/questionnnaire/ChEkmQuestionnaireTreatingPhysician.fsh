@@ -119,6 +119,24 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
 * item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"
 
+// The Practitioner's reference ON THE LAUNCHING SERVER (e.g. "Practitioner/123") — not a form question,
+// so hidden and without a logical-model `definition`. $extract has only the QuestionnaireResponse to
+// read: QuestionnaireResponse.author is the SMART user, i.e. the PractitionerRole, and the launch
+// contexts (%user) are gone by then. Capturing the reference here at $populate time is what lets the
+// DocumentReference (ChEkmDocumentReferenceTemplate) name the Practitioner as its author.
+// A `string`, not a `reference` item: Smart Forms' $populate turns a Reference result into a
+// valueString of its display (sdc-populate parseValueToAnswer has no valueReference branch). Smart Forms
+// keeps answers of questionnaire-hidden items in the response (removeEmptyAnswersFromResponse).
+* item[=].item[=].item[+].linkId = "physicianReference"
+* item[=].item[=].item[=].text = "Practitioner reference (system)"
+* item[=].item[=].item[=].type = #string
+* item[=].item[=].item[=].readOnly = true
+* item[=].item[=].item[=].extension[+].url = $questionnaire-hidden
+* item[=].item[=].item[=].extension[=].valueBoolean = true
+* item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
+* item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.practitioner.reference"
+
 // --- Organization -----------------------------------------------------------
 * item[=].item[+].linkId = "treatingPhysicianOrganization"
 * insert RuleSetQrLevel2Text("Sending organisation", "Absendende Organisation", "Organisation émettrice", "Organizzazione mittente")

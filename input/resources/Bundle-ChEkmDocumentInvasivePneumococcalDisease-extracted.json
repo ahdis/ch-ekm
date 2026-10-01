@@ -1,10 +1,15 @@
 {
   "resourceType": "Bundle",
   "id": "ChEkmDocumentInvasivePneumococcalDisease-extracted",
+  "meta": {
+    "profile": [
+      "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-invasivepneumococcaldisease"
+    ]
+  },
   "type": "document",
   "identifier": {
     "system": "urn:ietf:rfc:3986",
-    "value": "urn:uuid:9d4c1b02-3f77-4f56-9e21-5a8c6e0b74d1"
+    "value": "urn:uuid:ee33eae4-9e82-5898-9617-6dcb82ea3af0"
   },
   "timestamp": "2026-01-27T11:30:00+02:00",
   "entry": [

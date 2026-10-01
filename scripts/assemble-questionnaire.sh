@@ -137,17 +137,18 @@ q["title"] = f"CH EKM Questionnaire: {disease} (assembled)"
 extr_template = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extr-template"
 if root.get("contained"):
     q["contained"] = root["contained"]
-te_ext = None
-for it in root.get("item", []):
-    for e in it.get("extension", []) or []:
-        if e.get("url") == te_url:
-            te_ext = e
-            break
-if te_ext and q.get("item"):
+# There are TWO templateExtract extensions (document Bundle + DocumentReference); re-add each
+# one that is missing, matched by its template reference.
+te_exts = [e for it in root.get("item", []) for e in (it.get("extension", []) or []) if e.get("url") == te_url]
+def te_template(e):
+    return next((x.get("valueReference", {}).get("reference") for x in e.get("extension", []) if x.get("url") == "template"), None)
+if te_exts and q.get("item"):
     top = q["item"][0]
     top.setdefault("extension", [])
-    if not any(e.get("url") == te_url for e in top["extension"]):
-        top["extension"].append(te_ext)
+    present = {te_template(e) for e in top["extension"] if e.get("url") == te_url}
+    for e in te_exts:
+        if te_template(e) not in present:
+            top["extension"].append(e)
 # Only claim the extr-template profile if a template was actually re-attached; a template-less
 # modular root (e.g. the standalone Person questionnaire) must not claim it, or the IG Publisher
 # errors on the unsatisfied `contained 1..*` requirement.

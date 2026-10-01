@@ -17,11 +17,12 @@ the renderer for the CH EKM forms.
 > | --- | --- | --- |
 > | Renderer / app | https://smartforms.csiro.au | https://smartforms.ahdis.ch |
 > | FHIR Forms Server | `https://smartforms.csiro.au/api/fhir` | `https://smartforms.ahdis.ch/api/fhir` |
-> | Server software | HAPI 8.10.0 | **Blaze 1.10.1** (since 2026-08, see §9) |
+> | Server software | HAPI 8.10.0 | **HAPI 8.8.0, patched** — `hapi-fhir:8.8.0-pr8260-pr8371` (since 2026-09-09, see §9) |
 > | Role | reference / playground / prototyping | demo for CH EKM questionnaires  |
 >
-> Statements below about HAPI behaviour (`$assemble`, `$populate`, storing the extraction
-> template) describe **CSIRO's** server and HAPI in general — they no longer describe ours.
+> Statements below about HAPI's `$assemble` / `$populate` describe **CSIRO's** server; we do not use
+> those operations on ours. Statements about HAPI *storing* the extraction template describe stock
+> HAPI — ours carries the two fixes for exactly that (§9).
 > `scripts/upload-questionnaire.sh` defaults to our server; the `$assemble` and `$populate`
 > scripts do not call either one (both run the reference libraries locally).
 
@@ -54,15 +55,14 @@ Hosted endpoints (for prototyping):
 > path is the **renderer single-page app** (served from S3/CloudFront) — a `PUT` there
 > returns the SPA's `index.html` with HTTP 200, not a FHIR response. Ours splits the same way,
 > with the app at the host root: `https://smartforms.ahdis.ch/` is the renderer,
-> `https://smartforms.ahdis.ch/api/fhir` is Blaze. Always upload to `/api/fhir` (see §9).
+> `https://smartforms.ahdis.ch/api/fhir` is the patched HAPI. Always upload to `/api/fhir` (see §9).
 >
 > **CSIRO's endpoint is HAPI, not the TS microservices.** `smartforms.csiro.au/api/fhir/metadata`
 > reports **HAPI FHIR Server 8.10.0**, so *their* hosted `$assemble`/`$populate` are HAPI's
 > operations, not the `sdc-assemble`/`sdc-populate` Express services in the table above (those are
 > the *reference* implementations / what Smart Forms runs in-app). This matters for both
-> `$assemble` (see next) and `$populate` FHIRPath support (see §10). Our server offers **neither**
-> operation — Blaze has no SDC operations at all, which costs us nothing because we run both
-> locally.
+> `$assemble` (see next) and `$populate` FHIRPath support (see §10). We call **neither** operation on
+> our server either — we run both locally with the reference libraries.
 
 **We assemble LOCALLY with the SDC reference library `@aehrc/sdc-assemble`** (via
 `scripts/assemble/assemble.cjs`, wrapped by `scripts/assemble-gonorrhoea.sh`) — the same engine the
@@ -690,9 +690,61 @@ Exposure) this is the cleaner choice:
   references to generated fullUrls);
 - **the document shape is authored, not reconstructed** — `type=document`, `meta.profile`,
   identifier, sections and the static Broker resources sit in the template verbatim.
+- **`meta.profile` names the disease profile** (`* meta.profile = Canonical(ChEkmDocument<Disease>)` in each
+  template; explicit, because sushi-config has `setMetaProfile: never`). A validator then checks the
+  extracted document — standalone or as the document entry of the transaction — against e.g.
+  `ch-ekm-document-gonorrhoea` even when it is only asked for the generic `ch-ekm-document`.
+  Verified on matchbox: a Gonorrhoea document whose Condition carries a wrong disease code passes
+  `ch-ekm-document` without `meta.profile` and fails with it.
 
-The engine always wraps output in an outer **`transaction`** Bundle, so the document we want is
-`entry[0].resource` — `scripts/extract/extract.cjs` unwraps it.
+The engine always wraps output in an outer **`transaction`** Bundle. We use that transaction as the
+real output (Profile **`ChEkmExtractTransaction`**) — see *Writing the report back* below;
+`scripts/extract/extract.cjs` writes both the transaction and the unwrapped document.
+
+### Writing the report back: transaction = document + DocumentReference
+A document Bundle cannot be filed under a patient on the SMART on FHIR server the form was launched
+from: `Bundle` has no `subject`, and the Patient *inside* the document is the report's own copy
+(masked or initials-only for some organisms), not the server's patient record. So every questionnaire
+carries a **second, disease-agnostic template**, `ChEkmDocumentReferenceTemplate` (`contained[1]`,
+wired in `RuleSetQrHeader`), and `$extract` returns
+
+| entry | request | content |
+| --- | --- | --- |
+| 0 | `POST Bundle` | the document; `fullUrl = 'urn:uuid:' + %documentBundleId` |
+| 1 | `POST DocumentReference` | `ChEkmDocumentReference`: `subject` = `QuestionnaireResponse.subject` (the launch patient), `author` = the treating physician's **Practitioner** (see below), `date` = `authored`, `content.attachment.url` = the document's fullUrl, `masterIdentifier` = the document's `Bundle.identifier` |
+
+The two are tied by one UUID, allocated per extraction with SDC **`sdc-questionnaire-extractAllocateId`**
+(`documentBundleId`, on the questionnaire root) and used four times: the `fullUrl` sub-extension of the
+document's `templateExtract`, the document's `Bundle.identifier.value` (previously a static UUID, so
+every extracted report carried the same identifier), and the DocumentReference's `attachment.url` and
+`masterIdentifier`. When the server processes the transaction it rewrites `attachment.url` (type
+`url`) to the stored Bundle's location; `masterIdentifier` (a string) keeps the document identifier.
+`ChEkmExtractTransaction` checks both links with the invariant `ch-ekm-docref-document`.
+
+**Practitioner vs. PractitionerRole.** On the launching server the SMART user (`%user`) is a
+**PractitionerRole**, which references a Practitioner and an Organization on the same server (that is
+what `%user.practitioner.resolve()` reads at `$populate`). The document carries its own *copies* of all
+three, built from the form answers. `QuestionnaireResponse.author` is the PractitionerRole, but the
+DocumentReference must point at the **Practitioner**, and at `$extract` time `%user` no longer exists.
+So `ChEkmQuestionnaireTreatingPhysician` has a hidden, read-only `string` item `physicianReference`
+filled at `$populate` with `%user.practitioner.reference`, and the template reads it. If it is missing,
+the template falls back to `QuestionnaireResponse.author` only when that is a `Practitioner/…`; otherwise
+the DocumentReference has no author, and `ChEkmDocumentReference` (`author` 1..1, Practitioner only)
+rejects it. It is a `string`, not a `reference` item, because Smart Forms' `$populate` turns a Reference
+result into a `valueString` of its display. Smart Forms keeps the answers of `questionnaire-hidden`
+items in the response.
+
+Verified end to end against the local HAPI: `populate-mpox.sh` → `$extract` → POST of the transaction →
+`201` for both entries. HAPI rewrote `attachment.url` to `Bundle/<id>`, `masterIdentifier` equals the
+stored document's identifier, and `DocumentReference?subject=Patient/<id>` finds the report.
+
+Engine notes: the reference engine allocates a **bare** UUID, hence `'urn:uuid:' + %documentBundleId`
+in every expression, and it accepts several `templateExtract` extensions on one item (both sit on the
+form group). Launch-context variables (`%patient`, `%user`) are NOT available at extraction time — only
+`%resource` — so the patient comes from `QuestionnaireResponse.subject`, which Smart Forms sets from
+the SMART launch. A QR without a subject yields a DocumentReference without one, which the profile
+rejects on purpose. The CLI pins the two random UUIDs to values derived from the QR id so the IG
+examples (`Bundle-ChEkmTransaction<Disease>-extracted.json`) are stable across re-runs.
 
 > A single Bundle template is a poor fit only when a section can **repeat with variable
 > cardinality** (→ N entries): the per-instance loop applies to the whole template, not to one
@@ -1275,10 +1327,10 @@ scripts/upload-questionnaire.sh   ChEkmQuestionnaireGonorrhoea   # PUT Questionn
 - After upload it prints the canonical and a ready-to-open renderer link, and verifies the stored
   copy by diffing it against the artifact and counting directives.
 
-### Why the Forms Server runs Blaze, not HAPI (2026-08)
+### Why the Forms Server runs a patched HAPI (since 2026-09-09)
 
-The upload used to strip the contained template, because **HAPI cannot store it**. Two independent
-defects, both now reported upstream:
+Stock HAPI cannot store our questionnaires: the contained extraction template trips two independent
+defects, both reported upstream:
 
 - **[hapifhir/hapi-fhir#8238](https://github.com/hapifhir/hapi-fhir/issues/8238) — `HAPI-2223` NPE,
   write rejected.** A resource whose `contained[]` holds a **Bundle** with an `extension` on one of
@@ -1299,19 +1351,41 @@ defects, both now reported upstream:
   every attachment point at a Bundle root is a primitive `_x`, and all of them trip the bug. The
   `%factory.Extension` carrier (§8) needs a real `extension` slot and so does not apply.
 
-- **[FHIR/sushi#1631](https://github.com/FHIR/sushi/issues/1631) — extensions silently dropped.**
+- **[hapifhir/hapi-fhir#8370](https://github.com/hapifhir/hapi-fhir/issues/8370) /
+  [FHIR/sushi#1631](https://github.com/FHIR/sushi/issues/1631) — extensions silently dropped.**
   SUSHI emits a value-less directive on a *repeating* primitive as `_x` alone, with no null-padded
   sibling `x` array (`HumanName.given`, `Address.line`). HAPI parses that as an unanchored extension
-  and drops it: `201`, no `OperationOutcome`, 3 of 39 `templateExtractValue` directives simply gone
-  from the stored copy. The FHIR R4 JSON rules call for `"given": [null]`, and SUSHI already emits
+  and drops it: `201`, no `OperationOutcome`, 3 of 39 `templateExtractValue` directives (Gonorrhoea, at
+  the time) simply gone from the stored copy. The FHIR R4 JSON rules call for `"given": [null]`, and SUSHI already emits
   that correctly as soon as one entry has a value — it only omits the array when *every* value is
   absent. Fixing it there makes the published IG artifacts conformant too.
 
-**Blaze** ([samply/blaze](https://github.com/samply/blaze)) stores the resource as given and returns
-it verbatim, so both questionnaires round-trip byte-identically with all 39 directives and the
-upload needs no rewriting at all. `smartforms.ahdis.ch/api/fhir` has run Blaze 1.10.1 since 2026-08
-(manifests in `k8s-fhir.ch/ahdis-infomaniak/smartforms-ahdis-ch`). Blaze does **not** validate —
-keep using the IG Publisher for that.
+**What runs instead.** `smartforms.ahdis.ch/api/fhir` is hapi-fhir-jpaserver-starter on **HAPI 8.8.0 plus
+the two fixes**, built from the ahdis fork branch
+[`ahdis/hapi-fhir@v8.8.0-pr8260-pr8371`](https://github.com/ahdis/hapi-fhir/tree/v8.8.0-pr8260-pr8371)
+and deployed as `europe-west6-docker.pkg.dev/ahdis-ch/ahdis/hapi-fhir:8.8.0-pr8260-pr8371`
+(manifests in `k8s-fhir.ch/ahdis-infomaniak/smartforms-ahdis-ch`, `hapi.yaml`; the EHR HAPI behind the
+SMART launcher, `ehr-hapi.yaml`, runs the same image):
+
+| Fix | Upstream status | Effect for us |
+| --- | --- | --- |
+| [hapifhir/hapi-fhir#8260](https://github.com/hapifhir/hapi-fhir/pull/8260) — null guard in `BaseParser$CompositeChildElement.shouldBeEncoded()` | PR **open**, in no HAPI release | the questionnaire with its contained template is stored instead of `HAPI-2223` |
+| [hapifhir/hapi-fhir#8371](https://github.com/hapifhir/hapi-fhir/pull/8371) — keep extensions on a valueless repeating primitive (`"_line": [ {...} ]`) | merged, ships with HAPI **8.14.0** | the `given` / `line` directives are no longer dropped |
+
+Until #8260 is in a HAPI release, **any** stock HAPI — CSIRO's Forms Server, hapi.fhir.org, matchbox
+(which embeds HAPI and cannot even install the CH EKM package, [ahdis/matchbox#625](https://github.com/ahdis/matchbox/issues/625))
+— rejects these questionnaires, and so would a HAPI rebuilt without the fork patch. Moving the Forms
+Server to a newer HAPI means re-applying #8260 to it (and #8371, if older than 8.14.0).
+
+**History.** The server ran stock HAPI first (the upload then stripped the template), then
+**Blaze 1.10.1** from 2026-08-10, which stores resources as given and round-tripped the questionnaires
+byte-identically, and has run the patched HAPI since 2026-09-09. The CH EKM build does not depend on the server's
+operations either way: `$assemble`, `$populate` and `$extract` run locally, and validation is the IG
+Publisher's job.
+
+**After a database reset** the CH EKM examples are gone, and pre-population silently comes back empty
+for the treating physician (`%user.practitioner.resolve()` has nothing to resolve). Reload them:
+`./scripts/load_examples.sh https://smartforms.ahdis.ch/api/fhir`.
 
 Because the template now survives upload, the server copy also keeps `%resource.authored` on
 `Bundle.timestamp` rather than the 1900 placeholder (§8, "placeholder defaults"). Local `$extract`

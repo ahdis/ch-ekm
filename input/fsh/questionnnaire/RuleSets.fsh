@@ -182,6 +182,14 @@ RuleSet: RuleSetQrHeader(linkId, text, text-de-CH, text-fr-CH, text-it-CH, extra
 
 * insert RuleSetQrHeaderSdc
 * contained[0] = {extractTemplate}
+// $extract emits a TRANSACTION: the document Bundle (contained[0]) plus a DocumentReference
+// (contained[1], disease-agnostic) that links the stored document to the launch patient — see
+// ChEkmDocumentReferenceTemplate. %documentBundleId is the one UUID both templates share: the
+// document entry's fullUrl and Bundle.identifier, the DocumentReference's attachment.url and
+// masterIdentifier.
+* contained[1] = ChEkmDocumentReferenceTemplate
+* extension[+].url = $sdc-extractAllocateId
+* extension[=].valueString = "documentBundleId"
 
 * item[+].linkId = {linkId}
 * item[=].type = #group
@@ -202,10 +210,17 @@ RuleSet: RuleSetQrHeader(linkId, text, text-de-CH, text-fr-CH, text-it-CH, extra
 * item[=].text.extension[=].extension[+].url = "content"
 * item[=].text.extension[=].extension[=].valueString = {text-it-CH}
 
-// Drives template-based $extract: one instance of the contained Bundle template per
+// Drives template-based $extract: the contained document Bundle template, entered in the output
+// transaction under the allocated fullUrl the DocumentReference points at ...
 * item[=].extension[+].url = $sdc-templateExtract
 * item[=].extension[=].extension[+].url = "template"
 * item[=].extension[=].extension[=].valueReference = Reference({extractTemplate})
+* item[=].extension[=].extension[+].url = "fullUrl"
+* item[=].extension[=].extension[=].valueString = "'urn:uuid:' + %documentBundleId"
+// ... and the DocumentReference that indexes it (ChEkmDocumentReferenceTemplate).
+* item[=].extension[+].url = $sdc-templateExtract
+* item[=].extension[=].extension[+].url = "template"
+* item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentReferenceTemplate)
 
 // Renders the form group (item[0], the one RuleSetQrHeader creates) as a TAB CONTAINER: each of its
 // children — after $assemble these are the section groups person / manifestation-group / exposure /

@@ -161,9 +161,18 @@ InstanceOf: ChEkmDocumentInvasivePneumococcalDisease
 Usage: #example
 Title: "CH EKM $extract template: invasive pneumococcal disease document Bundle"
 Description: "SDC template-based extraction template. Shaped like ChEkmDocumentInvasivePneumococcalDisease; the per-report fields carry sdc-questionnaire-templateExtractValue/-Context FHIRPath expressions that read an invasive pneumococcal disease QuestionnaireResponse. Used by scripts/extract-invasivepneumococcaldisease.sh; not a normal example."
+// meta.profile names the disease profile, so a validator picks it up from the extracted document (and
+// from the transaction entry) without being told which profile to use. Explicit because
+// sushi-config sets `setMetaProfile: never`.
+* meta.profile = Canonical(ChEkmDocumentInvasivePneumococcalDisease)
 * type = #document
 * identifier.system = "urn:ietf:rfc:3986"
+// PLACEHOLDER DEFAULT — replaced at extraction by the allocated %documentBundleId, the UUID the
+// DocumentReference (ChEkmDocumentReferenceTemplate) uses as masterIdentifier, so every extracted
+// report gets its own identifier. A document Bundle must have one (bdl-9), hence the default.
 * identifier.value = "urn:uuid:9d4c1b02-3f77-4f56-9e21-5a8c6e0b74d1"
+* identifier.value.extension[+].url = $sdc-templateExtractValue
+* identifier.value.extension[=].valueString = "'urn:uuid:' + %documentBundleId"
 // PLACEHOLDER DEFAULT — replaced at extraction. A document Bundle must have a timestamp value
 // (bdl-10), so the template needs a real one to validate; this 1900 sentinel never survives.
 * timestamp = "1900-01-01T00:00:00Z"

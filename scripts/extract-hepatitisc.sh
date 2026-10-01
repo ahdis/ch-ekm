@@ -33,7 +33,7 @@
 #   - QuestionnaireResponse:   ChEkmQuestionnaireResponseHepatitisC
 #
 # Usage:
-#   ./scripts/extract-hepatitisc.sh [QUESTIONNAIRE_JSON] [QR_JSON] [OUT_JSON]
+#   ./scripts/extract-hepatitisc.sh [QUESTIONNAIRE_JSON] [QR_JSON] [OUT_JSON] [TX_OUT_JSON]
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -46,6 +46,9 @@ DEFAULT_Q="$ROOT"
 Q="${1:-$DEFAULT_Q}"
 QR="${2:-fsh-generated/resources/QuestionnaireResponse-ChEkmQuestionnaireResponseHepatitisC.json}"
 OUT="${3:-input/resources/Bundle-ChEkmDocumentHepatitisC-extracted.json}"
+# The whole $extract output — the transaction (ChEkmExtractTransaction) that stores the document
+# AND the DocumentReference linking it to the launch patient. $OUT is its document entry alone.
+TX_OUT="${4:-input/resources/Bundle-ChEkmTransactionHepatitisC-extracted.json}"
 
 for f in "$Q" "$QR"; do
   [ -f "$f" ] || { echo "ERROR: $f not found. Run 'sushi .' first."; exit 1; }
@@ -61,7 +64,7 @@ echo "Questionnaire:         $Q"
 echo "QuestionnaireResponse: $QR"
 echo
 
-node scripts/extract/extract.cjs "$Q" "$QR" "$OUT"
+node scripts/extract/extract.cjs "$Q" "$QR" "$OUT" "$TX_OUT"
 
 # The extract engine emits the document Bundle without an `id`. Since $OUT is a predefined IG
 # resource (input/resources/), the IG Publisher needs a stable logical id — add one derived from

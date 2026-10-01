@@ -3,7 +3,8 @@
 # Upload an assembled CH EKM questionnaire to the Smart Forms Forms Server, so it shows up in the
 # hosted renderer's questionnaire picker. Disease-agnostic: pass the modular ROOT id.
 #
-# Default Forms Server: https://smartforms.ahdis.ch/api/fhir (Blaze 1.10.1, R4).
+# Default Forms Server: https://smartforms.ahdis.ch/api/fhir (HAPI 8.8.0 patched, R4 —
+# image hapi-fhir:8.8.0-pr8260-pr8371, built from https://github.com/ahdis/hapi-fhir/tree/v8.8.0-pr8260-pr8371).
 # The renderer web app is the host root (https://smartforms.ahdis.ch/), NOT a FHIR server —
 # do not PUT there. Same split as the CSIRO deployment (smartforms.csiro.au/api/fhir).
 #
@@ -15,13 +16,15 @@
 #
 # The artifact is uploaded VERBATIM — the contained SDC extraction template and every
 # templateExtract directive go up exactly as authored, so the server copy and the file in
-# input/resources/ are the same resource. Blaze stores what it is given and returns it unchanged.
+# input/resources/ are the same resource.
 #
-# Not every server manages that. HAPI rejects the contained template outright
-# (https://github.com/hapifhir/hapi-fhir/issues/8238) and silently drops extensions on repeating
-# primitives that SUSHI leaves unpadded (https://github.com/FHIR/sushi/issues/1631). That is why
-# smartforms.ahdis.ch runs Blaze, and why the upload is checked against the artifact at the end
-# rather than trusted on its status code — see forms-summary.md §9.
+# Stock HAPI cannot store that: it rejects the contained template outright
+# (https://github.com/hapifhir/hapi-fhir/issues/8238, fix PR #8260 still unmerged) and silently drops
+# extensions on repeating primitives that SUSHI leaves unpadded
+# (https://github.com/hapifhir/hapi-fhir/issues/8370, fixed in 8.14.0; https://github.com/FHIR/sushi/issues/1631).
+# smartforms.ahdis.ch runs a HAPI patched with both fixes. Any other server — or that one rebuilt
+# without the patches — can fail either way, which is why the upload is checked against the artifact
+# at the end rather than trusted on its status code — see forms-summary.md §9.
 #
 # As with the other Smart Forms scripts, send Content-Type application/json.
 #

@@ -30,6 +30,12 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * questionnaire = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxAssembled"
 * status = #completed
 * authored = "2026-08-05T11:30:00+02:00"
+// The SMART launch context, as Smart Forms records it: the patient the form was opened for (the
+// same one the populate script launches with) and the user who filled it in. $extract copies both
+// onto the DocumentReference (ChEkmDocumentReferenceTemplate) — subject is how the stored report is
+// found from the patient record.
+* subject = Reference(Patient/ChEkmPatientExample)
+* author = Reference(PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample)
 
 * item[0].linkId = "mpox-form"
 
@@ -184,6 +190,9 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[5].item[0].item[6].answer.valueString = "p.brach@sampledoc.com"
 * item[0].item[5].item[0].item[7].linkId = "physicianGln"
 * item[0].item[5].item[0].item[7].answer.valueString = "7601000435666"
+// hidden: the Practitioner on the launching server, filled at $populate from %user.practitioner
+* item[0].item[5].item[0].item[8].linkId = "physicianReference"
+* item[0].item[5].item[0].item[8].answer.valueString = "Practitioner/ChEkmPractitionerTreatingPhysicianExample"
 // Organization
 * item[0].item[5].item[1].linkId = "treatingPhysicianOrganization"
 * item[0].item[5].item[1].item[0].linkId = "orgName"

@@ -22,6 +22,7 @@ Alias: $sdc-subQuestionnaire =      http://hl7.org/fhir/uv/sdc/StructureDefiniti
 // tab-container (Smart Forms: getShortText(qItem) ?? item.text).
 Alias: $sdc-shortText =             http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText
 Alias: $questionnaire-itemControl = http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl
+Alias: $questionnaire-hidden =      http://hl7.org/fhir/StructureDefinition/questionnaire-hidden
 Alias: $choiceOrientation =         http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation
 Alias: $binding-parameter =         http://hl7.org/fhir/tools/StructureDefinition/binding-parameter
 Alias: $minLength =                 http://hl7.org/fhir/StructureDefinition/minLength
@@ -45,6 +46,7 @@ Alias: $sdc-extr-template =          http://hl7.org/fhir/uv/sdc/StructureDefinit
 Alias: $sdc-templateExtract =        http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract
 Alias: $sdc-templateExtractValue =   http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue
 Alias: $sdc-templateExtractContext = http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext
+Alias: $sdc-extractAllocateId =     http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extractAllocateId
 // ch-ekm carrier extension for building a whole Extension via %factory.Extension (see Extensions.fsh)
 Alias: $sdc-templateExtractExtension = http://fhir.ch/ig/ch-ekm/StructureDefinition/sdc-templateExtractExtension
 

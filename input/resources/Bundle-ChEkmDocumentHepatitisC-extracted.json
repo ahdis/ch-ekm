@@ -1,10 +1,15 @@
 {
   "resourceType": "Bundle",
   "id": "ChEkmDocumentHepatitisC-extracted",
+  "meta": {
+    "profile": [
+      "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-hepatitisc"
+    ]
+  },
   "type": "document",
   "identifier": {
     "system": "urn:ietf:rfc:3986",
-    "value": "urn:uuid:2b4f6f16-4c8a-4a1c-9c0e-7a1f2d3b5c88"
+    "value": "urn:uuid:d3684203-60fe-531c-828a-18042f6997a5"
   },
   "timestamp": "2026-01-27T11:30:00+02:00",
   "entry": [
@@ -714,6 +719,14 @@
                         "answer": [
                           {
                             "valueString": "7601000435666"
+                          }
+                        ]
+                      },
+                      {
+                        "linkId": "physicianReference",
+                        "answer": [
+                          {
+                            "valueString": "Practitioner/ChEkmPractitionerTreatingPhysicianExample"
                           }
                         ]
                       }

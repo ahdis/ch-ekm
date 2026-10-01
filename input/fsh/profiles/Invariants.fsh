@@ -44,3 +44,24 @@ Invariant: ch-ekm-qr-hepatitisc-course
 Description: "A response that names the questionnaire it answers must answer the 'course-of-disease' question (Krankheitsverlauf) of the Hepatitis C form."
 Severity: #error
 Expression: "questionnaire.hasValue() implies descendants().where(linkId = 'course-of-disease').answer.value.exists()"
+
+// ChEkmExtractTransaction: the DocumentReference must point at the document stored in the SAME
+// transaction — by location (attachment.url = the document entry's fullUrl, which the server rewrites
+// to the document's new id) and by identity (masterIdentifier = Bundle.identifier, which survives).
+Invariant: ch-ekm-docref-document
+Description: "The DocumentReference's content.attachment.url is the document entry's fullUrl and its masterIdentifier is the document Bundle's identifier."
+Severity: #error
+Expression: "entry.where(resource is DocumentReference).resource.content.attachment.url = entry.where(resource is Bundle).fullUrl and entry.where(resource is DocumentReference).resource.masterIdentifier.value = entry.where(resource is Bundle).resource.identifier.value"
+
+// ChEkmDocumentReference: subject and author point at resources on the server the report is stored on,
+// which a validator cannot resolve — so `only Reference(...)` alone is never checked (verified: a
+// PractitionerRole/... author passes it). These check the literal reference instead.
+Invariant: ch-ekm-docref-subject-patient
+Description: "The subject is a literal reference to a Patient."
+Severity: #error
+Expression: "reference.matches('(^|/)Patient/[^/]+(/_history/[^/]+)?$')"
+
+Invariant: ch-ekm-docref-author-practitioner
+Description: "The author is a literal reference to a Practitioner (not the PractitionerRole of the SMART user)."
+Severity: #error
+Expression: "reference.matches('(^|/)Practitioner/[^/]+(/_history/[^/]+)?$')"

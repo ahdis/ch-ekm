@@ -136,10 +136,22 @@ its single row: `ChEkmImmunizationInvasivePneumococcalDisease` /
 `ChEkmInvasivePneumococcalDiseaseImmunizationTargetDisease` (`sct#16814004`) and
 `ChEkmInvasivePneumococcalDiseaseVaccineProduct` (`sct#836398006`).
 
+### Storing an extracted report
+- **`ChEkmDocumentReference`** (← `CHCoreDocumentReference`) — indexes a stored document Bundle and
+  links it to the patient record on the server (`subject`), which a document Bundle cannot do itself.
+  Same `type`/`category` as `ChEkmComposition`; `masterIdentifier` = `Bundle.identifier`,
+  `content.attachment.url` = the Bundle's location, by reference only (`data` 0..0).
+  `author` = the treating physician's **Practitioner** on that server (not the SMART user's
+  PractitionerRole), captured at `$populate` in the hidden `physicianReference` item.
+- **`ChEkmExtractTransaction`** (← `Bundle`) — the `$extract` output: a transaction of exactly the
+  document Bundle (`ChEkmDocument`) + its `ChEkmDocumentReference`; invariant `ch-ekm-docref-document`
+  checks the two point at each other. See forms-summary.md §8.
+
 ### Extensions & invariants
 - Extensions (`profiles/Extensions.fsh`): `ChEkmExtHivCode`, `ChEkmExtExposureAddress`,
   `ChEkmExtDepartment`. Two template-only carrier lives here too: `SdcTemplateExtractExtension`.
-- Invariants (`profiles/Invariants.fsh`): `name-initials`, `ch-ekm-hiv-check`, `ch-ekm-dateTime`.
+- Invariants (`profiles/Invariants.fsh`): `name-initials`, `ch-ekm-hiv-check`, `ch-ekm-dateTime`,
+  `ch-ekm-docref-document`, `ch-ekm-docref-subject-patient`, `ch-ekm-docref-author-practitioner`.
 
 ## Logical models (form models)
 
@@ -232,6 +244,8 @@ Terminology expansion uses the SNOMED CT Swiss Extension via `expansion-params.j
   references there rather than inline URLs.
 - **Examples**: live under `input/fsh/examples/<Organism>/`; `setMetaProfile: never` is set
   in `sushi-config.yaml`, so examples do **not** auto-stamp `meta.profile`.
+  Exception by design: the `$extract` document templates set it explicitly to the disease profile,
+  so every extracted document declares which profile it is validated against.
 - **Unknown / absent data**: modelled with `data-absent-reason` (e.g. unknown
   manifestation begin date, masked names).
 - New organism → add: a manifestation `ValueSet`, disease `Document/Composition/Condition
@@ -292,7 +306,8 @@ sushi .                                    # FSH -> fsh-generated/
 ./scripts/populate-mpox.sh                 # $populate, incl. the `encounter` launch context
 ./scripts/populate-hepatitisc.sh           # $populate, same three launch contexts as Mpox
 ./scripts/populate-invasivepneumococcaldisease.sh  # $populate, same three launch contexts
-./scripts/extract-gonorrhoea.sh            # $extract   -> input/resources/Bundle-…-extracted.json
+./scripts/extract-gonorrhoea.sh            # $extract   -> input/resources/Bundle-ChEkmDocument…-extracted.json (document)
+                                           #               + Bundle-ChEkmTransaction…-extracted.json (document + DocumentReference)
 ./scripts/extract-mpox.sh                  # $extract, incl. the conditional Encounter entry
 ./scripts/extract-hepatitisc.sh            # $extract, the CLOSED state of both conditional entries
 ./scripts/extract-invasivepneumococcaldisease.sh  # $extract, hospitalisation "nein" + death without a date

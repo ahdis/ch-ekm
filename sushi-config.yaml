@@ -43,6 +43,10 @@ resources:
     name: "CH EKM Bundle: Gonorrhoea document (extracted)"
     description: "Gonorrhoea document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentGonorrhoeaTemplate (scripts/extract-gonorrhoea.sh). Do not edit by hand."
     exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-gonorrhoea 
+  Bundle/ChEkmTransactionGonorrhoea-extracted:
+    name: "CH EKM Bundle: Gonorrhoea extract transaction"
+    description: "The complete SDC $extract output for Gonorrhoea: a transaction that stores the document Bundle (ChEkmDocumentGonorrhoea-extracted) and a DocumentReference linking it to the launch patient (QuestionnaireResponse.subject). Produced by scripts/extract-gonorrhoea.sh. Do not edit by hand."
+    exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-extract-transaction
   Questionnaire/ChEkmQuestionnaireGonorrhoeaAssembled:
     name: "Gonorrhoea (assembled)"
     description: "Assembled (flattened) Gonorrhoea questionnaire, generated from the modular questionnaire ChEkmQuestionnaireGonorrhoea via Questionnaire/$assemble (scripts/assemble-gonorrhoea.sh). Do not edit by hand."
@@ -63,6 +67,10 @@ resources:
     name: "CH EKM Bundle: Mpox document (extracted)"
     description: "Mpox document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentMpoxTemplate (scripts/extract-mpox.sh). Do not edit by hand."
     exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-mpox 
+  Bundle/ChEkmTransactionMpox-extracted:
+    name: "CH EKM Bundle: Mpox extract transaction"
+    description: "The complete SDC $extract output for Mpox: a transaction that stores the document Bundle (ChEkmDocumentMpox-extracted) and a DocumentReference linking it to the launch patient (QuestionnaireResponse.subject). Produced by scripts/extract-mpox.sh. Do not edit by hand."
+    exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-extract-transaction
   Questionnaire/ChEkmQuestionnaireMpoxAssembled:
     name: "Mpox (assembled)"
     description: "Assembled (flattened) Mpox questionnaire, generated from the modular questionnaire ChEkmQuestionnaireMpox via Questionnaire/$assemble (scripts/assemble-mpox.sh). Do not edit by hand."
@@ -83,6 +91,10 @@ resources:
     name: "CH EKM Bundle: Hepatitis C document (extracted)"
     description: "Hepatitis C document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentHepatitisCTemplate (scripts/extract-hepatitisc.sh). Do not edit by hand."
     exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-hepatitisc
+  Bundle/ChEkmTransactionHepatitisC-extracted:
+    name: "CH EKM Bundle: Hepatitis C extract transaction"
+    description: "The complete SDC $extract output for Hepatitis C: a transaction that stores the document Bundle (ChEkmDocumentHepatitisC-extracted) and a DocumentReference linking it to the launch patient (QuestionnaireResponse.subject). Produced by scripts/extract-hepatitisc.sh. Do not edit by hand."
+    exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-extract-transaction
   Questionnaire/ChEkmQuestionnaireHepatitisCAssembled:
     name: "Hepatitis C (assembled)"
     description: "Assembled (flattened) Hepatitis C questionnaire, generated from the modular questionnaire ChEkmQuestionnaireHepatitisC via Questionnaire/$assemble (scripts/assemble-hepatitisc.sh). Do not edit by hand."
@@ -103,6 +115,10 @@ resources:
     name: "CH EKM Bundle: Invasive pneumococcal disease document (extracted)"
     description: "Invasive pneumococcal disease document Bundle produced by SDC template-based $extract from a filled QuestionnaireResponse via the ChEkmDocumentInvasivePneumococcalDiseaseTemplate (scripts/extract-invasivepneumococcaldisease.sh). Do not edit by hand."
     exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-invasivepneumococcaldisease
+  Bundle/ChEkmTransactionInvasivePneumococcalDisease-extracted:
+    name: "CH EKM Bundle: Invasive pneumococcal disease extract transaction"
+    description: "The complete SDC $extract output for Invasive pneumococcal disease: a transaction that stores the document Bundle (ChEkmDocumentInvasivePneumococcalDisease-extracted) and a DocumentReference linking it to the launch patient (QuestionnaireResponse.subject). Produced by scripts/extract-invasivepneumococcaldisease.sh. Do not edit by hand."
+    exampleCanonical: http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-extract-transaction
   Questionnaire/ChEkmQuestionnaireInvasivePneumococcalDiseaseAssembled:
     name: "Invasive pneumococcal disease (assembled)"
     description: "Assembled (flattened) invasive pneumococcal disease questionnaire, generated from the modular questionnaire ChEkmQuestionnaireInvasivePneumococcalDisease via Questionnaire/$assemble (scripts/assemble-invasivepneumococcaldisease.sh). Do not edit by hand."

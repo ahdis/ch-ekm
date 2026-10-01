@@ -26,6 +26,10 @@
       }
     },
     {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-extractAllocateId",
+      "valueString": "documentBundleId"
+    },
+    {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-launchContext",
       "extension": [
         {
@@ -137,10 +141,23 @@
     {
       "resourceType": "Bundle",
       "id": "ChEkmDocumentInvasivePneumococcalDiseaseTemplate",
+      "meta": {
+        "profile": [
+          "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-invasivepneumococcaldisease"
+        ]
+      },
       "type": "document",
       "identifier": {
         "system": "urn:ietf:rfc:3986",
-        "value": "urn:uuid:9d4c1b02-3f77-4f56-9e21-5a8c6e0b74d1"
+        "value": "urn:uuid:9d4c1b02-3f77-4f56-9e21-5a8c6e0b74d1",
+        "_value": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+              "valueString": "'urn:uuid:' + %documentBundleId"
+            }
+          ]
+        }
       },
       "timestamp": "1900-01-01T00:00:00Z",
       "_timestamp": {
@@ -1732,6 +1749,103 @@
           }
         }
       ]
+    },
+    {
+      "resourceType": "DocumentReference",
+      "id": "ChEkmDocumentReferenceTemplate",
+      "status": "current",
+      "type": {
+        "coding": [
+          {
+            "code": "722143004",
+            "system": "http://snomed.info/sct",
+            "display": "Infectious disease diagnostic study note"
+          }
+        ]
+      },
+      "category": [
+        {
+          "coding": [
+            {
+              "code": "423876004",
+              "system": "http://snomed.info/sct",
+              "display": "Clinical report"
+            }
+          ]
+        }
+      ],
+      "masterIdentifier": {
+        "system": "urn:ietf:rfc:3986",
+        "_value": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+              "valueString": "'urn:uuid:' + %documentBundleId"
+            }
+          ]
+        }
+      },
+      "content": [
+        {
+          "attachment": {
+            "contentType": "application/fhir+json",
+            "_url": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "'urn:uuid:' + %documentBundleId"
+                }
+              ]
+            },
+            "_creation": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.authored"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "subject": {
+        "_reference": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+              "valueString": "%resource.subject.reference"
+            }
+          ]
+        },
+        "_display": {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+              "valueString": "%resource.subject.display"
+            }
+          ]
+        }
+      },
+      "author": [
+        {
+          "_reference": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "%resource.descendants().where(linkId='physicianReference').answer.value.combine(%resource.author.reference.where(startsWith('Practitioner/'))).first()"
+              }
+            ]
+          }
+        }
+      ],
+      "_date": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+            "valueString": "%resource.authored"
+          }
+        ]
+      }
     }
   ],
   "item": [
@@ -1747,6 +1861,21 @@
               "url": "template",
               "valueReference": {
                 "reference": "#ChEkmDocumentInvasivePneumococcalDiseaseTemplate"
+              }
+            },
+            {
+              "url": "fullUrl",
+              "valueString": "'urn:uuid:' + %documentBundleId"
+            }
+          ]
+        },
+        {
+          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtract",
+          "extension": [
+            {
+              "url": "template",
+              "valueReference": {
+                "reference": "#ChEkmDocumentReferenceTemplate"
               }
             }
           ]
@@ -9099,6 +9228,25 @@
                       "valueExpression": {
                         "language": "text/fhirpath",
                         "expression": "%user.practitioner.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "physicianReference",
+                  "text": "Practitioner reference (system)",
+                  "type": "string",
+                  "readOnly": true,
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-hidden",
+                      "valueBoolean": true
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
+                      "valueExpression": {
+                        "language": "text/fhirpath",
+                        "expression": "%user.practitioner.reference"
                       }
                     }
                   ]

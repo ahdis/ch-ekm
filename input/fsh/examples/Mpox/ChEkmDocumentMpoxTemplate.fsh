@@ -167,10 +167,18 @@ InstanceOf: ChEkmDocumentMpox
 Usage: #example
 Title: "CH EKM $extract template: Mpox document Bundle"
 Description: "SDC template-based extraction template. Shaped like ChEkmDocumentMpox; the per-report fields carry sdc-questionnaire-templateExtractValue/-Context FHIRPath expressions that read a Mpox QuestionnaireResponse. Used by tests/extract-gonorrhoea.sh; not a normal example."
-// * meta.profile = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-gonorrhoea"
+// meta.profile names the disease profile, so a validator picks it up from the extracted document (and
+// from the transaction entry) without being told which profile to use. Explicit because
+// sushi-config sets `setMetaProfile: never`.
+* meta.profile = Canonical(ChEkmDocumentMpox)
 * type = #document
 * identifier.system = "urn:ietf:rfc:3986"
+// PLACEHOLDER DEFAULT — replaced at extraction by the allocated %documentBundleId, the UUID the
+// DocumentReference (ChEkmDocumentReferenceTemplate) uses as masterIdentifier, so every extracted
+// report gets its own identifier. A document Bundle must have one (bdl-9), hence the default.
 * identifier.value = "urn:uuid:c376a38a-61b9-4a79-8722-12c75bacf927"
+* identifier.value.extension[+].url = $sdc-templateExtractValue
+* identifier.value.extension[=].valueString = "'urn:uuid:' + %documentBundleId"
 // PLACEHOLDER DEFAULT — replaced at extraction. A document Bundle must have a timestamp value
 // (bdl-10: timestamp.hasValue()), so the template needs a real value to be valid; the
 // templateExtractValue below overwrites it with the QuestionnaireResponse's authored time at

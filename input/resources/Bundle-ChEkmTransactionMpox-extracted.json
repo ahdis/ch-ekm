@@ -1,0 +1,704 @@
+{
+  "resourceType": "Bundle",
+  "id": "ChEkmTransactionMpox-extracted",
+  "meta": {
+    "tag": [
+      {
+        "code": "@aehrc/sdc-template-extract:generated",
+        "system": "urn:aehrc:sdc-template-extract"
+      }
+    ]
+  },
+  "type": "transaction",
+  "timestamp": "2026-08-05T11:30:00+02:00",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:314d8af5-8122-530e-8c57-cff0e6f85126",
+      "resource": {
+        "resourceType": "Bundle",
+        "meta": {
+          "profile": [
+            "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-document-mpox"
+          ]
+        },
+        "type": "document",
+        "identifier": {
+          "system": "urn:ietf:rfc:3986",
+          "value": "urn:uuid:314d8af5-8122-530e-8c57-cff0e6f85126"
+        },
+        "timestamp": "2026-08-05T11:30:00+02:00",
+        "entry": [
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Composition/ExtractedCompositionMpox",
+            "resource": {
+              "resourceType": "Composition",
+              "id": "ExtractedCompositionMpox",
+              "status": "final",
+              "type": {
+                "coding": [
+                  {
+                    "code": "722143004",
+                    "system": "http://snomed.info/sct",
+                    "display": "Infectious disease diagnostic study note"
+                  }
+                ]
+              },
+              "section": [
+                {
+                  "code": {
+                    "coding": [
+                      {
+                        "code": "29308-4",
+                        "system": "http://loinc.org"
+                      }
+                    ]
+                  },
+                  "title": "Diagnosis section",
+                  "entry": [
+                    {
+                      "reference": "Condition/ExtractedCondition"
+                    }
+                  ]
+                },
+                {
+                  "title": "Social history section",
+                  "code": {
+                    "coding": [
+                      {
+                        "code": "29762-2",
+                        "system": "http://loinc.org"
+                      }
+                    ]
+                  },
+                  "entry": [
+                    {
+                      "reference": "Observation/ExtractedExposure"
+                    }
+                  ]
+                },
+                {
+                  "title": "Cause of death section",
+                  "code": {
+                    "coding": [
+                      {
+                        "code": "79378-6",
+                        "system": "http://loinc.org"
+                      }
+                    ]
+                  },
+                  "entry": [
+                    {
+                      "reference": "Observation/ExtractedCauseOfDeath"
+                    }
+                  ]
+                },
+                {
+                  "title": "Immunization section",
+                  "code": {
+                    "coding": [
+                      {
+                        "code": "11369-6",
+                        "system": "http://loinc.org"
+                      }
+                    ]
+                  },
+                  "entry": [
+                    {
+                      "reference": "Observation/ExtractedVaccinationStatusSmallpoxUnknown"
+                    },
+                    {
+                      "reference": "Immunization/ExtractedImmunizationMpoxDatedDosed"
+                    }
+                  ]
+                }
+              ],
+              "category": [
+                {
+                  "coding": [
+                    {
+                      "code": "423876004",
+                      "system": "http://snomed.info/sct",
+                      "display": "Clinical report"
+                    }
+                  ]
+                }
+              ],
+              "subject": {
+                "reference": "Patient/ExtractedPatient"
+              },
+              "author": [
+                {
+                  "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
+                }
+              ],
+              "title": "Meldung zum klinischen Befund MPox",
+              "encounter": {
+                "reference": "Encounter/ExtractedEncounter"
+              },
+              "date": "2026-08-05T11:30:00+02:00"
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Patient/ExtractedPatient",
+            "resource": {
+              "resourceType": "Patient",
+              "id": "ExtractedPatient",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/patient-citizenship",
+                  "extension": [
+                    {
+                      "url": "code",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "CH",
+                            "system": "urn:iso:std:iso:3166",
+                            "display": "Switzerland"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity",
+                  "extension": [
+                    {
+                      "url": "value",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "1384187000",
+                            "system": "http://snomed.info/sct",
+                            "display": "Identifies as transgender (finding)"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ],
+              "name": [
+                {
+                  "family": "Muster",
+                  "given": [
+                    "Beat Ruedi"
+                  ]
+                }
+              ],
+              "gender": "male",
+              "identifier": [
+                {
+                  "system": "urn:oid:2.16.756.5.32",
+                  "value": "7560000000000"
+                }
+              ],
+              "address": [
+                {
+                  "use": "home",
+                  "postalCode": "3097",
+                  "city": "Liebefeld",
+                  "state": "BE"
+                }
+              ],
+              "birthDate": "2000-01-01",
+              "deceasedDateTime": "2026-02-03"
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Condition/ExtractedCondition",
+            "resource": {
+              "resourceType": "Condition",
+              "id": "ExtractedCondition",
+              "code": {
+                "coding": [
+                  {
+                    "code": "359814004",
+                    "system": "http://snomed.info/sct",
+                    "display": "Mpox"
+                  }
+                ]
+              },
+              "category": [
+                {
+                  "coding": [
+                    {
+                      "code": "encounter-diagnosis",
+                      "system": "http://terminology.hl7.org/CodeSystem/condition-category"
+                    }
+                  ]
+                }
+              ],
+              "subject": {
+                "reference": "Patient/ExtractedPatient"
+              },
+              "recorder": {
+                "reference": "PractitionerRole/ExtractedTreatingPractitionerRole"
+              },
+              "evidence": [
+                {
+                  "code": [
+                    {
+                      "coding": [
+                        {
+                          "system": "http://snomed.info/sct",
+                          "code": "95324001:{363698007=73897004}",
+                          "display": "Skin lesion of face"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "code": [
+                    {
+                      "coding": [
+                        {
+                          "system": "http://snomed.info/sct",
+                          "code": "386661006",
+                          "display": "Fever (finding)"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "code": [
+                    {
+                      "coding": [
+                        {
+                          "system": "http://snomed.info/sct",
+                          "code": "25064002",
+                          "display": "Headache (finding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "encounter": {
+                "reference": "Encounter/ExtractedEncounter"
+              },
+              "onsetDateTime": "2026-07-20"
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedExposure",
+            "resource": {
+              "resourceType": "Observation",
+              "id": "ExtractedExposure",
+              "code": {
+                "coding": [
+                  {
+                    "code": "EXPAGNT",
+                    "system": "http://terminology.hl7.org/CodeSystem/v3-ParticipationType",
+                    "display": "Exposure Agent"
+                  }
+                ]
+              },
+              "status": "final",
+              "category": [
+                {
+                  "coding": [
+                    {
+                      "code": "AEXPOS",
+                      "system": "http://terminology.hl7.org/CodeSystem/v3-ActClass",
+                      "display": "acquisition exposure"
+                    }
+                  ]
+                }
+              ],
+              "subject": {
+                "reference": "Patient/ExtractedPatient"
+              },
+              "component": [
+                {
+                  "code": {
+                    "coding": [
+                      {
+                        "code": "sexual-contact-partner",
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                      }
+                    ]
+                  },
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://hl7.org/fhir/administrative-gender",
+                        "code": "male",
+                        "display": "male"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "code": {
+                    "coding": [
+                      {
+                        "code": "228465009",
+                        "system": "http://snomed.info/sct",
+                        "display": "Sexual relationship details (observable entity)"
+                      }
+                    ]
+                  },
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-relationship-type",
+                        "code": "offered-paid-sex",
+                        "display": "Offered paid sex"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://snomed.info/sct",
+                        "code": "417564009",
+                        "display": "Sexual transmission (qualifier value)"
+                      }
+                    ]
+                  },
+                  "code": {
+                    "coding": [
+                      {
+                        "system": "http://snomed.info/sct",
+                        "code": "409496000",
+                        "display": "Mode of transmission (observable entity)"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-exposure-address",
+                  "valueAddress": {
+                    "city": "Kinshasa",
+                    "country": "CD",
+                    "_country": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/StructureDefinition/iso21090-codedString",
+                          "valueCoding": {
+                            "code": "CD",
+                            "system": "urn:iso:std:iso:3166",
+                            "display": "Congo (Kinshasa)"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "effectiveDateTime": "2026-07-01"
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/PractitionerRole/ExtractedTreatingPractitionerRole",
+            "resource": {
+              "resourceType": "PractitionerRole",
+              "id": "ExtractedTreatingPractitionerRole",
+              "practitioner": {
+                "reference": "Practitioner/ExtractedTreatingPractitioner"
+              },
+              "organization": {
+                "reference": "Organization/ExtractedTreatingOrganization"
+              }
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Practitioner/ExtractedTreatingPractitioner",
+            "resource": {
+              "resourceType": "Practitioner",
+              "id": "ExtractedTreatingPractitioner",
+              "telecom": [
+                {
+                  "system": "phone",
+                  "value": "+24 74 200 88 77"
+                },
+                {
+                  "system": "email",
+                  "value": "p.brach@sampledoc.com"
+                }
+              ],
+              "identifier": [
+                {
+                  "system": "urn:oid:2.51.1.3",
+                  "value": "7601000435666"
+                }
+              ],
+              "name": [
+                {
+                  "family": "Brachialis",
+                  "given": [
+                    "Potagon"
+                  ]
+                }
+              ],
+              "address": [
+                {
+                  "use": "work",
+                  "line": [
+                    "Sodaweg 55"
+                  ],
+                  "postalCode": "3921",
+                  "city": "Flammingen"
+                }
+              ]
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Organization/ExtractedTreatingOrganization",
+            "resource": {
+              "resourceType": "Organization",
+              "id": "ExtractedTreatingOrganization",
+              "telecom": [
+                {
+                  "system": "phone",
+                  "value": "+26 34 876 54 33"
+                },
+                {
+                  "system": "email",
+                  "value": "immuno@hospidoc.com"
+                }
+              ],
+              "identifier": [
+                {
+                  "system": "urn:oid:2.51.1.3",
+                  "value": "7601000435777"
+                },
+                {
+                  "system": "urn:oid:2.16.756.5.45",
+                  "value": "A99086600"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department",
+                  "valueString": "Immunologie"
+                }
+              ],
+              "address": [
+                {
+                  "line": [
+                    "Radixstrasse 88"
+                  ],
+                  "postalCode": "4088",
+                  "city": "Pankreas"
+                }
+              ],
+              "name": "Regionalspital Genesis"
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Encounter/ExtractedEncounter",
+            "resource": {
+              "resourceType": "Encounter",
+              "id": "ExtractedEncounter",
+              "class": {
+                "code": "IMP",
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+                "display": "inpatient encounter"
+              },
+              "status": "unknown",
+              "subject": {
+                "reference": "Patient/ExtractedPatient"
+              },
+              "period": {
+                "start": "2026-01-27"
+              },
+              "reasonReference": [
+                {
+                  "reference": "Condition/ExtractedCondition"
+                }
+              ]
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeath",
+            "resource": {
+              "resourceType": "Observation",
+              "id": "ExtractedCauseOfDeath",
+              "status": "final",
+              "code": {
+                "coding": [
+                  {
+                    "code": "79378-6",
+                    "system": "http://loinc.org",
+                    "display": "Cause of death"
+                  }
+                ]
+              },
+              "subject": {
+                "reference": "Patient/ExtractedPatient"
+              },
+              "focus": [
+                {
+                  "reference": "Condition/ExtractedCondition"
+                }
+              ],
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "359814004",
+                    "display": "Mpox"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusSmallpoxUnknown",
+            "resource": {
+              "resourceType": "Observation",
+              "id": "ExtractedVaccinationStatusSmallpoxUnknown",
+              "status": "final",
+              "code": {
+                "coding": [
+                  {
+                    "code": "408864009",
+                    "system": "http://snomed.info/sct",
+                    "display": "Vaccination status (observable entity)"
+                  }
+                ]
+              },
+              "subject": {
+                "reference": "Patient/ExtractedPatient"
+              },
+              "component": [
+                {
+                  "code": {
+                    "coding": [
+                      {
+                        "code": "1290624003",
+                        "system": "http://snomed.info/sct",
+                        "display": "Variola virus antigen-containing vaccine product"
+                      }
+                    ]
+                  },
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "67924001",
+                        "system": "http://snomed.info/sct",
+                        "display": "Smallpox"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "code": "261665006",
+                    "system": "http://snomed.info/sct",
+                    "display": "Unknown (qualifier value)"
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedDosed",
+            "resource": {
+              "resourceType": "Immunization",
+              "id": "ExtractedImmunizationMpoxDatedDosed",
+              "status": "completed",
+              "patient": {
+                "reference": "Patient/ExtractedPatient"
+              },
+              "protocolApplied": [
+                {
+                  "targetDisease": [
+                    {
+                      "coding": [
+                        {
+                          "code": "359814004",
+                          "system": "http://snomed.info/sct",
+                          "display": "Mpox"
+                        }
+                      ]
+                    }
+                  ],
+                  "doseNumberPositiveInt": 2
+                }
+              ],
+              "occurrenceDateTime": "2026-06-15",
+              "vaccineCode": {
+                "coding": [
+                  {
+                    "code": "69173",
+                    "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                    "display": "Jynneos"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Bundle"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:1e70533c-4702-54b6-a377-33e1b3513131",
+      "resource": {
+        "resourceType": "DocumentReference",
+        "status": "current",
+        "type": {
+          "coding": [
+            {
+              "code": "722143004",
+              "system": "http://snomed.info/sct",
+              "display": "Infectious disease diagnostic study note"
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "code": "423876004",
+                "system": "http://snomed.info/sct",
+                "display": "Clinical report"
+              }
+            ]
+          }
+        ],
+        "masterIdentifier": {
+          "system": "urn:ietf:rfc:3986",
+          "value": "urn:uuid:314d8af5-8122-530e-8c57-cff0e6f85126"
+        },
+        "content": [
+          {
+            "attachment": {
+              "contentType": "application/fhir+json",
+              "url": "urn:uuid:314d8af5-8122-530e-8c57-cff0e6f85126",
+              "creation": "2026-08-05T11:30:00+02:00"
+            }
+          }
+        ],
+        "subject": {
+          "reference": "Patient/ChEkmPatientExample"
+        },
+        "author": [
+          {
+            "reference": "Practitioner/ChEkmPractitionerTreatingPhysicianExample"
+          }
+        ],
+        "date": "2026-08-05T11:30:00+02:00"
+      },
+      "request": {
+        "method": "POST",
+        "url": "DocumentReference"
+      }
+    }
+  ]
+}
