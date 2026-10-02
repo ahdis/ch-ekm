@@ -48,6 +48,7 @@ This IG uses **two parallel representations** of the report content:
 
 ### Document structure
 - **`ChEkmDocument`** (← `CHCoreDocument`) — the report `Bundle`; entry Composition only `ChEkmComposition`.
+  Obeys `ch-ekm-patient-birthdate`.
 - **`ChEkmComposition`** (← `CHCoreComposition`) — `status=final`,
   `category = sct#423876004 "Clinical report"`, `type = sct#722143004 "Infectious disease
   diagnostic study note"`. Author is a `ChEkmPractitionerRole` (treating physician *or*
@@ -151,6 +152,8 @@ its single row: `ChEkmImmunizationInvasivePneumococcalDisease` /
 - Extensions (`profiles/Extensions.fsh`): `ChEkmExtHivCode`, `ChEkmExtExposureAddress`,
   `ChEkmExtDepartment`. Two template-only carrier lives here too: `SdcTemplateExtractExtension`.
 - Invariants (`profiles/Invariants.fsh`): `name-initials`, `ch-ekm-hiv-check`, `ch-ekm-dateTime`,
+  `ch-ekm-patient-birthdate` (on `ChEkmDocument`, taken over from CH ELM: birth date >= 1900-01-01 and
+  not after `Bundle.timestamp`),
   `ch-ekm-docref-document`, `ch-ekm-docref-subject-patient`, `ch-ekm-docref-author-practitioner`.
 
 ## Logical models (form models)

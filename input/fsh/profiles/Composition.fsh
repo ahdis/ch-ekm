@@ -4,6 +4,7 @@ Id: ch-ekm-document
 Title: "CH EKM-Document: Clinical findings of Communicable Infectious Diseases Report "
 Description: "This profile constrains the Bundle resource for the purpose of clinical findings of communicable infectious diseases reports."
 * . ^short = "CH EKM Document: Clinical findings report"
+* obeys ch-ekm-patient-birthdate
 
 * entry[Composition].resource only ChEkmComposition
 

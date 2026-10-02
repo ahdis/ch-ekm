@@ -14,6 +14,16 @@ Description: "At least the format YYYY-MM-DD is required."
 Severity: #error
 Expression: "$this.toString().length() >= 10"
 
+// Taken over from CH ELM (ch-elm-patient-birthdate, ../ch-elm input/fsh/invariants.fsh), same expression.
+// It sits on the DOCUMENT, not on the Patient, because it compares against Bundle.timestamp, which a
+// Patient cannot see. The three branches compare at the precision the birth date was given in (year,
+// year-month, full date). A valueless birthDate (data-absent-reason, or an $extract template that only
+// carries the templateExtractValue directive) is skipped by `hasValue()`.
+Invariant: ch-ekm-patient-birthdate
+Description: "If a Patient entry has a birthDate set, it must be >= 1900-01-01 and before the Bundle's creation date (timestamp)."
+Severity: #error
+Expression: "entry.resource.ofType(Patient).where(birthDate.exists() and birthDate.hasValue()).all(birthDate >= @1900-01-01 and ((birthDate.toString().length()=4 and birthDate <= %resource.timestamp.toString().substring(0,4).toDateTime()) or (birthDate.toString().length()=7 and birthDate <= %resource.timestamp.toString().substring(0,7).toDateTime()) or (birthDate.toString().length()=10 and birthDate <= %resource.timestamp.toString().substring(0,10).toDateTime())))"
+
 
 // The Hepatitis C "Krankheitsverlauf" (akut / chronisch / Zirrhose / Hepatokarzinom / General
 // wellbeing) is the one question of that form with no resource target: it is not extracted, it stays
