@@ -112,9 +112,20 @@ if [ "$RTYPE" != "Questionnaire" ]; then
 fi
 
 mkdir -p "$(dirname "$OUT")"
+# Questionnaire.date: the Smart Forms dashboard lists questionnaires with `_sort=-date`, so one
+# without a date sinks to the bottom. Use the time of the last commit that touched the FSH sources
+# rather than the build time, so re-running this script on unchanged sources does not rewrite the
+# committed artifact; with uncommitted FSH changes (or outside git) the build time is used.
+if [ -z "$(git status --porcelain -- input/fsh 2>/dev/null)" ] && \
+   Q_DATE=$(git log -1 --format=%cI -- input/fsh 2>/dev/null) && [ -n "$Q_DATE" ]; then
+  :
+else
+  Q_DATE=$(date +%Y-%m-%dT%H:%M:%S%z | sed -E 's/([+-][0-9]{2})([0-9]{2})$/\1:\2/')
+fi
+
 # Give the flattened result a distinct identity (the assembler returns it with the root's
 # id/url, which would collide with the modular root example in the IG).
-python3 - /tmp/ekm-assemble-out.json "$ASSEMBLED_ID" "$ROOT_FILE" "$TE_URL" "$DISEASE" "$SCRIPT_URL" > "$OUT" <<'PY'
+python3 - /tmp/ekm-assemble-out.json "$ASSEMBLED_ID" "$ROOT_FILE" "$TE_URL" "$DISEASE" "$SCRIPT_URL" "$Q_DATE" > "$OUT" <<'PY'
 import json, sys
 q = json.load(open(sys.argv[1]))
 new_id = sys.argv[2]
@@ -126,6 +137,7 @@ q["id"] = new_id
 q["url"] = "http://fhir.ch/ig/ch-ekm/Questionnaire/" + new_id
 q["name"] = new_id
 q["version"] = "0.0.1"
+q["date"] = sys.argv[7]
 q["title"] = f"CH EKM Questionnaire: {disease} (assembled)"
 
 # Re-affirm the SDC template-based extraction wiring on the assembled result:
