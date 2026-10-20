@@ -12,39 +12,40 @@ Title: "CH EKM Composition: Clinical Findings Hepatitis C"
 Description: "This CH EKM base profile constrains the Composition resource for the purpose of clinical findings for Hepatitis C."
 * subject only Reference(ChEkmPatient)
 * section[diagnosis].entry[condition] only Reference(ChEkmConditionHepatitisC)
-// MANDATORY for Hepatitis C (0..1 in the base ChEkmComposition). The "Krankheitsverlauf" question
-// has no resource target — it is carried by the form's own QuestionnaireResponse, which therefore
-// has to be part of the document. See ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC.
+// MANDATORY for Hepatitis C (0..1 in the base ChEkmComposition). The disease-specific questions
+// (Krankheitsverlauf, Diagnose im Rahmen einer Blutspende) have no resource target — they are carried
+// by the disease-specific QuestionnaireResponse, which therefore has to be part of the document. See
+// ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC.
 * section[diagnosis].entry[questionnaire-response] 1..1
-* section[diagnosis].entry[questionnaire-response] only Reference(ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC)
+* section[diagnosis].entry[questionnaire-response] only Reference(ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC)
 
-// The QuestionnaireResponse the Hepatitis C document carries. It is the response to the WHOLE form
-// (ChEkmQuestionnaireHepatitisC, or rather its $assemble output), not to a questionnaire of its
-// own: since TODO.md #7 was decided, ChEkmQuestionnaireHepatitisCCourseOfDisease is an
-// assemble-child of that form and no longer a standalone questionnaire.
+// The QuestionnaireResponse the Hepatitis C document carries: the answers to the form questions that
+// have no FHIR target, and ONLY those. It is the response to the DISEASE-SPECIFIC questionnaire
+// (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled), which assembles the same modules as the
+// reporting form; $extract copies those modules' items out of the form's response. So every answer
+// is sent once: as a resource if it has a FHIR target, as an item of this response if it has not.
 //
-// What this profile asserts is the one thing the document would otherwise lose — that the
-// Krankheitsverlauf was answered. It asserts it with a FHIRPath invariant on the linkId rather than
-// with a structural slice, because QuestionnaireResponse.item is not sliceable by linkId at an
-// arbitrary depth.
+// What this profile asserts, with FHIRPath invariants on the linkIds rather than with slices
+// (QuestionnaireResponse.item is not sliceable by linkId at an arbitrary depth):
+//   * ch-ekm-qr-hepatitisc-questionnaire: it answers the disease-specific questionnaire, not the
+//     reporting form — against the form, every required question it does not hold would be missing;
+//   * ch-ekm-qr-hepatitisc-course: the Krankheitsverlauf, required on the form, is answered.
+// The item tree itself is validated against the questionnaire it names, by the validator's
+// QuestionnaireResponse checks (linkIds, types, answer value sets, order).
 //
-// `questionnaire` is deliberately left at 0..1 and NOT fixed. Not fixed, because a sender may
-// legitimately quote either the assembled canonical
-// (http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCAssembled, which is what
-// $populate and $extract use) or a versioned form of it. Not 1..1, because the $extract TEMPLATE is
-// a QuestionnaireResponse that has to conform to this profile too, and it can carry neither a
-// questionnaire nor an answer until extraction fills them in — see the long note on
-// ExtractedQuestionnaireResponseHepatitisC in ChEkmDocumentHepatitisCTemplate.fsh for why naming a
-// questionnaire in the template costs 12 validation errors. The invariant is guarded to match:
-// a response that names a questionnaire (`questionnaire.hasValue()` — the template has the element
-// but no value) must answer the question.
-Profile: ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC
+// `questionnaire` is deliberately left at 0..1 and NOT fixed, and both invariants are guarded on
+// `questionnaire.hasValue()`: the $extract TEMPLATE is a QuestionnaireResponse that has to conform to
+// this profile too, and it can carry neither a questionnaire value nor an answer until extraction
+// fills them in — see the long note on ExtractedQuestionnaireResponseHepatitisC in
+// ChEkmDocumentHepatitisCTemplate.fsh for why naming a questionnaire in the template costs 12
+// validation errors. The template has the element but no value; a real response has both.
+Profile: ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC
 Parent: QuestionnaireResponse
-Id: ch-ekm-questionnaireresponse-hepatitisc-courseofdisease
-Title: "CH EKM Questionnaire Response: Course of Disease - Hepatitis C"
-Description: "This CH EKM base profile constrains the QuestionnaireResponse resource carried in the Hepatitis C document: it is the response to the Hepatitis C reporting form, and it must answer the 'course-of-disease' question, which has no other target in the document."
-* obeys ch-ekm-qr-hepatitisc-course
-* questionnaire ^short = "The Hepatitis C reporting form this is a response to (the $assemble output of ChEkmQuestionnaireHepatitisC). Present on every real response; absent only in the $extract template."
+Id: ch-ekm-questionnaireresponse-hepatitisc-diseasespecific
+Title: "CH EKM Questionnaire Response: Disease-specific questions - Hepatitis C"
+Description: "This CH EKM base profile constrains the QuestionnaireResponse resource carried in the Hepatitis C document: the answers to the form questions that have no FHIR target (Krankheitsverlauf, diagnosis from blood donation). It is the response to the disease-specific questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled, and it must answer the 'hepatitisc-course-of-disease' question."
+* obeys ch-ekm-qr-hepatitisc-questionnaire and ch-ekm-qr-hepatitisc-course
+* questionnaire ^short = "The disease-specific Hepatitis C questionnaire this is a response to (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled, versioned). Present on every real response; absent only in the $extract template."
 * status ^short = "A response carried in a final document is expected to be 'completed'"
 
 Profile: ChEkmConditionHepatitisC

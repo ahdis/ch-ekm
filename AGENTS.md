@@ -324,8 +324,14 @@ Two of them are **starters**: they assemble only the sections whose modules and 
 already exist, and everything the paper form asks on top of that is listed, with the blocking
 decision for each, in an `OPEN QUESTIONS` block at the bottom of the root's FSH file and in TODO.md.
 - **Hepatitis C** (`examples/HepatitisC/ChEkmQuestionnaireHepatitisC.fsh`) — open: Serokonversion,
-  antivirale Therapie, Krankheitsverlauf, Impfstatus, Exposition "Wie", and the Labor block's
-  "Anlass".
+  antivirale Therapie, Exposition "Wie", and the Labor block's "Anlass". It is also the pattern for
+  **disease-specific questions without a FHIR target** (Krankheitsverlauf, Blutspende): one module
+  per question, assembled both into the form (where it belongs) and into a second modular root,
+  `ChEkmQuestionnaireHepatitisCDiseaseSpecific`; `$extract` copies the modules' items into a
+  separate QuestionnaireResponse to that questionnaire's assembled form, and only those answers go
+  there (forms-summary.md §8, "Disease-specific questions"). LinkIds: plain for a generic question
+  (`blood-donation`), prefixed with the disease when its content is disease-specific
+  (`hepatitisc-course-of-disease`); only the root group always carries the disease.
 - **Invasive pneumococcal disease**
   (`examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireInvasivePneumococcalDisease.fsh`) —
   open: Risikofaktoren (a section no other organism has), Exposition "Wie", the Labor block's

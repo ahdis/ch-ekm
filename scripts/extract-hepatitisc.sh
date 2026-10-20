@@ -19,10 +19,11 @@
 #     opposite combination).
 #   * The Exposure is the BASE ChEkmExposure: no "Wie" components (see OPEN QUESTIONS #2 in
 #     ChEkmQuestionnaireHepatitisC.fsh).
-#   * Krankheitsverlauf: answered, and NOT extracted into a resource — the whole
-#     QuestionnaireResponse is copied into the document Bundle instead (one `%resource.item`
-#     templateExtractValue) and referenced from section[diagnosis].entry[questionnaire-response].
-#     Hepatitis C is the only report in the IG that carries its own response.
+#   * The disease-specific questions (blood donation, Krankheitsverlauf): answered, and NOT extracted
+#     into a resource — their two items are copied into a separate QuestionnaireResponse to the
+#     disease-specific questionnaire (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled),
+#     referenced from section[diagnosis].entry[questionnaire-response]. Hepatitis C is the only
+#     report in the IG that carries a response.
 #   * Labor: ONLY the mandatory name and the email are answered, so the eight optional,
 #     context-gated elements of the shared ExtractedLabOrganization must all be ABSENT (the invasive
 #     pneumococcal disease round trip answers all of them and covers the open state).
@@ -123,21 +124,25 @@ if command -v jq >/dev/null 2>&1; then
          | select(.code.coding[0].code == "30954-2")
          | "    entries: \(.entry | map(.reference) | join(", "))") // "    (no laboratory section)"' "$OUT" || true
   echo
-  echo "QuestionnaireResponse in the document (expect the SOURCE response copied verbatim, with the"
-  echo "Krankheitsverlauf answered — that is what ch-ekm-qr-hepatitisc-course requires):"
+  echo "Disease-specific QuestionnaireResponse in the document (expect it to name the disease-specific"
+  echo "questionnaire and hold ONLY the items without a FHIR target, Krankheitsverlauf answered):"
   jq -r '([.entry[].resource | select(.resourceType == "QuestionnaireResponse")][0]
          | "    questionnaire = \(.questionnaire // "(absent)")",
            "    authored      = \(.authored // "(absent)")",
-           "    item tree     = \(.item[0].linkId) > \(.item[0].item | map(.linkId) | join(", "))",
-           "    course-of-disease = \([.. | objects | select(.linkId? == "course-of-disease")][0].answer
+           "    items         = \(.item[0].linkId) > \(.item[0].item | map(.linkId) | join(", "))",
+           "    hepatitisc-course-of-disease = \([.. | objects | select(.linkId? == "hepatitisc-course-of-disease")][0].answer
                                       | if . then map(.valueCoding.code) | join(", ") else "(UNANSWERED — invariant fails)" end)")
          // "    (no QuestionnaireResponse emitted)"' "$OUT" || true
-  # The copy is a single `%resource.item` templateExtractValue, so it must not lose or gain anything.
+  # Each item is copied by one context-gated `$this` templateExtractValue, so every copied item must
+  # be byte-identical to the same linkId's item in the form's response, and no other item may appear.
   jq -e --slurpfile src "$QR" '
-    ([.entry[].resource | select(.resourceType == "QuestionnaireResponse")][0].item) == $src[0].item
+    [.entry[].resource | select(.resourceType == "QuestionnaireResponse")][0].item[0].item as $copied
+    | ($copied | map(.linkId)) as $ids
+    | ([$src[0] | .. | objects | select(.linkId? as $l | $ids | index($l))]) as $orig
+    | ($ids | all(startswith("template-") | not)) and ($copied == $orig)
   ' "$OUT" >/dev/null \
-    && echo "    item tree is byte-identical to the source QuestionnaireResponse: OK" \
-    || echo "    WARNING: item tree DIFFERS from the source QuestionnaireResponse"
+    && echo "    every copied item is byte-identical to the form response's item: OK" \
+    || echo "    WARNING: the copied items DIFFER from the form response (or a placeholder survived)"
   echo
   echo "Exposure Wo (expect _country with a data-absent-reason and city = Bern):"
   jq -r '[.entry[].resource | select(.resourceType == "Observation")][]

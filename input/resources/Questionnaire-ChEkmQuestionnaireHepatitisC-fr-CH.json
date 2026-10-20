@@ -106,6 +106,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCBloodDonation|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown|0.0.1"
     },
     {
@@ -1061,11 +1065,33 @@
             },
             "item": [
               {
-                "linkId": "template-questionnaire-response",
-                "extension": [
+                "linkId": "hepatitisc-disease-specific",
+                "item": [
                   {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                    "valueString": "%resource.item"
+                    "linkId": "template-blood-donation",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                        "valueString": "%resource.descendants().where(linkId = 'blood-donation')"
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "$this"
+                      }
+                    ]
+                  },
+                  {
+                    "linkId": "template-hepatitisc-course-of-disease",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                        "valueString": "%resource.descendants().where(linkId = 'hepatitisc-course-of-disease')"
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "$this"
+                      }
+                    ]
                   }
                 ]
               }
@@ -1074,7 +1100,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.questionnaire"
+                  "valueString": "'http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled|0.0.1'"
                 }
               ]
             },
@@ -4542,6 +4568,52 @@
           ],
           "item": [
             {
+              "linkId": "blood-donation",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.bloodDonation",
+              "text": "Le diagnostic a-t-il été posé dans le cadre d'un don de sang ?",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "373066001",
+                    "display": "Oui"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "373067005",
+                    "display": "Non"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "261665006",
+                    "display": "Inconnu"
+                  }
+                }
+              ]
+            },
+            {
               "linkId": "manifestation",
               "text": "Manifestations",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.manifestation",
@@ -4641,7 +4713,7 @@
               ]
             },
             {
-              "linkId": "course-of-disease",
+              "linkId": "hepatitisc-course-of-disease",
               "text": "Évolution de la maladie",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.courseOfDisease",
               "type": "choice",
@@ -6794,6 +6866,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-02T23:11:48+02:00",
+  "date": "2026-10-20T09:26:16+02:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisC and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

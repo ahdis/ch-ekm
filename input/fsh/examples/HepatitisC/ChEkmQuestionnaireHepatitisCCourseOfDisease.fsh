@@ -12,14 +12,21 @@
 //
 // NOT EXTRACTED INTO A RESOURCE — deliberately, and this is the whole point of the design decided
 // for TODO.md #7. There is no Condition/Observation target for the course of the disease in
-// ChEkmCompositionHepatitisC; instead THE QUESTIONNAIRERESPONSE ITSELF travels in the document, as
-// `Composition.section[diagnosis].entry[questionnaire-response]`, and the profile
-// ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC (input/fsh/profiles/ChEkmHepatitisC.fsh)
+// ChEkmCompositionHepatitisC; instead the answer travels in the document in the DISEASE-SPECIFIC
+// QuestionnaireResponse, `Composition.section[diagnosis].entry[questionnaire-response]`, whose profile
+// ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC (input/fsh/profiles/ChEkmHepatitisC.fsh)
 // carries the invariant that says this linkId must be answered inside it. The item's `definition` is
 // ChEkmHepatitisCManifestationForm.courseOfDisease, whose mapping targets exactly that
 // QuestionnaireResponse.
-// The extraction template copies the whole QuestionnaireResponse into the Bundle — see
-// ChEkmDocumentHepatitisCTemplate.fsh.
+// This module is assembled TWICE, from this one definition: into the reporting form
+// (ChEkmQuestionnaireHepatitisC) and into the disease-specific questionnaire
+// (ChEkmQuestionnaireHepatitisCDiseaseSpecific) that response answers. The extraction template copies
+// this item from the form's response into it — see ChEkmDocumentHepatitisCTemplate.fsh.
+//
+// THE LINKID IS PREFIXED (`hepatitisc-course-of-disease`) because the question is disease-specific in
+// content: its answer list is Hepatitis C only. A course-of-disease question for another disease will
+// have other answers and therefore another linkId. A generic question keeps a plain linkId (compare
+// `blood-donation`) — see forms-summary.md §8, "Naming the linkIds".
 //
 // NO PRE-POPULATION: no SDC launch context (%patient / %user / %encounter) carries the course of
 // the disease. The form asks.
@@ -28,10 +35,10 @@ Instance: ChEkmQuestionnaireHepatitisCCourseOfDisease
 InstanceOf: Questionnaire
 Usage: #definition
 Title: "CH EKM Questionnaire: Hepatitis C - Course of Disease"
-Description: "Modular sub-questionnaire for the 'Krankheitsverlauf' question of the Hepatitis C clinical findings report. Reusable as an SDC assemble-child; NOT extracted into a resource — the QuestionnaireResponse itself is carried in the document, see ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC."
+Description: "Modular sub-questionnaire for the 'Krankheitsverlauf' question of the Hepatitis C clinical findings report. Reusable as an SDC assemble-child; NOT extracted into a resource — the answer is carried by the disease-specific QuestionnaireResponse in the document, see ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireHepatitisCCourseOfDisease)
 
-* item[+].linkId = "course-of-disease"
+* item[+].linkId = "hepatitisc-course-of-disease"
 * insert RuleSetQrLevel1Text("Course of the disease", "Krankheitsverlauf", "Évolution de la maladie", "Decorso della malattia")
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.courseOfDisease"
 * item[=].type = #choice

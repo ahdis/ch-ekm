@@ -47,6 +47,14 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 // `definition` points at ChEkmHepatitisCManifestationForm, as the Gonorrhoea root does at its own
 // manifestation sub-form.
 * insert RuleSetQrGroupManifestation
+
+// Diagnose im Rahmen einer Blutspende — the FIRST question of this section, before the
+// manifestations. Disease-specific and not extracted into a resource, like the Krankheitsverlauf
+// below: both modules are ALSO assembled, one after the other, into the disease-specific
+// questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecific, which the response carried in the
+// document answers. Two modules, two places on the form, one definition each.
+* insert RuleSetQrBloodDonationHepatitisC
+
 * insert RuleSetQrLevel3Item("manifestation", "Manifestations", "Manifestationen", "Manifestations", "Manifestazioni")
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.manifestation"
 * item[=].item[=].item[=].type = #choice
@@ -67,9 +75,9 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 // --- Krankheitsverlauf --------------------------------------------------------------------------
 // akut / chronisch / Zirrhose / Hepatokarzinom / General wellbeing. A LEVEL-3 child of this section,
 // like the Labor block below it. NOT extracted into a resource: the answer travels in the
-// QuestionnaireResponse that the document itself carries, as
+// disease-specific QuestionnaireResponse that the document carries, as
 // Composition.section[diagnosis].entry[questionnaire-response], and the profile on it
-// (ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC) has an invariant requiring exactly this
+// (ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC) has an invariant requiring exactly this
 // linkId to be answered. See ChEkmQuestionnaireHepatitisCCourseOfDisease.fsh for the reasoning and
 // ChEkmDocumentHepatitisCTemplate.fsh for how the QuestionnaireResponse gets into the Bundle.
 * insert RuleSetQrCourseOfDiseaseHepatitisC
@@ -121,7 +129,7 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //
 //  1. LOGICAL MODEL — IMPLEMENTED. ChEkmHepatitisCForm is the disease-level aggregate, with
 //     ChEkmHepatitisCPersonForm and ChEkmHepatitisCManifestationForm (incl. Krankheitsverlauf) as its
-//     own sub-forms; the manifestation and course-of-disease items point at the latter. Still
+//     own sub-forms; the manifestation and hepatitisc-course-of-disease items point at the latter. Still
 //     unresolved: the manifestation value set mixes real findings with "Keine"/"Unbekannt" from
 //     ChEkmOtherNoneUnknown while the item is `repeats = true`, so "Ikterus + keine" is tickable.
 //     (Same latent problem in Gonorrhoea; Mpox has the ChEkmOtherNoneUnknown include commented out.)
@@ -164,14 +172,16 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     `sct#386053000 Evaluation procedure`) in section[medication], and the CSV itself flags that
 //     codification as uncertain. No profile, no model element, no question.
 //
-//  7. KRANKHEITSVERLAUF — DECIDED AND IMPLEMENTED, see the section above. The two competing
-//     designs (a standalone questionnaire + a nested QuestionnaireResponse in the document, versus
-//     a question in this form extracted into a resource) are resolved into a third one:
-//     ChEkmQuestionnaireHepatitisCCourseOfDisease is now an assemble-child of THIS form, and the
-//     answer is NOT extracted — the QuestionnaireResponse of the whole form is what
-//     `section[diagnosis].entry[questionnaire-response]` carries, and
-//     ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC makes that entry mandatory and constrains
-//     it with the invariant `ch-ekm-qr-hepatitisc-course` (the linkId must be answered inside it).
+//  7. KRANKHEITSVERLAUF — DECIDED AND IMPLEMENTED, see the section above, and since then
+//     generalised to every DISEASE-SPECIFIC question without a FHIR target. Each such question is a
+//     module of its own (ChEkmQuestionnaireHepatitisCCourseOfDisease,
+//     ChEkmQuestionnaireHepatitisCBloodDonation), assembled into THIS form where it belongs and into
+//     the disease-specific questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecific. The answers are
+//     NOT extracted into resources: $extract copies the modules' items into a QuestionnaireResponse
+//     to the disease-specific questionnaire, which `section[diagnosis].entry[questionnaire-response]`
+//     carries (mandatory); ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC constrains it
+//     (invariants `ch-ekm-qr-hepatitisc-questionnaire`, `ch-ekm-qr-hepatitisc-course`). Every other
+//     answer goes into a resource and is not repeated in that response.
 //
 //  8. IMPFSTATUS — DECIDED: NOT ASKED. Hepatitis C has no vaccine, so the CSV's
 //     "targetDisease = gemeldete Erreger" cannot be filled in, and asking about the hepatitis A /
@@ -200,7 +210,8 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //       * item[=].item[=].enableWhen[=].answerBoolean = false
 //     This affects Mpox too, not just Hepatitis C, so it belongs in the shared module.
 //
-// 11. TWO ROWS THE CSV MARKS AS "added by Yolanda Sabuco, not in the Google sheet":
+// 11. TWO ROWS THE CSV MARKS AS "added by Yolanda Sabuco, not in the Google sheet" (if they are
+//     reportable data, they become disease-specific modules like the blood-donation question, see #7):
 //     "Ich habe für diese(n) Patient/in bereits eine Arztmeldung ... versendet" and "Diagnose seit
 //     mehr als 1 Jahr bekannt". Both are annotated "QuestionnaireResponse level ??" — i.e. it is
 //     not decided whether they are form-only routing questions (no FHIR target) or reportable data.

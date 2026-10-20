@@ -1215,40 +1215,75 @@ deceased (no Observation, no section, no `deceasedDateTime`), deceased without a
 > `WARNING`/`INFORMATION` remain (e.g. the carrier extension's `context = Element` advisory) — those
 > are expected for a template.
 
-### Carrying the WHOLE QuestionnaireResponse into the document (Hepatitis C Krankheitsverlauf)
+### Disease-specific questions: a separate QuestionnaireResponse (Hepatitis C)
 
-Not every form question has a resource to be extracted into. The Hepatitis C "Krankheitsverlauf"
-(akut / chronisch / Zirrhose / Hepatokarzinom / General wellbeing) is the IG's first such question:
-there is no Condition or Observation for it, and inventing one would bake a guess into the profiles.
-The design chosen instead — the resolution of TODO.md #7 — is to let **the QuestionnaireResponse
-itself be the carrier**, as `Composition.section[diagnosis].entry[questionnaire-response]`:
+Not every form question has a resource to be extracted into, and there will be many more of them
+than the forms modelled so far suggest (therapies, clinical judgements, risk behaviour, contact
+tracing). Inventing a Condition, Observation or local code for each would bake a guess into the
+profiles. Hepatitis C has two such questions today, the "Krankheitsverlauf" (akut / chronisch /
+Zirrhose / Hepatokarzinom / General wellbeing) and "Diagnose im Rahmen einer Blutspende" (ja / nein /
+unbekannt, from the CSV's "Potentiale Questionnaire Fragen" block). Their answers travel as a
+**separate, disease-specific QuestionnaireResponse** in
+`Composition.section[diagnosis].entry[questionnaire-response]`, and every other answer of the form
+goes into a resource and is not repeated there.
 
 | | |
 | --- | --- |
-| Question | `course-of-disease`, an assemble-child (`ChEkmQuestionnaireHepatitisCCourseOfDisease`) inside the *Diagnose und Manifestation* section |
-| Extraction | none — no target profile, no `definition` on the item |
-| Document entry | `ExtractedQuestionnaireResponseHepatitisC`, the source response copied verbatim |
-| Guarantee | `ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC` + invariant `ch-ekm-qr-hepatitisc-course`, and `entry[questionnaire-response] 1..1` on `ChEkmCompositionHepatitisC` |
+| Questions | one MODULE each: `ChEkmQuestionnaireHepatitisCBloodDonation` (`blood-donation`), `ChEkmQuestionnaireHepatitisCCourseOfDisease` (`hepatitisc-course-of-disease`); each contributes ONE top-level item |
+| Reporting form | `ChEkmQuestionnaireHepatitisC` assembles each module where it belongs: blood donation first in the Diagnose section, Krankheitsverlauf after the Manifestationsbeginn |
+| Disease-specific questionnaire | `ChEkmQuestionnaireHepatitisCDiseaseSpecific` assembles the SAME modules into one group `hepatitisc-disease-specific`, in an order of its own; its `$assemble` output `ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled` is what the response names and is validated against |
+| Extraction | none into resources; the template copies each module's item out of the form's response into the disease-specific response |
+| Document entry | `ExtractedQuestionnaireResponseHepatitisC`, `questionnaire` = `…/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled\|0.0.1` |
+| Guarantee | `ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC` + invariants `ch-ekm-qr-hepatitisc-questionnaire` (names the disease-specific questionnaire) and `ch-ekm-qr-hepatitisc-course`, and `entry[questionnaire-response] 1..1` on `ChEkmCompositionHepatitisC` |
 
-**The copy is one `templateExtractValue`, and it works for a non-obvious reason.** The template
-carries a placeholder `item[0]` whose value expression is `%resource.item`:
+**Why a second questionnaire, and why it is not a copy.** The response holds only the
+disease-specific items, so it cannot name the reporting form: validated against the form, every
+required question elsewhere would be reported missing. It needs a questionnaire of exactly its own
+items. That questionnaire is not written by hand: it is a second modular root over the same modules,
+so each question is defined once and both questionnaires are generated from it. `$assemble` only
+resolves sub-questionnaires nested in a group, hence the one group.
+
+**The copy is one context-gated `templateExtractValue` per module.** Inside the template's group:
 
 ```
-* item[0].linkId = "template-questionnaire-response"
-* item[0].extension[+].url = $sdc-templateExtractValue
-* item[0].extension[=].valueString = "%resource.item"
+* item[0].item[0].linkId = "template-blood-donation"
+* item[0].item[0].extension[0].url = $sdc-templateExtractContext
+* item[0].item[0].extension[0].valueString = "%resource.descendants().where(linkId = 'blood-donation')"
+* item[0].item[0].extension[1].url = $sdc-templateExtractValue
+* item[0].item[0].extension[1].valueString = "$this"
 ```
 
-The engine inserts a value only when the FHIRPath result has **exactly one** element
-(`getValueFromResult` in `@aehrc/sdc-template-extract`). That holds here precisely because every
-root questionnaire in this IG wraps its whole form in ONE top-level item — a root with two
-top-level items could not be copied this way; `%resource.item.item` would return five groups and
-insert nothing. The placeholder must also set no key the incoming item does not set: static template
-data is merged with the value by a shallow spread in which the value wins **per key**, so a
-placeholder `answer` on the top-level item would survive into the extracted response.
+The context finds the module's item wherever the form placed it; `$this` replaces the placeholder
+with it, answers and children included. The engine inserts a value only when the result has
+**exactly one** element (`getValueFromResult` in `@aehrc/sdc-template-extract`), hence one top-level
+item per module. An unanswered module has no item in the form's response, so its context is empty
+and the placeholder is dropped: no invented linkId reaches the document (tested by removing the
+blood-donation answer). The placeholders must follow the disease-specific questionnaire's order,
+because QuestionnaireResponse validation checks it, and must set no key the incoming item does not set:
+static template data is merged with the value by a shallow spread in which the value wins **per
+key**.
 
-`scripts/extract-hepatitisc.sh` asserts the round trip: the extracted `item` tree must be
-byte-identical to the source response's.
+**Adding a disease-specific question** = a new module, its insert in the form (where it belongs), its
+insert in the disease-specific root (at the end, say), and a placeholder in the template at the same
+position.
+
+**Naming the linkIds.** A linkId only has to be unique within its questionnaire, and the response
+names the disease-specific questionnaire, so the disease is already known. Therefore:
+
+- only the **root group** carries the disease (`hepatitisc-form`, `hepatitisc-disease-specific`), as
+  in every form of this IG;
+- a **generic question** keeps a plain linkId (`blood-donation`: yes / no / unknown). The same
+  question asked for another disease uses the same linkId, and the module can then move to
+  `input/fsh/questionnnaire/` and be shared, like the hospitalisation module;
+- a question whose **content is disease-specific** — usually its answer list — is prefixed with the
+  disease (`hepatitisc-course-of-disease`, bound to `ChEkmHepatitisCCourseOfDisease`). A plain linkId
+  must mean the same question in every disease, or anyone analysing the responses across diseases
+  would mix different answer lists under one name. DEMIS does the same: in `rki.demis.disease` only
+  15 of 419 linkIds carry the disease code (Gonorrhoea: `clinicalFindingNEGD`, `hivPrEPStatusNEGD`,
+  `stiProphylaxisStatusNEGD`, `partnerNotifiedNEGD`), the others are plain and reused across diseases.
+
+`scripts/extract-hepatitisc.sh` asserts the round trip: every copied item must be byte-identical to
+the same linkId's item in the form's response, and no placeholder may survive.
 
 #### Three validator traps, in the order they were hit
 
@@ -1256,7 +1291,7 @@ Embedding a QuestionnaireResponse in a template that is itself `contained` in a 
 squeezed between rules that were not written with each other in mind. All three were measured with
 the IG Publisher against a 20-error baseline.
 
-**1. The placeholder may not reuse the form's linkIds (+5 errors).** `que-2` is
+**1. A placeholder may not reuse the form's linkIds (+5 errors).** `que-2` is
 `descendants().linkId.isDistinct()` evaluated on the Questionnaire, and `descendants()` walks into
 `contained` — i.e. into the extraction template. A placeholder called `hepatitisc-form` therefore
 reads as a duplicate of the form's own root item, on the root, the assembled and all three language
@@ -1282,11 +1317,11 @@ discriminator, so the only symptom is the same "Slice 'Bundle.entry:Composition'
 required, but not found" as trap 2, with nothing said about the response. The invariant is therefore:
 
 ```
-questionnaire.hasValue() implies descendants().where(linkId = 'course-of-disease').answer.value.exists()
+questionnaire.hasValue() implies descendants().where(linkId = 'hepatitisc-course-of-disease').answer.value.exists()
 ```
 
 `descendants()` from the resource rather than a fixed path, so re-ordering the assembled sections
-cannot invalidate documents already sent and a top-level `course-of-disease` would match too; an
+cannot invalidate documents already sent and a top-level `hepatitisc-course-of-disease` would match too; an
 invariant rather than a slice, because `QuestionnaireResponse.item` cannot be sliced by `linkId` at
 an arbitrary depth.
 

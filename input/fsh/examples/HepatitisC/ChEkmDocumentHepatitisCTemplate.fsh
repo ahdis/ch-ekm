@@ -68,22 +68,31 @@ Usage: #inline
 * insert RuleSetObservationCauseOfDeath(50711007, Viral hepatitis type C (disorder\), ExtractedConditionHepatitisC)
 
 // ---------------------------------------------------------------------------
-// The form's own QuestionnaireResponse, copied verbatim into the document
-// (ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC). This is the ONE entry that is not built
-// from answers but IS the answers: the Krankheitsverlauf question has no resource target, so the
-// response itself is what carries it, and the profile's invariant `ch-ekm-qr-hepatitisc-course`
-// enforces that it is answered. See the OPEN QUESTIONS block (#7) in ChEkmQuestionnaireHepatitisC.fsh.
+// The DISEASE-SPECIFIC QuestionnaireResponse (ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC):
+// the answers to the form questions that have no FHIR target, and only those. This is the ONE entry
+// that is not built from answers but IS answers. It is the response to the disease-specific
+// questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled, which assembles the same
+// modules the form does (ChEkmQuestionnaireHepatitisCBloodDonation,
+// ChEkmQuestionnaireHepatitisCCourseOfDisease); every other answer of the form went into a resource
+// above and is NOT repeated here.
 //
-// HOW THE COPY WORKS, and its one precondition: a single templateExtractValue of `%resource.item` on
-// item[0] replaces the placeholder item with the response's own top-level item, children and all.
-// The engine inserts a value only when the FHIRPath result has exactly ONE element (see
-// getValueFromResult in @aehrc/sdc-template-extract), so this works precisely because every root
-// questionnaire in this IG wraps its whole form in ONE top-level item (`hepatitisc-form`). A root
-// with two top-level items could not be copied this way.
+// HOW THE COPY WORKS: inside the disease-specific questionnaire's one group, one placeholder item
+// per module, in that questionnaire's order (QuestionnaireResponse validation checks the order). Each placeholder is
+// context-gated on the module's item in the form's response —
+// `%resource.descendants().where(linkId = '<the module's linkId>')`, wherever the form placed it —
+// and its value `$this` replaces the placeholder with that item, answers and children included. The
+// engine inserts a value only when the result is exactly ONE item, which is why every module
+// contributes ONE top-level item. A module that was not answered has no item in the form's response:
+// the context is empty and the placeholder is dropped, so no invented linkId can survive into the
+// extracted response.
 //
-// TWO VALIDATORS PULL IN OPPOSITE DIRECTIONS HERE, and the placeholder below is the only shape that
+// ADDING A MODULE = one more placeholder here, at the position the module has in
+// ChEkmQuestionnaireHepatitisCDiseaseSpecific, plus the module's insert in that questionnaire and in
+// the form.
+//
+// TWO VALIDATORS PULL IN OPPOSITE DIRECTIONS HERE, and the placeholders below are the only shape that
 // satisfies both. Measured, with the IG Publisher:
-//   * Give the placeholder the FORM'S linkIds and `que-2` fails 5 times. que-2 is
+//   * Give a placeholder the FORM'S linkIds and `que-2` fails 5 times. que-2 is
 //     `descendants().linkId.isDistinct()` on the Questionnaire, and `descendants()` walks into
 //     `contained` — i.e. into this template — so the form's own linkIds read as duplicates on the
 //     root, the assembled and all three language questionnaires. It cannot be suppressed:
@@ -96,31 +105,41 @@ Usage: #inline
 // The way out is that the linkId check only runs when there IS a questionnaire to check against.
 // This template names none: `questionnaire` carries the value expression but NO value, so it is
 // `_questionnaire` alone until extraction fills it in — the same "carrier without a value" idiom
-// `Composition.date` uses above. That in turn is why ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC
-// leaves `questionnaire` at 0..1 and phrases its invariant as `questionnaire.exists() implies …`:
-// the template has neither a questionnaire nor an answer, a real response has both.
+// `Composition.date` uses above. That in turn is why ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC
+// leaves `questionnaire` at 0..1 and guards its invariants on `questionnaire.hasValue()`.
 //
-// The placeholder sets NO key the incoming item does not set. Static template data is merged with
+// Each placeholder sets NO key the incoming item does not set. Static template data is merged with
 // the value by a shallow spread in which the value wins per key, so a placeholder `answer` would
-// survive into the extracted response (the real top-level item has no `answer` to overwrite it
-// with). `linkId` is the only key here, and the incoming item always has one. Verified: the
-// extracted QuestionnaireResponse.item is byte-identical to the source response's.
+// survive into the extracted response. `linkId` is the only key here, and the incoming item always
+// has one. scripts/extract-hepatitisc.sh asserts that each copied item is byte-identical to the
+// form response's item.
 // ---------------------------------------------------------------------------
 Instance: ExtractedQuestionnaireResponseHepatitisC
-InstanceOf: ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC
+InstanceOf: ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC
 Usage: #inline
 * status = #completed
 * subject.reference = "Patient/ExtractedPatient"
 // NO VALUE, only the carrier — see above: a template that named a questionnaire would have its
-// placeholder linkId checked against that questionnaire's items.
+// placeholder linkIds checked against that questionnaire's items. The expression is a literal: the
+// form's response names the FORM, this response the disease-specific questionnaire, versioned.
 * questionnaire.extension[+].url = $sdc-templateExtractValue
-* questionnaire.extension[=].valueString = "%resource.questionnaire"
+* questionnaire.extension[=].valueString = "'http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled|0.0.1'"
 * authored.extension[+].url = $sdc-templateExtractValue
 * authored.extension[=].valueString = "%resource.authored"
-// PLACEHOLDER DEFAULT — replaced wholesale by the response's own top-level item.
-* item[0].linkId = "template-questionnaire-response"
-* item[0].extension[+].url = $sdc-templateExtractValue
-* item[0].extension[=].valueString = "%resource.item"
+// The disease-specific questionnaire's one group (its linkId is not used in the form, so que-2 sees
+// no duplicate), then the PLACEHOLDERS — one per module, in the order of
+// ChEkmQuestionnaireHepatitisCDiseaseSpecific.
+* item[0].linkId = "hepatitisc-disease-specific"
+* item[0].item[0].linkId = "template-blood-donation"
+* item[0].item[0].extension[0].url = $sdc-templateExtractContext
+* item[0].item[0].extension[0].valueString = "%resource.descendants().where(linkId = 'blood-donation')"
+* item[0].item[0].extension[1].url = $sdc-templateExtractValue
+* item[0].item[0].extension[1].valueString = "$this"
+* item[0].item[1].linkId = "template-hepatitisc-course-of-disease"
+* item[0].item[1].extension[0].url = $sdc-templateExtractContext
+* item[0].item[1].extension[0].valueString = "%resource.descendants().where(linkId = 'hepatitisc-course-of-disease')"
+* item[0].item[1].extension[1].url = $sdc-templateExtractValue
+* item[0].item[1].extension[1].valueString = "$this"
 
 // ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionHepatitisC) — static structure, references the entries above,
@@ -129,7 +148,7 @@ Usage: #inline
 // section[laboratory] IS emitted now (the analysing laboratory — see RuleSetLaboratorySection); its
 // optional `entry[seroconversion]` is not (OPEN QUESTION #5).
 // section[diagnosis].entry[questionnaire-response] IS emitted now, and is mandatory: it carries the
-// Krankheitsverlauf (#7 — decided; see the QuestionnaireResponse entry above).
+// disease-specific questions (#7 — decided; see the QuestionnaireResponse entry above).
 // NOT emitted: section[medication] (OPEN QUESTION #6) and section[immunization] — the latter for
 // good, since Hepatitis C has no vaccine (#8, decided). Both are optional in ChEkmComposition, so
 // the extracted document is valid without them.
@@ -150,7 +169,7 @@ Usage: #inline
 * section[0].title = "Diagnosis section"
 * section[0].code = $loinc#29308-4
 * section[0].entry[0].reference = "Condition/ExtractedConditionHepatitisC"
-// The form's own QuestionnaireResponse. UNGATED and mandatory (ChEkmCompositionHepatitisC makes the
+// The disease-specific QuestionnaireResponse. UNGATED and mandatory (ChEkmCompositionHepatitisC makes the
 // slice 1..1): it is the carrier of the Krankheitsverlauf, which has no resource target.
 * section[0].entry[1].reference = "QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC"
 * section[1].title = "Social history section"
@@ -206,7 +225,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentH
 // conditional entries below.
 * insert RuleSetLaboratoryEntries
 
-// The form's own QuestionnaireResponse. Ungated, hence before the conditional entries below — a
+// The disease-specific QuestionnaireResponse. Ungated, hence before the conditional entries below — a
 // static entry placed AFTER a gated one is corrupted as soon as the gate does not fire.
 * entry[+].fullUrl = "http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC"
 * entry[=].resource = ExtractedQuestionnaireResponseHepatitisC

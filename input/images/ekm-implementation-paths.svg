@@ -99,8 +99,14 @@
   <text x="700" y="202" text-anchor="middle" font-size="8.5" fill="#ffffff">Observation, …</text>
   <rect x="648" y="212" width="104" height="18" rx="3" fill="#3B73AA"/>
   <text x="700" y="224" text-anchor="middle" font-size="8.5" fill="#ffffff">PractitionerRole, …</text>
-  <text x="700" y="252" text-anchor="middle" font-size="8.5" fill="#555555">the same document</text>
-  <text x="700" y="265" text-anchor="middle" font-size="8.5" fill="#555555">on both paths</text>
+  <!-- Only for diseases whose form asks questions without a FHIR target: the disease-specific
+       QuestionnaireResponse. Dashed = not in every document. -->
+  <rect x="648" y="234" width="104" height="18" rx="3" fill="#ffffff" stroke="#3B73AA" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="700" y="246" text-anchor="middle" font-size="8" font-weight="bold" fill="#3B73AA">QuestionnaireResponse</text>
+  <text x="700" y="263" text-anchor="middle" font-size="7.5" fill="#3B73AA" font-style="italic">dashed: only diseases with</text>
+  <text x="700" y="273" text-anchor="middle" font-size="7.5" fill="#3B73AA" font-style="italic">disease-specific questions</text>
+  <text x="700" y="287" text-anchor="middle" font-size="8.5" fill="#555555">the same document</text>
+  <text x="700" y="298" text-anchor="middle" font-size="8.5" fill="#555555">on both paths</text>
 
   <!-- Document → FOPH -->
   <line x1="765" y1="187" x2="790" y2="187" stroke="#3B73AA" stroke-width="2" marker-end="url(#arr)"/>

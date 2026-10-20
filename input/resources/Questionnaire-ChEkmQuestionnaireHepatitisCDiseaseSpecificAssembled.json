@@ -1,0 +1,257 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled",
+  "meta": {
+    "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
+  },
+  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled",
+  "name": "ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled",
+  "title": "CH EKM Questionnaire: Hepatitis C disease-specific questions (assembled)",
+  "status": "active",
+  "language": "en",
+  "experimental": false,
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "code": "semver",
+        "system": "http://hl7.org/fhir/version-algorithm"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCBloodDonation|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCCourseOfDisease|0.0.1"
+    }
+  ],
+  "item": [
+    {
+      "linkId": "hepatitisc-disease-specific",
+      "text": "Hepatitis C: disease-specific questions",
+      "_text": {
+        "extension": [
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+            "extension": [
+              {
+                "url": "lang",
+                "valueCode": "de-CH"
+              },
+              {
+                "url": "content",
+                "valueString": "Hepatitis C: krankheitsspezifische Fragen"
+              }
+            ]
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+            "extension": [
+              {
+                "url": "lang",
+                "valueCode": "fr-CH"
+              },
+              {
+                "url": "content",
+                "valueString": "Hépatite C : questions spécifiques à la maladie"
+              }
+            ]
+          },
+          {
+            "url": "http://hl7.org/fhir/StructureDefinition/translation",
+            "extension": [
+              {
+                "url": "lang",
+                "valueCode": "it-CH"
+              },
+              {
+                "url": "content",
+                "valueString": "Epatite C: domande specifiche della malattia"
+              }
+            ]
+          }
+        ]
+      },
+      "type": "group",
+      "item": [
+        {
+          "linkId": "blood-donation",
+          "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.bloodDonation",
+          "text": "Was the diagnosis made in the context of a blood donation?",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "de-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Wurde die Diagnose im Rahmen einer Blutspende gestellt?"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "fr-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Le diagnostic a-t-il été posé dans le cadre d'un don de sang ?"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "it-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "La diagnosi è stata posta nell'ambito di una donazione di sangue?"
+                  }
+                ]
+              }
+            ]
+          },
+          "type": "choice",
+          "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
+          "_answerValueSet": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                "extension": [
+                  {
+                    "url": "name",
+                    "valueCode": "useSupplement"
+                  },
+                  {
+                    "url": "expression",
+                    "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                  }
+                ]
+              }
+            ]
+          },
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "code": "radio-button",
+                    "system": "http://hl7.org/fhir/questionnaire-item-control"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+              "valueCode": "horizontal"
+            }
+          ]
+        },
+        {
+          "linkId": "hepatitisc-course-of-disease",
+          "text": "Course of the disease",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "de-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Krankheitsverlauf"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "fr-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Évolution de la maladie"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "it-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Decorso della malattia"
+                  }
+                ]
+              }
+            ]
+          },
+          "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.courseOfDisease",
+          "type": "choice",
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+              "valueCode": "vertical"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "code": "check-box",
+                    "system": "http://hl7.org/fhir/questionnaire-item-control"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmHepatitisCCourseOfDisease",
+          "_answerValueSet": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                "extension": [
+                  {
+                    "url": "name",
+                    "valueCode": "useSupplement"
+                  },
+                  {
+                    "url": "expression",
+                    "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "version": "0.0.1",
+  "date": "2026-10-20T09:26:21+02:00",
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecific and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+}

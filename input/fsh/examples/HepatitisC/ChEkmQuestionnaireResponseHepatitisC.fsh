@@ -22,11 +22,13 @@
 //      closed state of each (the invasive pneumococcal disease QR covers the open one).
 //   8. `genderIdentity` left UNANSWERED -> the individual-genderIdentity extension must be absent
 //      from the extracted Patient, not an empty shell (Mpox answers it and covers the other branch).
-//   9. Krankheitsverlauf answered (two codes) -> the ONE thing this form does not extract into a
-//      resource. THIS RESPONSE ITSELF is copied verbatim into the document Bundle and referenced
-//      from Composition.section[diagnosis].entry[questionnaire-response]; the profile on it
-//      (ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC) has the invariant that the linkId must
-//      be answered. No other round trip in the IG carries its own response.
+//   9. The two disease-specific questions answered (blood donation "nein", Krankheitsverlauf with
+//      two codes) -> the ones this form does not extract into a resource. $extract copies their two
+//      items into a SEPARATE, disease-specific QuestionnaireResponse (to
+//      ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled), referenced from
+//      Composition.section[diagnosis].entry[questionnaire-response]; the profile on it
+//      (ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC) requires the Krankheitsverlauf. No
+//      other round trip in the IG carries a response.
 // The person group uses the full-name module (surname / givenname), as ChEkmHepatitisCPersonForm
 // requires.
 //
@@ -83,31 +85,36 @@ Description: "Example Hepatitis C QuestionnaireResponse used as input to SDC tem
 // --- Diagnose und Manifestation ---
 // TWO manifestations (repeats = true) -> two Condition.evidence entries after $extract.
 * item[0].item[1].linkId = "manifestation-group"
-* item[0].item[1].item[0].linkId = "manifestation"
-* item[0].item[1].item[0].answer[0].valueCoding = $sct#18165001 "Jaundice"
-* item[0].item[1].item[0].answer[1].valueCoding = $sct#707724006 "Liver enzymes level above reference range"
+// Diagnose im Rahmen einer Blutspende — "nein". The FIRST question of the section and, like the
+// Krankheitsverlauf below, not extracted into a resource: $extract copies this item into the
+// disease-specific QuestionnaireResponse of the document.
+* item[0].item[1].item[0].linkId = "blood-donation"
+* item[0].item[1].item[0].answer.valueCoding = $sct#373067005 "No (qualifier value)"
+* item[0].item[1].item[1].linkId = "manifestation"
+* item[0].item[1].item[1].answer[0].valueCoding = $sct#18165001 "Jaundice"
+* item[0].item[1].item[1].answer[1].valueCoding = $sct#707724006 "Liver enzymes level above reference range"
 // Manifestationsbeginn UNKNOWN -> onsetDateTime has no value and carries
 // data-absent-reason#asked-unknown; manifestationBeginDate is enableWhen-disabled and unanswered.
-* item[0].item[1].item[1].linkId = "manifestationBeginUnknown"
-* item[0].item[1].item[1].answer.valueBoolean = true
-// Krankheitsverlauf — TWO answers (repeats = true). Nothing is extracted from them: this item is
-// the reason the whole QuestionnaireResponse is copied into the document, and it is what the
-// invariant ch-ekm-qr-hepatitisc-course on ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC
-// looks for. See OPEN QUESTIONS #7 in ChEkmQuestionnaireHepatitisC.fsh.
-* item[0].item[1].item[2].linkId = "course-of-disease"
-* item[0].item[1].item[2].answer[0].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
-* item[0].item[1].item[2].answer[1].valueCoding = $sct#76783007 "Chronic hepatitis (disorder)"
+* item[0].item[1].item[2].linkId = "manifestationBeginUnknown"
+* item[0].item[1].item[2].answer.valueBoolean = true
+// Krankheitsverlauf — TWO answers (repeats = true). Not extracted into a resource: $extract copies
+// this item into the disease-specific QuestionnaireResponse of the document, where the invariant
+// ch-ekm-qr-hepatitisc-course on ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC looks for it.
+// See OPEN QUESTIONS #7 in ChEkmQuestionnaireHepatitisC.fsh.
+* item[0].item[1].item[3].linkId = "hepatitisc-course-of-disease"
+* item[0].item[1].item[3].answer[0].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
+* item[0].item[1].item[3].answer[1].valueCoding = $sct#76783007 "Chronic hepatitis (disorder)"
 
 // Labor — the analysing laboratory, which sits INSIDE this section, after the Manifestationsbeginn.
 // Values from the CSV's example column. Deliberately answers ONLY the mandatory `labName` plus the
 // email: the eight optional fields stay blank, so this round trip covers the CLOSED state of every
 // context-gated element of ExtractedLabOrganization (no identifier, no department, no address, no
 // phone) — the invasive pneumococcal disease QR answers all of them and covers the open state.
-* item[0].item[1].item[3].linkId = "laboratory"
-* item[0].item[1].item[3].item[0].linkId = "labName"
-* item[0].item[1].item[3].item[0].answer.valueString = "LabSan GmbH"
-* item[0].item[1].item[3].item[1].linkId = "labEmail"
-* item[0].item[1].item[3].item[1].answer.valueString = "patho@automation.org"
+* item[0].item[1].item[4].linkId = "laboratory"
+* item[0].item[1].item[4].item[0].linkId = "labName"
+* item[0].item[1].item[4].item[0].answer.valueString = "LabSan GmbH"
+* item[0].item[1].item[4].item[1].linkId = "labEmail"
+* item[0].item[1].item[4].item[1].answer.valueString = "patho@automation.org"
 
 // --- Verlauf ---
 // Hospitalisation "unbekannt" -> an Encounter exists but carries nothing except

@@ -26,14 +26,14 @@ Expression: "entry.resource.ofType(Patient).where(birthDate.exists() and birthDa
 
 
 // The Hepatitis C "Krankheitsverlauf" (akut / chronisch / Zirrhose / Hepatokarzinom / General
-// wellbeing) is the one question of that form with no resource target: it is not extracted, it stays
-// in the QuestionnaireResponse the document carries. This invariant is what makes the document
-// self-sufficient — without it, a conforming document could omit the answer entirely.
+// wellbeing) is a question of that form with no resource target: it is not extracted, it travels in
+// the disease-specific QuestionnaireResponse the document carries. It is required on the form, so this
+// invariant is what makes the document self-sufficient — without it, a conforming document could
+// omit the answer entirely.
 //
-// `descendants()` rather than a fixed path, because the question sits three levels deep in the
-// ASSEMBLED form (hepatitisc-form > manifestation-group > course-of-disease) and a re-ordering of
-// the assembled sections must not invalidate documents already sent. Starting from the resource
-// rather than from `item` so that a top-level `course-of-disease` would match too.
+// `descendants()` rather than a fixed path: in the disease-specific questionnaire the question sits
+// inside its one group (hepatitisc-disease-specific > hepatitisc-course-of-disease), and a re-ordering
+// or regrouping of its modules must not invalidate documents already sent.
 //
 // GUARDED ON `questionnaire.hasValue()`, and that guard is not cosmetic: the SDC $extract template
 // (ExtractedQuestionnaireResponseHepatitisC) is itself a QuestionnaireResponse that has to conform
@@ -51,9 +51,18 @@ Expression: "entry.resource.ofType(Patient).where(birthDate.exists() and birthDa
 // as "Slice 'Bundle.entry:Composition': a matching slice is required, but not found" on the
 // template Bundle. `hasValue()` asks the question actually meant: is there a canonical here.
 Invariant: ch-ekm-qr-hepatitisc-course
-Description: "A response that names the questionnaire it answers must answer the 'course-of-disease' question (Krankheitsverlauf) of the Hepatitis C form."
+Description: "A response that names the questionnaire it answers must answer the 'hepatitisc-course-of-disease' question (Krankheitsverlauf) of the Hepatitis C form."
 Severity: #error
-Expression: "questionnaire.hasValue() implies descendants().where(linkId = 'course-of-disease').answer.value.exists()"
+Expression: "questionnaire.hasValue() implies descendants().where(linkId = 'hepatitisc-course-of-disease').answer.value.exists()"
+
+// The response the Hepatitis C document carries answers the DISEASE-SPECIFIC questionnaire, not the
+// reporting form: it holds only the form questions without a FHIR target, so validated against the
+// form every required question it does not hold would be reported missing. Matched with
+// startsWith() so a versioned canonical (`…|0.0.1`) passes too.
+Invariant: ch-ekm-qr-hepatitisc-questionnaire
+Description: "A response that names the questionnaire it answers must name the disease-specific Hepatitis C questionnaire (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled), not the reporting form."
+Severity: #error
+Expression: "questionnaire.hasValue() implies questionnaire.startsWith('http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled')"
 
 // ChEkmExtractTransaction: the DocumentReference must point at the document stored in the SAME
 // transaction — by location (attachment.url = the document entry's fullUrl, which the server rewrites

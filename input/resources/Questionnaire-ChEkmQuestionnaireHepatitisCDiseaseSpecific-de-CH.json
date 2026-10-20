@@ -1,0 +1,152 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "ChEkmQuestionnaireHepatitisCDiseaseSpecific-de-CH",
+  "meta": {
+    "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
+  },
+  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecific-de-CH",
+  "name": "ChEkmQuestionnaireHepatitisCDiseaseSpecificdeCH",
+  "title": "CH EKM Questionnaire: Hepatitis C disease-specific questions (assembled) (preview de-CH, pre-expanded)",
+  "status": "active",
+  "language": "de-CH",
+  "experimental": false,
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "code": "semver",
+        "system": "http://hl7.org/fhir/version-algorithm"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCBloodDonation|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCCourseOfDisease|0.0.1"
+    }
+  ],
+  "item": [
+    {
+      "linkId": "hepatitisc-disease-specific",
+      "text": "Hepatitis C: krankheitsspezifische Fragen",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "blood-donation",
+          "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.bloodDonation",
+          "text": "Wurde die Diagnose im Rahmen einer Blutspende gestellt?",
+          "type": "choice",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "code": "radio-button",
+                    "system": "http://hl7.org/fhir/questionnaire-item-control"
+                  }
+                ]
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+              "valueCode": "horizontal"
+            }
+          ],
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "373066001",
+                "display": "Ja"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "373067005",
+                "display": "Nein"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "261665006",
+                "display": "Unbekannt"
+              }
+            }
+          ]
+        },
+        {
+          "linkId": "hepatitisc-course-of-disease",
+          "text": "Krankheitsverlauf",
+          "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmHepatitisCManifestationForm#ChEkmHepatitisCManifestationForm.courseOfDisease",
+          "type": "choice",
+          "repeats": true,
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+              "valueCode": "vertical"
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "code": "check-box",
+                    "system": "http://hl7.org/fhir/questionnaire-item-control"
+                  }
+                ]
+              }
+            }
+          ],
+          "answerOption": [
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "235866006",
+                "display": "Akute Hepatitis C"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "76783007",
+                "display": "Chronische Hepatitis"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "831000119103",
+                "display": "Leberzirrhose infolge chronischer Hepatitis C"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "109841003",
+                "display": "Leberzellkarzinom"
+              }
+            },
+            {
+              "valueCoding": {
+                "system": "http://snomed.info/sct",
+                "code": "363800008",
+                "display": "Allgemeines Wohlbefinden"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "version": "0.0.1",
+  "date": "2026-10-20T09:26:21+02:00",
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecific and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+}

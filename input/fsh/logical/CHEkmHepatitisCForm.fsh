@@ -78,8 +78,9 @@ Title: "Exposure Form to CH EKM Exposure"
 * transmission.otherTransmission -> "Observation.component[otherTransmission].valueString" "Other transmission route (component code sct#74964007)"
 * transmission.unknown -> "Observation.component[transmissionRoute].valueCodeableConcept" "Ticked: sct#261665006 'Unknown'; the other transmission components are then not emitted"
 
-// Krankheitsverlauf is asked in this section, directly after the Manifestationsbeginn. It has no
-// resource target: the answer travels in the QuestionnaireResponse the document carries in
+// Two questions of this section have no resource target: the blood-donation question (asked first,
+// before the manifestations) and the Krankheitsverlauf (directly after the Manifestationsbeginn).
+// Their answers travel in the disease-specific QuestionnaireResponse the document carries in
 // Composition.section[diagnosis], hence the second mapping.
 Logical: ChEkmHepatitisCManifestationForm
 Parent: ChEkmManifestationForm
@@ -89,6 +90,8 @@ Characteristics: #can-be-target
 
 * manifestation ^short = "Manifestations (jaundice / elevated liver enzymes / elevated ALT / elevated AST / other / none / unknown)"
 * manifestation from ChEkmHepatitisCManifestation (required)
+* bloodDonation 0..1 CodeableConcept "Diagnosis made in the context of a blood donation (Diagnose im Rahmen einer Blutspende): yes / no / unknown"
+* bloodDonation from ChEkmYesNoUnknown (required)
 * courseOfDisease 0..* CodeableConcept "Course of the disease (Krankheitsverlauf): acute / chronic / cirrhosis / hepatocellular carcinoma / general wellbeing"
 * courseOfDisease from ChEkmHepatitisCCourseOfDisease (required)
 
@@ -102,8 +105,9 @@ Title: "Manifestation Form to CH EKM Condition Hepatitis C"
 
 Mapping: HepatitisCManifestationToQuestionnaireResponse
 Source: ChEkmHepatitisCManifestationForm
-Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-questionnaireresponse-hepatitisc-courseofdisease"
+Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-questionnaireresponse-hepatitisc-diseasespecific"
 Id: hepatitisc-manifestation-to-questionnaireresponse
-Title: "Manifestation Form to CH EKM Questionnaire Response Course of Disease Hepatitis C"
-* -> "QuestionnaireResponse" "The response to the whole form, carried in Composition.section[diagnosis].entry[questionnaire-response]"
-* courseOfDisease -> "QuestionnaireResponse.item.answer.valueCoding" "The answers of the item with linkId 'course-of-disease' (invariant ch-ekm-qr-hepatitisc-course)"
+Title: "Manifestation Form to CH EKM Questionnaire Response Disease-specific Hepatitis C"
+* -> "QuestionnaireResponse" "The disease-specific response (to ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled), carried in Composition.section[diagnosis].entry[questionnaire-response]"
+* bloodDonation -> "QuestionnaireResponse.item.answer.valueCoding" "The answer of the item with linkId 'blood-donation'"
+* courseOfDisease -> "QuestionnaireResponse.item.answer.valueCoding" "The answers of the item with linkId 'hepatitisc-course-of-disease' (invariant ch-ekm-qr-hepatitisc-course)"

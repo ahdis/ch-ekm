@@ -33,8 +33,8 @@ Description: "Example for a CH EKM Bundle: Hepatitis C"
 * entry[=].resource = ChEkmObservationExample-ExposureViralDisease
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ChEkmObservationExample-Occupation" // Observation
 * entry[=].resource = ChEkmObservationExample-Occupation
-* entry[+].fullUrl = "http://test.fhir.ch/r4/QuestionnaireResponse/ChEkmQuestionnaireResponseHepatitisCCourseOfDisease" // QuestionnaireResponse
-* entry[=].resource = ChEkmQuestionnaireResponseHepatitisCCourseOfDisease
+* entry[+].fullUrl = "http://test.fhir.ch/r4/QuestionnaireResponse/ChEkmQuestionnaireResponseHepatitisCDiseaseSpecificExample" // QuestionnaireResponse
+* entry[=].resource = ChEkmQuestionnaireResponseHepatitisCDiseaseSpecificExample
 
 
 Instance: ChEkmCompositionExample-HepatitisC
@@ -55,7 +55,7 @@ Description: "Example for a CH EKM Composition: Hepatitis C"
 * section[diagnosis].title = "Diagnosis section"
 * section[diagnosis].code = $loinc#29308-4
 * section[diagnosis].entry[0] = Reference(ChEkmConditionExample-HepatitisC)
-* section[diagnosis].entry[1] = Reference(ChEkmQuestionnaireResponseHepatitisCCourseOfDisease)
+* section[diagnosis].entry[1] = Reference(ChEkmQuestionnaireResponseHepatitisCDiseaseSpecificExample)
 
 // Laboratory section
 * section[laboratory].title = "Laboratory Results section"
@@ -74,24 +74,23 @@ Description: "Example for a CH EKM Composition: Hepatitis C"
 * section[social-history].entry[0] = Reference(ChEkmObservationExample-ExposureViralDisease)
 * section[social-history].entry[1] = Reference(ChEkmObservationExample-Occupation)
 
-// The response to the Hepatitis C reporting FORM — not to a questionnaire of its own: since the
-// Krankheitsverlauf became an assemble-child of ChEkmQuestionnaireHepatitisC it sits three levels
-// deep, at hepatitisc-form > manifestation-group > course-of-disease. Only that one question is
-// answered here, because it is the only one this example is about and the only one the profile's
-// invariant requires; a real report's response carries every answered item of the form (see
-// ChEkmQuestionnaireResponseHepatitisC, the $extract test input, for a full one).
-Instance: ChEkmQuestionnaireResponseHepatitisCCourseOfDisease
-InstanceOf: ChEkmQuestionnaireResponseCourseOfDiseaseHepatitisC
+// The disease-specific response: the answers to the Hepatitis C form questions that have no FHIR
+// target, and only those. It answers the disease-specific questionnaire
+// (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled): one group holding the modules' items, side
+// by side, although on the form they sit inside the Diagnose section, in two different places. Everything else the form asks is in the resources of this Bundle.
+Instance: ChEkmQuestionnaireResponseHepatitisCDiseaseSpecificExample
+InstanceOf: ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC
 Usage: #example
-Title: "CH EKM QuestionnaireResponse: HepatitisC - Course of Disease"
-Description: "Example QuestionnaireResponse for the Hepatitis C report, answering the course of disease question that the document has no other place for."
-* questionnaire = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCAssembled"
+Title: "CH EKM QuestionnaireResponse: Hepatitis C - disease-specific questions"
+Description: "Example disease-specific QuestionnaireResponse for the Hepatitis C report: the answers to the form questions that the document has no other place for (diagnosis from blood donation, course of the disease)."
+* questionnaire = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled|0.0.1"
 * status = #completed
 * subject = Reference(ChEkmPatientExample)
-* item[0].linkId = "hepatitisc-form"
-* item[0].item[0].linkId = "manifestation-group"
-* item[0].item[0].item[0].linkId = "course-of-disease"
-* item[0].item[0].item[0].answer[+].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
+* item[0].linkId = "hepatitisc-disease-specific"
+* item[0].item[0].linkId = "blood-donation"
+* item[0].item[0].answer.valueCoding = $sct#373067005 "No (qualifier value)"
+* item[0].item[1].linkId = "hepatitisc-course-of-disease"
+* item[0].item[1].answer[+].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
 
 Instance: ChEkmConditionExample-HepatitisC
 InstanceOf: Condition

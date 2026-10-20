@@ -477,7 +477,14 @@ RuleSet: RuleSetQrGroupImmunizationInvasivePneumococcalDisease
 // section, inserted between RuleSetQrManifestationBeginUnknown and RuleSetQrLaboratory. Disease-
 // SPECIFIC (the answer list is ChEkmHepatitisCCourseOfDisease), hence the name and the child living
 // next to the Hepatitis C examples rather than in input/fsh/questionnnaire/. The answer is NOT
-// extracted into a resource; it travels in the QuestionnaireResponse the document carries — see
-// ChEkmQuestionnaireHepatitisCCourseOfDisease.fsh.
+// extracted into a resource; it travels in the disease-specific QuestionnaireResponse the document
+// carries — see ChEkmQuestionnaireHepatitisCCourseOfDisease.fsh.
 RuleSet: RuleSetQrCourseOfDiseaseHepatitisC
 * insert RuleSetQrLevel3SubQuestionnaire("courseofdisease", "Course of the disease", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCCourseOfDisease")
+
+// "Diagnose im Rahmen einer Blutspende" for Hepatitis C — a LEVEL-3 child of the "Diagnose und
+// Manifestation" section, inserted FIRST, before the manifestations. The second disease-specific
+// module of the form; NOT extracted into a resource either — see
+// ChEkmQuestionnaireHepatitisCBloodDonation.fsh.
+RuleSet: RuleSetQrBloodDonationHepatitisC
+* insert RuleSetQrLevel3SubQuestionnaire("blooddonation", "Diagnosis from blood donation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCBloodDonation")
