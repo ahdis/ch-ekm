@@ -30,7 +30,7 @@ Description: "This CH EKM extension enables to provide the exposure address (the
 // belongs on the element that was answered that way - `Address.country` or `Address.city` - and
 // never on the Address as a whole. "Country unknown, precise location Zurich" and "Country CH,
 // precise location unknown" are therefore both reportable, which an Address-level marker could not
-// express. The slice that used to sit here (for the single "unknown" box the paper form was assumed to have)
+// express. The slice that used to sit here (for the single "unknown" box the reporting form was assumed to have)
 // was never emitted by extraction and has been removed; see RuleSetExposureWhere and
 // forms-summary.md section 12.
 //

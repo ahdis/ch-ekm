@@ -28,7 +28,7 @@
 // Organization and would pre-fill the block with the wrong one. The form asks. Should a launch
 // context for the lab ever appear, these nine items are the natural place to add one.
 //
-// NOT ASKED HERE — the rest of the paper form's "Labor" block, because the answer lists are still
+// NOT ASKED HERE — the rest of the reporting form's "Labor" block, because the answer lists are still
 // open (see TODO.md): "Anlass" (-> ServiceRequest.reasonCode, value set ChEkmServiceRequestReason
 // exists but the CSV gives two different lists), "Material" (-> Specimen.type; only the invasive
 // pneumococcal disease form asks it, and the CSV itself asks whether "Anderes" should be coded) and
@@ -91,7 +91,7 @@ Description: "Modular sub-questionnaire for the 'Labor' section of the clinical 
 * item[=].item[=].type = #string
 
 // BUR — the business register number. `ber` in the model and on the wire
-// (identifier[BER], system urn:oid:2.16.756.5.45); "BUR" is what the paper form calls it.
+// (identifier[BER], system urn:oid:2.16.756.5.45); "BUR" is what the reporting form calls it.
 * item[=].item[+].linkId = "labBer"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber"
 * insert RuleSetQrLevel2Text("BUR number", "BUR-Nummer", "Numéro REE", "Numero RIS")

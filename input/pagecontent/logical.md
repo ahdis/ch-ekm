@@ -1,4 +1,4 @@
-The logical models describe the content of the paper reporting forms independently of FHIR: one element per form item, with its cardinality and, for coded items, the answer list. They are the source the [Questionnaires](questionnaire.html) are built from (each question refers to its element in `Questionnaire.item.definition`), and each model carries a mapping that shows where every form item ends up in the [FHIR document](document.html). The mappings are listed on the *Mappings* tab of each model.
+The logical models describe the content of the reporting forms independently of FHIR: one element per form item, with its cardinality and, for coded items, the answer list. They are the source the [Questionnaires](questionnaire.html) are built from (each question refers to its element in `Questionnaire.item.definition`), and each model carries a mapping that shows where every form item ends up in the [FHIR document](document.html). The mappings are listed on the *Mappings* tab of each model.
 
 [//]: # (Both tables are generated at build time from the logical models themselves, see AGENTS.md.)
 

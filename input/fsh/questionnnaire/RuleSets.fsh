@@ -385,7 +385,7 @@ RuleSet: RuleSetQrGroupTreatingPhysician
 // §8 is explicit that the single-Bundle-template extraction breaks down exactly there: the
 // per-instance loop applies to the whole template, not to one `entry`. Fixed rows keep every
 // Immunization a plain context-gated Bundle entry, the shape that is already proven by the
-// hospitalisation Encounter and the cause-of-death Observation. The paper form has a fixed list too.
+// hospitalisation Encounter and the cause-of-death Observation. The reporting form has a fixed list too.
 //
 // {suffix} is appended to all five linkIds so several rows can live in one questionnaire; it must be
 // a bare word (no spaces), e.g. `Smallpox`. NOTE the FSH escaping rule for rule set arguments: `,`

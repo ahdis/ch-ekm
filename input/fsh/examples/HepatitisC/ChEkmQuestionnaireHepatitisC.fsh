@@ -8,14 +8,14 @@
 // target profiles exist for Hepatitis C are assembled here:
 //   Person (FULL name)  ·  Diagnose/Manifestation + Labor  ·  Verlauf (Hospitalisation + Zustand)
 //   Exposition Wo/Wann  ·  Behandelnde Ärztin/Arzt
-// Everything the Hepatitis C paper form asks on top of that is listed under OPEN QUESTIONS at the
+// Everything the Hepatitis C reporting form asks on top of that is listed under OPEN QUESTIONS at the
 // bottom of this file. Those are DELIBERATELY NOT MODELLED YET — each one needs a decision before a
 // question can be written, and guessing would bake the guess into the extraction template.
 //
 // Sources reconciled here (they disagree in places — see OPEN QUESTIONS):
 //   * logical model  input/fsh/logical/CHEkmHepatitisCForm.fsh   (the master, per AGENTS.md)
 //   * profiles       input/fsh/profiles/ChEkmHepatitisC.fsh
-//   * paper form CSV "Meldung zum klinischen Befund Infektionskrankheit - Hepatitis C.csv"
+//   * reporting form CSV "Meldung zum klinischen Befund Infektionskrankheit - Hepatitis C.csv"
 
 Instance: ChEkmQuestionnaireHepatitisC
 InstanceOf: Questionnaire
@@ -94,7 +94,7 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 * insert RuleSetQrLaboratory
 
 // --- Verlauf (course of the disease) ------------------------------------------------------------
-// Hospitalisation + Zustand (Tot / Todesdatum / Todesursache). The Hepatitis C paper form has both
+// Hospitalisation + Zustand (Tot / Todesdatum / Todesursache). The Hepatitis C reporting form has both
 // blocks (CSV rows "Hospitalisation" and "Zustand"), so the same two modules Mpox uses apply
 // unchanged. Note the CSV comment on "Todesdatum" ("appears in the sheet but not in the PDF") — the
 // module asks for it, which matches ChEkmDeathForm.
@@ -103,7 +103,7 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 * insert RuleSetQrDeath
 
 // --- Exposition ---------------------------------------------------------------------------------
-// Wo before Wann, as on the paper form (https://github.com/ahdis/ch-ekm/issues/26).
+// Wo before Wann, as on the reporting form (https://github.com/ahdis/ch-ekm/issues/26).
 * insert RuleSetQrGroupExposure
 * insert RuleSetQrExposureWhere
 * insert RuleSetQrExposureWhen
@@ -135,7 +135,7 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     `repeats = true`, "Ikterus + keine" was tickable, so the ChEkmOtherNoneUnknown include is commented
 //     out (as for Mpox) and an unanswered item now covers all three. (Same latent problem in Gonorrhoea.)
 //
-//  2. EXPOSITION "WIE" — the model and the paper form disagree, and neither is implementable yet.
+//  2. EXPOSITION "WIE" — the model and the reporting form disagree, and neither is implementable yet.
 //     ChEkmHepatitisCExposureForm.transmission is a verbatim copy of the Gonorrhoea STI block
 //     (sexualContactPartner / relationshipType / otherTransmission / unknown). The CSV asks for a
 //     completely different list: perinatal, contact with an infected person, sexual contact with an

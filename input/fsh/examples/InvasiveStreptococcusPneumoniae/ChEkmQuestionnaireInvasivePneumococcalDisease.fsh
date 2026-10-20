@@ -16,7 +16,7 @@
 // Sources reconciled here (they disagree in places — see OPEN QUESTIONS):
 //   * profiles       input/fsh/profiles/ChEkmInvasiveStreptococcusPneumoniae.fsh
 //   * example Bundle input/fsh/examples/InvasiveStreptococcusPneumoniae/ChEkmBundleInvasiveStreptococcusPneumoniae.fsh
-//   * paper form CSV "Meldung zum klinischen Befund Infektionskrankheit - Pneumokokkenerkrankung.csv"
+//   * reporting form CSV "Meldung zum klinischen Befund Infektionskrankheit - Pneumokokkenerkrankung.csv"
 //   * logical model  input/fsh/logical/ChEkmInvasivePneumococcalDiseaseForm.fsh
 //
 // NAMING: the folder is `InvasiveStreptococcusPneumoniae/` but every profile and example instance
@@ -79,7 +79,7 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 // The analysing laboratory, INSIDE the "Diagnose und Manifestation" section and directly after the
 // Manifestationsbeginn — so it is a sub-heading of the Diagnose tab, not a tab of its own. All nine
 // CSV rows are X-marked and identical to the Hepatitis C ones, so the module is disease-agnostic.
-// The rest of the paper form's Labor block (Anlass, Material, Entnahmedatum) is NOT asked — see
+// The rest of the reporting form's Labor block (Anlass, Material, Entnahmedatum) is NOT asked — see
 // OPEN QUESTIONS #3.
 * insert RuleSetQrLaboratory
 // Entnahmedatum + Material — the SAMPLE half of the Labor block, an opt-in companion module. Only
@@ -99,7 +99,7 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 * insert RuleSetQrDeath
 
 // --- Exposition ---------------------------------------------------------------------------------
-// Wo before Wann, as on the paper form (https://github.com/ahdis/ch-ekm/issues/26).
+// Wo before Wann, as on the reporting form (https://github.com/ahdis/ch-ekm/issues/26).
 // NOTE: the two CSV rows carry NO "X" and the example Bundle has no ChEkmExposure — so this section
 // is assembled on the strength of the generic module and the base ChEkmExposure profile alone.
 // See OPEN QUESTIONS #5; deleting the three inserts below plus the Exposure entry in the extract
@@ -204,8 +204,8 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 //     `useSupplement` with HTTP 422, which broke the de/fr/it preview build.) Only this form
 //     assembles the module; the Hepatitis C form has neither row.
 //     STILL OPEN:
-//       * The list has 73 concepts (the whole CH ELM specimen list), not the five the paper form
-//         prints (Blut, Liquor, Pleurapunktat, Gelenkpunktat, Anderes). All five are in it, so
+//       * The list has 73 concepts (the whole CH ELM specimen list), not the five the reporting form
+//         lists (Blut, Liquor, Pleurapunktat, Gelenkpunktat, Anderes). All five are in it, so
 //         nothing is missing — but if the FOPH wants exactly those five, that is a value set
 //         decision, not a form change.
 //       * The dropdown shows ENGLISH displays in all four languages: the ch-ekm SNOMED language
@@ -235,7 +235,7 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 //  5. EXPOSITION — neither "Wo" nor "Wann" carries an X in the CSV and the example Bundle has no
 //     Exposure at all; "Wie" has no answer list ("Valueset für exposition Wie"). Wo and Wann ARE
 //     assembled above because the modules are disease-agnostic and the base ChEkmExposure is what
-//     ChEkmComposition's section[social-history] requires — but CONFIRM that the pneumococcal paper
+//     ChEkmComposition's section[social-history] requires — but CONFIRM that the pneumococcal reporting
 //     form really asks them before this ships. There is also no
 //     ChEkmExposureInvasivePneumococcalDisease profile; as for Hepatitis C the BASE ChEkmExposure is
 //     extracted into, which is fine for Wo/Wann and not enough for Wie.

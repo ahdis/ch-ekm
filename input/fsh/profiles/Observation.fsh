@@ -82,8 +82,8 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 
 // "The cause of death is the disease this report is about". The value already carries the disease
 // code; this reference makes the statement machine-checkable without comparing codes, and is what
-// links the death back to the diagnosis. NOT Condition.evidence.detail on the diagnosis, which the
-// paper proposal suggested: `evidence` is evidence FOR a condition, and a death is not evidence
+// links the death back to the diagnosis. NOT Condition.evidence.detail on the diagnosis, which an earlier
+// proposal suggested: `evidence` is evidence FOR a condition, and a death is not evidence
 // that somebody had mpox.
 * focus 0..1 MS
 * focus only Reference(ChEkmCondition)

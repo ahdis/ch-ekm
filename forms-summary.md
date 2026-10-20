@@ -155,7 +155,7 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
   > **A single tick-box is a `choice`, not a `boolean`.** A `boolean` item renders as a Yes/No
   > radio pair, and even with `itemControl = check-box` the renderer puts the item **label in the
   > left label column and the box on the right** (`ItemFieldGrid` + `BooleanItem`) — nothing in the
-  > questionnaire changes that. For a paper-form style "☐ label" on one line, use a `choice` item
+  > questionnaire changes that. For a check-box style "☐ label" on one line, use a `choice` item
   > with `repeats = true`, `itemControl = check-box` and **one** `answerOption`, and give the item
   > **no `text`** (the option label is the visible text). `repeats` also fixes the un-tick
   > semantics: un-ticking **removes** the answer, whereas a boolean check-box leaves `false`
@@ -250,7 +250,7 @@ disease-specific value-set bindings).
 
 ---
 
-## 3. logical models, not the paper form
+## 3. logical models, not the form layout
 
 | Logical model | Target profile |
 | --- | --- |
@@ -1654,7 +1654,7 @@ the root** with a `location`.
 ## 12. "Unknown" — when it is a value and when it is a data-absent-reason
 
 Nearly every group of these forms offers the reporting physician some form of "unknown" ("unbekannt"
-on the German paper form), and the
+on the German form), and the
 same word ends up on the wire in two very different shapes. This chapter is the rule that decides
 which, written down after issue
 [#28](https://github.com/ahdis/ch-ekm/issues/28) moved the cause of death from one shape to the
@@ -1712,7 +1712,7 @@ whole. That keeps "country unknown, precise location Zurich" and "country CH, pr
 unknown" both
 reportable. `ChEkmExtExposureAddress` used to declare an Address-level
 `valueAddress.extension[unknown]` slice, from the earlier assumption of a single "unknown" box on
-the paper form (issue #26); extraction never emitted it and it has been removed.
+the reporting form (issue #26); extraction never emitted it and it has been removed.
 
 ### The one place that still differs: Hospitalisation yes/no/**unknown**
 

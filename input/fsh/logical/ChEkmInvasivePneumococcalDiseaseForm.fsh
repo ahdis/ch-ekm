@@ -25,7 +25,7 @@ Characteristics: #can-be-target
 * course 0..1 Base "Course of the disease (Verlauf)"
   * hospitalisation 0..1 ChEkmHospitalisationForm "Hospitalisation"
   * death 0..1 ChEkmDeathForm "State (Zustand)"
-// Wo and Wann only. The CSV marks neither with an X — confirm the paper form asks them (TODO.md, open
+// Wo and Wann only. The CSV marks neither with an X — confirm the reporting form asks them (TODO.md, open
 // question 5). "Wie" has no answer list, hence no sub-form refining ChEkmExposureForm.
 * exposure 0..1 ChEkmExposureForm "Exposure"
 // One row, see ChEkmImmunizationForm for why the model describes a single row.

@@ -1,4 +1,4 @@
-For each reportable disease this guide publishes a Questionnaire that contains the same clinical content as the paper reporting form. The Questionnaires follow the HL7 FHIR [Structured Data Capture (SDC)](https://hl7.org/fhir/uv/sdc/) implementation guide, version 4.0.0. This page explains how they are built, which variants are published and what a system needs to render them. How a clinical information system uses them to produce the report (launch context, pre-population, completion, extraction) is described under [Path 2: Use the Questionnaire](index.html#path-2-use-the-questionnaire).
+For each reportable disease this guide publishes a Questionnaire that contains the clinical content the FOPH asks for in the report on that disease. The Questionnaires follow the HL7 FHIR [Structured Data Capture (SDC)](https://hl7.org/fhir/uv/sdc/) implementation guide, version 4.0.0. This page explains how they are built, which variants are published and what a system needs to render them. How a clinical information system uses them to produce the report (launch context, pre-population, completion, extraction) is described under [Path 2: Use the Questionnaire](index.html#path-2-use-the-questionnaire).
 
 ### New to SDC? Where to read
 
@@ -33,6 +33,19 @@ Each assembled Questionnaire conforms to two SDC profiles:
 
 The mapping from the form to the profiles therefore ships with the Questionnaire and does not have to be implemented by the system that renders it.
 
+### Disease-specific questions without a FHIR target
+
+Most answers on a form are extracted into a resource of the FHIR document: a Patient, a Condition, an Observation, an Encounter and so on. Some questions on a reporting form have no such place, because no resource or element of the profiles expresses them. For Hepatitis C these are the course of the disease and whether the diagnosis was made in the context of a blood donation. More such questions are expected as further diseases are added (for example therapies, clinical assessments or risk behaviour). Instead of inventing a resource or a local code for each of them, this guide keeps them as what they are on the form: questions. They are defined as FHIR Questionnaire items, and their answers are sent as a QuestionnaireResponse inside the document.
+
+- **One module per question.** Each such question is a sub-questionnaire of its own with a single top-level item, e.g. [Hepatitis C - Course of Disease](Questionnaire-ChEkmQuestionnaireHepatitisCCourseOfDisease.html) and [Hepatitis C - Diagnosis from Blood Donation](Questionnaire-ChEkmQuestionnaireHepatitisCBloodDonation.html). The module defines the linkId, the item type and the answer list.
+- **Assembled twice.** The reporting form assembles each module at the place in the form where the question belongs. A second modular Questionnaire per disease, the **disease-specific Questionnaire**, assembles the same modules and nothing else, so each question is defined only once. The disease-specific Questionnaire is published like the forms, assembled and in the three languages (last column of the [table below](#questionnaires-in-this-guide)). It is not meant to be filled in on its own: it defines what the QuestionnaireResponse in the document contains.
+- **Sent as a QuestionnaireResponse in the document.** The answers to these questions are sent as a QuestionnaireResponse to the disease-specific Questionnaire, referenced from the diagnosis section of the Composition (`section[diagnosis].entry[questionnaire-response]`). It holds only these answers: every other answer is in a resource and is not repeated there. Its `questionnaire` names the disease-specific Questionnaire in the variant that matches the form that was filled in (assembled, or one of the language variants), including the version of this guide. Questions that were not answered are left out.
+- **Profiled per disease.** For each disease with such questions, a QuestionnaireResponse profile states which Questionnaire the response must answer and which of its questions are required, e.g. [Hepatitis C](StructureDefinition-ch-ekm-questionnaireresponse-hepatitisc-diseasespecific.html), and the disease-specific Composition profile states whether the response must be present. The validator checks the items against the Questionnaire the response names: linkIds, item types, answer value sets and order.
+
+On [path 2](index.html#path-2-use-the-questionnaire) the response is produced by extraction: the template copies the items of these modules, unchanged, from the QuestionnaireResponse of the form into the disease-specific QuestionnaireResponse. On [path 1](index.html#path-1-build-the-fhir-document-from-the-profiles) the EHR builds it itself, with the linkIds and answer codes of the disease-specific Questionnaire.
+
+**LinkIds.** A linkId has to be unique only within its Questionnaire, and the response names the disease-specific Questionnaire, so the disease is already known. A generic question therefore has a plain linkId (`blood-donation`) and keeps it when another disease asks the same question. A question whose content is specific to the disease, usually because of its answer list, carries the disease as a prefix (`hepatitisc-course-of-disease`), so that responses analysed across diseases never mix different answer lists under one linkId.
+
 ### Published variants
 
 For each disease this guide publishes three variants of the Questionnaire:
@@ -62,18 +75,19 @@ Without such a server, the answer lists of the coded questions stay empty. **Onl
 
 ### Questionnaires in this guide
 
-The table lists one row per disease. It is generated from the Questionnaires in this guide, so a new disease appears here as soon as its Questionnaires are added.
+The table lists one row per disease. It is generated from the Questionnaires in this guide, so a new disease appears here as soon as its Questionnaires are added. The last column lists the [disease-specific Questionnaire](#disease-specific-questions-without-a-fhir-target) for diseases whose form asks questions without a FHIR target.
 
 {% assign langs = "de-CH,fr-CH,it-CH" | split: "," -%}
 <table class="table table-bordered">
   <thead>
-    <tr><th>Disease</th><th>Modular</th><th>Assembled</th><th>Language specific (preview)</th></tr>
+    <tr><th>Disease</th><th>Modular</th><th>Assembled</th><th>Language specific (preview)</th><th>Disease-specific questions</th></tr>
   </thead>
   <tbody>
 {%- for q_hash in site.data.questionnaires -%}
 {%- assign id = q_hash[0] -%}
 {%- assign q = q_hash[1] -%}
 {%- if id contains "Assembled" -%}
+{%- unless id contains "DiseaseSpecific" -%}
 {%- assign root = id | remove: "Assembled" -%}
 {%- assign rkey = "Questionnaire/" | append: id -%}
 {%- assign disease = site.data.resources[rkey].title | remove: "EKM: " | remove: " (assembled)" -%}
@@ -89,7 +103,23 @@ The table lists one row per disease. It is generated from the Questionnaires in 
 {%- if lq %} <a href="{{lq.path}}">{{lang}}</a>{% endif -%}
 {%- endfor -%}
       </td>
+{%- assign droot = root | append: "DiseaseSpecific" -%}
+{%- assign dkey = droot | append: "Assembled" -%}
+{%- assign dq = site.data.questionnaires[dkey] -%}
+{%- assign dm = site.data.questionnaires[droot] %}
+      <td>
+{%- if dq -%}
+<a href="{{dq.path}}">{{dkey}}</a><br/>
+{%- if dm %}<a href="{{dm.path}}">modular</a>{% endif -%}
+{%- for lang in langs -%}
+{%- assign lkey = droot | append: "-" | append: lang -%}
+{%- assign lq = site.data.questionnaires[lkey] -%}
+{%- if lq %} <a href="{{lq.path}}">{{lang}}</a>{% endif -%}
+{%- endfor -%}
+{%- else -%}–{%- endif -%}
+      </td>
     </tr>
+{%- endunless -%}
 {%- endif -%}
 {%- endfor %}
   </tbody>

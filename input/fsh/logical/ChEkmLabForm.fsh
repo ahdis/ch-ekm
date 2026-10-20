@@ -4,11 +4,11 @@
 // for the shared sub-questionnaire ChEkmQuestionnaireLaboratory.
 //
 // The sibling of ChEkmTreatingPhysicianOrganizationForm, and deliberately shaped like it — same
-// nine items, same order — because both describe an Organization on the same paper form. The two
+// nine items, same order — because both describe an Organization on the same reporting form. The two
 // differ only in what is mandatory: for the treating physician the postal code, city and phone are
 // required (1..1 in the CSV), for the laboratory only the NAME is (everything else is 0..1 there).
 //
-// ONLY THE ORGANIZATION. The rest of the "Labor" block on the paper form — Anlass
+// ONLY THE ORGANIZATION. The rest of the "Labor" block on the reporting form — Anlass
 // (ServiceRequest.reasonCode), Material (Specimen.type) and Entnahmedatum
 // (Specimen.collection.collectedDateTime) — is NOT modelled here: the answer lists are still open
 // (see TODO.md). The wire representation reaches those through the ChEkmServiceRequest this form
@@ -45,7 +45,7 @@ Title: "Lab Form to CH EKM Organization Lab"
 * gln -> "Organization.identifier[GLN].value" "GLN (system urn:oid:2.51.1.3)"
 
 
-// The SAMPLE the laboratory analysed — the other half of the paper form's "Labor" block, and a
+// The SAMPLE the laboratory analysed — the other half of the reporting form's "Labor" block, and a
 // different resource: ChEkmSpecimen, reached from ChEkmServiceRequest.specimen (the laboratory
 // itself is ChEkmOrganizationLab, reached from .performer). Kept as its own model because only some
 // organisms' forms ask these two questions; see ChEkmQuestionnaireLaboratorySpecimen.

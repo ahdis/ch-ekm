@@ -21,9 +21,9 @@ per disease (Gonorrhoea, Hepatitis C, Invasive Streptococcus Pneumoniae, …).
 This IG uses **two parallel representations** of the report content:
 
 1. **Logical models** (`input/fsh/logical/`) — one element per *form item*, mirroring the
-   paper reporting forms (e.g. the Gonorrhoea form). They carry `Mapping` blocks that map
+   reporting forms (e.g. the Gonorrhoea form). They carry `Mapping` blocks that map
    each form item to the target FHIR profile. These are the **master** for the
-   forms/questionnaires work (the paper form may differ slightly from the model).
+   forms/questionnaires work (the reporting form may differ slightly from the model).
 2. **FHIR profiles** (`input/fsh/profiles/`) — constrain real FHIR resources (`Bundle`,
    `Composition`, `Condition`, `Observation`, `Patient`, …) for the actual wire format.
 
@@ -42,7 +42,7 @@ This IG uses **two parallel representations** of the report content:
 | `scripts/` | Questionnaire tooling (formerly `tests/`): `$assemble` / `$populate` / `$extract` runners, the language-preview builder, `load_examples.sh` |
 | `sushi-config.yaml` | SUSHI / IG configuration, menu, dependencies, pages |
 | `expansion-params.json` | Terminology expansion params (SNOMED CT Swiss Extension) |
-| `gonorrhoea.png` | Scan of the paper Gonorrhoea reporting form (green = sections to be turned into an SDC Questionnaire) |
+| `gonorrhoea.png` | Image of the Gonorrhoea reporting form (green = sections to be turned into an SDC Questionnaire) |
 
 ## Profiles
 
@@ -321,7 +321,7 @@ pneumococcal disease**. `scripts/assemble.sh` discovers them by the
 `assemble-expectation = assemble-root` extension, so adding a fifth needs no script change.
 
 Two of them are **starters**: they assemble only the sections whose modules and target profiles
-already exist, and everything the paper form asks on top of that is listed, with the blocking
+already exist, and everything the reporting form asks on top of that is listed, with the blocking
 decision for each, in an `OPEN QUESTIONS` block at the bottom of the root's FSH file and in TODO.md.
 - **Hepatitis C** (`examples/HepatitisC/ChEkmQuestionnaireHepatitisC.fsh`) — open: Serokonversion,
   antivirale Therapie, Exposition "Wie", and the Labor block's "Anlass". It is also the pattern for

@@ -296,7 +296,7 @@ InstanceOf: ChEkmOrganizationLab
 // how ChEkmComposition.section[laboratory] reaches an Organization at all (the section's mandatory
 // entry slice is `lab-order`, a ChEkmServiceRequest). Nothing on it is a form answer today —
 // `reasonCode` (the "Anlass" question) and `specimen` (Material / Entnahmedatum) are the parts of
-// the paper form's Labor block that are still open, and both attach here when they are decided.
+// the reporting form's Labor block that are still open, and both attach here when they are decided.
 Instance: ExtractedLabServiceRequest
 InstanceOf: ChEkmServiceRequest
 * status = #completed

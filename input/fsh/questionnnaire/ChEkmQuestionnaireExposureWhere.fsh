@@ -11,7 +11,7 @@
 // location Zurich"
 // are both reportable as such.
 //
-// There is exactly ONE country question. The paper form's "CH/LI check-box next to an Ausland
+// There is exactly ONE country question. The reporting form's "CH/LI check-box next to an Ausland
 // dropdown" layout is NOT reproduced: the place of infection is a single country, never a
 // combination of two, and it is always reported as a country CODE. Switzerland and Liechtenstein
 // are simply the first two entries of the answer value set (ChEkmCountryCodesInclUnknown), so the

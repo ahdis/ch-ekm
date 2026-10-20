@@ -12,7 +12,7 @@
 // RuleSetQrLaboratorySpecimen` right after `RuleSetQrLaboratory`.
 //
 // Assembled directly after the `laboratory` group, inside "Diagnose und Manifestation", so on screen
-// the two questions read as a continuation of the Labor block — which is where the paper form has
+// the two questions read as a continuation of the Labor block — which is where the reporting form has
 // them.
 //
 // They target a DIFFERENT RESOURCE from the nine laboratory fields: ChEkmSpecimen, not
@@ -53,7 +53,7 @@ Description: "Modular sub-questionnaire for the sample analysed by the laborator
 // refuses `useSupplement` on a value set that pulls its codes in through a nested include
 // ("Required supplement not found", HTTP 422), which broke the de/fr/it preview build.
 //
-// NB the list has 73 concepts — the whole CH ELM specimen list, not the five the paper form prints
+// NB the list has 73 concepts — the whole CH ELM specimen list, not the five the reporting form lists
 // (Blut, Liquor, Pleurapunktat, Gelenkpunktat, Anderes). All five are in it, so nothing the form
 // needs is missing, and narrowing it is a terminology decision (see TODO.md). Note also that the
 // ch-ekm SNOMED language supplement carries designations for 41 curated codes, of which exactly one

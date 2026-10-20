@@ -190,7 +190,7 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 * item[0].item[4].item[0].item[2].answer.valueString = "Prevenar 13"
 
 // --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---
-// Values from the CSV's example column, so the extracted document matches the paper form's sample.
+// Values from the CSV's example column, so the extracted document matches the reporting form's sample.
 * item[0].item[5].linkId = "treatingPhysician"
 // Practitioner
 * item[0].item[5].item[0].linkId = "treatingPhysicianPractitioner"

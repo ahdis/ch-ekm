@@ -68,7 +68,7 @@ Description: "This CH EKM base profile constrains the Organization resource for 
 // element never reaches the differential, and nothing can link to it (ChEkmLabForm's mapping did,
 // and the publisher reported the two dangling anchors). Unlike the treating physician's
 // Organization, which makes both 1..1, the laboratory's address parts stay OPTIONAL — that is what
-// the paper form says (Labor: only the name is mandatory). So they are documented instead, which is
+// the reporting form says (Labor: only the name is mandatory). So they are documented instead, which is
 // a real differential entry and states what the form writes into them.
 * address.city ^short = "City of the laboratory (form item 'Ort'; optional, unlike the treating physician's)"
 * address.postalCode ^short = "Zip code of the laboratory (form item 'PLZ'; optional, unlike the treating physician's)"
