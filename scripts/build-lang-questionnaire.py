@@ -367,7 +367,10 @@ def main():
         q["id"] = preview_id
         q["url"] = preview_url
         q["name"] = preview_name
-        q["title"] = q.get("title", "") + f" (preview {LANG}, pre-expanded)"
+        # "EKM: <Disease> (assembled)" -> "EKM: <Disease> (de-CH, pre-expanded)": the title the
+        # renderer's picker shows, so it stays short.
+        base = q.get("title", "").removesuffix(" (assembled)")
+        q["title"] = f"{base} ({LANG}, pre-expanded)"
         q["language"] = LANG
         json.dump(q, open(out, "w"), indent=2, ensure_ascii=False)
         print(f"Wrote {out}  (id: {preview_id})")

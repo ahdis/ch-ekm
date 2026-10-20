@@ -38,8 +38,7 @@ Usage: #inline
 * type = $sct#722143004 "Infectious disease diagnostic study note"
 * category = $sct#423876004 "Clinical report"
 * subject.reference = "Patient/ExtractedPatient"
-* date.extension[+].url = $sdc-templateExtractValue
-* date.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(date)
 * author.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
 * title = "Meldung zum klinischen Befund Gonorrhoea"
 * section[0].title = "Diagnosis section"
@@ -74,8 +73,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentG
 // templateExtractValue below overwrites it with the QuestionnaireResponse's authored time at
 // extraction. This 1900 sentinel never survives a real extraction.
 * timestamp = "1900-01-01T00:00:00Z"
-* timestamp.extension[+].url = $sdc-templateExtractValue
-* timestamp.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(timestamp)
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Composition/ExtractedCompositionGonorrhoea"
 * entry[=].resource = ExtractedCompositionGonorrhoea
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ExtractedPatient"

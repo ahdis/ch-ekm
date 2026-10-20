@@ -135,8 +135,7 @@ Usage: #inline
 * subject.reference = "Patient/ExtractedPatient"
 // Hospitalisation: the one place the Encounter is referenced from the Composition.
 * insert RuleSetEncounterReference(encounter, ExtractedEncounterInvasivePneumococcalDisease)
-* date.extension[+].url = $sdc-templateExtractValue
-* date.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(date)
 * author.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
 * title = "Meldung zum klinischen Befund Invasive Pneumokokkenerkrankung"
 * section[0].title = "Diagnosis section"
@@ -176,8 +175,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentI
 // PLACEHOLDER DEFAULT — replaced at extraction. A document Bundle must have a timestamp value
 // (bdl-10), so the template needs a real one to validate; this 1900 sentinel never survives.
 * timestamp = "1900-01-01T00:00:00Z"
-* timestamp.extension[+].url = $sdc-templateExtractValue
-* timestamp.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(timestamp)
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Composition/ExtractedCompositionInvasivePneumococcalDisease"
 * entry[=].resource = ExtractedCompositionInvasivePneumococcalDisease
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ExtractedPatient"

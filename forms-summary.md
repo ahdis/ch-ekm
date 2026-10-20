@@ -427,7 +427,7 @@ ChEkmQuestionnaireGonorrhoea  (meta.profile = sdc-questionnaire-modular)
 Instance: ChEkmQuestionnairePerson
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Angaben zur betroffenen Person"
+Title: "EKM: Angaben zur betroffenen Person"
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePerson"
 * version = "0.0.1"
 * status = #active
@@ -446,7 +446,7 @@ Title: "CH EKM Questionnaire: Angaben zur betroffenen Person"
 Instance: ChEkmQuestionnaireGonorrhoea
 InstanceOf: Questionnaire
 Usage: #example
-Title: "CH EKM Questionnaire: Gonorrhoea (modular)"
+Title: "EKM: Gonorrhoea (modular)"
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea"
 * meta.profile = "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular"
 * status = #active
@@ -865,7 +865,9 @@ that the directive overwrites at extraction (the computed value replaces the sta
 `_element` directive is stripped cleanly). Two in the Gonorrhoea template:
 - `Patient.gender = #unknown` (required binding) → overwritten with the answered administrativeGender.
 - `Bundle.timestamp = "1900-01-01T00:00:00Z"` (a document Bundle must satisfy `bdl-10:
-  timestamp.hasValue()`) → overwritten with the QuestionnaireResponse's `authored`.
+  timestamp.hasValue()`) → overwritten with the QuestionnaireResponse's `authored`, or the
+  extraction time when the response has none (`RuleSetExtractAuthored`: Smart Forms' "Save as Final"
+  extracts the unsaved response, and only sets `authored` when it saves it afterwards).
 
 Both carry a `PLACEHOLDER DEFAULT — replaced at extraction` comment. (`Composition.date` needs **no**
 default: an absent value still satisfies cardinality via the `_date` element, and Composition has no

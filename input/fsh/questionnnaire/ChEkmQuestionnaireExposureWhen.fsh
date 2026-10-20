@@ -8,7 +8,7 @@
 Instance: ChEkmQuestionnaireExposureWhen
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Exposure - When (point in time of infection)"
+Title: "EKM: Exposure - When (point in time of infection)"
 Description: "Modular sub-questionnaire for the 'Wann' (when) group of the Exposure section: the most probable point in time of infection and, if that is unknown, the date of the last entry into Switzerland. Reusable as an SDC assemble-child."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireExposureWhen)
 

@@ -18,7 +18,8 @@
 #   1. sushi .
 #   2. $assemble -> input/resources/Questionnaire-<RootId>Assembled.json
 #   3. build-lang-questionnaire.py -> input/resources/Questionnaire-<RootId>-<lang>.json (de/fr/it-CH)
-#   4. OPTIONALLY publish all of the above to the Forms Server via scripts/upload-questionnaire.sh
+#   4. OPTIONALLY publish the per-language previews of step 3 to the Forms Server via
+#      scripts/upload-questionnaire.sh (the assembled questionnaire of step 2 stays in the IG)
 #
 # Steps 1-3 are purely local: they only write into the working tree. Step 4 writes to a LIVE
 # server (https://smartforms.ahdis.ch/api/fhir by default) and is therefore OFF by default —
@@ -79,9 +80,9 @@ ROOT_FILE="$DIR/Questionnaire-$ROOT_ID.json"
 # a distinct id/url so it does not collide with the modular root example.
 ASSEMBLED_ID="${ROOT_ID}Assembled"
 OUT="input/resources/Questionnaire-$ASSEMBLED_ID.json"
-# Human-readable disease label, taken from the root's title ("CH EKM Questionnaire: <Disease> (modular)");
+# Human-readable disease label, taken from the root's title ("EKM: <Disease> (modular)");
 # falls back to the root id (ChEkmQuestionnaire<Disease>) when the root carries no title.
-DISEASE=$(jq -r '.title // empty' "$ROOT_FILE" | sed -e 's/^CH EKM Questionnaire: //' -e 's/ (modular)$//')
+DISEASE=$(jq -r '.title // empty' "$ROOT_FILE" | sed -e 's/^EKM: //' -e 's/ (modular)$//')
 [ -n "$DISEASE" ] || DISEASE="${ROOT_ID#ChEkmQuestionnaire}"
 SCRIPT_URL="https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
 WRAPPER="scripts/assemble/assemble.cjs"
@@ -138,7 +139,7 @@ q["url"] = "http://fhir.ch/ig/ch-ekm/Questionnaire/" + new_id
 q["name"] = new_id
 q["version"] = "0.0.1"
 q["date"] = sys.argv[7]
-q["title"] = f"CH EKM Questionnaire: {disease} (assembled)"
+q["title"] = f"EKM: {disease} (assembled)"
 
 # Re-affirm the SDC template-based extraction wiring on the assembled result:
 #  - the contained Bundle template (dropped by $assemble, so re-attached from the root),
@@ -207,9 +208,10 @@ echo "Building per-language preview questionnaires"
 python3 scripts/build-lang-questionnaire.py "$ASSEMBLED_ID"
 
 # --- 4. publish to the Forms Server -------------------------------------------
-# Push the assembled questionnaire and the per-language previews so the renderer's picker
-# matches what was just built. This writes to a live server, so it only runs when asked for
-# with --upload (or EKM_UPLOAD=1).
+# Push the per-language previews so the renderer's picker matches what was just built. Only those:
+# they render without a terminology server and are what a clinician picks, so the assembled
+# questionnaire would only be a fourth, untranslated entry per disease in the picker. This writes to
+# a live server, so it only runs when asked for with --upload (or EKM_UPLOAD=1).
 if [ "${EKM_UPLOAD:-}" = "1" ]; then UPLOAD=1; fi
 if [ "${EKM_UPLOAD:-}" = "0" ]; then UPLOAD=0; fi
 
@@ -233,7 +235,7 @@ if [ "$UPLOAD" = "1" ]; then
   LANGS="${PREVIEW_LANG:-de-CH fr-CH it-CH}"
   BASE_ID="${ASSEMBLED_ID%Assembled}"
 
-  UPLOADS=("$OUT")
+  UPLOADS=()
   for lang in $LANGS; do
     f="input/resources/Questionnaire-${BASE_ID}-${lang}.json"
     [ -f "$f" ] && UPLOADS+=("$f")
@@ -261,5 +263,5 @@ elif [ "${SKIPPED_NO_TEMPLATE:-0}" != "1" ]; then
   echo
   echo "Not published to the Forms Server (upload is opt-in)."
   echo "  Publish by re-running with --upload, or individually with:"
-  echo "    scripts/upload-questionnaire.sh $ASSEMBLED_ID"
+  echo "    scripts/upload-questionnaire.sh $ROOT_ID"
 fi

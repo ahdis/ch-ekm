@@ -120,12 +120,18 @@ Usage: #inline
 * status = #completed
 * subject.reference = "Patient/ExtractedPatient"
 // NO VALUE, only the carrier — see above: a template that named a questionnaire would have its
-// placeholder linkIds checked against that questionnaire's items. The expression is a literal: the
-// form's response names the FORM, this response the disease-specific questionnaire, versioned.
+// placeholder linkIds checked against that questionnaire's items.
+// The form's response names the FORM, this response the disease-specific questionnaire IN THE SAME
+// VARIANT: the copied items keep the `text` of the form that was filled in, and a validator requires
+// it to match the named questionnaire's — so a de-CH form (…/ChEkmQuestionnaireHepatitisC-de-CH|0.0.1)
+// gives …/ChEkmQuestionnaireHepatitisCDiseaseSpecific-de-CH, the assembled form the assembled one.
+// Derived from the form's own canonical, which Smart Forms sets before the response is saved (the
+// response has no `language`, and %questionnaire is not available to $extract). Unversioned: the
+// form's version is cut off, it would only have to be kept in step with the IG's. A response naming
+// some other questionnaire falls back to the assembled one.
 * questionnaire.extension[+].url = $sdc-templateExtractValue
-* questionnaire.extension[=].valueString = "'http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled|0.0.1'"
-* authored.extension[+].url = $sdc-templateExtractValue
-* authored.extension[=].valueString = "%resource.authored"
+* questionnaire.extension[=].valueString = "iif(%resource.questionnaire.contains('/Questionnaire/ChEkmQuestionnaireHepatitisC'), %resource.questionnaire.replaceMatches('[|].*$', '').replace('/Questionnaire/ChEkmQuestionnaireHepatitisC', '/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecific'), 'http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled')"
+* insert RuleSetExtractAuthored(authored)
 // The disease-specific questionnaire's one group (its linkId is not used in the form, so que-2 sees
 // no duplicate), then the PLACEHOLDERS — one per module, in the order of
 // ChEkmQuestionnaireHepatitisCDiseaseSpecific.
@@ -162,8 +168,7 @@ Usage: #inline
 * subject.reference = "Patient/ExtractedPatient"
 // Hospitalisation: the one place the Encounter is referenced from the Composition.
 * insert RuleSetEncounterReference(encounter, ExtractedEncounterHepatitisC)
-* date.extension[+].url = $sdc-templateExtractValue
-* date.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(date)
 * author.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
 * title = "Meldung zum klinischen Befund Hepatitis C"
 * section[0].title = "Diagnosis section"
@@ -204,8 +209,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentH
 // PLACEHOLDER DEFAULT — replaced at extraction. A document Bundle must have a timestamp value
 // (bdl-10), so the template needs a real one to validate; this 1900 sentinel never survives.
 * timestamp = "1900-01-01T00:00:00Z"
-* timestamp.extension[+].url = $sdc-templateExtractValue
-* timestamp.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(timestamp)
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Composition/ExtractedCompositionHepatitisC"
 * entry[=].resource = ExtractedCompositionHepatitisC
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ExtractedPatient"

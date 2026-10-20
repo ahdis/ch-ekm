@@ -7,7 +7,7 @@
 Instance: ChEkmQuestionnaireExposureHow
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Exposure - How (route of transmission)"
+Title: "EKM: Exposure - How (route of transmission)"
 Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route of transmission) group. Holds the transmission group (sexual-contact partner sex, relationship type, other route, unknown). Reusable as an SDC assemble-child."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireExposureHow)
 

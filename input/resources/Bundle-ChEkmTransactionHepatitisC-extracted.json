@@ -466,7 +466,7 @@
                   ]
                 }
               ],
-              "questionnaire": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled|0.0.1",
+              "questionnaire": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled",
               "authored": "2026-01-27T11:30:00+02:00"
             }
           },

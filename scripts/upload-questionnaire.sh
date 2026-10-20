@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 #
-# Upload an assembled CH EKM questionnaire to the Smart Forms Forms Server, so it shows up in the
-# hosted renderer's questionnaire picker. Disease-agnostic: pass the modular ROOT id.
+# Upload CH EKM questionnaires to the Smart Forms Forms Server, so they show up in the hosted
+# renderer's questionnaire picker. Disease-agnostic: pass the modular ROOT id, or one file.
+#
+# The Forms Server holds only the per-language previews (<RootId>-de-CH / -fr-CH / -it-CH): they
+# render without a terminology server and are what a clinician picks. The assembled questionnaire
+# (<RootId>Assembled) stays in the IG — passing a root id publishes its language previews, not it.
 #
 # Default Forms Server: https://smartforms.ahdis.ch/api/fhir (HAPI 8.8.0 patched, R4 —
 # image hapi-fhir:8.8.0-pr8260-pr8371, built from https://github.com/ahdis/hapi-fhir/tree/v8.8.0-pr8260-pr8371).
@@ -10,9 +14,9 @@
 #
 # Pipeline:  sushi .  ->  assemble-questionnaire.sh <RootId>  ->  this script
 #
-# It PUTs the assembled (flattened) questionnaire by id so the form is self-contained on the
-# server (the modular sub-questionnaires are already merged in by $assemble). PUT is an upsert by
-# id, so re-running updates the existing resource instead of creating duplicates.
+# It PUTs each questionnaire by id, so the form is self-contained on the server (the modular
+# sub-questionnaires are already merged in by $assemble). PUT is an upsert by id, so re-running
+# updates the existing resource instead of creating duplicates.
 #
 # The artifact is uploaded VERBATIM — the contained SDC extraction template and every
 # templateExtract directive go up exactly as authored, so the server copy and the file in
@@ -30,8 +34,9 @@
 #
 # Usage:
 #   ./scripts/upload-questionnaire.sh <RootQuestionnaireId|QUESTIONNAIRE_JSON> [FHIR_BASE_URL]
-#   ./scripts/upload-questionnaire.sh ChEkmQuestionnaireGonorrhoea
-#   ./scripts/upload-questionnaire.sh ChEkmQuestionnaireMpox
+#   ./scripts/upload-questionnaire.sh ChEkmQuestionnaireGonorrhoea      # its three language previews
+#   PREVIEW_LANG=de-CH ./scripts/upload-questionnaire.sh ChEkmQuestionnaireMpox
+#   ./scripts/upload-questionnaire.sh input/resources/Questionnaire-ChEkmQuestionnaireMpox-fr-CH.json
 #
 set -euo pipefail
 
@@ -43,13 +48,18 @@ BASE="${2:-https://smartforms.ahdis.ch/api/fhir}"
 CT="Content-Type: application/json"
 ACCEPT="Accept: application/json"
 
-# Accept either a path to the assembled json or a modular root questionnaire id.
-if [ -f "$TARGET" ]; then
-  Q="$TARGET"
-else
-  Q="input/resources/Questionnaire-${TARGET}Assembled.json"
+# A modular root id stands for its language previews (PREVIEW_LANG overrides the three Swiss
+# languages, as in build-lang-questionnaire.py); each one is uploaded by a call with its file.
+if [ ! -f "$TARGET" ]; then
+  for lang in ${PREVIEW_LANG:-de-CH fr-CH it-CH}; do
+    f="input/resources/Questionnaire-${TARGET}-${lang}.json"
+    [ -f "$f" ] || { echo "ERROR: $f not found. Run scripts/assemble-questionnaire.sh ${TARGET} first."; exit 1; }
+    scripts/upload-questionnaire.sh "$f" "$BASE"
+    echo
+  done
+  exit 0
 fi
-[ -f "$Q" ] || { echo "ERROR: $Q not found. Run scripts/assemble-questionnaire.sh ${TARGET} first."; exit 1; }
+Q="$TARGET"
 
 ID=$(jq -r '.id // empty' "$Q")
 [ -n "$ID" ] || { echo "ERROR: $Q has no id."; exit 1; }

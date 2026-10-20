@@ -142,8 +142,7 @@ Usage: #inline
 // Hospitalisation: the one place the Encounter is referenced from the Composition — there is no
 // section[hospitalization] any more (see ChEkmComposition / ChEkmEncounter).
 * insert RuleSetEncounterReference(encounter, ExtractedEncounter)
-* date.extension[+].url = $sdc-templateExtractValue
-* date.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(date)
 * author.reference = "PractitionerRole/ExtractedTreatingPractitionerRole"
 * title = "Meldung zum klinischen Befund MPox"
 * section[0].title = "Diagnosis section"
@@ -184,8 +183,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 // templateExtractValue below overwrites it with the QuestionnaireResponse's authored time at
 // extraction. This 1900 sentinel never survives a real extraction.
 * timestamp = "1900-01-01T00:00:00Z"
-* timestamp.extension[+].url = $sdc-templateExtractValue
-* timestamp.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(timestamp)
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Composition/ExtractedCompositionMpox"
 * entry[=].resource = ExtractedCompositionMpox
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ExtractedPatient"

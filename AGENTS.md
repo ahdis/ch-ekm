@@ -364,9 +364,12 @@ have the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisati
 `RuleSetQrDeath`); Gonorrhoea has none. That section is also the only one needing a third launch context (`encounter`), which is why
 it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.
 
-The assemble scripts are **local only** by default. Publishing the assembled + per-language
-questionnaires to the Forms Server (https://smartforms.ahdis.ch/api/fhir) is opt-in — add
-`--upload` (or `EKM_UPLOAD=1`), and point elsewhere with `EKM_FHIR_BASE`. Only FORMS are published:
+The assemble scripts are **local only** by default. Publishing the per-language questionnaires
+(`<RootId>-de-CH` / `-fr-CH` / `-it-CH`, titled `EKM: <Disease> (<lang>, pre-expanded)`) to the Forms
+Server (https://smartforms.ahdis.ch/api/fhir) is opt-in — add `--upload` (or `EKM_UPLOAD=1`), and
+point elsewhere with `EKM_FHIR_BASE`. The assembled questionnaire stays in the IG and is NOT published:
+it needs a terminology server to render and would be a fourth, untranslated picker entry per disease.
+The server also holds the DEMIS questionnaires (`scripts/demis-questionnaires.py`). Only FORMS are published:
 a root without an extraction template — a disease-specific questionnaire such as
 `ChEkmQuestionnaireHepatitisCDiseaseSpecific` — is assembled (the IG validates the documents'
 disease-specific QuestionnaireResponse against it) but skipped by `--upload`, since nobody fills it in.

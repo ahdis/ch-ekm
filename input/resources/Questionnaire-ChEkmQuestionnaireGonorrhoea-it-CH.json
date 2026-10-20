@@ -10,7 +10,7 @@
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireGonorrhoea-it-CH",
   "name": "ChEkmQuestionnaireGonorrhoeaitCH",
-  "title": "CH EKM Questionnaire: Gonorrhoea (assembled) (preview it-CH, pre-expanded)",
+  "title": "EKM: Gonorrhoea (it-CH, pre-expanded)",
   "status": "active",
   "language": "it-CH",
   "experimental": false,
@@ -123,7 +123,7 @@
         "extension": [
           {
             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-            "valueString": "%resource.authored"
+            "valueString": "iif(%resource.authored.exists(), %resource.authored, now())"
           }
         ]
       },
@@ -201,7 +201,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.authored"
+                  "valueString": "iif(%resource.authored.exists(), %resource.authored, now())"
                 }
               ]
             }
@@ -946,7 +946,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.authored"
+                  "valueString": "iif(%resource.authored.exists(), %resource.authored, now())"
                 }
               ]
             }
@@ -987,7 +987,7 @@
         "extension": [
           {
             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-            "valueString": "%resource.authored"
+            "valueString": "iif(%resource.authored.exists(), %resource.authored, now())"
           }
         ]
       }
@@ -4731,6 +4731,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-02T23:11:48+02:00",
+  "date": "2026-10-20T10:53:27+02:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

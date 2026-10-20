@@ -20,11 +20,11 @@
 Instance: ChEkmQuestionnaireHepatitisC
 InstanceOf: Questionnaire
 Usage: #example
-Title: "CH EKM Questionnaire: Hepatitis C (modular)"
+Title: "EKM: Hepatitis C (modular)"
 Description: "Modular root questionnaire for the Hepatitis C clinical findings report. Use Questionnaire/$assemble to produce the renderable form."
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisC"
 * name = "ChEkmQuestionnaireHepatitisC"
-* title = "CH EKM Questionnaire: Hepatitis C (modular)"
+* title = "EKM: Hepatitis C (modular)"
 
 * insert RuleSetQrHeader("hepatitisc-form", "Clinical findings report: hepatitis C", "Meldung zum klinischen Befund: Hepatitis C", "Déclaration de résultat clinique : hépatite C", "Notifica del referto clinico: epatite C", ChEkmDocumentHepatitisCTemplate)
 // Render the sections below (person / diagnosis / course / exposure / physician) as tabs on the left

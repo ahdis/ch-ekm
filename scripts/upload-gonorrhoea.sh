@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Backward-compatible wrapper: upload the assembled Gonorrhoea questionnaire to the Forms Server.
+# Backward-compatible wrapper: upload the Gonorrhoea language previews to the Forms Server.
 # The upload logic is now disease-agnostic in scripts/upload-questionnaire.sh (see that script's
 # header for what is stripped and why).
 #

@@ -43,9 +43,9 @@ Profile: ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC
 Parent: QuestionnaireResponse
 Id: ch-ekm-questionnaireresponse-hepatitisc-diseasespecific
 Title: "CH EKM Questionnaire Response: Disease-specific questions - Hepatitis C"
-Description: "This CH EKM base profile constrains the QuestionnaireResponse resource carried in the Hepatitis C document: the answers to the form questions that have no FHIR target (Krankheitsverlauf, diagnosis from blood donation). It is the response to the disease-specific questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled, and it must answer the 'hepatitisc-course-of-disease' question."
+Description: "This CH EKM base profile constrains the QuestionnaireResponse resource carried in the Hepatitis C document: the answers to the form questions that have no FHIR target (Krankheitsverlauf, diagnosis from blood donation). It is the response to the disease-specific questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled, or to its language variant matching the form that was filled in, and it must answer the 'hepatitisc-course-of-disease' question."
 * obeys ch-ekm-qr-hepatitisc-questionnaire and ch-ekm-qr-hepatitisc-course
-* questionnaire ^short = "The disease-specific Hepatitis C questionnaire this is a response to (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled, versioned). Present on every real response; absent only in the $extract template."
+* questionnaire ^short = "The disease-specific Hepatitis C questionnaire this is a response to (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled or its -de-CH / -fr-CH / -it-CH variant, as the form that was filled in). Present on every real response; absent only in the $extract template."
 * status ^short = "A response carried in a final document is expected to be 'completed'"
 
 Profile: ChEkmConditionHepatitisC

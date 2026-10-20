@@ -57,12 +57,15 @@ Expression: "questionnaire.hasValue() implies descendants().where(linkId = 'hepa
 
 // The response the Hepatitis C document carries answers the DISEASE-SPECIFIC questionnaire, not the
 // reporting form: it holds only the form questions without a FHIR target, so validated against the
-// form every required question it does not hold would be reported missing. Matched with
-// startsWith() so a versioned canonical (`…|0.0.1`) passes too.
+// form every required question it does not hold would be reported missing. Either the assembled
+// questionnaire or the language variant of the form that was filled in (-de-CH / -fr-CH / -it-CH):
+// the copied items keep that form's `text`, which must match the named questionnaire's. A versioned
+// canonical (`…|0.0.1`) passes too. Character classes instead of `\.` / `\|`, which would need a
+// second level of escaping in the FHIRPath string.
 Invariant: ch-ekm-qr-hepatitisc-questionnaire
-Description: "A response that names the questionnaire it answers must name the disease-specific Hepatitis C questionnaire (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled), not the reporting form."
+Description: "A response that names the questionnaire it answers must name the disease-specific Hepatitis C questionnaire (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled or its language variant ChEkmQuestionnaireHepatitisCDiseaseSpecific-de-CH / -fr-CH / -it-CH), not the reporting form."
 Severity: #error
-Expression: "questionnaire.hasValue() implies questionnaire.startsWith('http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled')"
+Expression: "questionnaire.hasValue() implies questionnaire.matches('^http://fhir[.]ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecific(Assembled|-(de|fr|it)-CH)([|].*)?$')"
 
 // ChEkmExtractTransaction: the DocumentReference must point at the document stored in the SAME
 // transaction — by location (attachment.url = the document entry's fullUrl, which the server rewrites

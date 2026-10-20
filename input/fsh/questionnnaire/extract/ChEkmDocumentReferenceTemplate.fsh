@@ -39,8 +39,7 @@ Usage: #inline
 * subject.reference.extension[=].valueString = "%resource.subject.reference"
 * subject.display.extension[+].url = $sdc-templateExtractValue
 * subject.display.extension[=].valueString = "%resource.subject.display"
-* date.extension[+].url = $sdc-templateExtractValue
-* date.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(date)
 // The treating physician's Practitioner on the launching server. QuestionnaireResponse.author is the
 // SMART user, which for CH EKM is a PractitionerRole (the `user` launch context), so the Practitioner
 // comes from the hidden `physicianReference` item, filled at $populate from %user.practitioner
@@ -51,5 +50,4 @@ Usage: #inline
 * content[0].attachment.contentType = #application/fhir+json
 * content[0].attachment.url.extension[+].url = $sdc-templateExtractValue
 * content[0].attachment.url.extension[=].valueString = "'urn:uuid:' + %documentBundleId"
-* content[0].attachment.creation.extension[+].url = $sdc-templateExtractValue
-* content[0].attachment.creation.extension[=].valueString = "%resource.authored"
+* insert RuleSetExtractAuthored(content[0].attachment.creation)

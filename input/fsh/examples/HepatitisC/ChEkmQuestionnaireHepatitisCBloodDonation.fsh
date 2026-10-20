@@ -28,7 +28,7 @@
 Instance: ChEkmQuestionnaireHepatitisCBloodDonation
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Hepatitis C - Diagnosis from Blood Donation"
+Title: "EKM: Hepatitis C - Diagnosis from Blood Donation"
 Description: "Modular sub-questionnaire for the question whether the Hepatitis C diagnosis was made in the context of a blood donation. Reusable as an SDC assemble-child; NOT extracted into a resource — the answer is carried by the disease-specific QuestionnaireResponse in the document, see ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireHepatitisCBloodDonation)
 

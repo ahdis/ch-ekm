@@ -27,7 +27,7 @@
 Instance: ChEkmQuestionnaireHospitalisation
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Hospitalisation"
+Title: "EKM: Hospitalisation"
 Description: "Modular sub-questionnaire for the 'Hospitalisation' group of the 'Verlauf' section: whether the affected person was hospitalised, the reason for the stay and the admission date. Reusable as an SDC assemble-child; supports expression-based pre-population from an encounter launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireHospitalisation)
 

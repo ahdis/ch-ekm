@@ -38,7 +38,7 @@
 Instance: ChEkmQuestionnaireExposureWhere
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Exposure - Where (place of infection)"
+Title: "EKM: Exposure - Where (place of infection)"
 Description: "Modular sub-questionnaire for the 'Wo' (where) group of the Exposure section: the most probable place of infection - the country (Switzerland/Liechtenstein first, 'unknown' as a last resort) and the precise location, which may likewise be reported as unknown. Reusable as an SDC assemble-child."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireExposureWhere)
 

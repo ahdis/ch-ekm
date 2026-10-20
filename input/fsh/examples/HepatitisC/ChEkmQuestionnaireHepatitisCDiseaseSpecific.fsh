@@ -27,11 +27,11 @@
 Instance: ChEkmQuestionnaireHepatitisCDiseaseSpecific
 InstanceOf: Questionnaire
 Usage: #example
-Title: "CH EKM Questionnaire: Hepatitis C disease-specific questions (modular)"
+Title: "EKM: Hepatitis C disease-specific questions (modular)"
 Description: "Modular root of the disease-specific Hepatitis C questionnaire: the form questions without a FHIR target, assembled from the same modules as the reporting form. The QuestionnaireResponse carried in the Hepatitis C document answers its $assemble output."
 * url = "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecific"
 * name = "ChEkmQuestionnaireHepatitisCDiseaseSpecific"
-* title = "CH EKM Questionnaire: Hepatitis C disease-specific questions (modular)"
+* title = "EKM: Hepatitis C disease-specific questions (modular)"
 * status = #active
 * language = #en
 * experimental = false

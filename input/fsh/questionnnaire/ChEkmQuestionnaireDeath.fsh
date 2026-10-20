@@ -28,7 +28,7 @@
 Instance: ChEkmQuestionnaireDeath
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Death"
+Title: "EKM: Death"
 Description: "Modular sub-questionnaire for the 'Zustand' (death) group of the 'Verlauf' section: whether the affected person died, the date of death and whether the cause of death was the reported pathogen, another cause or unknown. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireDeath)
 

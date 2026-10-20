@@ -76,7 +76,7 @@ The table lists one row per disease. It is generated from the Questionnaires in 
 {%- if id contains "Assembled" -%}
 {%- assign root = id | remove: "Assembled" -%}
 {%- assign rkey = "Questionnaire/" | append: id -%}
-{%- assign disease = site.data.resources[rkey].title | remove: "CH EKM Questionnaire: " | remove: " (assembled)" -%}
+{%- assign disease = site.data.resources[rkey].title | remove: "EKM: " | remove: " (assembled)" -%}
 {%- assign rq = site.data.questionnaires[root] %}
     <tr>
       <td>{{disease}}</td>

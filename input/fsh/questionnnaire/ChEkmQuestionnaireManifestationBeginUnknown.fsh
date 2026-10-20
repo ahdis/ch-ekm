@@ -4,7 +4,7 @@
 Instance: ChEkmQuestionnaireManifestationBeginUnknown
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Manifestation - Onset"
+Title: "EKM: Manifestation - Onset"
 Description: "Modular sub-questionnaire for the onset of the manifestations ('Manifestationsbeginn', with 'unknown' as an option) in the 'Diagnose und Manifestation' section of the clinical findings report. Reusable as an SDC assemble-child."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireManifestationBeginUnknown)
 

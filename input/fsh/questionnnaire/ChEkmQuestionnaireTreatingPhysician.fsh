@@ -20,7 +20,7 @@
 Instance: ChEkmQuestionnaireTreatingPhysician
 InstanceOf: Questionnaire
 Usage: #definition
-Title: "CH EKM Questionnaire: Treating Physician"
+Title: "EKM: Treating Physician"
 Description: "Modular sub-questionnaire for the 'Treating Physician' section (Practitioner + Organization) of the clinical findings report. Reusable as an SDC assemble-child; supports expression-based pre-population from a single PractitionerRole (%user) launch context, resolving the practitioner and organization references it carries."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireTreatingPhysician)
 

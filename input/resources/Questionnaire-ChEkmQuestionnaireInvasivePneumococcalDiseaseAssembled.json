@@ -10,7 +10,7 @@
   },
   "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireInvasivePneumococcalDiseaseAssembled",
   "name": "ChEkmQuestionnaireInvasivePneumococcalDiseaseAssembled",
-  "title": "CH EKM Questionnaire: Invasive Pneumococcal Disease (assembled)",
+  "title": "EKM: Invasive Pneumococcal Disease (assembled)",
   "status": "active",
   "language": "en",
   "experimental": false,
@@ -164,7 +164,7 @@
         "extension": [
           {
             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-            "valueString": "%resource.authored"
+            "valueString": "iif(%resource.authored.exists(), %resource.authored, now())"
           }
         ]
       },
@@ -368,7 +368,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.authored"
+                  "valueString": "iif(%resource.authored.exists(), %resource.authored, now())"
                 }
               ]
             }
@@ -1801,7 +1801,7 @@
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.authored"
+                  "valueString": "iif(%resource.authored.exists(), %resource.authored, now())"
                 }
               ]
             }
@@ -1842,7 +1842,7 @@
         "extension": [
           {
             "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-            "valueString": "%resource.authored"
+            "valueString": "iif(%resource.authored.exists(), %resource.authored, now())"
           }
         ]
       }
@@ -6337,6 +6337,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-02T23:11:48+02:00",
+  "date": "2026-10-20T10:53:39+02:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireInvasivePneumococcalDisease and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

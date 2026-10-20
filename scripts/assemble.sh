@@ -18,7 +18,8 @@
 #
 # Usage (./assemble.sh in the repo root is a thin wrapper around this script):
 #   ./scripts/assemble.sh                     # assemble every root, no upload
-#   ./scripts/assemble.sh --upload            # ... and publish each FORM to the Forms Server; a root
+#   ./scripts/assemble.sh --upload            # ... and publish each FORM's language previews to the
+#                                             #     Forms Server (not the assembled one); a root
 #                                             #     without an extraction template (a disease-specific
 #                                             #     questionnaire) is assembled but never published
 #   ./scripts/assemble.sh ChEkmQuestionnaireMpox ChEkmQuestionnaireGonorrhoea   # only these roots
