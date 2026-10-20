@@ -97,7 +97,10 @@ Description: "This CH EKM value set includes the codes for the manifestation of 
 * ^status = #active
 * ^experimental = false
 
-* include codes from valueset ChEkmOtherNoneUnknown
+// TODO to discuss * include codes from valueset ChEkmOtherNoneUnknown   // "andere" (Other), "Keine" (finding absent), "unbekannt" (Unknown) — as for Mpox.
+// Taken out for now: the item is a check-box (repeats), so "Keine"/"Unbekannt" could be ticked
+// together with a finding, matchbox's internal terminology server rejects codes from a nested include
+// (https://github.com/ahdis/matchbox/issues/649), and tx.fhir.ch does not translate them (TODO.md).
 * $sct#18165001   "Jaundice"
 * $sct#707724006  "Liver enzymes level above reference range"
 * $sct#409673008  "Alanine aminotransferase above reference range"

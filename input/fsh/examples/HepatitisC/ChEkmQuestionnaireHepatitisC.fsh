@@ -41,8 +41,9 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 
 // --- Diagnose und Manifestation -----------------------------------------------------------------
 // Manifestationen — multiple-choice, check-boxes, bound to ChEkmHepatitisCManifestation
-// (Ikterus, erhöhte Leberenzyme/Transaminasen, plus Andere/Keine/Unbekannt from
-// ChEkmOtherNoneUnknown). Same shape as Mpox; Gonorrhoea is the single-choice variant.
+// (Ikterus, erhöhte Leberenzyme/Transaminasen). Andere/Keine/Unbekannt from ChEkmOtherNoneUnknown are
+// commented out of the value set for now, as for Mpox (see ChEkmHepatitisCManifestation). Same shape
+// as Mpox; Gonorrhoea is the single-choice variant.
 //
 // `definition` points at ChEkmHepatitisCManifestationForm, as the Gonorrhoea root does at its own
 // manifestation sub-form.
@@ -130,9 +131,9 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //  1. LOGICAL MODEL — IMPLEMENTED. ChEkmHepatitisCForm is the disease-level aggregate, with
 //     ChEkmHepatitisCPersonForm and ChEkmHepatitisCManifestationForm (incl. Krankheitsverlauf) as its
 //     own sub-forms; the manifestation and hepatitisc-course-of-disease items point at the latter. Still
-//     unresolved: the manifestation value set mixes real findings with "Keine"/"Unbekannt" from
-//     ChEkmOtherNoneUnknown while the item is `repeats = true`, so "Ikterus + keine" is tickable.
-//     (Same latent problem in Gonorrhoea; Mpox has the ChEkmOtherNoneUnknown include commented out.)
+//     to discuss: how to answer "Keine"/"Unbekannt"/"Andere". Mixed into the value set while the item is
+//     `repeats = true`, "Ikterus + keine" was tickable, so the ChEkmOtherNoneUnknown include is commented
+//     out (as for Mpox) and an unanswered item now covers all three. (Same latent problem in Gonorrhoea.)
 //
 //  2. EXPOSITION "WIE" — the model and the paper form disagree, and neither is implementable yet.
 //     ChEkmHepatitisCExposureForm.transmission is a verbatim copy of the Gonorrhoea STI block

@@ -4640,27 +4640,6 @@
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
-                    "code": "74964007",
-                    "display": "autre"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
-                    "code": "373572006",
-                    "display": "constatation clinique indiquant une absence"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
-                    "code": "261665006",
-                    "display": "inconnu"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
                     "code": "18165001",
                     "display": "Ictère"
                   }
@@ -6866,6 +6845,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-20T10:53:31+02:00",
+  "date": "2026-10-20T11:29:54+02:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisC and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

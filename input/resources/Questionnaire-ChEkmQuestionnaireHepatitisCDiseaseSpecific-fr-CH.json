@@ -147,6 +147,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-20T10:53:38+02:00",
+  "date": "2026-10-20T11:30:00+02:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecific and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }
