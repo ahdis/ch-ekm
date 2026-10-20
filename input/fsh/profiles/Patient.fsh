@@ -38,7 +38,8 @@ Description: "This CH EKM base profile constrains the Patient resource."
 * name.family 1..
 * name.given 1..1
 * gender 1..
-* gender ^short = "Administrative gender" 
+* gender from ChEkmPatientAdministrativeSex (required)
+* gender ^short = "Administrative sex: female or male (the only two administrative sexes in Switzerland)"
 * birthDate 1..
 * birthDate.extension contains $data-absent-reason named dataabsentreason 0..1
 // Death. `deceased[x]` is restricted to dateTime so that one element carries both facts the form

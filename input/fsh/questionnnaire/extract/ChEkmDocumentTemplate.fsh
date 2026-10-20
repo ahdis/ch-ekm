@@ -92,8 +92,11 @@ InstanceOf: ChEkmPatient
 * name[0].extension[1].valueString = "%factory.HumanName(item.where(linkId='surnameInitial' or linkId='surname').answer.value.first(), item.where(linkId='givennameInitial' or linkId='givenname').answer.value)"
 // PLACEHOLDER DEFAULT — replaced at extraction. gender has a required binding, so the template
 // needs a real code to be valid; the templateExtractValue below overwrites it with the answered
-// administrativeGender at extraction. The #unknown default never survives a real extraction.
-* gender = #unknown
+// administrativeGender at extraction. It used to be #unknown (conspicuous if it ever survived), but
+// ChEkmPatient binds gender to ChEkmPatientAdministrativeSex (female/male only, issue #32), which
+// #unknown fails - and with it the template Bundle's Composition slice. administrativeGender is a
+// REQUIRED item, so a completed response always overwrites this #female.
+* gender = #female
 * gender.extension[+].url = $sdc-templateExtractValue
 * gender.extension[=].valueString = "%resource.descendants().where(linkId='administrativeGender').answer.value.code.first()"
 * birthDate.extension[+].url = $sdc-templateExtractValue

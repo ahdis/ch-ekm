@@ -210,7 +210,10 @@ These logical models are the **master** for building the SDC Questionnaires — 
 - **ValueSets**: per-disease manifestation sets (`ChEkmGonorrhoeaManifestation`,
   `ChEkmHepatitisCManifestation`, `ChEkmInvasivePneumococcalDiseaseManifestation`,
   `ChEkmHIVManifestation`, …), `ChEkmExposureClass`, `ChEkmExposureTransmissionRoute`,
-  `ChEkmExposureRelationshipType`, `ChEkmBiologicalSex`, `ChEkmGenderIdentity`,
+  `ChEkmExposureRelationshipType`, `ChEkmPatientAdministrativeSex` (female/male only — `Patient.gender`
+  is bound to it, issue #32), `ChEkmExposureSexualContactPartner` (female/male — "other" dropped too,
+  to be reconfirmed in #32; bound by the Gonorrhoea/Mpox exposure profiles), `ChEkmGenderIdentity` (trans man / trans woman, International Edition
+  `1332083003` / `1332082008` — not the US Edition codes; "Nein" is open in issue #35),
   `ChEkmServiceRequestReason`, `ChEkmOtherNoneUnknown`,
   `ChEkmHepatitisCCourseOfDisease`, `ChEkmYesNoUnknown`, `ChEkmHospitalisationReasonChoice`,
   `ChEkmCauseOfDeathChoice`, `ChEkmMpoxImmunizationTargetDisease`,

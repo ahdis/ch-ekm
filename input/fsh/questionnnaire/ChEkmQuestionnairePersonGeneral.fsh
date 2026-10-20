@@ -149,7 +149,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 * item[=].extension[=].valueExpression.expression = "%homeOrFirstAddress.state"
 * item[=].answerValueSet = "http://fhir.ch/ig/ch-core/ValueSet/ech-7-cantonabbreviation"
 
-// Gender - administrative gender (male/female/other), radio buttons - required
+// Gender - administrative sex (female/male, issue #32), radio buttons - required
 * item[+].linkId = "administrativeGender"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.administrativeGender"
 * insert RuleSetQrLevel1Text("Gender", "Geschlecht", "Sexe", "Sesso")
@@ -171,6 +171,7 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 * item[=].extension[=].valueExpression.language = #text/fhirpath
 // A CODING, not the bare `code` %patient.gender returns — same reason as `country` above.
 // `Patient.gender` IS the administrative-gender code system, so the Coding is exact rather than a
-// guess. `unknown` is filtered out: ChEkmPatientAdministrativeSex offers only male/female/other, and
-// pre-filling an answer that is not in the item's own value set is worse than leaving it blank.
-* item[=].extension[=].valueExpression.expression = "%patient.gender.where($this = 'male' or $this = 'female' or $this = 'other').select(%factory.Coding('http://hl7.org/fhir/administrative-gender', $this)).first()"
+// guess. `other` and `unknown` are filtered out: ChEkmPatientAdministrativeSex offers only
+// male/female, and pre-filling an answer that is not in the item's own value set is worse than
+// leaving it blank.
+* item[=].extension[=].valueExpression.expression = "%patient.gender.where($this = 'male' or $this = 'female').select(%factory.Coding('http://hl7.org/fhir/administrative-gender', $this)).first()"

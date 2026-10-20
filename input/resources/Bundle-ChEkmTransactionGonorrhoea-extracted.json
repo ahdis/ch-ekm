@@ -131,9 +131,9 @@
                       "valueCodeableConcept": {
                         "coding": [
                           {
-                            "code": "1384187000",
+                            "code": "1332083003",
                             "system": "http://snomed.info/sct",
-                            "display": "Identifies as transgender (finding)"
+                            "display": "Identifies as transgender male (finding)"
                           }
                         ]
                       }

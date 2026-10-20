@@ -1,12 +1,25 @@
+// The administrative sex of the affected person (`Patient.gender`): in Switzerland it is either female
+// or male, so `other` and `unknown` are not offered (https://github.com/ahdis/ch-ekm/issues/32).
 ValueSet: ChEkmPatientAdministrativeSex
 Title: "CH EKM Patient Administrative Sex"
-Description: "This CH EKM value set includes the codes for patient administrative sex with the tree codes defined for Switzerland."
+Description: "This CH EKM value set includes the codes for the administrative sex of the patient. In Switzerland the administrative sex is either female or male."
 * ^status = #active
 * ^experimental = false
 
 * $administrative-gender#male "Male"
 * $administrative-gender#female "Female"
-* $administrative-gender#other "Other"
+
+// The gender of the infected sexual contact partner ("Wie" block). Same two codes as
+// ChEkmPatientAdministrativeSex, but its own value set: this is not the partner's administrative sex,
+// and "other" was dropped here following the patient (issue #32) - still to be reconfirmed by FOPH.
+ValueSet: ChEkmExposureSexualContactPartner
+Title: "CH EKM Exposure Sexual Contact Partner"
+Description: "This CH EKM value set includes the codes for the gender of the infected sexual contact partner (female, male)."
+* ^status = #active
+* ^experimental = false
+
+* $administrative-gender#male "Male"
+* $administrative-gender#female "Female"
 
 // Single-code value set for `open-choice` form items whose only predefined answer is "unknown" -
 // the user either types a free text (-> answer.valueString) or picks this code (-> answer.valueCoding),
@@ -72,13 +85,19 @@ Description: "This CH EKM value set includes the codes for specimen types."
 * $sct#373572006  "Clinical finding absent (situation)"
 * $sct#261665006  "Unknown (qualifier value)"
 
+// The answers to "trans Person" (https://github.com/ahdis/ch-ekm/issues/32). International Edition
+// concepts, NOT the US Edition 911621000124109 / 911581000124109 the issue first named: those are not
+// in the Swiss Edition, while these two are (same definition, and also children of 1384187000
+// "Identifies as transgender"). The form's third answer "Nein" is not offered until #35 decides
+// how to report it - "No" is not a gender identity, so it cannot go into individual-genderIdentity.
 ValueSet: ChEkmGenderIdentity
 Title: "CH EKM Gender Identity"
-Description: "This CH EKM value set includes the codes for gender identity."
+Description: "This CH EKM value set includes the codes for the gender identity of a trans person (trans man, trans woman)."
 * ^status = #active
 * ^experimental = false
 
-* $sct#1384187000  "Identifies as transgender (finding)"
+* $sct#1332083003  "Identifies as transgender male (finding)"
+* $sct#1332082008  "Identifies as transgender female (finding)"
 
 ValueSet: ChEkmPneumococcalDiseaseManifestation
 Title: "CH EKM Pneumococcal Disease Manifestation"

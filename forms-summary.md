@@ -272,8 +272,8 @@ disease-specific value-set bindings).
 | PLZ/Wohnort | `zipCode`, `city` | string | |
 | Land | `country` | choice | `ChEkmCountryCodes` |
 | Kanton | `canton` | string (or choice eCH-0007) | |
-| Gender | `administrativeGender` | choice | `administrative-gender` |
-| (trans …) | `genderIdentity` | choice | `ChEkmGenderIdentity` |
+| Gender | `administrativeGender` | choice | `ChEkmPatientAdministrativeSex` (female/male only, #32) |
+| trans Person | `genderIdentity` | choice | `ChEkmGenderIdentity` (trans man / trans woman, #32; "Nein" open in #35) |
 
 **Manifestation** (`ChEkmGonorrhoeaManifestationForm`):
 | Item | linkId | type | Binding / note |
@@ -608,8 +608,9 @@ parameters (so internal codes *and* `content=supplement` language supplements ar
 | Item | Value set | Options |
 | --- | --- | --- |
 | `nationality`, `country` | `ChEkmCountryCodes` (ch-ekm) | 195 (→ drop-down in preview) |
-| `administrativeGender`, `sexualContactPartner` | `administrative-gender` | 4 |
-| `genderIdentity` | `ChEkmGenderIdentity` | 1 |
+| `administrativeGender` | `ChEkmPatientAdministrativeSex` | 2 |
+| `sexualContactPartner` | `ChEkmExposureSexualContactPartner` | 2 |
+| `genderIdentity` | `ChEkmGenderIdentity` | 2 |
 | `relationshipType` | `ChEkmExposureRelationshipType` | 4 |
 | `manifestation` | `ChEkmGonorrhoeaManifestationFormChoice` | 2 |
 
@@ -647,7 +648,7 @@ The preview build applies these **automatically**: it discovers the code systems
 value set and activates any local `content=supplement` whose base system matches (so adding a new
 supplement, or a new SNOMED-bound disease form, needs **no per-item wiring** — see *How the preview
 is built*). Verified for Gonorrhoea: `manifestation` → Symptomatisch/Asymptomatisch, `genderIdentity`
-→ "Identifiziert sich als Transgender", both via `ChEkmSnomedLanguageSupplement`.
+→ "trans Mann" / "trans Frau", both via `ChEkmSnomedLanguageSupplement`.
 
 **Two non-obvious tx behaviours (learned the hard way):**
 
@@ -863,7 +864,9 @@ A required element populated **only** by a `templateExtractValue` has no value i
 itself, so the template is invalid even though extraction is fine. Give it a **placeholder default**
 that the directive overwrites at extraction (the computed value replaces the static one; verified the
 `_element` directive is stripped cleanly). Two in the Gonorrhoea template:
-- `Patient.gender = #unknown` (required binding) → overwritten with the answered administrativeGender.
+- `Patient.gender = #female` (required binding) → overwritten with the answered administrativeGender.
+  Was `#unknown` until #32 bound `Patient.gender` to `ChEkmPatientAdministrativeSex` (female/male
+  only), which `#unknown` fails; `administrativeGender` is a required item, so it is always overwritten.
 - `Bundle.timestamp = "1900-01-01T00:00:00Z"` (a document Bundle must satisfy `bdl-10:
   timestamp.hasValue()`) → overwritten with the QuestionnaireResponse's `authored`, or the
   extraction time when the response has none (`RuleSetExtractAuthored`: Smart Forms' "Save as Final"

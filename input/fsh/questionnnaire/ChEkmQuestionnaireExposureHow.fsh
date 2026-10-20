@@ -15,12 +15,12 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 * insert RuleSetQrLevel1Text("How (route of transmission\)", "Wie (Übertragungsweg\)", "Comment (voie de transmission\)", "Come (via di trasmissione\)")
 * item[=].type = #group
 
-// Sexualkontakt mit infizierter Person - Geschlecht (Frau / Mann / Andere)
+// Sexualkontakt mit infizierter Person - Geschlecht (Frau / Mann; "Andere" dropped with #32)
 * item[=].item[+].linkId = "exposureHowSexualContactPartner"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.sexualContactPartner"
 * insert RuleSetQrLevel2Text("Sexual contact with an infected person (gender\)", "Sexualkontakt mit infizierter Person (Geschlecht\)", "Rapport sexuel avec une personne infectée (sexe\)", "Rapporto sessuale con una persona infetta (sesso\)")
 * item[=].item[=].type = #choice
-* item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex"
+* item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureSexualContactPartner"
 * item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
 * item[=].item[=].extension[+].url = $choiceOrientation

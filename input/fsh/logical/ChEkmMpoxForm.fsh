@@ -78,8 +78,8 @@ Characteristics: #can-be-target
 
 // Wie (Übertragungsweg)
 * transmission 0..1 Base "Transmission route"
-  * sexualContactPartner 0..1 CodeableConcept "Sexual contact (female, male, other)"
-  * sexualContactPartner from ChEkmPatientAdministrativeSex (required)
+  * sexualContactPartner 0..1 CodeableConcept "Sexual contact (female, male)"
+  * sexualContactPartner from ChEkmExposureSexualContactPartner (required)
   * relationshipType 0..1 CodeableConcept "Type of relationship (anonymous partner / known partner / paid sex / unknown)"
   * relationshipType from ChEkmExposureRelationshipType (required)
   * otherTransmission 0..1 string "Other transmission route (free text)"

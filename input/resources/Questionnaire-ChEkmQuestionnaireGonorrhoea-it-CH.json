@@ -250,7 +250,7 @@
                 ]
               }
             ],
-            "gender": "unknown",
+            "gender": "female",
             "_gender": {
               "extension": [
                 {
@@ -466,9 +466,9 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "code": "unknown",
+                      "code": "female",
                       "system": "http://hl7.org/fhir/administrative-gender",
-                      "display": "Unknown",
+                      "display": "Female",
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -4156,7 +4156,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.gender.where($this = 'male' or $this = 'female' or $this = 'other').select(%factory.Coding('http://hl7.org/fhir/administrative-gender', $this)).first()"
+                    "expression": "%patient.gender.where($this = 'male' or $this = 'female').select(%factory.Coding('http://hl7.org/fhir/administrative-gender', $this)).first()"
                   }
                 }
               ],
@@ -4174,20 +4174,13 @@
                     "code": "female",
                     "display": "sesso femminile"
                   }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://hl7.org/fhir/administrative-gender",
-                    "code": "other",
-                    "display": "indeterminato"
-                  }
                 }
               ]
             },
             {
               "linkId": "genderIdentity",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
-              "text": "Identità di genere (transgender)",
+              "text": "Persona trans",
               "type": "choice",
               "extension": [
                 {
@@ -4202,8 +4195,15 @@
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
-                    "code": "1384187000",
-                    "display": "Si identifica come transgender"
+                    "code": "1332083003",
+                    "display": "Uomo trans"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "1332082008",
+                    "display": "Donna trans"
                   }
                 }
               ]
@@ -4337,13 +4337,6 @@
                         "system": "http://hl7.org/fhir/administrative-gender",
                         "code": "female",
                         "display": "sesso femminile"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://hl7.org/fhir/administrative-gender",
-                        "code": "other",
-                        "display": "indeterminato"
                       }
                     }
                   ]
@@ -4731,6 +4724,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-20T11:29:49+02:00",
+  "date": "2026-10-20T15:34:45+02:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

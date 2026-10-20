@@ -455,7 +455,7 @@
                 ]
               }
             ],
-            "gender": "unknown",
+            "gender": "female",
             "_gender": {
               "extension": [
                 {
@@ -680,9 +680,9 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "code": "unknown",
+                      "code": "female",
                       "system": "http://hl7.org/fhir/administrative-gender",
-                      "display": "Unknown",
+                      "display": "Female",
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -3066,7 +3066,7 @@
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.gender.where($this = 'male' or $this = 'female' or $this = 'other').select(%factory.Coding('http://hl7.org/fhir/administrative-gender', $this)).first()"
+                    "expression": "%patient.gender.where($this = 'male' or $this = 'female').select(%factory.Coding('http://hl7.org/fhir/administrative-gender', $this)).first()"
                   }
                 }
               ]
@@ -3074,7 +3074,7 @@
             {
               "linkId": "genderIdentity",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity",
-              "text": "Gender identity (transgender)",
+              "text": "trans person",
               "_text": {
                 "extension": [
                   {
@@ -3086,7 +3086,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Geschlechtsidentität (transgender)"
+                        "valueString": "trans Person"
                       }
                     ]
                   },
@@ -3099,7 +3099,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Identité de genre (transgenre)"
+                        "valueString": "Personne trans"
                       }
                     ]
                   },
@@ -3112,7 +3112,7 @@
                       },
                       {
                         "url": "content",
-                        "valueString": "Identità di genere (transgender)"
+                        "valueString": "Persona trans"
                       }
                     ]
                   }
@@ -4580,7 +4580,7 @@
                     ]
                   },
                   "type": "choice",
-                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureSexualContactPartner",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -6752,6 +6752,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-20T11:30:07+02:00",
+  "date": "2026-10-20T15:34:59+02:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

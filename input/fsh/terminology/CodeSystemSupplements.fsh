@@ -109,13 +109,23 @@ Description: "CodeSystem supplement adding draft German, French and Italian (Swi
 * #373572006 ^designation[+].language = #it-CH
 * #373572006 ^designation[=].value = "Reperto clinico assente"
 
-* #1384187000 "Identifies as transgender (finding)"
-* #1384187000 ^designation[+].language = #de-CH
-* #1384187000 ^designation[=].value = "Identifiziert sich als Transgender"
-* #1384187000 ^designation[+].language = #fr-CH
-* #1384187000 ^designation[=].value = "S'identifie comme transgenre"
-* #1384187000 ^designation[+].language = #it-CH
-* #1384187000 ^designation[=].value = "Si identifica come transgender"
+// trans man / trans woman - the labels FOPH gave in https://github.com/ahdis/ch-ekm/issues/32
+// (not draft translations).
+* #1332083003 "Identifies as transgender male (finding)"
+* #1332083003 ^designation[+].language = #de-CH
+* #1332083003 ^designation[=].value = "trans Mann"
+* #1332083003 ^designation[+].language = #fr-CH
+* #1332083003 ^designation[=].value = "Homme trans"
+* #1332083003 ^designation[+].language = #it-CH
+* #1332083003 ^designation[=].value = "Uomo trans"
+
+* #1332082008 "Identifies as transgender female (finding)"
+* #1332082008 ^designation[+].language = #de-CH
+* #1332082008 ^designation[=].value = "trans Frau"
+* #1332082008 ^designation[+].language = #fr-CH
+* #1332082008 ^designation[=].value = "Femme trans"
+* #1332082008 ^designation[+].language = #it-CH
+* #1332082008 ^designation[=].value = "Donna trans"
 
 * #448421008 "Sepsis caused by Streptococcus pneumoniae"
 * #448421008 ^designation[+].language = #de-CH

@@ -17,9 +17,9 @@ Characteristics: #can-be-target
 * country 0..1 CodeableConcept "Country"
 * country from ChEkmCountryCodes (required)
 * canton 0..1 string "Canton"
-* administrativeGender 1..1 CodeableConcept "Gender (male, female, other)"
+* administrativeGender 1..1 CodeableConcept "Administrative sex (female, male)"
 * administrativeGender from http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex (required)
-* genderIdentity 0..1 CodeableConcept "Gender identity (affiliation with the transgender community)"
+* genderIdentity 0..1 CodeableConcept "Trans person (trans man, trans woman)"
 * genderIdentity from ChEkmGenderIdentity (required)
 
 Mapping: PersonToPatient

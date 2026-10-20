@@ -14,13 +14,16 @@ Title: "EKM: Person - Gender identity"
 Description: "Modular sub-questionnaire for the gender identity of the affected person. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnairePersonGenderIdentity)
 
-// Gender identity (transgender) - separate item per model, top-level (no wrapping group).
+// "trans Person" (issue #32): trans man / trans woman - separate item per model, top-level (no
+// wrapping group). The form's third answer "Nein" is NOT offered yet (issue #35): "No" is not a
+// gender identity, so it has no place in individual-genderIdentity. Until then the item stays
+// optional, and leaving it unanswered is the only way to say "not trans".
 // Pre-populated from the individual-genderIdentity extension's `value` Coding
 // (http://hl7.org/fhir/StructureDefinition/individual-genderIdentity -> extension.where(url='value')).
 // Source and form share the ChEkmGenderIdentity value set (SNOMED), so the Coding matches directly.
 * item[+].linkId = "genderIdentity"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity"
-* insert RuleSetQrLevel1Text("Gender identity (transgender\)", "Geschlechtsidentität (transgender\)", "Identité de genre (transgenre\)", "Identità di genere (transgender\)")
+* insert RuleSetQrLevel1Text("trans person", "trans Person", "Personne trans", "Persona trans")
 * item[=].type = #choice
 * item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGenderIdentity"
 * item[=].answerValueSet.extension[+].url = $binding-parameter

@@ -45,7 +45,7 @@ Characteristics: #can-be-target
 
 // Wie (Übertragungsweg)
 * transmission 0..1 Base "Transmission route"
-  * sexualContactPartner 0..1 CodeableConcept "Sexual contact (female, male, other)" // proposed minimum set of options as of June 1st; to be further discussed, see // to verify that administrative gender is correctly captured here https://docs.google.com/spreadsheets/d/153rbSKx_zNKEO1dNm-AigvTit9cwy3HeVS8MCZTuC7g/edit?gid=509131979#gid=509131979
+  * sexualContactPartner 0..1 CodeableConcept "Sexual contact (female, male)" // proposed minimum set of options as of June 1st; to be further discussed, see // to verify that administrative gender is correctly captured here https://docs.google.com/spreadsheets/d/153rbSKx_zNKEO1dNm-AigvTit9cwy3HeVS8MCZTuC7g/edit?gid=509131979#gid=509131979
   * relationshipType 0..1 CodeableConcept "Type of relationship (anonymous partner / known partner / paid sex / unknown)"
   * otherTransmission 0..1 string "Other transmission route (free text)"
   * unknown 0..1 boolean "Unknown"

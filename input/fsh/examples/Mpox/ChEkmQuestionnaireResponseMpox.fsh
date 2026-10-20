@@ -64,7 +64,7 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[0].item[8].linkId = "administrativeGender"
 * item[0].item[0].item[8].answer.valueCoding = $administrative-gender#male "male"
 * item[0].item[0].item[9].linkId = "genderIdentity"
-* item[0].item[0].item[9].answer.valueCoding = $sct#1384187000 "Identifies as transgender (finding)"
+* item[0].item[0].item[9].answer.valueCoding = $sct#1332083003 "Identifies as transgender male (finding)"
 
 // --- Diagnose und Manifestation ---
 // THREE manifestations (repeats=true) -> three Condition.evidence entries after $extract.

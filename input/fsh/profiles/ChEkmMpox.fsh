@@ -46,7 +46,7 @@ Description: "TODO: This CH EKM base profile constrains the Exposure observation
 // Wie - sex/gender of the infected sexual contact partner
 * component[sexualContactPartner].code = ChEkmExposureComponent#sexual-contact-partner
 * component[sexualContactPartner].value[x] only CodeableConcept
-* component[sexualContactPartner].valueCodeableConcept from http://hl7.org/fhir/ValueSet/administrative-gender (required)
+* component[sexualContactPartner].valueCodeableConcept from ChEkmExposureSexualContactPartner (required)
 
 // Anderer Übertragungsweg - other transmission route (free text)
 * component[otherTransmission].code =  $sct#74964007 "Other (qualifier value)"

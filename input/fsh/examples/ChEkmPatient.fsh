@@ -16,7 +16,7 @@ Description: "Example for a CH EKM Patient: Full Name"
 * address[home].country = "CH"
 * address[home].country.extension[countrycode].valueCoding = urn:iso:std:iso:3166#CH
 * extension[citizenship].extension[code].valueCodeableConcept = urn:iso:std:iso:3166#CH
-* extension[genderIdentity].extension[value].valueCodeableConcept = $sct#1384187000 "Identifies as transgender (finding)"
+* extension[genderIdentity].extension[value].valueCodeableConcept = $sct#1332083003 "Identifies as transgender male (finding)"
 * telecom[phone].system = #phone
 * telecom[phone].value = "+41 79 222 33 44"
 
@@ -43,4 +43,4 @@ Description: "Example for a CH EKM Patient: Full Name (Dupoint Antoine)"
 * address[home].country = "CH"
 * address[home].country.extension[countrycode].valueCoding = urn:iso:std:iso:3166#CH
 * extension[citizenship].extension[code].valueCodeableConcept = urn:iso:std:iso:3166#CH
-* extension[genderIdentity].extension[value].valueCodeableConcept = $sct#1384187000 "Identifies as transgender (finding)"
+* extension[genderIdentity].extension[value].valueCodeableConcept = $sct#1332082008 "Identifies as transgender female (finding)"
