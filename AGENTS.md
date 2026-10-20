@@ -371,6 +371,13 @@ a root without an extraction template — a disease-specific questionnaire such 
 `ChEkmQuestionnaireHepatitisCDiseaseSpecific` — is assembled (the IG validates the documents'
 disease-specific QuestionnaireResponse against it) but skipped by `--upload`, since nobody fills it in.
 
+The documents Smart Forms extracts are validated by **matchbox** (https://test.ahdis.ch/matchboxv3/fhir,
+see `../smart-forms/ARCHITECTURE.md`), which therefore needs the current CH EKM package.
+`./scripts/upload-matchbox.sh` replaces it with `output/package.tgz`: `DELETE ImplementationGuide/<id>`,
+then `$install-npm-package` (matchbox silently skips an uploaded package whose version is already
+installed). Point elsewhere with `MATCHBOX_BASE`. `./scripts/deploy.sh` runs the whole chain:
+`assemble.sh --upload` → IG Publisher → `upload-matchbox.sh`.
+
 **Pre-population needs a local HAPI.** `%user` is the treating physician's **PractitionerRole**,
 and the Practitioner/Organization fields read `%user.practitioner.resolve()` /
 `%user.organization.resolve()`. FHIRPath `resolve()` does a real HTTP fetch, so both
