@@ -1361,6 +1361,13 @@ scripts/upload-questionnaire.sh   ChEkmQuestionnaireGonorrhoea   # PUT Questionn
   directives intact, so the server copy *is* the file in `input/resources/`.
 - After upload it prints the canonical and a ready-to-open renderer link, and verifies the stored
   copy by diffing it against the artifact and counting directives.
+- **Only forms are published.** `assemble-questionnaire.sh --upload` (and so `assemble.sh --upload`)
+  skips a root whose assembled questionnaire has no extraction template: the disease-specific
+  questionnaires (`ChEkmQuestionnaireHepatitisCDiseaseSpecific`, §8 "Disease-specific questions").
+  Nobody fills them in; they exist so the IG can validate the disease-specific QuestionnaireResponse
+  in each document, so they are published in the IG only and stay out of the renderer's picker.
+  `upload-questionnaire.sh` called directly on such a file still uploads it — the rule lives in
+  the assemble step, which is what publishes in bulk.
 
 ### Why the Forms Server runs a patched HAPI (since 2026-09-09)
 

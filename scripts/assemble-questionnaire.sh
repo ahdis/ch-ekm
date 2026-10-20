@@ -213,6 +213,20 @@ python3 scripts/build-lang-questionnaire.py "$ASSEMBLED_ID"
 if [ "${EKM_UPLOAD:-}" = "1" ]; then UPLOAD=1; fi
 if [ "${EKM_UPLOAD:-}" = "0" ]; then UPLOAD=0; fi
 
+# Only a FORM is published: a questionnaire someone fills in and extracts, i.e. one carrying an
+# extraction template. A root without one — the disease-specific questionnaires
+# (e.g. ChEkmQuestionnaireHepatitisCDiseaseSpecific) — is assembled because the IG validates the
+# disease-specific QuestionnaireResponse in each document against it, but nobody fills it in, so it
+# stays off the Forms Server and out of the renderer's picker.
+if [ "$UPLOAD" = "1" ] && [ "$(jq '(.contained // []) | length' "$OUT")" = "0" ]; then
+  UPLOAD=0
+  echo
+  echo "Not published: $ASSEMBLED_ID has no extraction template, so it is not a form anyone fills"
+  echo "in (a disease-specific questionnaire). It is only needed by the IG, to validate the"
+  echo "disease-specific QuestionnaireResponse in the documents."
+  SKIPPED_NO_TEMPLATE=1
+fi
+
 if [ "$UPLOAD" = "1" ]; then
   BASE="${EKM_FHIR_BASE:-https://smartforms.ahdis.ch/api/fhir}"
   # Mirror build-lang-questionnaire.py: PREVIEW_LANG overrides the three Swiss languages.
@@ -243,7 +257,7 @@ if [ "$UPLOAD" = "1" ]; then
     echo "to skip this step, or upload individually with scripts/upload-questionnaire.sh."
     exit 1
   fi
-else
+elif [ "${SKIPPED_NO_TEMPLATE:-0}" != "1" ]; then
   echo
   echo "Not published to the Forms Server (upload is opt-in)."
   echo "  Publish by re-running with --upload, or individually with:"

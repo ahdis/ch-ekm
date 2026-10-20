@@ -366,7 +366,10 @@ it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from t
 
 The assemble scripts are **local only** by default. Publishing the assembled + per-language
 questionnaires to the Forms Server (https://smartforms.ahdis.ch/api/fhir) is opt-in — add
-`--upload` (or `EKM_UPLOAD=1`), and point elsewhere with `EKM_FHIR_BASE`.
+`--upload` (or `EKM_UPLOAD=1`), and point elsewhere with `EKM_FHIR_BASE`. Only FORMS are published:
+a root without an extraction template — a disease-specific questionnaire such as
+`ChEkmQuestionnaireHepatitisCDiseaseSpecific` — is assembled (the IG validates the documents'
+disease-specific QuestionnaireResponse against it) but skipped by `--upload`, since nobody fills it in.
 
 **Pre-population needs a local HAPI.** `%user` is the treating physician's **PractitionerRole**,
 and the Practitioner/Organization fields read `%user.practitioner.resolve()` /

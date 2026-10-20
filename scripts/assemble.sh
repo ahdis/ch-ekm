@@ -18,7 +18,9 @@
 #
 # Usage (./assemble.sh in the repo root is a thin wrapper around this script):
 #   ./scripts/assemble.sh                     # assemble every root, no upload
-#   ./scripts/assemble.sh --upload            # ... and publish each one to the Forms Server
+#   ./scripts/assemble.sh --upload            # ... and publish each FORM to the Forms Server; a root
+#                                             #     without an extraction template (a disease-specific
+#                                             #     questionnaire) is assembled but never published
 #   ./scripts/assemble.sh ChEkmQuestionnaireMpox ChEkmQuestionnaireGonorrhoea   # only these roots
 #   PREVIEW_LANG=fr-CH ./scripts/assemble.sh  # build/publish one language only
 #   EKM_FHIR_BASE=http://localhost:8080/fhir ./scripts/assemble.sh --upload
