@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 570" font-family="Arial, Helvetica, sans-serif">
+  <title>CH EKM FHIR Document: schematic overview of the Bundle</title>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#3B73AA"/>
+    </marker>
+    <marker id="arr-dark" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2B5081"/>
+    </marker>
+    <filter id="sh" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#3D4960">Schematic overview of a CH EKM FHIR Document</text>
+
+  <!-- Bundle, with a folded corner -->
+  <path d="M28,44 H856 L880,68 V532 Q880,540 872,540 H28 Q20,540 20,532 V52 Q20,44 28,44 Z" fill="#F1F4F9" stroke="#2B5081" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M856,44 V68 H880 Z" fill="#B9C8E1" stroke="#2B5081" stroke-width="1.5" stroke-linejoin="round"/>
+  <text x="36" y="68" font-size="15" fill="#2B5081"><tspan font-weight="bold">Bundle:</tspan> CH EKM Document</text>
+  <text x="236" y="68" font-size="9" fill="#555555" font-style="italic">ChEkmDocument&lt;Disease&gt;</text>
+  <text x="36" y="86" font-size="9" fill="#555555">type = document · identifier, timestamp · the Composition comes first, followed by every resource it references</text>
+
+  <!-- entry: Composition -->
+  <rect x="36" y="100" width="470" height="426" rx="6" fill="#3B73AA" filter="url(#sh)"/>
+  <text x="50" y="122" font-size="13" fill="#ffffff"><tspan font-weight="bold">entry:</tspan> <tspan font-weight="bold">Composition</tspan></text>
+  <text x="492" y="122" text-anchor="end" font-size="8.5" fill="#E9EEF6" font-style="italic">ChEkmComposition&lt;Disease&gt;</text>
+  <text x="50" y="140" font-size="8.5" fill="#E9EEF6">status = final, date, title · type = 722143004 Infectious disease diagnostic study note</text>
+  <rect x="50" y="150" width="442" height="20" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="58" y="163.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">subject:</tspan> Patient (Reference) 1..1</text>
+  <rect x="50" y="174" width="442" height="20" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="58" y="187.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">author:</tspan> PractitionerRole (Reference) 1..1</text>
+  <rect x="50" y="198" width="442" height="20" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="58" y="211.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">encounter:</tspan> Encounter (Reference) 0..1, only if hospitalised</text>
+  <rect x="50" y="226" width="442" height="66" rx="4" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="58" y="241" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">section:</tspan> diagnosis 1..1</text>
+  <rect x="66" y="247" width="418" height="17" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="74" y="260.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">entry:</tspan> Condition (Reference)</text>
+  <rect x="66" y="267" width="418" height="17" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="74" y="280.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">entry:</tspan> QuestionnaireResponse (Reference), if any</text>
+  <rect x="50" y="297" width="442" height="46" rx="4" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="58" y="312" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">section:</tspan> laboratory 0..1</text>
+  <rect x="66" y="318" width="418" height="17" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="74" y="331.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">entry:</tspan> ServiceRequest (Reference) → specimen, performer</text>
+  <rect x="50" y="348" width="442" height="46" rx="4" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="58" y="363" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">section:</tspan> immunization 0..1</text>
+  <rect x="66" y="369" width="418" height="17" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="74" y="382.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">entry:</tspan> Immunization (yes) | Observation (no / unknown), one per answered row</text>
+  <rect x="50" y="399" width="442" height="66" rx="4" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="58" y="414" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">section:</tspan> social-history 0..1</text>
+  <rect x="66" y="420" width="418" height="17" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="74" y="433.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">entry:</tspan> Observation (Reference), exposure</text>
+  <rect x="66" y="440" width="418" height="17" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="74" y="453.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">entry:</tspan> Observation (Reference), trans person: no</text>
+  <rect x="50" y="470" width="442" height="46" rx="4" fill="#E9EEF6" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="58" y="485" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">section:</tspan> cause-death 0..1</text>
+  <rect x="66" y="491" width="418" height="17" rx="3" fill="#ffffff" stroke="#B9C8E1" stroke-width="1"/>
+  <text x="74" y="504.5" font-size="9" fill="#3D4960"><tspan font-weight="bold" fill="#2B5081">entry:</tspan> Observation (Reference), cause of death</text>
+
+  <!-- The other entries of the Bundle -->
+  <rect x="524" y="100" width="340" height="22" rx="3" fill="#2B5081"/>
+  <text x="534" y="115" font-size="9.5" fill="#ffffff"><tspan font-weight="bold">entry:</tspan> Patient</text>
+  <text x="854" y="115" text-anchor="end" font-size="8" fill="#E9EEF6" font-style="italic">ChEkmPatient (+ variants)</text>
+  <rect x="524" y="126" width="340" height="22" rx="3" fill="#2B5081"/>
+  <text x="534" y="141" font-size="9.5" fill="#ffffff"><tspan font-weight="bold">entry:</tspan> PractitionerRole</text>
+  <text x="854" y="141" text-anchor="end" font-size="8" fill="#E9EEF6" font-style="italic">ChEkmPractitionerRole</text>
+  <rect x="524" y="152" width="340" height="22" rx="3" fill="#2B5081"/>
+  <text x="534" y="167" font-size="9.5" fill="#ffffff"><tspan font-weight="bold">entry:</tspan> Practitioner</text>
+  <text x="854" y="167" text-anchor="end" font-size="8" fill="#E9EEF6" font-style="italic">ChEkmPractitioner…</text>
+  <rect x="524" y="178" width="340" height="22" rx="3" fill="#2B5081"/>
+  <text x="534" y="193" font-size="9.5" fill="#ffffff"><tspan font-weight="bold">entry:</tspan> Organization</text>
+  <text x="854" y="193" text-anchor="end" font-size="8" fill="#E9EEF6" font-style="italic">ChEkmOrganization…</text>
+  <rect x="524" y="204" width="340" height="22" rx="3" fill="#2B5081"/>
+  <text x="534" y="219" font-size="9.5" fill="#ffffff"><tspan font-weight="bold">entry:</tspan> Condition</text>
+  <text x="854" y="219" text-anchor="end" font-size="8" fill="#E9EEF6" font-style="italic">ChEkmCondition&lt;Disease&gt;</text>
+  <rect x="524" y="230" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="245" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> QuestionnaireResponse</text>
+  <text x="854" y="245" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">disease-specific answers</text>
+  <rect x="524" y="256" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="271" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> Encounter</text>
+  <text x="854" y="271" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">ChEkmEncounter</text>
+  <rect x="524" y="282" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="297" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> ServiceRequest</text>
+  <text x="854" y="297" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">ChEkmServiceRequest</text>
+  <rect x="524" y="308" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="323" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> Specimen</text>
+  <text x="854" y="323" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">ChEkmSpecimen</text>
+  <rect x="524" y="334" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="349" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> Organization</text>
+  <text x="854" y="349" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">ChEkmOrganizationLab</text>
+  <rect x="524" y="360" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="375" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> Immunization</text>
+  <text x="854" y="375" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">ChEkmImmunization…</text>
+  <rect x="524" y="386" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="401" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> Observation</text>
+  <text x="854" y="401" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">ChEkmObservationVaccinationStatus…</text>
+  <rect x="524" y="412" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="427" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> Observation</text>
+  <text x="854" y="427" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">ChEkmExposure&lt;Disease&gt;</text>
+  <rect x="524" y="438" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="453" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> Observation</text>
+  <text x="854" y="453" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">ChEkmObservationTransgenderStatus</text>
+  <rect x="524" y="464" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="479" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> Observation</text>
+  <text x="854" y="479" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic">ChEkmObservationCauseOfDeath</text>
+  <rect x="524" y="490" width="340" height="22" rx="3" fill="#ffffff" stroke="#2B5081" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="534" y="505" font-size="9.5" fill="#2B5081"><tspan font-weight="bold">entry:</tspan> …</text>
+  <text x="854" y="505" text-anchor="end" font-size="8" fill="#2B5081" font-style="italic"></text>
+  <text x="450" y="558" text-anchor="middle" font-size="9" fill="#555555">Solid: in every document · dashed: only when the form's answers produce it · &lt;Disease&gt;: the disease profile, e.g. ChEkmConditionGonorrhoea</text>
+</svg>

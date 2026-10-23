@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" font-family="Arial, Helvetica, sans-serif">
+  <title>CH EKM FHIR Document: how the resources reference each other</title>
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#3B73AA"/>
+    </marker>
+    <marker id="arr-dark" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#2B5081"/>
+    </marker>
+    <filter id="sh" x="-2%" y="-2%" width="104%" height="104%">
+      <feDropShadow dx="1" dy="1" stdDeviation="2" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <text x="450" y="28" text-anchor="middle" font-size="18" font-weight="bold" fill="#3D4960">How the resources of a CH EKM document reference each other</text>
+
+  <!-- Row A: Patient, Composition, author -->
+  <rect x="20" y="50" width="150" height="56" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M20,69 V55 Q20,50 25,50 H165 Q170,50 170,55 V69 Z" fill="#3B73AA"/>
+  <text x="95.0" y="63" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Patient</text>
+  <text x="95.0" y="83" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Reported person</text>
+  <text x="95.0" y="96" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmPatient (+ variants)</text>
+  <rect x="355" y="50" width="190" height="56" rx="5" fill="#ffffff" stroke="#2B5081" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M355,69 V55 Q355,50 360,50 H540 Q545,50 545,55 V69 Z" fill="#2B5081"/>
+  <text x="450.0" y="63" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Composition</text>
+  <text x="450.0" y="83" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Clinical report</text>
+  <text x="450.0" y="96" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmComposition</text>
+  <rect x="720" y="50" width="150" height="56" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M720,69 V55 Q720,50 725,50 H865 Q870,50 870,55 V69 Z" fill="#3B73AA"/>
+  <text x="795.0" y="63" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">PractitionerRole</text>
+  <text x="795.0" y="83" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Author</text>
+  <text x="795.0" y="96" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmPractitionerRole</text>
+  <path d="M355,72 H171" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <text x="262" y="67" text-anchor="middle" font-size="8" fill="#555555">subject 1..1</text>
+  <path d="M545,72 H719" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <text x="632" y="67" text-anchor="middle" font-size="8" fill="#555555">author 1..1</text>
+
+  <!-- Row B: hospitalisation, the author's Practitioner and Organization -->
+  <rect x="20" y="140" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M20,159 V145 Q20,140 25,140 H165 Q170,140 170,145 V159 Z" fill="#3B73AA"/>
+  <text x="95.0" y="153" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Encounter</text>
+  <text x="95.0" y="173" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Hospitalisation</text>
+  <text x="95.0" y="186" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmEncounter</text>
+  <rect x="555" y="140" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M555,159 V145 Q555,140 560,140 H700 Q705,140 705,145 V159 Z" fill="#3B73AA"/>
+  <text x="630.0" y="153" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Practitioner</text>
+  <text x="630.0" y="173" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Treating physician or broker</text>
+  <text x="630.0" y="186" text-anchor="middle" font-size="7" fill="#555555" font-style="italic">ChEkmPractitionerTreatingPhysician</text>
+  <text x="630.0" y="196" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmPractitionerBroker</text>
+  <rect x="720" y="140" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M720,159 V145 Q720,140 725,140 H865 Q870,140 870,145 V159 Z" fill="#3B73AA"/>
+  <text x="795.0" y="153" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Organization</text>
+  <text x="795.0" y="173" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Treating physician or broker</text>
+  <text x="795.0" y="186" text-anchor="middle" font-size="7" fill="#555555" font-style="italic">ChEkmOrganizationTreatingPhysician</text>
+  <text x="795.0" y="196" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmOrganizationBroker</text>
+  <path d="M375,106 V168 H171" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <text x="272" y="163" text-anchor="middle" font-size="8" fill="#555555">encounter 0..1</text>
+  <path d="M95,140 V107" fill="none" stroke="#3B73AA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="100" y="127" font-size="8" fill="#555555">subject 1..1</text>
+  <path d="M795,106 V139" fill="none" stroke="#3B73AA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <path d="M795,118 H630 V139" fill="none" stroke="#3B73AA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="800" y="132" font-size="8" fill="#555555">organization 0..1</text>
+  <text x="625" y="132" text-anchor="end" font-size="8" fill="#555555">practitioner 0..1</text>
+
+  <!-- Sections: trunk from the Composition, one drop per section -->
+  <path d="M450,106 V228" fill="none" stroke="#2B5081" stroke-width="1.5"/>
+  <path d="M160,228 H795" fill="none" stroke="#2B5081" stroke-width="1.5"/>
+  <text x="456" y="190" font-size="8.5" font-weight="bold" fill="#2B5081" font-style="italic">section</text>
+  <path d="M160,228 V261" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <text x="164" y="222" font-size="8" font-weight="bold" fill="#2B5081">diagnosis 1..1</text>
+  <path d="M285,228 V261" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <text x="289" y="222" font-size="8" font-weight="bold" fill="#2B5081">cause-death 0..1</text>
+  <path d="M455,228 V261" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <text x="459" y="222" font-size="8" font-weight="bold" fill="#2B5081">social-history 0..1</text>
+  <path d="M625,228 V261" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <text x="629" y="222" font-size="8" font-weight="bold" fill="#2B5081">immunization 0..1</text>
+  <path d="M795,228 V261" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <text x="799" y="222" font-size="8" font-weight="bold" fill="#2B5081">laboratory 0..1</text>
+  <path d="M160,242 H200 V389 H171" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <path d="M455,242 H372 V389 H379" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+  <path d="M625,242 H542 V389 H549" fill="none" stroke="#2B5081" stroke-width="1.5" marker-end="url(#arr-dark)"/>
+
+  <!-- Row C: first entry of each section -->
+  <rect x="20" y="262" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M20,281 V267 Q20,262 25,262 H165 Q170,262 170,267 V281 Z" fill="#3B73AA"/>
+  <text x="95.0" y="275" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Condition</text>
+  <text x="95.0" y="295" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Diagnosis, manifestation</text>
+  <text x="95.0" y="308" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmCondition</text>
+  <rect x="210" y="262" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M210,281 V267 Q210,262 215,262 H355 Q360,262 360,267 V281 Z" fill="#3B73AA"/>
+  <text x="285.0" y="275" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Observation</text>
+  <text x="285.0" y="295" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Cause of death</text>
+  <text x="285.0" y="308" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmObservationCauseOfDeath</text>
+  <rect x="380" y="262" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M380,281 V267 Q380,262 385,262 H525 Q530,262 530,267 V281 Z" fill="#3B73AA"/>
+  <text x="455.0" y="275" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Observation</text>
+  <text x="455.0" y="295" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Exposure</text>
+  <text x="455.0" y="308" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmExposure</text>
+  <rect x="550" y="262" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M550,281 V267 Q550,262 555,262 H695 Q700,262 700,267 V281 Z" fill="#3B73AA"/>
+  <text x="625.0" y="275" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Immunization</text>
+  <text x="625.0" y="295" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Vaccinated: yes</text>
+  <text x="625.0" y="308" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmImmunization</text>
+  <rect x="720" y="262" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M720,281 V267 Q720,262 725,262 H865 Q870,262 870,267 V281 Z" fill="#3B73AA"/>
+  <text x="795.0" y="275" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">ServiceRequest</text>
+  <text x="795.0" y="295" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Laboratory order</text>
+  <text x="795.0" y="308" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmServiceRequest</text>
+
+  <!-- Row D: second entry of a section; the lab order's sample -->
+  <rect x="20" y="358" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" stroke-dasharray="4,3" filter="url(#sh)"/>
+  <text x="95.0" y="371" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#3B73AA">QuestionnaireResponse</text>
+  <line x1="28" y1="377" x2="162" y2="377" stroke="#3B73AA" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="95.0" y="391" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Disease-specific answers</text>
+  <text x="95.0" y="404" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">only if the form asks any</text>
+  <rect x="380" y="358" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M380,377 V363 Q380,358 385,358 H525 Q530,358 530,363 V377 Z" fill="#3B73AA"/>
+  <text x="455.0" y="371" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Observation</text>
+  <text x="455.0" y="391" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Trans person: no</text>
+  <text x="455.0" y="404" text-anchor="middle" font-size="7" fill="#555555" font-style="italic">ChEkmObservationTransgenderStatus</text>
+  <rect x="550" y="358" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M550,377 V363 Q550,358 555,358 H695 Q700,358 700,363 V377 Z" fill="#3B73AA"/>
+  <text x="625.0" y="371" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Observation</text>
+  <text x="625.0" y="391" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Vaccinated: no / unknown</text>
+  <text x="625.0" y="404" text-anchor="middle" font-size="7" fill="#555555" font-style="italic">ChEkmObservationVaccinationStatus</text>
+  <rect x="720" y="358" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M720,377 V363 Q720,358 725,358 H865 Q870,358 870,363 V377 Z" fill="#3B73AA"/>
+  <text x="795.0" y="371" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Specimen</text>
+  <text x="795.0" y="391" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Sample</text>
+  <text x="795.0" y="404" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmSpecimen</text>
+  <rect x="720" y="454" width="150" height="62" rx="5" fill="#ffffff" stroke="#3B73AA" stroke-width="1.5" filter="url(#sh)"/>
+  <path d="M720,473 V459 Q720,454 725,454 H865 Q870,454 870,459 V473 Z" fill="#3B73AA"/>
+  <text x="795.0" y="467" text-anchor="middle" font-size="9.5" font-weight="bold" fill="#ffffff">Organization</text>
+  <text x="795.0" y="487" text-anchor="middle" font-size="9" font-weight="bold" fill="#3D4960">Laboratory</text>
+  <text x="795.0" y="500" text-anchor="middle" font-size="7.5" fill="#555555" font-style="italic">ChEkmOrganizationLab</text>
+
+  <!-- Encounter <-> Condition, cause of death -> Condition, lab order -> specimen / lab -->
+  <path d="M40,262 V203" fill="none" stroke="#3B73AA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="44" y="226" font-size="8" fill="#555555">encounter</text>
+  <text x="44" y="236" font-size="8" fill="#555555">0..1</text>
+  <path d="M90,202 V261" fill="none" stroke="#3B73AA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="94" y="226" font-size="8" fill="#555555">reasonReference</text>
+  <text x="94" y="236" font-size="8" fill="#555555">0..1</text>
+  <line x1="196" y1="293" x2="204" y2="293" stroke="#ffffff" stroke-width="5"/>
+  <path d="M210,293 H171" fill="none" stroke="#3B73AA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="185" y="287" text-anchor="middle" font-size="8" fill="#555555">focus</text>
+  <text x="185" y="306" text-anchor="middle" font-size="8" fill="#555555">0..1</text>
+  <path d="M795,324 V357" fill="none" stroke="#3B73AA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="800" y="344" font-size="8" fill="#555555">specimen 0..1</text>
+  <path d="M720,305 H710 V485 H719" fill="none" stroke="#3B73AA" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="705" y="480" text-anchor="end" font-size="8" fill="#555555">performer 0..1</text>
+
+  <!-- Notes -->
+  <rect x="20" y="454" width="510" height="62" rx="8" fill="#F4F5F8" stroke="#B9C8E1" stroke-width="1.5"/>
+  <text x="32" y="471" font-size="8.5" fill="#555555">Every clinical resource also references the Patient (subject 1..1, Immunization.patient 1..1);</text>
+  <text x="32" y="483" font-size="8.5" fill="#555555">those arrows are left out for readability.</text>
+  <text x="32" y="498" font-size="8.5" fill="#555555">Broker scenario: author is the broker, Condition.recorder the treating physician's PractitionerRole.</text>
+  <text x="32" y="510" font-size="8.5" fill="#555555">Not shown: the medication and risk-factors sections and the seroconversion Observation.</text>
+  <text x="450" y="545" text-anchor="middle" font-size="9" fill="#555555">Base profiles shown · each disease derives its own Document, Composition, Condition, Exposure, … (e.g. ChEkmConditionGonorrhoea)</text>
+</svg>
