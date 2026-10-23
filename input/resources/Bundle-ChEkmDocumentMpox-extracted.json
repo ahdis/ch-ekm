@@ -182,9 +182,22 @@
         "address": [
           {
             "use": "home",
+            "line": [
+              "Musterstrasse 12"
+            ],
             "postalCode": "3097",
             "city": "Liebefeld",
             "state": "BE"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+41 31 123 45 67"
+          },
+          {
+            "system": "email",
+            "value": "beat.muster@example.ch"
           }
         ],
         "birthDate": "2000-01-01",

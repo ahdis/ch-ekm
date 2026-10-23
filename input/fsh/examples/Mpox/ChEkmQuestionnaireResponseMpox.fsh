@@ -42,8 +42,9 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 // --- Angaben zur betroffenen Person ---
 // Item order must follow the assembled questionnaire's person group
 // (surname, givenname, dateOfBirth, ahvn13, nationality, zipCode, city, country, canton,
-// administrativeGender, genderIdentity) or QR validation reports "items are out of order".
-// country is omitted (optional).
+// administrativeGender, streetLine, phone, email, genderIdentity) or QR validation reports "items are
+// out of order". country is omitted (optional). streetLine / phone / email (ChEkmQuestionnairePersonContact)
+// are all answered here; the Hepatitis C round trip answers only phone.
 * item[0].item[0].linkId = "person"
 * item[0].item[0].item[0].linkId = "surname"
 * item[0].item[0].item[0].answer.valueString = "Muster"
@@ -63,8 +64,14 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[0].item[7].answer.valueString = "BE"
 * item[0].item[0].item[8].linkId = "administrativeGender"
 * item[0].item[0].item[8].answer.valueCoding = $administrative-gender#male "male"
-* item[0].item[0].item[9].linkId = "genderIdentity"
-* item[0].item[0].item[9].answer.valueCoding = $sct#1332083003 "Identifies as transgender male (finding)"
+* item[0].item[0].item[9].linkId = "streetLine"
+* item[0].item[0].item[9].answer.valueString = "Musterstrasse 12"
+* item[0].item[0].item[10].linkId = "phone"
+* item[0].item[0].item[10].answer.valueString = "+41 31 123 45 67"
+* item[0].item[0].item[11].linkId = "email"
+* item[0].item[0].item[11].answer.valueString = "beat.muster@example.ch"
+* item[0].item[0].item[12].linkId = "genderIdentity"
+* item[0].item[0].item[12].answer.valueCoding = $sct#1332083003 "Identifies as transgender male (finding)"
 
 // --- Diagnose und Manifestation ---
 // THREE manifestations (repeats=true) -> three Condition.evidence entries after $extract.

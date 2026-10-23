@@ -12,11 +12,14 @@ Characteristics: #can-be-target
 * ahvn13 0..1 string "OASI number (AHVN13 / NAVS13)"
 * nationality 0..1 CodeableConcept "Nationality"
 * nationality from ChEkmCountryCodes (required)
+* streetLine 0..1 string "Street and number (full-name forms only)"
 * zipCode 0..1 string "Zip code"
 * city 0..1 string "City"
 * country 0..1 CodeableConcept "Country"
 * country from ChEkmCountryCodes (required)
 * canton 0..1 string "Canton"
+* phone 0..1 string "Phone number (full-name forms only)"
+* email 0..1 string "E-mail address (full-name forms only)"
 * administrativeGender 1..1 CodeableConcept "Administrative sex (female, male)"
 * administrativeGender from http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmPatientAdministrativeSex (required)
 * genderIdentity 0..1 CodeableConcept "Trans person (no, trans man, trans woman)"
@@ -35,10 +38,13 @@ Title: "Person Form to CH EKM Patient"
 * dateOfBirth -> "Patient.birthDate"
 * ahvn13 -> "Patient.identifier[AHVN13].value" "OASI number Switzerland (system urn:oid:2.16.756.5.32)"
 * nationality -> "Patient.extension[citizenship]" "Nationality via patient-citizenship extension"
+* streetLine -> "Patient.address[home].line" "Street and number; ChEkmPatientInitials forbids it"
 * zipCode -> "Patient.address[home].postalCode" "Zip code"
 * city -> "Patient.address[home].city" "City"
 * country -> "Patient.address[home].country"
 * canton -> "Patient.address[home].state" "Canton abbreviation"
+* phone -> "Patient.telecom.where(system='phone').value" "Phone number; ChEkmPatientInitials forbids telecom"
+* email -> "Patient.telecom.where(system='email').value" "E-mail address; ChEkmPatientInitials forbids telecom"
 * administrativeGender -> "Patient.gender" "Administrative gender"
 * genderIdentity -> "Patient.extension[genderIdentity]" "Gender identity, for the answers trans man / trans woman; 'no' is a ChEkmObservationTransgenderStatus (see mapping person-to-observation-transgender-status)"
 

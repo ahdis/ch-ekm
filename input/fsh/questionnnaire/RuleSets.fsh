@@ -300,6 +300,11 @@ RuleSet: RuleSetQrPersonInitials
 RuleSet: RuleSetQrPersonGeneral
 * insert RuleSetQrLevel3SubQuestionnaire("personGeneral", "General information", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGeneral")
 
+// OPT-IN companion of RuleSetQrPersonGeneral: street, phone, e-mail. Only for the forms that report
+// the full name (Mpox, Hepatitis C) — ChEkmPatientInitials forbids address.line and telecom.
+RuleSet: RuleSetQrPersonContact
+* insert RuleSetQrLevel3SubQuestionnaire("personContact", "Address and contact", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonContact")
+
 RuleSet: RuleSetQrPersonGenderIdentity
 * insert RuleSetQrLevel3SubQuestionnaire("personGenderIdentity", "Gender identity", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnairePersonGenderIdentity")
 

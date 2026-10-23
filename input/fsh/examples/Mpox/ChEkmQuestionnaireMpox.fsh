@@ -14,6 +14,7 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * insert RuleSetQrGroupPerson
 * insert RuleSetQrPersonName
 * insert RuleSetQrPersonGeneral
+* insert RuleSetQrPersonContact
 * insert RuleSetQrPersonGenderIdentity
 
 * insert RuleSetQrGroupManifestation

@@ -154,6 +154,12 @@
             "state": "BE"
           }
         ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "+41 31 987 65 43"
+          }
+        ],
         "birthDate": "2000-01-01"
       }
     },

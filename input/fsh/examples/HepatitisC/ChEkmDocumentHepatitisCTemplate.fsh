@@ -216,6 +216,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentH
 * entry[=].resource = ExtractedCompositionHepatitisC
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ExtractedPatient"
 * entry[=].resource = ExtractedPatient
+* insert RuleSetExtractedPatientContact
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ExtractedConditionHepatitisC"
 * entry[=].resource = ExtractedConditionHepatitisC
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedExposureHepatitisC"

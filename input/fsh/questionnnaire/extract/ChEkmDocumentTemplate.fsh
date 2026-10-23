@@ -119,6 +119,8 @@ InstanceOf: ChEkmPatient
 // empty and no deceasedDateTime is emitted. See RuleSetPatientDeceased.
 * insert RuleSetPatientDeceased
 * address[0].use = #home
+// address.line and telecom (street, phone, e-mail) are NOT declared here: see
+// RuleSetExtractedPatientContact below, which only the full-name templates add.
 * address[0].postalCode.extension[+].url = $sdc-templateExtractValue
 * address[0].postalCode.extension[=].valueString = "%resource.descendants().where(linkId='zipCode').answer.value.first()"
 * address[0].city.extension[+].url = $sdc-templateExtractValue

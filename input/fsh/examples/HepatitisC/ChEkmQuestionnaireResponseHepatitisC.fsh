@@ -76,6 +76,10 @@ Description: "Example Hepatitis C QuestionnaireResponse used as input to SDC tem
 * item[0].item[0].item[7].answer.valueString = "BE"
 * item[0].item[0].item[8].linkId = "administrativeGender"
 * item[0].item[0].item[8].answer.valueCoding = $administrative-gender#female "female"
+// Of ChEkmQuestionnairePersonContact only the phone is answered: streetLine and email stay blank, so
+// the extracted Patient has an address without `line` and exactly one telecom (Mpox answers all three).
+* item[0].item[0].item[9].linkId = "phone"
+* item[0].item[0].item[9].answer.valueString = "+41 31 987 65 43"
 // genderIdentity is deliberately LEFT UNANSWERED — it is an optional question, and this is the
 // regression test for it: the shared ExtractedPatient template must then emit NO
 // individual-genderIdentity extension at all, rather than an empty shell that fails ext-1. Mpox

@@ -24,10 +24,13 @@ Characteristics: #can-be-target
 * dateOfBirth 1..1
 * ahvn13 0..1
 * nationality 0..1
+* streetLine 0..0
 * zipCode 0..1
 * city 0..1
 * country 0..1
 * canton 0..1
+* phone 0..0
+* email 0..0
 * administrativeGender 1..1
 * genderIdentity 0..1
 

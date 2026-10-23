@@ -37,6 +37,7 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 * insert RuleSetQrGroupPerson
 * insert RuleSetQrPersonName
 * insert RuleSetQrPersonGeneral
+* insert RuleSetQrPersonContact
 * insert RuleSetQrPersonGenderIdentity
 
 // --- Diagnose und Manifestation -----------------------------------------------------------------

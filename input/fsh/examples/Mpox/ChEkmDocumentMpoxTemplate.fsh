@@ -190,6 +190,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 * entry[=].resource = ExtractedCompositionMpox
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Patient/ExtractedPatient"
 * entry[=].resource = ExtractedPatient
+* insert RuleSetExtractedPatientContact
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Condition/ExtractedCondition"
 * entry[=].resource = ExtractedCondition
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedExposure"

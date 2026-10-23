@@ -340,6 +340,7 @@ Reusable **sub-questionnaires** (one per report section, generic where possible)
 ```
 ChEkmQuestionnairePersonInitials      (assemble-child)  ← ChEkmPersonForm (name initials)
 ChEkmQuestionnairePersonGeneral       (assemble-child)  ← ChEkmPersonForm (birth date, AHVN13, address, …)
+ChEkmQuestionnairePersonContact       (assemble-child)  ← ChEkmPersonForm (street, phone, e-mail; full-name forms only)
 ChEkmQuestionnairePersonGenderIdentity(assemble-child)  ← ChEkmPersonForm (gender identity)
 ChEkmQuestionnaireManifestation       (assemble-child)  ← ChEkmManifestationForm
 ChEkmQuestionnaireExposureWhere       (assemble-child)  ← ChEkmExposureForm.where         (input/fsh/questionnnaire/)
@@ -372,6 +373,15 @@ ChEkmQuestionnaireTreatingPhysician   (assemble-child)  ← ChEkmTreatingPhysici
 > questionnaire-level `homeOrFirstAddress` variable) and `ChEkmQuestionnairePersonGenderIdentity`
 > (all three under `input/fsh/questionnnaire/`). Each leaf's items are **top-level (no wrapping
 > group)**, so on assembly they merge into their referencing group as one flat block.
+> A fourth leaf, **`ChEkmQuestionnairePersonContact`** (street, phone, e-mail — part of the
+> harmonised full-name person block of the FOPH form harmonisation), is an OPT-IN companion of
+> PersonGeneral: only the full-name roots (Mpox, Hepatitis C) insert it, right after
+> `RuleSetQrPersonGeneral`, because `ChEkmPatientInitials` forbids `address.line` and `telecom`.
+> It reads PersonGeneral's `homeOrFirstAddress` variable, so it is never assembled without it.
+> Extraction mirrors the opt-in: `line` / `telecom` are NOT on the shared `ExtractedPatient` (a
+> gated element still leaves a static skeleton in the template, which broke the initials templates'
+> Composition slice); the full-name templates add them to their own inline Patient entry with
+> `RuleSetExtractedPatientContact` (`extract/RuleSetPatientContact.fsh`).
 >
 > **The three leaves are inlined directly in the disease root as a `person` group (2026-07).** The
 > root **`ChEkmQuestionnaireGonorrhoea`** carries, under its `gonorrhoea-form` group, a `person`
