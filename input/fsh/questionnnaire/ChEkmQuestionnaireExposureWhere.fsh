@@ -3,8 +3,13 @@
 // Form items per https://github.com/ahdis/ch-ekm/issues/26:
 //   1. Land (dropdown, mandatory)   -> valueAddress.country (+ country coding), or, answered
 //                                      "unknown", valueAddress._country.extension[data-absent-reason]
-//   2. Genauer Ort (dropdown+text)  -> valueAddress.city, or, answered "unknown",
-//                                      valueAddress._city.extension[data-absent-reason]
+//   2. Genauer Ort (dropdown+text,  -> valueAddress.city, or, answered "unknown",
+//      optional)                       valueAddress._city.extension[data-absent-reason];
+//                                      left blank -> no city at all
+//
+// The precise location is OPTIONAL (FOPH form harmonisation, demo of 3.9.2026: the exact place of
+// exposure is not a mandatory field). "Unknown" stays offered, so a blank answer (not asked / not
+// given) and "asked, but unknown" remain distinguishable on the wire.
 //
 // TWO questions, each with its OWN "unknown" answer, each becoming a data-absent-reason on its own
 // Address element - so "country Switzerland, precise location unknown" and "country unknown, precise
@@ -60,9 +65,9 @@ Description: "Modular sub-questionnaire for the 'Wo' (where) group of the Exposu
 // 2. Genauer Ort - one open-choice widget (see the file header): type the location, or pick the
 //    single offered option "unknown". No itemControl, so Smart Forms renders the `Select` variant
 //    (a dropdown you can type into); the two answer types are what the extraction template reads.
+//    Optional: not `required`, see the file header.
 * item[=].item[+].linkId = "exposureWherePreciseLocation"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.preciseLocation"
 * insert RuleSetQrLevel2Text("Precise location", "Genauer Ort", "Lieu précis", "Luogo preciso")
-* item[=].item[=].required = true
 * item[=].item[=].type = #open-choice
 * item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmUnknown"

@@ -17,7 +17,7 @@ Description: "Logical model for the form section 'Exposure' (German form: 'Expos
   // sct#261665006 "Unknown". There is deliberately NO separate `unknown` element next to it - each
   // of the two "Wo" questions carries its own unknown answer, and both are expressed as a
   // data-absent-reason on the element they belong to (here `_city`, see RuleSetExposureWhere).
-  * preciseLocation 0..1 string "Precise location (in Switzerland/Liechtenstein or abroad), or explicitly reported as unknown"
+  * preciseLocation 0..1 string "Precise location (in Switzerland/Liechtenstein or abroad), or explicitly reported as unknown; optional"
 
 // Wann - two form items (see https://github.com/ahdis/ch-ekm/issues/25). The second one is only
 // asked when the first is unanswered: the last entry into Switzerland is a proxy for the exposure

@@ -7431,7 +7431,6 @@
                   "linkId": "exposureWherePreciseLocation",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmExposureForm#ChEkmExposureForm.where.preciseLocation",
                   "text": "Luogo preciso",
-                  "required": true,
                   "type": "open-choice",
                   "answerOption": [
                     {
@@ -9410,6 +9409,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-23T12:26:25+02:00",
+  "date": "2026-10-23T13:58:21+02:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireInvasivePneumococcalDisease and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

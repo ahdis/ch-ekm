@@ -1039,7 +1039,9 @@ Verified end-to-end (`scripts/extract-mpox.sh` + hand-built QR variants). Countr
 location are **two items, each with its own unknown answer**, so the branches combine freely: a
 country answered → `country` + Coding, `Land = unknown` → no `country` + `_country`
 data-absent-reason; a precise location typed → `city`, `Ort = unknown` → no `city` + `_city`
-data-absent-reason; nothing answered → **no** extension at all.
+data-absent-reason; nothing answered → **no** extension at all. The precise location is optional
+(FOPH form harmonisation: not a mandatory field), so "country answered, precise location blank" →
+`country` + Coding and no `city` — distinct from `Ort = unknown`, which carries the `_city` DAR.
 
 ### Conditional gating with `iif` — negation and the Boolean-criterion trap
 Two recurring patterns when gating a templated element (empty context → element omitted):
