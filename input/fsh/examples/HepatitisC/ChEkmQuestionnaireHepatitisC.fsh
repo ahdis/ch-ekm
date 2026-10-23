@@ -127,6 +127,7 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 // =================================================================================================
 // OPEN QUESTIONS — Hepatitis C diverges from Gonorrhoea/Mpox here. NOTHING BELOW IS IMPLEMENTED.
 // Mirrored in TODO.md; kept here too so the gap is visible next to the form it belongs to.
+// "NASURE:" lines give the state of the FOPH form-harmonisation discussion (export of 2026-10-20).
 //
 //  1. LOGICAL MODEL — IMPLEMENTED. ChEkmHepatitisCForm is the disease-level aggregate, with
 //     ChEkmHepatitisCPersonForm and ChEkmHepatitisCManifestationForm (incl. Krankheitsverlauf) as its
@@ -134,6 +135,11 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     to discuss: how to answer "Keine"/"Unbekannt"/"Andere". Mixed into the value set while the item is
 //     `repeats = true`, "Ikterus + keine" was tickable, so the ChEkmOtherNoneUnknown include is commented
 //     out (as for Mpox) and an unanswered item now covers all three. (Same latent problem in Gonorrhoea.)
+//     Decided (meeting 4.5): coded answers only, "Andere" without free text.
+//     NASURE: MT-DAT and P&P prefer reducing the manifestation to symptomatisch / asymptomatisch (as
+//     Gonorrhoea); EPI wants several boxes tickable and no "Transaminasen nicht erhöht". If the
+//     reduction wins, the item takes the Gonorrhoea two-option shape and the "Ikterus + keine" problem
+//     goes away.
 //
 //  2. EXPOSITION "WIE" — the model and the reporting form disagree, and neither is implementable yet.
 //     ChEkmHepatitisCExposureForm.transmission is a verbatim copy of the Gonorrhoea STI block
@@ -145,10 +151,26 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     "Andere"; and there is NO `ChEkmExposureHepatitisC` PROFILE — the Mapping in
 //     CHEkmHepatitisCForm.fsh already targets `ch-ekm-exposure-hepatitisc`, which does not exist
 //     (Gonorrhoea and Mpox both have theirs).
+//     NASURE: discussed — P&P want the order and wording changed and perinatal moved to "Wann"; EPI
+//     want perinatal kept here (one place for exposures; a child is not necessarily perinatal).
+//     Coding proposal from the earlier mapping sheet (not reviewed, kept so it is not lost):
+//       perinatal                          sct#1381730000 Perinatal fetal and/or neonatal infection
+//       contact with infected person       sct#409753000  Contact with person with contagious disease
+//         (follow-up family / workplace / other as a component, code EXSRC)
+//       sexual contact with infected person sct#8098009   Sexually transmitted infectious disease
+//         (partner sex as a component, code EXSRC)
+//       drug use, injected / nasal         sct#226034001  Injecting drug user / sct#228381000 Sniffs drugs
+//       transfusion(s)                     sct#119426009  Transfusion-transmitted infectious disease
+//         (years as a component valueQuantity; component code not found)
+//       healthcare occupation              sct#223366009  Healthcare professional
+//       dialysis                           sct#216933008  Failure of sterile precautions during kidney dialysis
+//       other / unknown                    sct#74964007   Other / sct#261665006 Unknown
 //
 //  3. EXPOSITION "WEITERE" (further exposed persons: Sexualpartner / unborn or newborn child /
 //     household members / andere, plus ja-nein-unbekannt). No form item, no model element, no
 //     target element. The CSV maps it to `component.where(code='PART')`, which is not in any profile.
+//     NASURE: leaning to drop — P&P: only useful if contact tracing is wanted; EPI agree; the cantons
+//     (workshop 17.11.2025) do not need it for Hepatitis C. Same for "Berufliche Tätigkeit".
 //
 //  4. LABOR — the ORGANISATION half is now IMPLEMENTED. The nine X-marked rows (lab name,
 //     department, address, phone, email, BUR, GLN) are the shared, disease-agnostic
@@ -161,17 +183,26 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     ServiceRequest.reasonCode, value set ChEkmServiceRequestReason exists) — the CSV gives two
 //     different answer lists for it. It attaches to the ChEkmServiceRequest the form already
 //     extracts, so adding it later disturbs nothing.
+//     NASURE: the list is klinischer Verdacht / Exposition / Screening / anderer / unbekannt (the
+//     CSV's first list). P&P: the categories are not clear-cut and follow from the manifestation;
+//     EPI: keep it. Whether the Labor block itself stays on this form is still marked "?" there
+//     (Gonorrhoea dropped it as already in the lab report; Mpox has no decision).
 //
 //  5. DOKUMENTIERTE SEROKONVERSION — "ja, zuletzt negative Serologie anti-HCV vor der Diagnose am:
 //     __ / nein / unbekannt". ChEkmComposition already has the slot
 //     (`section[laboratory].entry[seroconversion]`, an unprofiled Observation), but no profile, no
 //     model element and no question exist. Needs the same yes/no/unknown treatment decision as the
 //     Impfstatus rows (issue #29): is "nein"/"unbekannt" an Observation value or no resource at all?
+//     NASURE: EPI: must stay, with the date (needed to classify cases as acute); P&P: may move
+//     under Krankheitsverlauf.
 //
 //  6. ANTIVIRALE THERAPIE — "ja, Therapiebeginn / nein / Therapiestart wird erwogen". The example
 //     Bundle carries it as an Observation (`code = sct#427314002`, value =
 //     `sct#386053000 Evaluation procedure`) in section[medication], and the CSV itself flags that
 //     codification as uncertain. No profile, no model element, no question.
+//     NASURE: both proposals ask "nein / ja, Therapiebeginn" — "Therapiestart wird erwogen" is in
+//     neither, so the uncertain coding goes with it. P&P: relevant for the care cascade, maybe "mit
+//     DAA"; EPI: for Hepatitis C yes, not for B. Whether it is asked at all is still open.
 //
 //  7. KRANKHEITSVERLAUF — DECIDED AND IMPLEMENTED, see the section above, and since then
 //     generalised to every DISEASE-SPECIFIC question without a FHIR target. Each such question is a
@@ -183,6 +214,9 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     carries (mandatory); ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC constrains it
 //     (invariants `ch-ekm-qr-hepatitisc-questionnaire`, `ch-ekm-qr-hepatitisc-course`). Every other
 //     answer goes into a resource and is not repeated in that response.
+//     NASURE: the Krankheitsverlauf proposal is now akut / chronisch / virämisch / avirämisch, with
+//     Zirrhose and Hepatokarzinom moved to the manifestation — not what ChEkmHepatitisCCourseOfDisease
+//     offers. The blood-donation question is not on the NASURE page.
 //
 //  8. IMPFSTATUS — DECIDED: NOT ASKED. Hepatitis C has no vaccine, so the CSV's
 //     "targetDisease = gemeldete Erreger" cannot be filled in, and asking about the hepatitis A /
@@ -197,6 +231,10 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     and Telefon. ChEkmHepatitisCPersonForm does not add them either. Note ChEkmPatientInitials
 //     forbids address line / telecom for privacy reasons — Hepatitis C uses the un-masked
 //     ChEkmPatient, so the privacy argument does not carry over automatically.
+//     NASURE: address (Strasse, Nr.), phone and e-mail are part of the harmonised full-name person
+//     block (with AHV), so they are to be implemented, not discussed. Herkunftsland is an open
+//     cross-cutting topic (P&P: RKI definition; EPI: parents' origin / place of birth for hepatitis;
+//     MT-DAT: keep Nationalität, add origin only where relevant).
 //
 // 10. EXPOSITION "WANN", second question — "Wenn unbekannt, wann war die letzte Einreise in die
 //     Schweiz?" (`exposureWhenLastEntryDate` -> component[dateOfEntry]). The EXTRACTION side exists
@@ -210,10 +248,17 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //       * item[=].item[=].enableWhen[=].operator = #exists
 //       * item[=].item[=].enableWhen[=].answerBoolean = false
 //     This affects Mpox too, not just Hepatitis C, so it belongs in the shared module.
+//     NASURE: the NASURE proposal asks only the most likely date of infection; departure / entry
+//     dates are from the April 2025 form, so this question is probably NOT to be added. For
+//     Hepatitis C P&P propose "infected as a child / as an adult" + approximate year, and EPI want
+//     year-only answers for chronic cases. "Wann" is still open.
 //
 // 11. TWO ROWS THE CSV MARKS AS "added by Yolanda Sabuco, not in the Google sheet" (if they are
 //     reportable data, they become disease-specific modules like the blood-donation question, see #7):
 //     "Ich habe für diese(n) Patient/in bereits eine Arztmeldung ... versendet" and "Diagnose seit
 //     mehr als 1 Jahr bekannt". Both are annotated "QuestionnaireResponse level ??" — i.e. it is
 //     not decided whether they are form-only routing questions (no FHIR target) or reportable data.
+//     NASURE: both are on the Hepatitis C page. "Bereits eine Arztmeldung": P&P see no surveillance
+//     relevance, EPI still use it to remove cases reported before the 2011 anonymisation. "Seit mehr
+//     als 1 Jahr bekannt (Jahr)" is in both proposals. "Diagnosedatum" is dropped (first lab report).
 // =================================================================================================

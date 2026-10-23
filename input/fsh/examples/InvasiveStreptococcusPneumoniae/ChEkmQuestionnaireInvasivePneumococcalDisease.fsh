@@ -136,6 +136,9 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 // OPEN QUESTIONS — invasive pneumococcal disease diverges from Gonorrhoea/Mpox/Hepatitis C here.
 // NOTHING BELOW IS IMPLEMENTED. Mirrored in TODO.md; kept here too so the gap is visible next to
 // the form it belongs to.
+// NASURE (FOPH form harmonisation, export of 2026-10-20): the page for this disease is still EMPTY,
+// so none of the disease-specific points below is discussed there yet; only the cross-cutting
+// topics (person, gender, Impfung, Exposition Wo/Wann, Hospitalisation, Zustand) apply.
 //
 //  1. LOGICAL MODEL — IMPLEMENTED. ChEkmInvasivePneumococcalDiseaseForm is the disease-level
 //     aggregate, with its own sub-forms only where this form differs from the generic models:
@@ -186,7 +189,10 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 //     * The conjugate (Prevenar 13/20) and polysaccharide (Pneumovax 23) vaccines share ONE row;
 //       which of them was given is only visible in the answered brand. Confirm that is enough.
 //     NOT ASKED, per the decision: "Gemäss: Impfausweis / Hausarzt / Anamnese" — the CSV itself
-//     annotates it "Questionnaire Response level", i.e. it has no FHIR target.
+//     annotates it "Questionnaire Response level", i.e. it has no FHIR target. NASURE proposes
+//     dropping it for every pathogen.
+//     NASURE: the pneumococcal vaccination data are needed directly for the vaccination
+//     recommendations, so the section stays.
 //
 //  3. LABOR — the ORGANISATION half is now IMPLEMENTED. The nine X-marked rows (name, department,
 //     address, phone, email, BUR, GLN) are the shared, disease-agnostic sub-questionnaire
@@ -239,19 +245,23 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 //     form really asks them before this ships. There is also no
 //     ChEkmExposureInvasivePneumococcalDisease profile; as for Hepatitis C the BASE ChEkmExposure is
 //     extracted into, which is fine for Wo/Wann and not enough for Wie.
+//     CONFIRMED by NASURE: pneumococcal disease is on the cross-cutting lists of pathogens asked
+//     both "Exposition: Wo" and "Exposition: Wann", so both stay. "Wie" is still open.
 //
 //  6. GESCHLECHTSIDENTITÄT — DECIDED: this form does NOT ask it. The CSV's first row is an empty
 //     "Gender / Gender" placeholder with no X, no mapping and no value, and there is no
 //     "Geschlechtsidentität" row; RuleSetQrPersonGenderIdentity is therefore not assembled (the
 //     other three forms still ask it). Nothing else changes — the shared ExtractedPatient builds the
 //     individual-genderIdentity extension only when the item is answered.
+//     Consistent with NASURE: the trans-person question is asked for the NAPS pathogens only.
 //
 //  7. "WEITERE EXPONIERTE PERSONEN / FÄLLE" and "BERUFLICHE TÄTIGKEIT RELEVANT FÜR VOLLZUG" sit in
 //     the CSV's "Questionnaire" wish-list block (no X, no mapping, no value set). Same category as
 //     Hepatitis C OPEN QUESTION #3: no form item, no model element, no target element. Note the rest
 //     of that CSV block is a cross-disease dump (HIV, malaria, measles, syphilis, rubella …) and is
 //     NOT about this organism — only the two rows named here plus the "Labor Anlass" rows in #3 read
-//     as pneumococcal candidates.
+//     as pneumococcal candidates. Not marked X for this form, so nothing to do here; NASURE discusses
+//     both for Hepatitis C (leaning to drop) and Mpox (no decision).
 //
 //  8. TODESURSACHE, WHICH CODE? The extraction template writes the reported-pathogen answer as
 //     `sct#406617004 "Invasive Streptococcus pneumoniae disease (disorder)"`, i.e. the same code
@@ -261,5 +271,7 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 //     for the cause of death, and `sct#87309006 "Death of unknown cause (event)"` for "unbekannt"
 //     where our shared ChEkmCauseOfDeathChoice uses `sct#261665006 "Unknown"`. Both divergences are
 //     one-word changes if the CSV is authoritative — but changing the "unknown" code affects EVERY
-//     organism, since ChEkmCauseOfDeathChoice is shared.
+//     organism, since ChEkmCauseOfDeathChoice is shared. This is an IG coding decision, not a form
+//     question. NASURE also plans to check with the BFS whether the cause-of-death statistics could
+//     replace some "Verlauf" questions (matching by AHV number, ICD-10 coding).
 // =================================================================================================
