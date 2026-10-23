@@ -273,7 +273,7 @@ disease-specific value-set bindings).
 | Land | `country` | choice | `ChEkmCountryCodes` |
 | Kanton | `canton` | string (or choice eCH-0007) | |
 | Gender | `administrativeGender` | choice | `ChEkmPatientAdministrativeSex` (female/male only, #32) |
-| trans Person | `genderIdentity` | choice | `ChEkmGenderIdentity` (trans man / trans woman, #32; "Nein" open in #35) |
+| trans Person | `genderIdentity` | choice | `ChEkmTransPerson` (Nein / trans man / trans woman, #32, #35) — trans → `Patient.extension[genderIdentity]`, Nein → `ChEkmObservationTransgenderStatus` |
 
 **Manifestation** (`ChEkmGonorrhoeaManifestationForm`):
 | Item | linkId | type | Binding / note |
@@ -610,7 +610,7 @@ parameters (so internal codes *and* `content=supplement` language supplements ar
 | `nationality`, `country` | `ChEkmCountryCodes` (ch-ekm) | 195 (→ drop-down in preview) |
 | `administrativeGender` | `ChEkmPatientAdministrativeSex` | 2 |
 | `sexualContactPartner` | `ChEkmExposureSexualContactPartner` | 2 |
-| `genderIdentity` | `ChEkmGenderIdentity` | 2 |
+| `genderIdentity` | `ChEkmTransPerson` | 3 |
 | `relationshipType` | `ChEkmExposureRelationshipType` | 4 |
 | `manifestation` | `ChEkmGonorrhoeaManifestationFormChoice` | 2 |
 
@@ -1219,6 +1219,27 @@ deceased (no Observation, no section, no `deceasedDateTime`), deceased without a
 > `Patient.gender` / `Bundle.timestamp` (required fields otherwise only templated). A few benign
 > `WARNING`/`INFORMATION` remain (e.g. the carrier extension's `context = Element` advisory) — those
 > are expected for a template.
+
+### One question, two targets: "trans Person" = Nein (issue #35)
+
+The question has three answers (`ChEkmTransPerson`), but only two of them are gender identities.
+`trans Mann` / `trans Frau` go to `Patient.extension[genderIdentity]` (`individual-genderIdentity`,
+bound to `ChEkmGenderIdentity`); `Nein` cannot — "gender identity = No" is not a statement, SNOMED CT
+has no "cisgender"/"not transgender" concept, and dropping it would make "Nein" look like "not
+answered", which FOPH wants kept apart. So `Nein` is extracted as a
+`ChEkmObservationTransgenderStatus` (`code` `sct#1384187000` "Identifies as transgender", `value`
+`373067005` "No"), the same answer-vs-assertion split as the Impfstatus. On the extraction side:
+
+- `ExtractedPatient` filters the answer with `where(code != '373067005')` before building the
+  extension, so "Nein" emits no extension.
+- `RuleSetTransgenderStatus.fsh` holds the static Observation, its gated Bundle entry
+  (`RuleSetTransgenderStatusEntry`, LAST, like every conditional entry) and the gated reference
+  `section[1].entry[1]` in the social-history section (`RuleSetTransgenderStatusSectionEntry(1)`),
+  inserted by Gonorrhoea, Mpox and Hepatitis C. Invasive pneumococcal disease does not ask it.
+- Round trips: Gonorrhoea answers "Nein" (Observation, no extension), Mpox "trans Mann" (extension,
+  no Observation), Hepatitis C leaves it unanswered (neither).
+
+"Nein" is not pre-populated: the launch context is the Patient, which cannot carry it.
 
 ### Disease-specific questions: a separate QuestionnaireResponse (Hepatitis C)
 

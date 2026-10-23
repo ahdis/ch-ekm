@@ -58,7 +58,7 @@ This IG uses **two parallel representations** of the report content:
   → `ChEkmEncounter` and nothing else.
   - `section[diagnosis]` → `ChEkmCondition` (+ optional `QuestionnaireResponse`)
   - `section[laboratory]` → `ChEkmServiceRequest` (+ optional seroconversion Observation)
-  - `section[social-history]` → `ChEkmExposure`
+  - `section[social-history]` → `ChEkmExposure` (+ optional `ChEkmObservationTransgenderStatus`)
 
 ### Clinical content
 - **`ChEkmCondition`** (← `CHCoreCondition`) — diagnosis + manifestations. `code` (the
@@ -108,6 +108,14 @@ This IG uses **two parallel representations** of the report content:
     the vaccine product of the row (the same concept `ChEkmImmunization` uses as its `vaccineCode`
     fallback) and `component.value` the target disease, so both halves of one form line answer
     "which vaccination?" identically. The two Observation template instances are fully static.
+
+- **`ChEkmObservationTransgenderStatus`** (← `Observation`) — the "Nein" answer of the form question
+  "trans Person" (issue #35). `code = sct#1384187000` "Identifies as transgender" (the parent of both
+  trans concepts), `valueCodeableConcept` fixed to `373067005` "No", `dataAbsentReason 0..0`. The two
+  trans answers are NOT here: they are the gender identity, `ChEkmPatient.extension[genderIdentity]`.
+  "No" is not a gender identity (and "not trans man / trans woman" ≠ cisgender), but FOPH wants it apart
+  from "not answered" — same answer-vs-assertion split as the Impfstatus. Referenced from
+  `Composition.section[social-history].entry[transgender-status]`; unanswered emits neither shape.
 
 ### Person / actors
 - **`ChEkmPatient`** (← `CHCorePatient`) and four representation variants reflecting the
@@ -213,7 +221,8 @@ These logical models are the **master** for building the SDC Questionnaires — 
   `ChEkmExposureRelationshipType`, `ChEkmPatientAdministrativeSex` (female/male only — `Patient.gender`
   is bound to it, issue #32), `ChEkmExposureSexualContactPartner` (female/male — "other" dropped too,
   to be reconfirmed in #32; bound by the Gonorrhoea/Mpox exposure profiles), `ChEkmGenderIdentity` (trans man / trans woman, International Edition
-  `1332083003` / `1332082008` — not the US Edition codes; "Nein" is open in issue #35),
+  `1332083003` / `1332082008` — not the US Edition codes; the binding of `Patient.extension[genderIdentity]`),
+  `ChEkmTransPerson` (the form item's answers: those two + `373067005` "No", issue #35),
   `ChEkmServiceRequestReason`, `ChEkmOtherNoneUnknown`,
   `ChEkmHepatitisCCourseOfDisease`, `ChEkmYesNoUnknown`, `ChEkmHospitalisationReasonChoice`,
   `ChEkmCauseOfDeathChoice`, `ChEkmMpoxImmunizationTargetDisease`,

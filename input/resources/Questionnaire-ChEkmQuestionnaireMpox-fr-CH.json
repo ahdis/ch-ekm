@@ -214,6 +214,15 @@
                 "entry": [
                   {
                     "reference": "Observation/ExtractedExposure"
+                  },
+                  {
+                    "reference": "Observation/ExtractedTransgenderStatus",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId='genderIdentity').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='373067005').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedTransgenderStatus'))"
+                      }
+                    ]
                   }
                 ]
               },
@@ -432,7 +441,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                    "valueString": "%resource.descendants().where(linkId='genderIdentity').answer.value.ofType(Coding).first().select(%factory.withExtension(%factory.withProperty(%factory.create(Extension), 'url', 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity'), 'value', %factory.CodeableConcept($this)))"
+                    "valueString": "%resource.descendants().where(linkId='genderIdentity').answer.value.ofType(Coding).where(code != '373067005').first().select(%factory.withExtension(%factory.withProperty(%factory.create(Extension), 'url', 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity'), 'value', %factory.CodeableConcept($this)))"
                   }
                 ]
               }
@@ -977,14 +986,9 @@
                     "valueString": "%resource.descendants().where(linkId='treatingPhysicianPractitioner')"
                   }
                 ],
-                "_family": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                      "valueString": "item.where(linkId='physicianSurname').answer.value.first()"
-                    }
-                  ]
-                },
+                "given": [
+                  null
+                ],
                 "_given": [
                   {
                     "extension": [
@@ -994,7 +998,15 @@
                       }
                     ]
                   }
-                ]
+                ],
+                "_family": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "item.where(linkId='physicianSurname').answer.value.first()"
+                    }
+                  ]
+                }
               }
             ],
             "address": [
@@ -1005,6 +1017,9 @@
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
                     "valueString": "%resource.descendants().where(linkId='treatingPhysicianPractitioner')"
                   }
+                ],
+                "line": [
+                  null
                 ],
                 "_line": [
                   {
@@ -1129,6 +1144,9 @@
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
                     "valueString": "%resource.descendants().where(linkId='treatingPhysicianOrganization')"
                   }
+                ],
+                "line": [
+                  null
                 ],
                 "_line": [
                   {
@@ -2128,6 +2146,49 @@
                   "display": "Unknown (qualifier value)"
                 }
               ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "%resource.descendants().where(linkId='genderIdentity').answer.value.ofType(Coding).where(system='http://snomed.info/sct' and code='373067005')"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedTransgenderStatus",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/Observation/ExtractedTransgenderStatus'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "Observation",
+            "id": "ExtractedTransgenderStatus",
+            "status": "final",
+            "code": {
+              "coding": [
+                {
+                  "code": "1384187000",
+                  "system": "http://snomed.info/sct",
+                  "display": "Identifies as transgender (finding)"
+                }
+              ]
+            },
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "code": "373067005",
+                  "system": "http://snomed.info/sct",
+                  "display": "No (qualifier value)"
+                }
+              ]
+            },
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
             }
           }
         }
@@ -5428,6 +5489,13 @@
                 }
               ],
               "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "373067005",
+                    "display": "Non"
+                  }
+                },
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
@@ -10978,6 +11046,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-20T15:34:59+02:00",
+  "date": "2026-10-23T12:26:30+02:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

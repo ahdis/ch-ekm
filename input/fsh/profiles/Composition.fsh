@@ -106,10 +106,15 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 * section[social-history].entry ^slicing.discriminator.path = "$this.resolve()"
 * section[social-history].entry ^slicing.rules = #open 
 * section[social-history].entry contains
-    exposure-to-infectious-disease 1..*
+    exposure-to-infectious-disease 1..* and
+    transgender-status 0..1
 //     and
 //    occupation 1..1
 * section[social-history].entry[exposure-to-infectious-disease] only Reference(ChEkmExposure)
+// "trans Person" answered "Nein" (issue #35). The two trans answers are the Patient's gender identity
+// and need no entry; see ChEkmObservationTransgenderStatus.
+* section[social-history].entry[transgender-status] only Reference(ChEkmObservationTransgenderStatus)
+* section[social-history].entry[transgender-status] ^short = "The person is reported not to be a trans person ('no'); 'trans man' / 'trans woman' are Patient.extension[genderIdentity]"
 // * section[social-history].section[occupation].entry 1..1
 // * section[social-history].section[occupation].entry only Reference(Observation)
 // this doest not work we need ot make the slicing different

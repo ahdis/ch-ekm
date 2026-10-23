@@ -47,6 +47,8 @@ Usage: #inline
 * section[1].title = "Social history section"
 * section[1].code = $loinc#29762-2
 * section[1].entry.reference = "Observation/ExtractedExposureGonorrhoea"
+// "trans Person" answered "Nein" (issue #35) - computed, so after the static exposure entry.
+* insert RuleSetTransgenderStatusSectionEntry(1)
 
 // ---------------------------------------------------------------------------
 // The Bundle template itself (ChEkmDocumentGonorrhoea shape)
@@ -88,3 +90,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentG
 * entry[=].resource = ExtractedTreatingPractitioner
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ExtractedTreatingOrganization"
 * entry[=].resource = ExtractedTreatingOrganization
+
+// "trans Person" answered "Nein" -> ChEkmObservationTransgenderStatus (issue #35). Conditional, so
+// it stays the LAST entry; see RuleSetTransgenderStatus.fsh.
+* insert RuleSetTransgenderStatusEntry

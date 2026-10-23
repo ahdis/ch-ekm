@@ -73,6 +73,9 @@
                   "entry": [
                     {
                       "reference": "Observation/ExtractedExposureGonorrhoea"
+                    },
+                    {
+                      "reference": "Observation/ExtractedTransgenderStatus"
                     }
                   ]
                 }
@@ -117,23 +120,6 @@
                             "code": "CH",
                             "system": "urn:iso:std:iso:3166",
                             "display": "Switzerland"
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                },
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/individual-genderIdentity",
-                  "extension": [
-                    {
-                      "url": "value",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "code": "1332083003",
-                            "system": "http://snomed.info/sct",
-                            "display": "Identifies as transgender male (finding)"
                           }
                         ]
                       }
@@ -350,10 +336,10 @@
               ],
               "name": [
                 {
-                  "family": "Brachialis",
                   "given": [
                     "Potagon"
-                  ]
+                  ],
+                  "family": "Brachialis"
                 }
               ],
               "address": [
@@ -409,6 +395,35 @@
                 }
               ],
               "name": "Regionalspital Genesis"
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedTransgenderStatus",
+            "resource": {
+              "resourceType": "Observation",
+              "id": "ExtractedTransgenderStatus",
+              "status": "final",
+              "code": {
+                "coding": [
+                  {
+                    "code": "1384187000",
+                    "system": "http://snomed.info/sct",
+                    "display": "Identifies as transgender (finding)"
+                  }
+                ]
+              },
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "code": "373067005",
+                    "system": "http://snomed.info/sct",
+                    "display": "No (qualifier value)"
+                  }
+                ]
+              },
+              "subject": {
+                "reference": "Patient/ExtractedPatient"
+              }
             }
           }
         ]

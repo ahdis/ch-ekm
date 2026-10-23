@@ -64,9 +64,12 @@ InstanceOf: ChEkmPatient
 * extension[0].url = $sdc-templateExtractExtension
 * extension[0].extension[0].url = $sdc-templateExtractValue
 * extension[0].extension[0].valueString = "%resource.descendants().where(linkId='nationality').answer.value.ofType(Coding).first().select(%factory.withExtension(%factory.withProperty(%factory.create(Extension), 'url', 'http://hl7.org/fhir/StructureDefinition/patient-citizenship'), 'code', %factory.CodeableConcept($this)))"
+// genderIdentity: only the two trans answers. The third, "Nein" (sct#373067005), is not a gender
+// identity and becomes a ChEkmObservationTransgenderStatus instead (RuleSetTransgenderStatus.fsh), so
+// it is filtered out here and the extension is then simply not emitted (issue #35).
 * extension[1].url = $sdc-templateExtractExtension
 * extension[1].extension[0].url = $sdc-templateExtractValue
-* extension[1].extension[0].valueString = "%resource.descendants().where(linkId='genderIdentity').answer.value.ofType(Coding).first().select(%factory.withExtension(%factory.withProperty(%factory.create(Extension), 'url', 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity'), 'value', %factory.CodeableConcept($this)))"
+* extension[1].extension[0].valueString = "%resource.descendants().where(linkId='genderIdentity').answer.value.ofType(Coding).where(code != '373067005').first().select(%factory.withExtension(%factory.withProperty(%factory.create(Extension), 'url', 'http://hl7.org/fhir/StructureDefinition/individual-genderIdentity'), 'value', %factory.CodeableConcept($this)))"
 // Name. Two parts working together:
 //  1. Static placeholders `family="X"` / `given=["Y"]` (each 1 char) so the ChEkmPatientInitials
 //     `name-initials` invariant (family length 1 AND given.first() length 1) validates on the template.

@@ -88,14 +88,29 @@ Description: "This CH EKM value set includes the codes for specimen types."
 // The answers to "trans Person" (https://github.com/ahdis/ch-ekm/issues/32). International Edition
 // concepts, NOT the US Edition 911621000124109 / 911581000124109 the issue first named: those are not
 // in the Swiss Edition, while these two are (same definition, and also children of 1384187000
-// "Identifies as transgender"). The form's third answer "Nein" is not offered until #35 decides
-// how to report it - "No" is not a gender identity, so it cannot go into individual-genderIdentity.
+// "Identifies as transgender"). This is the binding of Patient.extension[genderIdentity], so the
+// form's third answer "Nein" is deliberately NOT in it (#35): "No" is not a gender identity. The
+// form item uses ChEkmTransPerson below, which adds it.
 ValueSet: ChEkmGenderIdentity
 Title: "CH EKM Gender Identity"
 Description: "This CH EKM value set includes the codes for the gender identity of a trans person (trans man, trans woman)."
 * ^status = #active
 * ^experimental = false
 
+* $sct#1332083003  "Identifies as transgender male (finding)"
+* $sct#1332082008  "Identifies as transgender female (finding)"
+
+// The three answers of the form question "trans Person" (https://github.com/ahdis/ch-ekm/issues/35):
+// "Nein" first, as on the form, then the two gender identities of ChEkmGenderIdentity. Bound to the
+// form item only - the answers split on extraction: trans man / trans woman go to
+// Patient.extension[genderIdentity], "Nein" becomes a ChEkmObservationTransgenderStatus.
+ValueSet: ChEkmTransPerson
+Title: "CH EKM Trans Person"
+Description: "This CH EKM value set includes the answers to the reporting form question 'trans person': no, trans man, trans woman. 'No' is reported as a ChEkmObservationTransgenderStatus, the other two as the gender identity of the patient."
+* ^status = #active
+* ^experimental = false
+
+* $sct#373067005   "No (qualifier value)"
 * $sct#1332083003  "Identifies as transgender male (finding)"
 * $sct#1332082008  "Identifies as transgender female (finding)"
 

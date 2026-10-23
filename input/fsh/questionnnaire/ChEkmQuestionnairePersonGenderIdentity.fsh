@@ -14,18 +14,19 @@ Title: "EKM: Person - Gender identity"
 Description: "Modular sub-questionnaire for the gender identity of the affected person. Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnairePersonGenderIdentity)
 
-// "trans Person" (issue #32): trans man / trans woman - separate item per model, top-level (no
-// wrapping group). The form's third answer "Nein" is NOT offered yet (issue #35): "No" is not a
-// gender identity, so it has no place in individual-genderIdentity. Until then the item stays
-// optional, and leaving it unanswered is the only way to say "not trans".
+// "trans Person": Nein / trans Mann / trans Frau (ChEkmTransPerson, issues #32 and #35) - separate item
+// per model, top-level (no wrapping group). Optional, so "Nein" and "not answered" stay apart. The
+// answers split on extraction: trans man / trans woman -> individual-genderIdentity on the Patient,
+// "Nein" -> a ChEkmObservationTransgenderStatus ("No" is not a gender identity).
 // Pre-populated from the individual-genderIdentity extension's `value` Coding
 // (http://hl7.org/fhir/StructureDefinition/individual-genderIdentity -> extension.where(url='value')).
-// Source and form share the ChEkmGenderIdentity value set (SNOMED), so the Coding matches directly.
+// Its value set ChEkmGenderIdentity is a subset of the item's, so the Coding matches directly. "Nein"
+// is not pre-populated: the launch context is the Patient, which cannot carry it.
 * item[+].linkId = "genderIdentity"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.genderIdentity"
 * insert RuleSetQrLevel1Text("trans person", "trans Person", "Personne trans", "Persona trans")
 * item[=].type = #choice
-* item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmGenderIdentity"
+* item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmTransPerson"
 * item[=].answerValueSet.extension[+].url = $binding-parameter
 * item[=].answerValueSet.extension[=].extension[+].url = "name"
 * item[=].answerValueSet.extension[=].extension[=].valueCode = #useSupplement

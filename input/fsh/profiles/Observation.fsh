@@ -156,3 +156,50 @@ Description: "This CH EKM base profile constrains the Observation resource for t
 * component.value[x] only CodeableConcept
 * component.valueCodeableConcept from $TargetDiseasesVS (preferred)
 * component.valueCodeableConcept ^short = "The disease the vaccination protects against (e.g. smallpox, mpox) — the same concept the 'yes' row puts in Immunization.protocolApplied.targetDisease"
+
+
+// Transgender status - the "Nein" answer of the form question "trans Person"
+// (https://github.com/ahdis/ch-ekm/issues/35).
+//
+// WHY NOT THE PATIENT'S GENDER IDENTITY. The question has three answers: Nein, trans Mann, trans Frau.
+// The two trans answers ARE gender identities and go to Patient.extension[genderIdentity]
+// (individual-genderIdentity, the extension HL7 Gender Harmony recommends). "Nein" is not: putting
+// sct#373067005 "No" there would state "gender identity = No", SNOMED CT has no "cisgender" or "not
+// transgender" concept, and "not a trans man or trans woman" is not the same as cisgender anyway (a
+// non-binary person, or a clinician who simply knows of nothing). Leaving the extension out would make
+// an explicit "Nein" indistinguishable from an unanswered question, and FOPH wants the two apart.
+//
+// So "Nein" is an ANSWER to a closed question, and an answer lives in `Observation.value[x]` - the same
+// split this IG makes for the Impfstatus (yes -> ChEkmImmunization, no/unknown ->
+// ChEkmObservationVaccinationStatus) and for the cause of death. The three answers reach the wire as:
+//   Nein         this Observation, value = sct#373067005 "No"
+//   trans Mann   Patient.extension[genderIdentity].value = sct#1332083003
+//   trans Frau   Patient.extension[genderIdentity].value = sct#1332082008
+//   unanswered   nothing at all
+//
+// `code` is sct#1384187000 "Identifies as transgender (finding)", the direct parent of both trans
+// concepts, so the question and its two positive answers sit in the same SNOMED CT hierarchy (under
+// 285116001 "Gender identity finding"). Gender Harmony lists an Observation as one of the two
+// standard ways to exchange gender identity; this is the narrower trans-status question.
+//
+// `value` is FIXED to "No": a trans answer must never appear here, or the same fact would have two
+// homes. `dataAbsentReason` is forbidden: an unanswered question produces no Observation.
+Profile: ChEkmObservationTransgenderStatus
+Parent: Observation
+Id: ch-ekm-observation-transgender-status
+Title: "CH EKM Observation: Transgender status"
+Description: "This CH EKM base profile constrains the Observation resource for the answer 'no' to the reporting form question 'trans person': the affected person is reported not to be a trans person. The answers 'trans man' and 'trans woman' are the gender identity of the patient (Patient.extension[genderIdentity]) instead. Referenced from Composition.section[social-history]."
+* . ^short = "CH EKM Observation: transgender status ('no')"
+* status = #final
+* code = $sct#1384187000 "Identifies as transgender (finding)"
+* subject 1..1
+* subject only Reference(ChEkmPatient)
+
+// The answer, and the only place it is carried.
+* value[x] 1..1
+* value[x] only CodeableConcept
+* valueCodeableConcept = $sct#373067005 "No (qualifier value)"
+* valueCodeableConcept MS
+* valueCodeableConcept ^short = "Always sct#373067005 'No' - 'trans man' / 'trans woman' are Patient.extension[genderIdentity]"
+* dataAbsentReason 0..0
+* dataAbsentReason ^short = "Not used: an unanswered question produces no Observation at all"

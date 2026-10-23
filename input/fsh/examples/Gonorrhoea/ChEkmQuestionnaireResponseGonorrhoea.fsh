@@ -54,8 +54,11 @@ Description: "Example Gonorrhoea QuestionnaireResponse used as input to SDC temp
 * item[0].item[0].item[7].answer.valueString = "BE"
 * item[0].item[0].item[8].linkId = "administrativeGender"
 * item[0].item[0].item[8].answer.valueCoding = $administrative-gender#male "Male"
+// "trans Person" = "Nein" (issue #35): the round trip for the ChEkmObservationTransgenderStatus entry
+// and for the Patient WITHOUT a genderIdentity extension. Mpox covers "trans Mann", Hepatitis C the
+// unanswered question.
 * item[0].item[0].item[9].linkId = "genderIdentity"
-* item[0].item[0].item[9].answer.valueCoding = $sct#1332083003 "Identifies as transgender male (finding)"
+* item[0].item[0].item[9].answer.valueCoding = $sct#373067005 "No (qualifier value)"
 
 // --- Diagnose und Manifestation ---
 * item[0].item[1].linkId = "manifestation-group"

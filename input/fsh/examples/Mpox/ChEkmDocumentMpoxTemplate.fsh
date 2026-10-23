@@ -151,6 +151,8 @@ Usage: #inline
 * section[1].title = "Social history section"
 * section[1].code = $loinc#29762-2
 * section[1].entry.reference = "Observation/ExtractedExposure"
+// "trans Person" answered "Nein" (issue #35) - computed, so after the static exposure entry.
+* insert RuleSetTransgenderStatusSectionEntry(1)
 // Cause of death — gated on the person having died, and LAST for the same index-shift reason as the
 // conditional Bundle entries (see RuleSetCauseOfDeathSection).
 * insert RuleSetCauseOfDeathSection(ExtractedCauseOfDeath)
@@ -248,3 +250,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 // which at most one per row ever fires; the gates are mutually exclusive by construction.
 * insert RuleSetImmunizationEntries(Smallpox)
 * insert RuleSetImmunizationEntries(Mpox)
+
+// "trans Person" answered "Nein" -> ChEkmObservationTransgenderStatus (issue #35). Conditional, so
+// it stays the LAST entry; see RuleSetTransgenderStatus.fsh.
+* insert RuleSetTransgenderStatusEntry
