@@ -14,6 +14,6 @@ fsh-generated/**
 scripts/hapifhir/package.tgz
 Mpox.csv
 TODO.md
-Meldung zum klinischen Befund Infektionskrankheit - Pneumokokkenerkrankung.csv
-Meldung zum klinischen Befund Infektionskrankheit - Hepatitis C.csv
+# mapping-sheet CSV exports (the discussion moved to the NASURE form harmonisation)
+Meldung zum klinischen Befund Infektionskrankheit*.csv
 AGENTS.md

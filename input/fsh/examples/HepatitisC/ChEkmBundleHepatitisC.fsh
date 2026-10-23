@@ -122,7 +122,12 @@ Description: "Example for a CH EKM Observation: Antiviral Therapy"
 * status = #final
 * code = $sct#427314002 "Antiviral therapy (procedure)"
 * subject = Reference(ChEkmPatientExample)
-* valueCodeableConcept = $sct#386053000 "Evaluation procedure (procedure)"
+// "ja, Therapiebeginn": the answer as the value, the start of therapy as effective[x]. Both NASURE
+// proposals ask "nein / ja, Therapiebeginn"; the former third answer "Therapiestart wird erwogen"
+// (sct#386053000 Evaluation procedure) is in neither. Whether the question is asked at all is still
+// open (ChEkmQuestionnaireHepatitisC, OPEN QUESTIONS #6).
+* valueCodeableConcept = $sct#373066001 "Yes (qualifier value)"
+* effectiveDateTime = "2026-02-02"
 
 
 Instance: ChEkmObservationExample-ExposureViralDisease

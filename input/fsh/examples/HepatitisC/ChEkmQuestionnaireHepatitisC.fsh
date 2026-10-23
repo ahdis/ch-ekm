@@ -202,7 +202,8 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     `sct#386053000 Evaluation procedure`) in section[medication], and the CSV itself flags that
 //     codification as uncertain. No profile, no model element, no question.
 //     NASURE: both proposals ask "nein / ja, Therapiebeginn" — "Therapiestart wird erwogen" is in
-//     neither, so the uncertain coding goes with it. P&P: relevant for the care cascade, maybe "mit
+//     neither, so the uncertain coding goes with it (the example Bundle now carries "ja" + a start
+//     date, `value = sct#373066001`, `effectiveDateTime`). P&P: relevant for the care cascade, maybe "mit
 //     DAA"; EPI: for Hepatitis C yes, not for B. Whether it is asked at all is still open.
 //
 //  7. KRANKHEITSVERLAUF — DECIDED AND IMPLEMENTED, see the section above, and since then
