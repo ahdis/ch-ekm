@@ -268,12 +268,20 @@ disease-specific value-set bindings).
 | Initiale Name | `surnameInitial` | string | required (1..1) |
 | Initiale Vorname | `givennameInitial` | string | required (1..1) |
 | Geburtsdatum | `dateOfBirth` | date | required |
+| AHV-Nr. | `ahvn13` | string | `regex = "^756[0-9]{10}$"` (§11) |
 | Nationalität | `nationality` | choice | `ChEkmCountryCodes` |
 | PLZ/Wohnort | `zipCode`, `city` | string | |
 | Land | `country` | choice | `ChEkmCountryCodes` |
-| Kanton | `canton` | string (or choice eCH-0007) | |
-| Gender | `administrativeGender` | choice | `ChEkmPatientAdministrativeSex` (female/male only, #32) |
+| Kanton | `canton` | open-choice | eCH-0007 canton abbreviations, preferred |
+| Administratives Geschlecht | `administrativeGender` | choice | `ChEkmPatientAdministrativeSex` (female/male only, #32) |
 | trans Person | `genderIdentity` | choice | `ChEkmTransPerson` (Nein / trans man / trans woman, #32, #35) — trans → `Patient.extension[genderIdentity]`, Nein → `ChEkmObservationTransgenderStatus` |
+
+> This is the harmonised **initials** person block of the FOPH form harmonisation; the sex / trans
+> question is agreed (administrative sex female / male, plus "trans Person" for the NAPS pathogens
+> only — invasive pneumococcal disease does not ask it). The **full-name** forms (Mpox, Hepatitis C)
+> ask name and given name instead of the initials, and add street, phone and e-mail
+> (`ChEkmQuestionnairePersonContact`, §4). Still open there: whether a "Herkunftsland" is asked in
+> addition to the nationality, and for which pathogens.
 
 **Manifestation** (`ChEkmGonorrhoeaManifestationForm`):
 | Item | linkId | type | Binding / note |
@@ -291,6 +299,9 @@ disease-specific value-set bindings).
 > profile's `Condition.evidence.code` binding. Because the form answer is itself a valid
 > `evidence.code`, **no ConceptMap is required** — it is an identity pass-through. The
 > previous free-text `manifestationOther` item was removed (no "other" option in scope).
+> The FOPH form harmonisation confirmed symptomatic / asymptomatic for Gonorrhoea (the site of the
+> swab is already a mandatory part of the lab report). Still open there: whether the
+> Manifestationsbeginn is asked at all; the form asks it today.
 >
 > **Open:** the example [`ChEkmConditionExample-Gonorrhoea`](input/fsh/examples/Gonorrhoea/ChEkmBundleGonorrhoea.fsh)
 > still uses `evidence.code = $sct#15628003` (the disease code) rather than `264931009`
@@ -300,10 +311,15 @@ disease-specific value-set bindings).
 **Transmission / Wie** (`ChEkmGonorrhoeaExposureForm.transmission`):
 | Item | linkId | type | Binding / note |
 | --- | --- | --- | --- |
-| Sexualkontakt – Geschlecht | `sexualContactPartner` | choice | `administrative-gender` |
-| Art der Beziehung | `relationshipType` | choice | `ChEkmExposureRelationshipType` |
-| anderer Übertragungsweg | `otherTransmission` | string | |
-| unbekannt | `unknown` | boolean | |
+| Sexualkontakt – Geschlecht | `exposureHowSexualContactPartner` | choice | `ChEkmExposureSexualContactPartner` (female / male, #32) |
+| Art der Beziehung | `exposureHowRelationshipType` | choice | `ChEkmExposureRelationshipType` (fester / nicht fester Partner, Angebot / Inanspruchnahme von bezahltem Sex) |
+| anderer Übertragungsweg | `exposureHowOtherTransmission` | string | |
+| unbekannt | `exposureHowUnknown` | boolean | |
+
+> **State of the FOPH form harmonisation (2026-10):** that "Wie" is asked is agreed, its details are
+> not. The four relationship types are P&P's proposal. Open: whether the partner's sex also offers
+> "anderes" or "unbekannt" (both proposals differ; `ChEkmExposureSexualContactPartner` has female /
+> male only), and whether Gonorrhoea asks Exposition "Wo" at all — the form does not assemble it today.
 
 **Treating Physician** (`ChEkmQuestionnaireGonorrhoeaTreatingPhysician`, two sub-groups). linkIds are
 prefixed `physician*` / `org*` so they stay unique across the assembled form (the Person section
@@ -1130,6 +1146,14 @@ optional once the answer is "yes". Three engine/SUSHI facts collide here, all fo
 > (see chapter 12). That halves the split: four Immunization instances for the 2 x 2 combinations of
 > "which optional detail was answered", plus two entirely static Observations with no date and no
 > dose count to be absent. The engine lessons below are unchanged.
+>
+> **FOPH form harmonisation (2026-10, not yet decided):** the proposal is one row per vaccination —
+> "ja" with doses, date of the last dose and brand, or "Nein/Unbekannt" as ONE answer — and drops
+> "Gemäss Impfausweis / Anamnese" (which this IG never asked). The merge is contested (it matters for
+> vaccine breakthroughs, e.g. FSME), so the model keeps "nein" and "unbekannt" apart for now. If they
+> merge, only the value set of `ChEkmObservationVaccinationStatus.value[x]` shrinks; the yes-only
+> Immunization and its four template instances are unaffected. Kept apart either way: the two Mpox
+> rows (smallpox, mpox).
 
 **1. A required primitive that is sometimes a value and sometimes a data-absent-reason cannot live in
 one template.** An element carrying only `templateExtractValue` artifacts is reported by SUSHI as
@@ -1260,10 +1284,15 @@ than the forms modelled so far suggest (therapies, clinical judgements, risk beh
 tracing). Inventing a Condition, Observation or local code for each would bake a guess into the
 profiles. Hepatitis C has two such questions today, the "Krankheitsverlauf" (akut / chronisch /
 Zirrhose / Hepatokarzinom / General wellbeing) and "Diagnose im Rahmen einer Blutspende" (ja / nein /
-unbekannt, from the CSV's "Potentiale Questionnaire Fragen" block). Their answers travel as a
+unbekannt, from the wish-list of the earlier mapping sheet). Their answers travel as a
 **separate, disease-specific QuestionnaireResponse** in
 `Composition.section[diagnosis].entry[questionnaire-response]`, and every other answer of the form
 goes into a resource and is not repeated there.
+
+> The answer lists are not final. The FOPH form harmonisation now proposes the Krankheitsverlauf as
+> akut / chronisch / virämisch / avirämisch, with Zirrhose and Hepatokarzinom moving to the
+> manifestation; the blood-donation question is not on its list yet. Either change touches only the
+> module's answers (`ChEkmHepatitisCCourseOfDisease`), not the mechanism described here.
 
 | | |
 | --- | --- |
@@ -1786,7 +1815,9 @@ plain DAR, because the resource now asserts something false in a modifier elemen
 consumer honouring a second one to take it back. Splitting by answer removed the contradiction
 instead of annotating it. The Encounter can take the same route: an Observation carrying
 yes/no/unknown, with the Encounter emitted only for "yes" — a modelling change, not a rename, and
-still open.
+still open. It will not go away on the form side: the harmonised standard of the FOPH form
+harmonisation keeps Hospitalisation **Ja / Nein / Unbekannt** (with Eintrittsdatum and
+Hospitalisationsgrund) for every pathogen that asks it, so "unknown" stays a real answer.
 
 ### Two smaller things worth knowing
 
