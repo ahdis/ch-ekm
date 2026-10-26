@@ -76,22 +76,45 @@ Usage: #inline
 // ChEkmQuestionnaireHepatitisCCourseOfDisease); every other answer of the form went into a resource
 // above and is NOT repeated here.
 //
-// HOW THE COPY WORKS: inside the disease-specific questionnaire's one group, one placeholder item
-// per module, in that questionnaire's order (QuestionnaireResponse validation checks the order). Each placeholder is
-// context-gated on the module's item in the form's response —
-// `%resource.descendants().where(linkId = '<the module's linkId>')`, wherever the form placed it —
-// and its value `$this` replaces the placeholder with that item, answers and children included. The
-// engine inserts a value only when the result is exactly ONE item, which is why every module
-// contributes ONE top-level item. A module that was not answered has no item in the form's response:
-// the context is empty and the placeholder is dropped, so no invented linkId can survive into the
-// extracted response.
+// HOW THE COPY WORKS: inside the disease-specific questionnaire's one group, ONE placeholder item,
+// context-gated on the ANSWERED items of all modules in the form's response —
+// `%resource.descendants().where((linkId = '<module 1>' or linkId = '<module 2>' …) and
+// answer.value.exists())`, wherever the form placed them. The engine inserts one element per context
+// result, at consecutive indices (the same mechanism as Condition.evidence, one per manifestation),
+// and the value replaces each with the form's item, answers and children included. Every module
+// therefore contributes ONE top-level item. An unanswered module yields no context result and so no
+// item; when NO module was answered the whole response is left out of the document (the gate on its
+// Bundle entry and on the section[diagnosis] reference), instead of being sent as an empty
+// `hepatitisc-disease-specific` group.
 //
-// ADDING A MODULE = one more placeholder here, at the position the module has in
-// ChEkmQuestionnaireHepatitisCDiseaseSpecific, plus the module's insert in that questionnaire and in
-// the form.
+// THE ORDER IS THE FORM'S: `descendants()` returns the items in the order of the form's response, and
+// QuestionnaireResponse validation checks them against the disease-specific questionnaire's order. The
+// two orders agree (blood donation, then Krankheitsverlauf) and must be kept in step.
 //
-// TWO VALIDATORS PULL IN OPPOSITE DIRECTIONS HERE, and the placeholders below are the only shape that
-// satisfies both. Measured, with the IG Publisher:
+// WHY THIS SHAPE, measured with scripts/extract-hepatitisc.sh and the IG Publisher. The placeholder's
+// context sits INSIDE the entry gate, which the reference engine does not handle cleanly (see
+// RuleSetEncounter.fsh):
+//   * Every value below the entry gate is ALSO evaluated against the gate's focus (`true`). A bare
+//     `$this` then inserts `true` as an extra item; `$this.where(linkId = …)` is the same item in the
+//     placeholder's own context and empty against `true`.
+//   * The gate re-inserts the entry from the static template, placeholder included, and the copied
+//     items are spliced in BEFORE it. So the placeholder must have NO static content, or it survives
+//     next to the copies: it is an empty object then, which the engine's final clean-up drops. Hence
+//     its `linkId` has no value either, only a carrier extension whose expression `{}` never inserts
+//     anything — the "carrier without a value" idiom of `questionnaire` below — so that the template
+//     itself still has the mandatory `linkId`.
+//   * ONE placeholder, not one per module: two value-less linkIds are equal for `que-2`
+//     (`descendants().linkId.isDistinct()`, which walks into this contained template), +5 errors.
+//     And a placeholder with a static `linkId` and a plain value instead of a context is deleted by
+//     the engine while it strips the template, which shifts the index of the next one so that its
+//     own extension is never stripped.
+//
+// ADDING A MODULE = its linkId in both `where()` filters below and in the gates on the Bundle entry and
+// the section[diagnosis] reference, plus the module's insert in the disease-specific questionnaire
+// and in the form, at the same relative position in both.
+//
+// TWO VALIDATORS PULL IN OPPOSITE DIRECTIONS HERE, which is why the template names no questionnaire.
+// Measured, with the IG Publisher, when the placeholders still had a linkId value each:
 //   * Give a placeholder the FORM'S linkIds and `que-2` fails 5 times. que-2 is
 //     `descendants().linkId.isDistinct()` on the Questionnaire, and `descendants()` walks into
 //     `contained` — i.e. into this template — so the form's own linkIds read as duplicates on the
@@ -106,13 +129,11 @@ Usage: #inline
 // This template names none: `questionnaire` carries the value expression but NO value, so it is
 // `_questionnaire` alone until extraction fills it in — the same "carrier without a value" idiom
 // `Composition.date` uses above. That in turn is why ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC
-// leaves `questionnaire` at 0..1 and guards its invariants on `questionnaire.hasValue()`.
+// leaves `questionnaire` at 0..1 and guards its invariant on `questionnaire.hasValue()`.
 //
-// Each placeholder sets NO key the incoming item does not set. Static template data is merged with
-// the value by a shallow spread in which the value wins per key, so a placeholder `answer` would
-// survive into the extracted response. `linkId` is the only key here, and the incoming item always
-// has one. scripts/extract-hepatitisc.sh asserts that each copied item is byte-identical to the
-// form response's item.
+// scripts/extract-hepatitisc.sh asserts that each copied item is byte-identical to the form
+// response's item, that no placeholder survives, and that a response answering neither question
+// extracts to a document without a QuestionnaireResponse.
 // ---------------------------------------------------------------------------
 Instance: ExtractedQuestionnaireResponseHepatitisC
 InstanceOf: ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC
@@ -133,19 +154,15 @@ Usage: #inline
 * questionnaire.extension[=].valueString = "iif(%resource.questionnaire.contains('/Questionnaire/ChEkmQuestionnaireHepatitisC'), %resource.questionnaire.replaceMatches('[|].*$', '').replace('/Questionnaire/ChEkmQuestionnaireHepatitisC', '/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecific'), 'http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled')"
 * insert RuleSetExtractAuthored(authored)
 // The disease-specific questionnaire's one group (its linkId is not used in the form, so que-2 sees
-// no duplicate), then the PLACEHOLDERS — one per module, in the order of
-// ChEkmQuestionnaireHepatitisCDiseaseSpecific.
+// no duplicate), then the ONE PLACEHOLDER for all module items, without any static value (see
+// above).
 * item[0].linkId = "hepatitisc-disease-specific"
-* item[0].item[0].linkId = "template-blood-donation"
+* item[0].item[0].linkId.extension[0].url = $sdc-templateExtractValue
+* item[0].item[0].linkId.extension[0].valueString = "{}"
 * item[0].item[0].extension[0].url = $sdc-templateExtractContext
-* item[0].item[0].extension[0].valueString = "%resource.descendants().where(linkId = 'blood-donation')"
+* item[0].item[0].extension[0].valueString = "%resource.descendants().where((linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease') and answer.value.exists())"
 * item[0].item[0].extension[1].url = $sdc-templateExtractValue
-* item[0].item[0].extension[1].valueString = "$this"
-* item[0].item[1].linkId = "template-hepatitisc-course-of-disease"
-* item[0].item[1].extension[0].url = $sdc-templateExtractContext
-* item[0].item[1].extension[0].valueString = "%resource.descendants().where(linkId = 'hepatitisc-course-of-disease')"
-* item[0].item[1].extension[1].url = $sdc-templateExtractValue
-* item[0].item[1].extension[1].valueString = "$this"
+* item[0].item[0].extension[1].valueString = "$this.where(linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease')"
 
 // ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionHepatitisC) — static structure, references the entries above,
@@ -153,8 +170,9 @@ Usage: #inline
 //
 // section[laboratory] IS emitted now (the analysing laboratory — see RuleSetLaboratorySection); its
 // optional `entry[seroconversion]` is not (OPEN QUESTION #5).
-// section[diagnosis].entry[questionnaire-response] IS emitted now, and is mandatory: it carries the
-// disease-specific questions (#7 — decided; see the QuestionnaireResponse entry above).
+// section[diagnosis].entry[questionnaire-response] IS emitted when blood donation or
+// Krankheitsverlauf was answered: it carries the disease-specific questions (#7 — decided; see the
+// QuestionnaireResponse entry above). Both questions are optional, so the entry is gated.
 // NOT emitted: section[medication] (OPEN QUESTION #6) and section[immunization] — the latter for
 // good, since Hepatitis C has no vaccine (#8, decided). Both are optional in ChEkmComposition, so
 // the extracted document is valid without them.
@@ -174,9 +192,14 @@ Usage: #inline
 * section[0].title = "Diagnosis section"
 * section[0].code = $loinc#29308-4
 * section[0].entry[0].reference = "Condition/ExtractedConditionHepatitisC"
-// The disease-specific QuestionnaireResponse. UNGATED and mandatory (ChEkmCompositionHepatitisC makes the
-// slice 1..1): it is the carrier of the Krankheitsverlauf, which has no resource target.
+// The disease-specific QuestionnaireResponse — GATED, with the same test as its Bundle entry: present
+// only when blood donation or Krankheitsverlauf was answered (both optional on the form), so the
+// reference can never outlive the resource. A computed value rather than a static reference, as in
+// RuleSetTransgenderStatusSectionEntry; it is the LAST entry of the section, after the static
+// Condition, since a computed element must not precede a static one.
 * section[0].entry[1].reference = "QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC"
+* section[0].entry[1].extension[0].url = $sdc-templateExtractValue
+* section[0].entry[1].extension[0].valueString = "%resource.descendants().where((linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease') and answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC'))"
 * section[1].title = "Social history section"
 * section[1].code = $loinc#29762-2
 * section[1].entry.reference = "Observation/ExtractedExposureHepatitisC"
@@ -232,16 +255,23 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentH
 // conditional entries below.
 * insert RuleSetLaboratoryEntries
 
-// The disease-specific QuestionnaireResponse. Ungated, hence before the conditional entries below — a
-// static entry placed AFTER a gated one is corrupted as soon as the gate does not fire.
-* entry[+].fullUrl = "http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC"
-* entry[=].resource = ExtractedQuestionnaireResponseHepatitisC
-
 // --- CONDITIONAL ENTRIES, LAST ON PURPOSE -------------------------------------------------------
 // The engine deletes a context-gated array element from the template and re-inserts it once per
 // context result; a STATIC entry placed after a gated one is corrupted as soon as the gate does not
 // fire. All conditional entries therefore sit at the end. See ChEkmDocumentMpoxTemplate.fsh for the
 // full explanation, including why `fullUrl` needs an identity templateExtractValue.
+
+// The disease-specific QuestionnaireResponse — emitted only when at least one of its questions (blood
+// donation, Krankheitsverlauf) was answered. Both are optional on the form; without this gate a report
+// answering neither carried a response holding nothing but the empty `hepatitisc-disease-specific`
+// group. The section[diagnosis] reference above carries the same test.
+* entry[+].extension[0].url = $sdc-templateExtractContext
+* entry[=].extension[0].valueString = "iif(%resource.descendants().where((linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease') and answer.value.exists()).exists(), true, {})"
+* entry[=].fullUrl = "http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC"
+// IDENTITY VALUE, LOAD-BEARING — see ChEkmDocumentMpoxTemplate.fsh.
+* entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
+* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC'"
+* entry[=].resource = ExtractedQuestionnaireResponseHepatitisC
 
 // Hospitalisation Encounter — answered "no" (or unanswered) -> empty context -> no Encounter, and
 // the two references to it (Composition.encounter, Condition.encounter) carry the same test, so

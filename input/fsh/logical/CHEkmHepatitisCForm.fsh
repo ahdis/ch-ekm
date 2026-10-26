@@ -84,7 +84,8 @@ Title: "Exposure Form to CH EKM Exposure"
 // Two questions of this section have no resource target: the blood-donation question (asked first,
 // before the manifestations) and the Krankheitsverlauf (directly after the Manifestationsbeginn).
 // Their answers travel in the disease-specific QuestionnaireResponse the document carries in
-// Composition.section[diagnosis], hence the second mapping.
+// Composition.section[diagnosis], hence the second mapping. Both are optional; a report answering
+// neither carries no such response.
 Logical: ChEkmHepatitisCManifestationForm
 Parent: ChEkmManifestationForm
 Title: "CH EKM Form: Hepatitis C - Diagnosis and Manifestation"
@@ -113,4 +114,4 @@ Id: hepatitisc-manifestation-to-questionnaireresponse
 Title: "Manifestation Form to CH EKM Questionnaire Response Disease-specific Hepatitis C"
 * -> "QuestionnaireResponse" "The disease-specific response (to ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled), carried in Composition.section[diagnosis].entry[questionnaire-response]"
 * bloodDonation -> "QuestionnaireResponse.item.answer.valueCoding" "The answer of the item with linkId 'blood-donation'"
-* courseOfDisease -> "QuestionnaireResponse.item.answer.valueCoding" "The answers of the item with linkId 'hepatitisc-course-of-disease' (invariant ch-ekm-qr-hepatitisc-course)"
+* courseOfDisease -> "QuestionnaireResponse.item.answer.valueCoding" "The answers of the item with linkId 'hepatitisc-course-of-disease'"

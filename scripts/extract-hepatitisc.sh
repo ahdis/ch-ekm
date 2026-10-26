@@ -23,7 +23,9 @@
 #     into a resource — their two items are copied into a separate QuestionnaireResponse to the
 #     disease-specific questionnaire (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled),
 #     referenced from section[diagnosis].entry[questionnaire-response]. Hepatitis C is the only
-#     report in the IG that carries a response.
+#     report in the IG that carries a response. Both questions are optional, so that entry is
+#     CONDITIONAL: a second run on a copy of the response with both items removed checks the
+#     closed state (no QuestionnaireResponse entry, no reference to it).
 #   * Labor: ONLY the mandatory name and the email are answered, so the eight optional,
 #     context-gated elements of the shared ExtractedLabOrganization must all be ABSENT (the invasive
 #     pneumococcal disease round trip answers all of them and covers the open state).
@@ -131,7 +133,7 @@ if command -v jq >/dev/null 2>&1; then
            "    authored      = \(.authored // "(absent)")",
            "    items         = \(.item[0].linkId) > \(.item[0].item | map(.linkId) | join(", "))",
            "    hepatitisc-course-of-disease = \([.. | objects | select(.linkId? == "hepatitisc-course-of-disease")][0].answer
-                                      | if . then map(.valueCoding.code) | join(", ") else "(UNANSWERED — invariant fails)" end)")
+                                      | if . then map(.valueCoding.code) | join(", ") else "(unanswered)" end)")
          // "    (no QuestionnaireResponse emitted)"' "$OUT" || true
   # Each item is copied by one context-gated `$this` templateExtractValue, so every copied item must
   # be byte-identical to the same linkId's item in the form's response, and no other item may appear.
@@ -149,4 +151,26 @@ if command -v jq >/dev/null 2>&1; then
          | select(.code.coding[0].code == "EXPAGNT")
          | .extension[0].valueAddress
          | "    country = \(.country // "(absent)")  _country = \(._country.extension[0].valueCode // "(none)")  city = \(.city // "(absent)")"' "$OUT" || true
+
+  # CLOSED state of the disease-specific response: the same QR with both disease-specific items
+  # removed must extract to a document WITHOUT the QuestionnaireResponse entry and without the
+  # section[diagnosis] reference to it — not to one holding an empty `hepatitisc-disease-specific`
+  # group. Written to temporary files only; the IG examples are the open state above.
+  echo
+  echo "Disease-specific questions UNANSWERED (expect no QuestionnaireResponse and no reference to it):"
+  CLOSED_DIR="$(mktemp -d)"
+  jq 'walk(if type == "object" and has("item")
+           then .item |= map(select(.linkId != "blood-donation" and .linkId != "hepatitisc-course-of-disease"))
+           else . end)' "$QR" > "$CLOSED_DIR/qr.json"
+  node scripts/extract/extract.cjs "$Q" "$CLOSED_DIR/qr.json" "$CLOSED_DIR/out.json" >/dev/null
+  jq -r '"    QuestionnaireResponse entries: \([.entry[].resource | select(.resourceType == "QuestionnaireResponse")] | length)",
+         "    section[diagnosis] entries:    \([.entry[].resource | select(.resourceType == "Composition")][0].section[]
+                                             | select(.code.coding[0].code == "29308-4") | .entry | map(.reference) | join(", "))"' \
+    "$CLOSED_DIR/out.json" || true
+  jq -e '([.entry[].resource | select(.resourceType == "QuestionnaireResponse")] | length) == 0
+         and ([.. | objects | .reference? // empty | select(startswith("QuestionnaireResponse/"))] | length) == 0' \
+    "$CLOSED_DIR/out.json" >/dev/null \
+    && echo "    closed state: OK" \
+    || echo "    WARNING: a QuestionnaireResponse (or a reference to one) was emitted although nothing was answered"
+  rm -rf "$CLOSED_DIR"
 fi

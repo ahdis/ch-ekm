@@ -78,9 +78,8 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 // akut / chronisch / Zirrhose / Hepatokarzinom / General wellbeing. A LEVEL-3 child of this section,
 // like the Labor block below it. NOT extracted into a resource: the answer travels in the
 // disease-specific QuestionnaireResponse that the document carries, as
-// Composition.section[diagnosis].entry[questionnaire-response], and the profile on it
-// (ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC) has an invariant requiring exactly this
-// linkId to be answered. See ChEkmQuestionnaireHepatitisCCourseOfDisease.fsh for the reasoning and
+// Composition.section[diagnosis].entry[questionnaire-response] (profile
+// ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC). Optional, like on the reporting form. See ChEkmQuestionnaireHepatitisCCourseOfDisease.fsh for the reasoning and
 // ChEkmDocumentHepatitisCTemplate.fsh for how the QuestionnaireResponse gets into the Bundle.
 * insert RuleSetQrCourseOfDiseaseHepatitisC
 
@@ -213,8 +212,9 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     the disease-specific questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecific. The answers are
 //     NOT extracted into resources: $extract copies the modules' items into a QuestionnaireResponse
 //     to the disease-specific questionnaire, which `section[diagnosis].entry[questionnaire-response]`
-//     carries (mandatory); ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC constrains it
-//     (invariants `ch-ekm-qr-hepatitisc-questionnaire`, `ch-ekm-qr-hepatitisc-course`). Every other
+//     carries when at least one of them was answered (both are optional);
+//     ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC constrains it (invariant
+//     `ch-ekm-qr-hepatitisc-questionnaire`). Every other
 //     answer goes into a resource and is not repeated in that response.
 //     NASURE: the Krankheitsverlauf proposal is now akut / chronisch / virämisch / avirämisch, with
 //     Zirrhose and Hepatokarzinom moved to the manifestation — not what ChEkmHepatitisCCourseOfDisease

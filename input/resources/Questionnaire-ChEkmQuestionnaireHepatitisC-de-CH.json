@@ -208,7 +208,13 @@
                     "reference": "Condition/ExtractedConditionHepatitisC"
                   },
                   {
-                    "reference": "QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC"
+                    "reference": "QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where((linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease') and answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC'))"
+                      }
+                    ]
                   }
                 ]
               },
@@ -1135,7 +1141,21 @@
           }
         },
         {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where((linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease') and answer.value.exists()).exists(), true, {})"
+            }
+          ],
           "fullUrl": "http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseHepatitisC'"
+              }
+            ]
+          },
           "resource": {
             "resourceType": "QuestionnaireResponse",
             "id": "ExtractedQuestionnaireResponseHepatitisC",
@@ -1148,30 +1168,24 @@
                 "linkId": "hepatitisc-disease-specific",
                 "item": [
                   {
-                    "linkId": "template-blood-donation",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                        "valueString": "%resource.descendants().where(linkId = 'blood-donation')"
+                        "valueString": "%resource.descendants().where((linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease') and answer.value.exists())"
                       },
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "$this"
+                        "valueString": "$this.where(linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease')"
                       }
-                    ]
-                  },
-                  {
-                    "linkId": "template-hepatitisc-course-of-disease",
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                        "valueString": "%resource.descendants().where(linkId = 'hepatitisc-course-of-disease')"
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "$this"
-                      }
-                    ]
+                    ],
+                    "_linkId": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "{}"
+                        }
+                      ]
+                    }
                   }
                 ]
               }
@@ -7019,6 +7033,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-23T13:57:59+02:00",
+  "date": "2026-10-26T15:47:36+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisC and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

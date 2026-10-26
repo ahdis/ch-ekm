@@ -1300,8 +1300,8 @@ goes into a resource and is not repeated there.
 | Reporting form | `ChEkmQuestionnaireHepatitisC` assembles each module where it belongs: blood donation first in the Diagnose section, Krankheitsverlauf after the Manifestationsbeginn |
 | Disease-specific questionnaire | `ChEkmQuestionnaireHepatitisCDiseaseSpecific` assembles the SAME modules into one group `hepatitisc-disease-specific`, in an order of its own; its `$assemble` output `ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled` is what the response names and is validated against |
 | Extraction | none into resources; the template copies each module's item out of the form's response into the disease-specific response |
-| Document entry | `ExtractedQuestionnaireResponseHepatitisC`, `questionnaire` = `…/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled\|0.0.1` |
-| Guarantee | `ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC` + invariants `ch-ekm-qr-hepatitisc-questionnaire` (names the disease-specific questionnaire) and `ch-ekm-qr-hepatitisc-course`, and `entry[questionnaire-response] 1..1` on `ChEkmCompositionHepatitisC` |
+| Document entry | `ExtractedQuestionnaireResponseHepatitisC`, `questionnaire` = `…/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled\|0.0.1`; CONDITIONAL — emitted (with its `section[diagnosis]` reference) only when at least one module was answered |
+| Guarantee | `ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC` + invariant `ch-ekm-qr-hepatitisc-questionnaire` (names the disease-specific questionnaire); `entry[questionnaire-response]` stays `0..1` on `ChEkmCompositionHepatitisC`, because both questions are optional on the form |
 
 **Why a second questionnaire, and why it is not a copy.** The response holds only the
 disease-specific items, so it cannot name the reporting form: validated against the form, every
@@ -1310,29 +1310,52 @@ items. That questionnaire is not written by hand: it is a second modular root ov
 so each question is defined once and both questionnaires are generated from it. `$assemble` only
 resolves sub-questionnaires nested in a group, hence the one group.
 
-**The copy is one context-gated `templateExtractValue` per module.** Inside the template's group:
+**The copy is ONE context-gated placeholder for all modules.** Inside the template's group:
 
 ```
-* item[0].item[0].linkId = "template-blood-donation"
+* item[0].item[0].linkId.extension[0].url = $sdc-templateExtractValue
+* item[0].item[0].linkId.extension[0].valueString = "{}"
 * item[0].item[0].extension[0].url = $sdc-templateExtractContext
-* item[0].item[0].extension[0].valueString = "%resource.descendants().where(linkId = 'blood-donation')"
+* item[0].item[0].extension[0].valueString = "%resource.descendants().where((linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease') and answer.value.exists())"
 * item[0].item[0].extension[1].url = $sdc-templateExtractValue
-* item[0].item[0].extension[1].valueString = "$this"
+* item[0].item[0].extension[1].valueString = "$this.where(linkId = 'blood-donation' or linkId = 'hepatitisc-course-of-disease')"
 ```
 
-The context finds the module's item wherever the form placed it; `$this` replaces the placeholder
-with it, answers and children included. The engine inserts a value only when the result has
-**exactly one** element (`getValueFromResult` in `@aehrc/sdc-template-extract`), hence one top-level
-item per module. An unanswered module has no item in the form's response, so its context is empty
-and the placeholder is dropped: no invented linkId reaches the document (tested by removing the
-blood-donation answer). The placeholders must follow the disease-specific questionnaire's order,
-because QuestionnaireResponse validation checks it, and must set no key the incoming item does not set:
-static template data is merged with the value by a shallow spread in which the value wins **per
-key**.
+The context finds the answered items of the modules wherever the form placed them; the engine
+inserts one element per context result at consecutive indices (as for `Condition.evidence`, one per
+manifestation), and the value replaces each with the form's item, answers and children included.
+The engine inserts a value only when the result has **exactly one** element (`getValueFromResult` in
+`@aehrc/sdc-template-extract`), hence one top-level item per module. An unanswered module yields no
+context result and therefore no item. The items come in the order of the form's response, which has
+to agree with the disease-specific questionnaire's order, because QuestionnaireResponse validation
+checks it.
 
-**Adding a disease-specific question** = a new module, its insert in the form (where it belongs), its
-insert in the disease-specific root (at the end, say), and a placeholder in the template at the same
-position.
+**The whole response is conditional.** When **no** module was answered, the response would hold
+nothing but the empty `hepatitisc-disease-specific` group, so its Bundle entry and its
+`section[diagnosis]` reference are gated on "at least one module answered", and the document then
+carries no response at all (`extract-hepatitisc.sh` checks both states). There is deliberately no
+invariant demanding an answer: an earlier `ch-ekm-qr-hepatitisc-course` required the
+Krankheitsverlauf, although neither the logical model (`courseOfDisease 0..*`) nor the form makes it
+mandatory, and every report that left it empty failed validation.
+
+That gate puts the placeholder's context **inside** another context, which the reference engine
+does not handle cleanly (see `RuleSetEncounter.fsh`), and the shape above is what is left:
+
+- every value below the entry gate is also evaluated against the gate's focus (`true`): a bare
+  `$this` inserts `true` as an extra item, `$this.where(linkId = …)` is empty there;
+- the gate re-inserts the entry from the static template, placeholder included, and the copies are
+  spliced in before it, so the placeholder must have **no static content** (it is then an empty
+  object, which the engine's final clean-up drops). Its `linkId` is therefore value-less, a carrier
+  extension with the never-inserting expression `{}`, so that the template keeps its mandatory
+  `linkId`;
+- **one** placeholder, not one per module: two value-less linkIds are equal for `que-2` (+5 errors).
+  And a placeholder with a static `linkId` and a plain value instead of a context is deleted while
+  the engine strips the template, which shifts the next placeholder's index so that its extension
+  is never stripped.
+
+**Adding a disease-specific question** = a new module, its insert in the form (where it belongs) and
+in the disease-specific root (at the same relative position), and its linkId in the placeholder's
+two `where()` filters and in the two gates (Bundle entry, `section[diagnosis]` reference).
 
 **Naming the linkIds.** A linkId only has to be unique within its questionnaire, and the response
 names the disease-specific questionnaire, so the disease is already known. Therefore:
@@ -1350,7 +1373,8 @@ names the disease-specific questionnaire, so the disease is already known. There
   `stiProphylaxisStatusNEGD`, `partnerNotifiedNEGD`), the others are plain and reused across diseases.
 
 `scripts/extract-hepatitisc.sh` asserts the round trip: every copied item must be byte-identical to
-the same linkId's item in the form's response, and no placeholder may survive.
+the same linkId's item in the form's response, no placeholder may survive, and a response answering
+neither question must extract to a document without a QuestionnaireResponse.
 
 #### Three validator traps, in the order they were hit
 
@@ -1384,13 +1408,8 @@ discriminator, so the only symptom is the same "Slice 'Bundle.entry:Composition'
 required, but not found" as trap 2, with nothing said about the response. The invariant is therefore:
 
 ```
-questionnaire.hasValue() implies descendants().where(linkId = 'hepatitisc-course-of-disease').answer.value.exists()
+questionnaire.hasValue() implies questionnaire.matches('^http://fhir[.]ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecific(Assembled|-(de|fr|it)-CH)([|].*)?$')
 ```
-
-`descendants()` from the resource rather than a fixed path, so re-ordering the assembled sections
-cannot invalidate documents already sent and a top-level `hepatitisc-course-of-disease` would match too; an
-invariant rather than a slice, because `QuestionnaireResponse.item` cannot be sliced by `linkId` at
-an arbitrary depth.
 
 **What the guard costs.** A response that omits `questionnaire` escapes the check. Every real
 response names the form it answers — the extracted one gets it from `%resource.questionnaire` — so

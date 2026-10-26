@@ -14,8 +14,10 @@
 // for TODO.md #7. There is no Condition/Observation target for the course of the disease in
 // ChEkmCompositionHepatitisC; instead the answer travels in the document in the DISEASE-SPECIFIC
 // QuestionnaireResponse, `Composition.section[diagnosis].entry[questionnaire-response]`, whose profile
-// ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC (input/fsh/profiles/ChEkmHepatitisC.fsh)
-// carries the invariant that says this linkId must be answered inside it. The item's `definition` is
+// ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC (input/fsh/profiles/ChEkmHepatitisC.fsh).
+// The question is OPTIONAL (ChEkmHepatitisCManifestationForm.courseOfDisease 0..*): unanswered, it is
+// simply absent from that response, and the response is left out of the document altogether when
+// the blood-donation question is unanswered too. The item's `definition` is
 // ChEkmHepatitisCManifestationForm.courseOfDisease, whose mapping targets exactly that
 // QuestionnaireResponse.
 // This module is assembled TWICE, from this one definition: into the reporting form

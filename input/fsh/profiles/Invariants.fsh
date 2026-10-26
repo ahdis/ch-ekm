@@ -25,22 +25,20 @@ Severity: #error
 Expression: "entry.resource.ofType(Patient).where(birthDate.exists() and birthDate.hasValue()).all(birthDate >= @1900-01-01 and ((birthDate.toString().length()=4 and birthDate <= %resource.timestamp.toString().substring(0,4).toDateTime()) or (birthDate.toString().length()=7 and birthDate <= %resource.timestamp.toString().substring(0,7).toDateTime()) or (birthDate.toString().length()=10 and birthDate <= %resource.timestamp.toString().substring(0,10).toDateTime())))"
 
 
-// The Hepatitis C "Krankheitsverlauf" (akut / chronisch / Zirrhose / Hepatokarzinom / General
-// wellbeing) is a question of that form with no resource target: it is not extracted, it travels in
-// the disease-specific QuestionnaireResponse the document carries. It is required on the form, so this
-// invariant is what makes the document self-sufficient — without it, a conforming document could
-// omit the answer entirely.
-//
-// `descendants()` rather than a fixed path: in the disease-specific questionnaire the question sits
-// inside its one group (hepatitisc-disease-specific > hepatitisc-course-of-disease), and a re-ordering
-// or regrouping of its modules must not invalidate documents already sent.
+// The response the Hepatitis C document carries answers the DISEASE-SPECIFIC questionnaire, not the
+// reporting form: it holds only the form questions without a FHIR target, so validated against the
+// form every required question it does not hold would be reported missing. Either the assembled
+// questionnaire or the language variant of the form that was filled in (-de-CH / -fr-CH / -it-CH):
+// the copied items keep that form's `text`, which must match the named questionnaire's. A versioned
+// canonical (`…|0.0.1`) passes too. Character classes instead of `\.` / `\|`, which would need a
+// second level of escaping in the FHIRPath string.
 //
 // GUARDED ON `questionnaire.hasValue()`, and that guard is not cosmetic: the SDC $extract template
 // (ExtractedQuestionnaireResponseHepatitisC) is itself a QuestionnaireResponse that has to conform
-// to this profile, and it can name neither a questionnaire nor an answer — a template that named
-// one would have its placeholder linkId validated against that questionnaire's items, and any
-// placeholder it could use is either absent from the form (12 errors) or a que-2 duplicate of it
-// (5 errors). Every REAL response names the form it answers, so the guard is open for all of them.
+// to this profile, and it can name no questionnaire — a template that named one would have its
+// placeholder linkIds validated against that questionnaire's items, and any placeholder it could use
+// is either absent from the form (12 errors) or a que-2 duplicate of it (5 errors). Every REAL
+// response names the questionnaire it answers, so the guard is open for all of them.
 //
 // `hasValue()`, NOT `exists()`. The template's `questionnaire` is a value-less carrier — the JSON
 // has `_questionnaire` with the extraction extension and no `questionnaire` — and that element node
@@ -50,18 +48,10 @@ Expression: "entry.resource.ofType(Patient).where(birthDate.exists() and birthDa
 // entry no longer matching its slice, which takes the Composition out of conformance and shows up
 // as "Slice 'Bundle.entry:Composition': a matching slice is required, but not found" on the
 // template Bundle. `hasValue()` asks the question actually meant: is there a canonical here.
-Invariant: ch-ekm-qr-hepatitisc-course
-Description: "A response that names the questionnaire it answers must answer the 'hepatitisc-course-of-disease' question (Krankheitsverlauf) of the Hepatitis C form."
-Severity: #error
-Expression: "questionnaire.hasValue() implies descendants().where(linkId = 'hepatitisc-course-of-disease').answer.value.exists()"
-
-// The response the Hepatitis C document carries answers the DISEASE-SPECIFIC questionnaire, not the
-// reporting form: it holds only the form questions without a FHIR target, so validated against the
-// form every required question it does not hold would be reported missing. Either the assembled
-// questionnaire or the language variant of the form that was filled in (-de-CH / -fr-CH / -it-CH):
-// the copied items keep that form's `text`, which must match the named questionnaire's. A versioned
-// canonical (`…|0.0.1`) passes too. Character classes instead of `\.` / `\|`, which would need a
-// second level of escaping in the FHIRPath string.
+//
+// There is deliberately NO invariant requiring an answer: both disease-specific questions
+// (Krankheitsverlauf, Blutspende) are optional on the form (ChEkmHepatitisCManifestationForm,
+// `0..*` / `0..1`), and the $extract template leaves a response with no answer out of the document.
 Invariant: ch-ekm-qr-hepatitisc-questionnaire
 Description: "A response that names the questionnaire it answers must name the disease-specific Hepatitis C questionnaire (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled or its language variant ChEkmQuestionnaireHepatitisCDiseaseSpecific-de-CH / -fr-CH / -it-CH), not the reporting form."
 Severity: #error

@@ -26,9 +26,11 @@
 //      two codes) -> the ones this form does not extract into a resource. $extract copies their two
 //      items into a SEPARATE, disease-specific QuestionnaireResponse (to
 //      ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled), referenced from
-//      Composition.section[diagnosis].entry[questionnaire-response]; the profile on it
-//      (ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC) requires the Krankheitsverlauf. No
-//      other round trip in the IG carries a response.
+//      Composition.section[diagnosis].entry[questionnaire-response] (profile
+//      ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC). This is the OPEN state of that
+//      conditional entry; scripts/extract-hepatitisc.sh also extracts a copy of this response with
+//      both questions removed and checks the closed one (no response, no reference). No other round
+//      trip in the IG carries a response.
 // The person group uses the full-name module (surname / givenname), as ChEkmHepatitisCPersonForm
 // requires.
 //
@@ -102,8 +104,7 @@ Description: "Example Hepatitis C QuestionnaireResponse used as input to SDC tem
 * item[0].item[1].item[2].linkId = "manifestationBeginUnknown"
 * item[0].item[1].item[2].answer.valueBoolean = true
 // Krankheitsverlauf — TWO answers (repeats = true). Not extracted into a resource: $extract copies
-// this item into the disease-specific QuestionnaireResponse of the document, where the invariant
-// ch-ekm-qr-hepatitisc-course on ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC looks for it.
+// this item into the disease-specific QuestionnaireResponse of the document.
 // See OPEN QUESTIONS #7 in ChEkmQuestionnaireHepatitisC.fsh.
 * item[0].item[1].item[3].linkId = "hepatitisc-course-of-disease"
 * item[0].item[1].item[3].answer[0].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
