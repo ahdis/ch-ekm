@@ -59,34 +59,24 @@ Usage: #inline
 // "Impfstatus" / vaccination status (issue #29) - ChEkmImmunizationMpox for "yes",
 // ChEkmObservationVaccinationStatusMpox for "no" and "unknown".
 //
-// SIX MUTUALLY EXCLUSIVE INSTANCES PER FORM ROW, of which exactly one is emitted; a row that was
-// not answered emits none. Four of them are Immunizations, because `occurrence[x]` and
-// `protocolApplied.doseNumber[x]` are both 1..1 and have to be an answered value on some branches
-// and a data-absent-reason on others, which one template instance cannot express. The other two are
-// Observations: only "yes" describes a vaccination, so "no" and "unknown" are answers in
-// `value[x]` instead. See RuleSetImmunization.fsh for the full reasoning and for which variant
-// covers which answer.
+// FOUR MUTUALLY EXCLUSIVE INSTANCES PER FORM ROW, of which exactly one is emitted; a row that was
+// not answered emits the "unknown" Observation (issue #36). Two of them are Immunizations, because
+// `occurrence[x]` is 1..1 and has to be the answered last-dose date on one branch and a
+// data-absent-reason on the other, which one template instance cannot express (the dose count is
+// mandatory once "yes" is answered, so it never splits the row). The other two are Observations:
+// only "yes" describes a vaccination, so "no" and "unknown" are answers in `value[x]` instead. See
+// RuleSetImmunization.fsh for the full reasoning and for which variant covers which answer.
 // ---------------------------------------------------------------------------
 
-Instance: ExtractedImmunizationSmallpoxDatedDosed
+Instance: ExtractedImmunizationSmallpoxDated
 InstanceOf: ChEkmImmunizationMpox
 Usage: #inline
-* insert RuleSetImmunizationDatedDosed(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
+* insert RuleSetImmunizationDated(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
 
-Instance: ExtractedImmunizationSmallpoxDatedNoDose
+Instance: ExtractedImmunizationSmallpoxUndated
 InstanceOf: ChEkmImmunizationMpox
 Usage: #inline
-* insert RuleSetImmunizationDatedNoDose(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
-
-Instance: ExtractedImmunizationSmallpoxUndatedDosed
-InstanceOf: ChEkmImmunizationMpox
-Usage: #inline
-* insert RuleSetImmunizationUndatedDosed(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
-
-Instance: ExtractedImmunizationSmallpoxUndatedNoDose
-InstanceOf: ChEkmImmunizationMpox
-Usage: #inline
-* insert RuleSetImmunizationUndatedNoDose(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
+* insert RuleSetImmunizationUndated(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product", Variola virus antigen-containing vaccine product)
 
 Instance: ExtractedVaccinationStatusSmallpoxNo
 InstanceOf: ChEkmObservationVaccinationStatusMpox
@@ -98,25 +88,15 @@ InstanceOf: ChEkmObservationVaccinationStatusMpox
 Usage: #inline
 * insert RuleSetVaccinationStatusUnknown(67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
 
-Instance: ExtractedImmunizationMpoxDatedDosed
+Instance: ExtractedImmunizationMpoxDated
 InstanceOf: ChEkmImmunizationMpox
 Usage: #inline
-* insert RuleSetImmunizationDatedDosed(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
+* insert RuleSetImmunizationDated(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
 
-Instance: ExtractedImmunizationMpoxDatedNoDose
+Instance: ExtractedImmunizationMpoxUndated
 InstanceOf: ChEkmImmunizationMpox
 Usage: #inline
-* insert RuleSetImmunizationDatedNoDose(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
-
-Instance: ExtractedImmunizationMpoxUndatedDosed
-InstanceOf: ChEkmImmunizationMpox
-Usage: #inline
-* insert RuleSetImmunizationUndatedDosed(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
-
-Instance: ExtractedImmunizationMpoxUndatedNoDose
-InstanceOf: ChEkmImmunizationMpox
-Usage: #inline
-* insert RuleSetImmunizationUndatedNoDose(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
+* insert RuleSetImmunizationUndated(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product", Modified Vaccinia virus Ankara antigen only vaccine product)
 
 Instance: ExtractedVaccinationStatusMpoxNo
 InstanceOf: ChEkmObservationVaccinationStatusMpox
@@ -247,8 +227,8 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 * entry[=].resource = ExtractedCauseOfDeath
 
 // Impfstatus Immunizations - the remaining conditional entries, after the Encounter and the
-// cause-of-death Observation for the ordering reason above. Twelve gated entries, six per row, of
-// which at most one per row ever fires; the gates are mutually exclusive by construction.
+// cause-of-death Observation for the ordering reason above. Eight gated entries, four per row, of
+// which exactly one per row fires; the gates are mutually exclusive by construction.
 * insert RuleSetImmunizationEntries(Smallpox)
 * insert RuleSetImmunizationEntries(Mpox)
 

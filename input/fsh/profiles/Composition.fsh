@@ -76,7 +76,7 @@ Description: "This CH EKM base profile constrains the Composition resource for t
 // answer was - but the RESOURCE TYPE depends on the answer: "yes" is a ChEkmImmunization, "no" and
 // "unknown" are a ChEkmObservationVaccinationStatus (see Immunization.fsh / Observation.fsh for
 // why the two answers that describe no vaccination are not Immunizations). A row that was not
-// answered contributes no entry.
+// answered is reported as "unknown" (issue #36), so a form-generated document has one entry per row.
 * section[immunization].code = $loinc#11369-6 
 * section[immunization].entry 1..*
 * section[immunization].entry ^slicing.discriminator.type = #profile

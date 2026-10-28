@@ -1,4 +1,4 @@
-// "Impfstatus" (issue #29) -> one resource per ANSWERED form row.
+// "Impfstatus" (issues #29, #36) -> one resource per form row, ALWAYS.
 //
 // The extraction counterpart of RuleSetQrImmunizationRow: that rule set builds one row of the form,
 // this one builds the resource that row extracts to, and both are parameterised by the same
@@ -6,13 +6,17 @@
 //
 // THE RESOURCE TYPE DEPENDS ON THE ANSWER. Only "yes" describes a vaccination, so only "yes"
 // produces a ChEkmImmunization; "no" and "unknown" are answers to a question and produce a
-// ChEkmObservationVaccinationStatus (see Observation.fsh for why). A row that was not answered
-// produces nothing at all.
+// ChEkmObservationVaccinationStatus (see Observation.fsh for why).
 //
-// SIX MUTUALLY EXCLUSIVE TEMPLATE INSTANCES PER ROW, of which exactly one is ever emitted - four
+// AN UNANSWERED ROW IS RECORDED AS "UNKNOWN" (issue #36, FOPH business requirement of 22.10.2026).
+// The question is not mandatory, but every row reaches the wire: a row left blank - or cleared after
+// the "unknown" the form pre-selects - produces the same "unknown" Observation as an explicit
+// "unknown". "No" stays apart from both.
+//
+// FOUR MUTUALLY EXCLUSIVE TEMPLATE INSTANCES PER ROW, of which exactly one is ever emitted - two
 // Immunizations and two Observations. This is the obs-6 pattern from forms-summary.md section 8, and
 // on the Immunization side it is forced rather than chosen: `Immunization.occurrence[x]` is **1..1**
-// and has to be an answered value on some branches and a `data-absent-reason` on others. A single
+// and has to be an answered value on one branch and a `data-absent-reason` on the other. A single
 // template cannot do both - the static content is what makes the cardinality check pass, so
 // whichever of the two is static survives into the extracted resource next to the computed one:
 //
@@ -23,29 +27,30 @@
 // data-absent-reason), so a wrong date would ship silently. Splitting the row makes every instance
 // unambiguous: an element is either statically absent or always answered, never both.
 //
-// The two optional details are independent, so the "yes" branch needs 2 x 2 combinations:
+// The dose count is MANDATORY once "yes" is answered (issue #36), so only the last-dose date splits
+// the "yes" branch:
 //
-//                                     occurrenceDateTime        protocolApplied.doseNumber
+//                                       occurrenceDateTime        protocolApplied.doseNumber
 //   Immunization
-//     ...DatedDosed    yes, both        the answered date         the answered dose count
-//     ...DatedNoDose   yes, no dose     the answered date         DAR asked-unknown
-//     ...UndatedDosed  yes, no date     DAR asked-unknown         the answered dose count
-//     ...UndatedNoDose yes, neither     DAR asked-unknown         DAR asked-unknown
-//   Observation                       value[x]
-//     ...No            no               sct#373067005 "No"        (no such elements)
-//     ...Unknown       unknown          sct#261665006 "Unknown"
-//   not answered       -> no resource at all (every gate is empty)
+//     ...Dated      yes, with a date      the answered date         the answered dose count
+//     ...Undated    yes, no date          DAR asked-unknown         the answered dose count
+//   Observation                         value[x]
+//     ...No         no                    sct#373067005 "No"        (no such elements)
+//     ...Unknown    unknown OR unanswered sct#261665006 "Unknown"
+//
+// A "yes" WITHOUT a dose count matches no gate and emits nothing - deliberately, rather than letting
+// the dose sentinel survive as a fabricated "1 dose". The form cannot be completed in that state
+// (the item is required), and a QuestionnaireResponse that bypasses it yields a document whose
+// section[immunization] is short of that row's entry - loud, where a sentinel would be silent.
 //
 // `protocolApplied` is 1..1 on the Immunization and carries `targetDisease`, so a "yes" row is
-// directly queryable as "vaccinated against smallpox" rather than only through `vaccineCode`. That
-// is why the dose number takes a data-absent-reason instead of the whole element being omitted: R4
-// makes `doseNumber[x]` 1..1 inside `protocolApplied`, so keeping targetDisease means the dose must
-// be present, valued or absent-with-a-reason. The Observation needs none of this - it has no date
-// and no dose count to be absent, which is why its two instances are entirely static.
+// directly queryable as "vaccinated against smallpox" rather than only through `vaccineCode`. R4
+// makes `doseNumber[x]` 1..1 inside `protocolApplied`; with the count mandatory it is always a value.
+// The Observation needs none of this - it has no date and no dose count to be absent, which is why
+// its two instances are entirely static.
 //
-// Making the dose count and the last-dose date mandatory once "yes" is answered would collapse the
-// Immunization side to one instance, but it would lose "vaccinated, details unknown" - the likely
-// answer for the historical smallpox programme, and the reason the split was chosen instead.
+// The last-dose date stays optional: "vaccinated, date unknown" is the likely answer for the
+// historical smallpox programme.
 //
 // SAME ENGINE CONSTRAINT AS THE ENCOUNTER AND THE CAUSE OF DEATH: each instance sits inside a
 // context-gated Bundle entry, so there must be NO templateExtractContext anywhere below that gate
@@ -120,52 +125,34 @@ RuleSet: RuleSetImmunizationOccurrenceAbsent(reason)
 * occurrenceDateTime.extension[+].url = $data-absent-reason
 * occurrenceDateTime.extension[=].valueCode = #{reason}
 
-// Total number of doses, answered. PLACEHOLDER DEFAULT - the Bundle.timestamp idiom:
-// `protocolApplied.doseNumber[x]` is 1..1 within `protocolApplied` so the template needs a real
-// value, and the directive always fires because the instance's gate requires the answer to exist.
-// positiveInt cannot express "0 doses" - that answer is "no".
+// Total number of doses - always answered, the form item is required once "yes" is picked (issue
+// #36). PLACEHOLDER DEFAULT - the Bundle.timestamp idiom: `protocolApplied.doseNumber[x]` is 1..1
+// within `protocolApplied` so the template needs a real value, and the directive always fires
+// because every "yes" gate requires the answer to exist. positiveInt cannot express "0 doses" - that
+// answer is "no".
 RuleSet: RuleSetImmunizationDoseAnswered(suffix)
 * protocolApplied.doseNumberPositiveInt = 1
 * protocolApplied.doseNumberPositiveInt.extension[+].url = $sdc-templateExtractValue
 * protocolApplied.doseNumberPositiveInt.extension[=].valueString = "%resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.first()"
 
-// Total number of doses, absent - a statically declared data-absent-reason and no directive.
-RuleSet: RuleSetImmunizationDoseAbsent(reason)
-* protocolApplied.doseNumberPositiveInt.extension[+].url = $data-absent-reason
-* protocolApplied.doseNumberPositiveInt.extension[=].valueCode = #{reason}
-
 
 // =================================================================================================
-// The four "yes" row variants.
+// The two "yes" row variants.
 // =================================================================================================
 
-RuleSet: RuleSetImmunizationDatedDosed(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay, vaccineDisplayRaw)
+RuleSet: RuleSetImmunizationDated(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay, vaccineDisplayRaw)
 * insert RuleSetImmunizationBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
 * insert RuleSetImmunizationVaccineAnswered({suffix}, {vaccineCode}, {vaccineDisplayRaw})
 * status = #completed
 * insert RuleSetImmunizationOccurrenceAnswered({suffix})
 * insert RuleSetImmunizationDoseAnswered({suffix})
 
-RuleSet: RuleSetImmunizationDatedNoDose(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay, vaccineDisplayRaw)
-* insert RuleSetImmunizationBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
-* insert RuleSetImmunizationVaccineAnswered({suffix}, {vaccineCode}, {vaccineDisplayRaw})
-* status = #completed
-* insert RuleSetImmunizationOccurrenceAnswered({suffix})
-* insert RuleSetImmunizationDoseAbsent(asked-unknown)
-
-RuleSet: RuleSetImmunizationUndatedDosed(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay, vaccineDisplayRaw)
+RuleSet: RuleSetImmunizationUndated(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay, vaccineDisplayRaw)
 * insert RuleSetImmunizationBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
 * insert RuleSetImmunizationVaccineAnswered({suffix}, {vaccineCode}, {vaccineDisplayRaw})
 * status = #completed
 * insert RuleSetImmunizationOccurrenceAbsent(asked-unknown)
 * insert RuleSetImmunizationDoseAnswered({suffix})
-
-RuleSet: RuleSetImmunizationUndatedNoDose(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay, vaccineDisplayRaw)
-* insert RuleSetImmunizationBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
-* insert RuleSetImmunizationVaccineAnswered({suffix}, {vaccineCode}, {vaccineDisplayRaw})
-* status = #completed
-* insert RuleSetImmunizationOccurrenceAbsent(asked-unknown)
-* insert RuleSetImmunizationDoseAbsent(asked-unknown)
 
 
 // =================================================================================================
@@ -198,8 +185,9 @@ RuleSet: RuleSetVaccinationStatusNo(diseaseCode, diseaseDisplay, vaccineCode, va
 * insert RuleSetVaccinationStatusBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
 * valueCodeableConcept = $sct#373067005 "No (qualifier value)"
 
-// "Unknown" - it is not known whether the person was vaccinated against this disease. The same
-// qualifier this IG uses for every other "unknown" that can be carried as a code.
+// "Unknown" - it is not known whether the person was vaccinated against this disease, either because
+// the physician said so or because the row was left unanswered (issue #36: FOPH records both the
+// same way). The same qualifier this IG uses for every other "unknown" that can be carried as a code.
 RuleSet: RuleSetVaccinationStatusUnknown(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
 * insert RuleSetVaccinationStatusBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
 * valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
@@ -210,49 +198,35 @@ RuleSet: RuleSetVaccinationStatusUnknown(diseaseCode, diseaseDisplay, vaccineCod
 //
 // The gate cannot be a rule set ARGUMENT: it contains parentheses, and `(`, `)` and `,` all have to
 // be backslash-escaped inside an argument, which would turn every expression into an unreadable
-// thicket. So each variant carries its own gate and takes only {suffix}. The six gates are mutually
-// exclusive and together cover every answered state, so exactly one fires per answered row.
+// thicket. So each variant carries its own gate and takes only {suffix}. The four gates are mutually
+// exclusive and together cover every state of the row, unanswered included, so exactly one fires per
+// row (the one exception, "yes" without the required dose count, is explained in the header).
 //
-// Each gate yields the answered status Coding (a single item) or nothing - no `iif` and no
-// empty-collection literal, which matters because a brace pair anywhere in a parameterised rule set,
-// comments included, is read by FSH as a parameter reference.
+// Each gate yields a single item or nothing - no `iif` and no empty-collection literal, which matters
+// because a brace pair anywhere in a parameterised rule set, comments included, is read by FSH as a
+// parameter reference. The three gates of an ANSWER yield the answered status Coding; the "unknown"
+// gate has to fire without one too, so it yields `%resource` itself, filtered by "neither yes nor no".
 //
 // The IDENTITY VALUE on fullUrl is load-bearing: the engine seeds a context-gated entry with a
 // shallow spread of its FIRST value, so a value whose path starts at `resource.` would replace the
 // whole static resource. See ChEkmDocumentMpoxTemplate.
 // =================================================================================================
 
-RuleSet: RuleSetImmunizationEntryDatedDosed(suffix)
+RuleSet: RuleSetImmunizationEntryDated(suffix)
 * entry[+].extension[0].url = $sdc-templateExtractContext
 * entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists())"
-* entry[=].fullUrl = "http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}DatedDosed"
+* entry[=].fullUrl = "http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}Dated"
 * entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
-* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}DatedDosed'"
-* entry[=].resource = ExtractedImmunization{suffix}DatedDosed
+* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}Dated'"
+* entry[=].resource = ExtractedImmunization{suffix}Dated
 
-RuleSet: RuleSetImmunizationEntryDatedNoDose(suffix)
-* entry[+].extension[0].url = $sdc-templateExtractContext
-* entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists().not())"
-* entry[=].fullUrl = "http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}DatedNoDose"
-* entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
-* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}DatedNoDose'"
-* entry[=].resource = ExtractedImmunization{suffix}DatedNoDose
-
-RuleSet: RuleSetImmunizationEntryUndatedDosed(suffix)
+RuleSet: RuleSetImmunizationEntryUndated(suffix)
 * entry[+].extension[0].url = $sdc-templateExtractContext
 * entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists())"
-* entry[=].fullUrl = "http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}UndatedDosed"
+* entry[=].fullUrl = "http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}Undated"
 * entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
-* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}UndatedDosed'"
-* entry[=].resource = ExtractedImmunization{suffix}UndatedDosed
-
-RuleSet: RuleSetImmunizationEntryUndatedNoDose(suffix)
-* entry[+].extension[0].url = $sdc-templateExtractContext
-* entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists().not())"
-* entry[=].fullUrl = "http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}UndatedNoDose"
-* entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
-* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}UndatedNoDose'"
-* entry[=].resource = ExtractedImmunization{suffix}UndatedNoDose
+* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Immunization/ExtractedImmunization{suffix}Undated'"
+* entry[=].resource = ExtractedImmunization{suffix}Undated
 
 RuleSet: RuleSetVaccinationStatusEntryNo(suffix)
 * entry[+].extension[0].url = $sdc-templateExtractContext
@@ -264,40 +238,28 @@ RuleSet: RuleSetVaccinationStatusEntryNo(suffix)
 
 RuleSet: RuleSetVaccinationStatusEntryUnknown(suffix)
 * entry[+].extension[0].url = $sdc-templateExtractContext
-* entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='261665006')"
+* entry[=].extension[0].valueString = "%resource.where(descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' or code='373067005').exists().not())"
 * entry[=].fullUrl = "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatus{suffix}Unknown"
 * entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
 * entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatus{suffix}Unknown'"
 * entry[=].resource = ExtractedVaccinationStatus{suffix}Unknown
 
 RuleSet: RuleSetImmunizationEntries(suffix)
-* insert RuleSetImmunizationEntryDatedDosed({suffix})
-* insert RuleSetImmunizationEntryDatedNoDose({suffix})
-* insert RuleSetImmunizationEntryUndatedDosed({suffix})
-* insert RuleSetImmunizationEntryUndatedNoDose({suffix})
+* insert RuleSetImmunizationEntryDated({suffix})
+* insert RuleSetImmunizationEntryUndated({suffix})
 * insert RuleSetVaccinationStatusEntryNo({suffix})
 * insert RuleSetVaccinationStatusEntryUnknown({suffix})
 
 
-RuleSet: RuleSetImmunizationSectionEntryDatedDosed(suffix)
-* section[=].entry[+].reference = "Immunization/ExtractedImmunization{suffix}DatedDosed"
+RuleSet: RuleSetImmunizationSectionEntryDated(suffix)
+* section[=].entry[+].reference = "Immunization/ExtractedImmunization{suffix}Dated"
 * section[=].entry[=].extension[0].url = $sdc-templateExtractValue
-* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunization{suffix}DatedDosed'))"
+* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunization{suffix}Dated'))"
 
-RuleSet: RuleSetImmunizationSectionEntryDatedNoDose(suffix)
-* section[=].entry[+].reference = "Immunization/ExtractedImmunization{suffix}DatedNoDose"
+RuleSet: RuleSetImmunizationSectionEntryUndated(suffix)
+* section[=].entry[+].reference = "Immunization/ExtractedImmunization{suffix}Undated"
 * section[=].entry[=].extension[0].url = $sdc-templateExtractValue
-* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunization{suffix}DatedNoDose'))"
-
-RuleSet: RuleSetImmunizationSectionEntryUndatedDosed(suffix)
-* section[=].entry[+].reference = "Immunization/ExtractedImmunization{suffix}UndatedDosed"
-* section[=].entry[=].extension[0].url = $sdc-templateExtractValue
-* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunization{suffix}UndatedDosed'))"
-
-RuleSet: RuleSetImmunizationSectionEntryUndatedNoDose(suffix)
-* section[=].entry[+].reference = "Immunization/ExtractedImmunization{suffix}UndatedNoDose"
-* section[=].entry[=].extension[0].url = $sdc-templateExtractValue
-* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunization{suffix}UndatedNoDose'))"
+* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDose{suffix}').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunization{suffix}Undated'))"
 
 RuleSet: RuleSetVaccinationStatusSectionEntryNo(suffix)
 * section[=].entry[+].reference = "Observation/ExtractedVaccinationStatus{suffix}No"
@@ -307,28 +269,28 @@ RuleSet: RuleSetVaccinationStatusSectionEntryNo(suffix)
 RuleSet: RuleSetVaccinationStatusSectionEntryUnknown(suffix)
 * section[=].entry[+].reference = "Observation/ExtractedVaccinationStatus{suffix}Unknown"
 * section[=].entry[=].extension[0].url = $sdc-templateExtractValue
-* section[=].entry[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatus{suffix}Unknown'))"
+* section[=].entry[=].extension[0].valueString = "%resource.where(descendants().where(linkId='immunizationStatus{suffix}').answer.value.ofType(Coding).where(code='373066001' or code='373067005').exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatus{suffix}Unknown'))"
 
 RuleSet: RuleSetImmunizationSectionEntries(suffix)
-* insert RuleSetImmunizationSectionEntryDatedDosed({suffix})
-* insert RuleSetImmunizationSectionEntryDatedNoDose({suffix})
-* insert RuleSetImmunizationSectionEntryUndatedDosed({suffix})
-* insert RuleSetImmunizationSectionEntryUndatedNoDose({suffix})
+* insert RuleSetImmunizationSectionEntryDated({suffix})
+* insert RuleSetImmunizationSectionEntryUndated({suffix})
 * insert RuleSetVaccinationStatusSectionEntryNo({suffix})
 * insert RuleSetVaccinationStatusSectionEntryUnknown({suffix})
 
 
 RuleSet: RuleSetImmunizationSectionMpox
-// Composition.section[immunization] - present only when at least one row was answered, because the
-// section is 0..1 with `entry` 1..*: an empty section would be invalid, and a section whose entries
-// point at Immunizations that were never emitted would dangle. One computed entry per INSTANCE, so
-// at most two of the twelve references survive; each carries its instance's gate verbatim, so a
-// reference can never outlive the resource it points at.
+// Composition.section[immunization] - ALWAYS present: since issue #36 every row extracts to a
+// resource, an unanswered one to the "unknown" Observation. One computed entry per INSTANCE, so
+// exactly two of the eight references survive (one per row); each carries its instance's gate
+// verbatim, so a reference can never outlive the resource it points at.
 //
-// `section[+]` appends after the sections the caller has already declared, so this rule set has to
-// be inserted LAST in the Composition template and stay last.
+// The section is still a CONTEXT-GATED element, with a gate that always fires (`%resource`): it
+// follows the gated cause-of-death section, and a static array element after a gated one is put at
+// the wrong index by the engine (forms-summary.md section 8, the ordering rule). For the same
+// reason `section[+]` appends after the sections the caller has already declared, so this rule set
+// has to be inserted LAST in the Composition template and stay last.
 * section[+].extension[0].url = $sdc-templateExtractContext
-* section[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatusSmallpox' or linkId='immunizationStatusMpox').answer.value.first()"
+* section[=].extension[0].valueString = "%resource"
 * section[=].title = "Immunization section"
 * section[=].code = $loinc#11369-6
 * insert RuleSetImmunizationSectionEntries(Smallpox)
@@ -339,19 +301,15 @@ RuleSet: RuleSetImmunizationSectionInvasivePneumococcalDisease
 // Composition.section[immunization] for the invasive pneumococcal disease report - the same shape as
 // RuleSetImmunizationSectionMpox, with ONE row instead of two.
 //
-// Present only when the row was answered, because the section is 0..1 with `entry` 1..*: an empty
-// section would be invalid, and a section whose entry points at a resource that was never emitted
-// would dangle. One computed entry per INSTANCE, so at most one of the six references survives;
-// each carries its instance's gate verbatim, so a reference can never outlive its resource.
-//
-// The gate is NOT parameterisable and the section rule set therefore not shareable across diseases:
-// it has to name the row linkIds of THIS form, and a rule set argument cannot carry the `(`/`)` of
-// the expressions below. Two organisms, two four-line rule sets.
+// Always present, with an always-firing gate kept for the ordering rule - see
+// RuleSetImmunizationSectionMpox. One computed entry per INSTANCE, so exactly one of the four
+// references survives; each carries its instance's gate verbatim, so a reference can never outlive
+// its resource.
 //
 // `section[+]` appends after the sections the caller has already declared, so this rule set has to
 // be inserted LAST in the Composition template and stay last.
 * section[+].extension[0].url = $sdc-templateExtractContext
-* section[=].extension[0].valueString = "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.first()"
+* section[=].extension[0].valueString = "%resource"
 * section[=].title = "Immunization section"
 * section[=].code = $loinc#11369-6
 * insert RuleSetImmunizationSectionEntries(Pneumococcal)

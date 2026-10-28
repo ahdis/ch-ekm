@@ -106,10 +106,11 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 //   yes       ChEkmImmunization, status = completed (with the date and the dose count)
 //   no        this Observation, value = sct#373067005 "No"
 //   unknown   this Observation, value = sct#261665006 "Unknown"
-// A row that was not answered produces nothing at all. All of them are referenced from
-// Composition.section[immunization], so the section still holds one entry per form row whatever the
-// answer was - which is what makes "was this person asked about the smallpox vaccination?"
-// answerable, the argument that decided issue #28.
+//   unanswered the same as "unknown" (issue #36: the question is optional, and FOPH records a row
+//             left blank as "unknown" - the form pre-selects that answer)
+// All of them are referenced from Composition.section[immunization], so the section holds one entry
+// per form row whatever the answer was - which is what makes "was this person asked about the
+// smallpox vaccination?" answerable, the argument that decided issue #28.
 //
 // WHICH VACCINATION THE ANSWER IS ABOUT - the single component. `Observation.code` is the generic
 // observable sct#408864009 "Vaccination status"; SNOMED pre-coordinates a per-disease vaccination
@@ -125,13 +126,13 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 // as it does for Immunization.protocolApplied.targetDisease.
 //
 // `dataAbsentReason` is forbidden for the same reason as on the cause of death: "unknown" is an
-// answer the physician gave, not a missing recording. An unanswered row emits no resource, which is
-// the genuinely-absent case and needs no element to say so.
+// answer, not a missing recording. That holds for the unanswered row too - FOPH decided (issue #36)
+// that it MEANS "unknown", so it is carried as that answer rather than as an absent value.
 Profile: ChEkmObservationVaccinationStatus
 Parent: Observation
 Id: ch-ekm-observation-vaccination-status
 Title: "CH EKM Observation: Vaccination status"
-Description: "This CH EKM base profile constrains the Observation resource for the 'no' and 'unknown' answers of the 'Impfstatus' (vaccination status) section: for one vaccination relevant to the reported disease, that the affected person was not vaccinated, or that it is not known whether they were. A 'yes' answer is a ChEkmImmunization instead. Referenced from Composition.section[immunization]."
+Description: "This CH EKM base profile constrains the Observation resource for the 'no' and 'unknown' answers of the 'Impfstatus' (vaccination status) section: for one vaccination relevant to the reported disease, that the affected person was not vaccinated, or that it is not known whether they were. A row left unanswered is reported as 'unknown'. A 'yes' answer is a ChEkmImmunization instead. Referenced from Composition.section[immunization]."
 * . ^short = "CH EKM Observation: vaccination status ('no' / 'unknown') for one vaccination"
 * status = #final
 * code = $sct#408864009 "Vaccination status (observable entity)"
@@ -145,7 +146,7 @@ Description: "This CH EKM base profile constrains the Observation resource for t
 * valueCodeableConcept MS
 * valueCodeableConcept ^short = "sct#373067005 'No' or sct#261665006 'Unknown' — never 'Yes', which is a ChEkmImmunization"
 * dataAbsentReason 0..0
-* dataAbsentReason ^short = "Not used: 'unknown' is an answer and is carried in value[x]; an unanswered row produces no Observation at all"
+* dataAbsentReason ^short = "Not used: 'unknown' is an answer and is carried in value[x]; an unanswered row is reported as 'unknown' too"
 
 // The vaccination the answer is about.
 * component 1..1

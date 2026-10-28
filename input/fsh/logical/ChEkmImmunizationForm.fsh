@@ -8,11 +8,12 @@
 // vaccination. That is also why `targetDisease` is part of the model rather than of the
 // questionnaire only: it is what tells the rows apart on the wire.
 //
-// EVERY ANSWERED ROW MAPS ONTO ONE RESOURCE, but not always the same one: "yes" is a
-// ChEkmImmunization, "no" and "unknown" are a ChEkmObservationVaccinationStatus. Only "yes"
+// EVERY ROW MAPS ONTO ONE RESOURCE, but not always the same one: "yes" is a ChEkmImmunization, "no"
+// and "unknown" are a ChEkmObservationVaccinationStatus - and so is an unanswered row, which FOPH
+// records the same way as "unknown" (issue #36). Only "yes"
 // describes a vaccination; the other two are answers to a closed question, and R4
 // `Immunization.status` cannot express "unknown" at all. Both are referenced from
-// Composition.section[immunization], so the section still carries one entry per answered row. See
+// Composition.section[immunization], so the section carries one entry per row. See
 // ChEkmImmunization and ChEkmObservationVaccinationStatus for the full reasoning.
 
 Logical: ChEkmImmunizationForm
@@ -28,13 +29,13 @@ Description: "Logical model for one row of the form section 'Vaccination status'
 * targetDisease from $TargetDiseasesVS (preferred)
 
 // Yes / No / Unknown. Unlike the hospitalisation question, all three answers produce a resource -
-// but the answer decides WHICH resource, see the header. An unanswered row produces none.
-* status 0..1 CodeableConcept "Vaccinated? yes / no / unknown (Geimpft?)"
+// but the answer decides WHICH resource, see the header. Optional (issue #36): left unanswered it
+// is reported as "unknown", which is also the form's initial value.
+* status 0..1 CodeableConcept "Vaccinated? yes / no / unknown (Geimpft?); unanswered means unknown"
 * status from ChEkmYesNoUnknown (required)
 
-// "mit total ___ Dosen" - only asked when the answer above is "yes". Left blank when the person was
-// vaccinated but the number of doses was not established.
-* doses 0..1 positiveInt "Total number of doses received (mit total ___ Dosen)"
+// "mit total ___ Dosen" - only asked when the answer above is "yes", and then MANDATORY (issue #36).
+* doses 0..1 positiveInt "Total number of doses received (mit total ___ Dosen); required when vaccinated"
 
 // "Letzte Dosis, Datum" - only asked when the answer above is "yes".
 * lastDoseDate 0..1 dateTime "Date of the last dose (Letzte Dosis, Datum)"
@@ -53,7 +54,6 @@ Title: "Immunization Form to CH EKM Immunization"
 * targetDisease -> "Immunization.protocolApplied.targetDisease" "The vaccination the row asks about"
 * status -> "Immunization.status" "Answered 'yes' (373066001): status = completed. This resource exists for no other answer"
 * doses -> "Immunization.protocolApplied.doseNumberPositiveInt" "Total number of doses; this resource describes the last dose of the series, so the last dose's number is the total"
-* doses -> "Immunization.protocolApplied.doseNumberPositiveInt.extension[dataabsentreason]" "Vaccinated without a stated count: asked-unknown"
 * lastDoseDate -> "Immunization.occurrenceDateTime" "Date of the last dose"
 * lastDoseDate -> "Immunization.occurrenceDateTime.extension[dataabsentreason]" "Vaccinated without a stated date: asked-unknown"
 * vaccine -> "Immunization.vaccineCode" "A picked Swiss vaccine code, or a typed brand name in vaccineCode.text; when nothing was answered, the SNOMED CT vaccine product concept for the target disease"
@@ -64,7 +64,7 @@ Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-observation-vaccina
 Id: immunization-form-to-vaccination-status
 Title: "Immunization Form to CH EKM Vaccination Status Observation"
 * -> "Observation" "Maps a row of the 'Impfstatus' form section that was answered 'no' or 'unknown' to the ChEkmObservationVaccinationStatus profile. 'yes' maps to ChEkmImmunization instead"
-* status -> "Observation.valueCodeableConcept" "The answer itself: 'no' (373067005) or 'unknown' (261665006). 'yes' produces no Observation"
+* status -> "Observation.valueCodeableConcept" "The answer itself: 'no' (373067005) or 'unknown' (261665006); an unanswered row is 'unknown' too. 'yes' produces no Observation"
 * targetDisease -> "Observation.component.valueCodeableConcept" "The vaccination the row asks about, named by the disease it protects against"
 * vaccine -> "Observation.component.code" "The SNOMED CT vaccine product of the row. NOT the answered brand name: the product question is only asked when the answer is 'yes', so this is always the fixed product concept for the row"
 // `doses` and `lastDoseDate` have no target here: both form items are enableWhen-gated on "yes", so

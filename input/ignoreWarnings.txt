@@ -13,18 +13,6 @@ None of the codings provided are in the value set 'IdentifierType' (http://hl7.o
 # renderer implements the code, so this is expected until the R4 code system catches up.
 Unknown code 'tab-container' in the CodeSystem 'http://hl7.org/fhir/questionnaire-item-control' version '4.0.1'
 
-# WAITING FOR AN IG PUBLISHER UPDATE. Errors are not suppressed by this file, but the match shows the
-# LAST comment line below as an "Editor's Comment" next to them in qa.html, so the remaining red build
-# is not mistaken for a defect in our resources.
-# 30 errors (Mpox 4 + invasive pneumococcal disease 2 $extract templates x 5 Questionnaire copies).
-# IG Publisher 3.0.1 (core 7.0.2) round-trips the contained template through R6 and drops a value-less
-# doseNumberPositiveInt carrying a data-absent-reason (and silently retypes a valued one to
-# doseNumberString). Our resources are correct; the fix is hapifhir/org.hl7.fhir.core#2765 (regression
-# of HL7/fhir-ig-publisher#1362). Once a Publisher with that fix is released, rebuild, check the errors
-# are gone, and remove this entry.
-# Expected until an IG Publisher with hapifhir/org.hl7.fhir.core#2765 is released: Publisher 3.0.1 drops the data-absent-reason on doseNumber of the contained $extract template; the template itself is correct (ahdis/ch-ekm#30).
-Immunization.protocolApplied.doseNumber[x]: minimum required = 1, but only found 0 (from %
-
 # The "Labor: Probe" sample extracts into TWO mutually exclusive ChEkmSpecimen template instances -
 # ExtractedLabSpecimenDated and ...Undated - because ch-ekm-dateTime ("at least YYYY-MM-DD") runs on a
 # valueless collection.collectedDateTime and a single template cannot be both answered and absent

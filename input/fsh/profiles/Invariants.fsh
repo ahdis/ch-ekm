@@ -25,6 +25,15 @@ Severity: #error
 Expression: "entry.resource.ofType(Patient).where(birthDate.exists() and birthDate.hasValue()).all(birthDate >= @1900-01-01 and ((birthDate.toString().length()=4 and birthDate <= %resource.timestamp.toString().substring(0,4).toDateTime()) or (birthDate.toString().length()=7 and birthDate <= %resource.timestamp.toString().substring(0,7).toDateTime()) or (birthDate.toString().length()=10 and birthDate <= %resource.timestamp.toString().substring(0,10).toDateTime())))"
 
 
+// Issue #36: FOPH requires the number of doses whenever a vaccination was given. R4 makes
+// doseNumber[x] 1..1, but a valueless primitive carrying only a data-absent-reason would satisfy that;
+// this rules it out. Sits on ChEkmImmunization.protocolApplied.doseNumberPositiveInt.
+Invariant: ch-ekm-immunization-dose-count
+Description: "The total number of doses must be given: a vaccination that took place always states its dose count, never a data-absent-reason."
+Severity: #error
+Expression: "hasValue()"
+
+
 // The response the Hepatitis C document carries answers the DISEASE-SPECIFIC questionnaire, not the
 // reporting form: it holds only the form questions without a FHIR target, so validated against the
 // form every required question it does not hold would be reported missing. Either the assembled

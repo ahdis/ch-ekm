@@ -18,27 +18,30 @@
 // the disease specialisation (ChEkmImmunizationMpox), exactly as the manifestation value set is.
 //
 // HOW THE ANSWER REACHES THE WIRE
-//   yes       THIS profile: status = completed, occurrenceDateTime = date of the last dose,
-//             protocolApplied.doseNumberPositiveInt = total number of doses. Both details are
-//             optional on the form, so either can be present-but-valueless with a
-//             data-absent-reason #asked-unknown.
-//   no        ChEkmObservationVaccinationStatus, value = sct#373067005 "No"
-//   unknown   ChEkmObservationVaccinationStatus, value = sct#261665006 "Unknown"
+//   yes        THIS profile: status = completed, occurrenceDateTime = date of the last dose,
+//              protocolApplied.doseNumberPositiveInt = total number of doses. The dose count is
+//              MANDATORY (issue #36); the date is optional on the form, so it can be
+//              present-but-valueless with a data-absent-reason #asked-unknown.
+//   no         ChEkmObservationVaccinationStatus, value = sct#373067005 "No"
+//   unknown    ChEkmObservationVaccinationStatus, value = sct#261665006 "Unknown"
+//   unanswered the same as "unknown" (issue #36)
 //
-// WHY THE DOSE NUMBER TAKES A DATA-ABSENT-REASON. `protocolApplied.targetDisease` names the
-// vaccination the row is about and is required, so that "was this person vaccinated against
-// smallpox?" is answerable directly from the resource rather than only by mapping `vaccineCode`
-// through a vaccine -> disease ConceptMap. Keeping it means keeping `protocolApplied`, and R4 makes
-// `doseNumber[x]` 1..1 inside that element - so when no dose count was given the dose is
-// present-but-valueless with a data-absent-reason.
+// WHY THE DOSE COUNT MUST BE A VALUE. FOPH requires the number of doses whenever a vaccination was
+// given (issue #36, 22.10.2026). `protocolApplied.targetDisease` names the vaccination the row is
+// about and is required, so that "was this person vaccinated against smallpox?" is answerable
+// directly from the resource rather than only by mapping `vaccineCode` through a vaccine -> disease
+// ConceptMap. Keeping it means keeping `protocolApplied`, where R4 makes `doseNumber[x]` 1..1; the
+// invariant ch-ekm-immunization-dose-count additionally forbids the valueless,
+// data-absent-reason-only shape, which R4 itself would accept.
 //
-// `occurrence[x]` is 1..1 at the resource root and gets the same treatment when the date is unknown.
-// Both follow the idiom the IG already uses for Patient.deceasedDateTime and Address.country
+// `occurrence[x]` is 1..1 at the resource root and DOES take a data-absent-reason when the date is
+// unknown - the idiom the IG already uses for Patient.deceasedDateTime and Address.country
 // (forms-summary.md section 12).
 //
 // NOTE: the IG Publisher currently DAMAGES this shape when the template is carried in
-// `Questionnaire.contained[0]` - it drops a valueless primitive inside a BackboneElement and retypes
-// a valued one (positiveInt -> string). The resources themselves are correct; see TODO.md and the
+// `Questionnaire.contained[0]` - it retypes a valued primitive inside a BackboneElement
+// (positiveInt -> string), and used to drop a valueless one (which no template has any more since
+// the dose count became mandatory). The resources themselves are correct; see issue #30 and the
 // minimal reproduction on branch oe_contained_primitive_extension in ../ch-ig.
 
 Profile: ChEkmImmunization
@@ -82,4 +85,5 @@ Description: "This CH EKM base profile constrains the Immunization resource for 
 // LAST dose of the series, and the last dose's number IS the total. `seriesDoses[x]` means
 // "how many doses the recommended series has", which is not what the form asks.
 * protocolApplied.doseNumber[x] only positiveInt
-* protocolApplied.doseNumberPositiveInt ^short = "Total number of doses received ('mit total ___ Dosen') — the number of the last dose. Valueless with a data-absent-reason #asked-unknown when no count was given"
+* protocolApplied.doseNumberPositiveInt obeys ch-ekm-immunization-dose-count
+* protocolApplied.doseNumberPositiveInt ^short = "Total number of doses received ('mit total ___ Dosen') — the number of the last dose. Mandatory: never valueless"

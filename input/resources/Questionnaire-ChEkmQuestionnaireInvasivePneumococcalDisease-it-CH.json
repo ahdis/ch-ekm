@@ -265,7 +265,7 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.first()"
+                    "valueString": "%resource"
                   }
                 ],
                 "title": "Immunization section",
@@ -279,38 +279,20 @@
                 },
                 "entry": [
                   {
-                    "reference": "Immunization/ExtractedImmunizationPneumococcalDatedDosed",
+                    "reference": "Immunization/ExtractedImmunizationPneumococcalDated",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalDatedDosed'))"
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalDated'))"
                       }
                     ]
                   },
                   {
-                    "reference": "Immunization/ExtractedImmunizationPneumococcalDatedNoDose",
+                    "reference": "Immunization/ExtractedImmunizationPneumococcalUndated",
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalDatedNoDose'))"
-                      }
-                    ]
-                  },
-                  {
-                    "reference": "Immunization/ExtractedImmunizationPneumococcalUndatedDosed",
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalUndatedDosed'))"
-                      }
-                    ]
-                  },
-                  {
-                    "reference": "Immunization/ExtractedImmunizationPneumococcalUndatedNoDose",
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalUndatedNoDose'))"
+                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Immunization/ExtractedImmunizationPneumococcalUndated'))"
                       }
                     ]
                   },
@@ -328,7 +310,7 @@
                     "extension": [
                       {
                         "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                        "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='261665006').first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatusPneumococcalUnknown'))"
+                        "valueString": "%resource.where(descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' or code='373067005').exists().not()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'Observation/ExtractedVaccinationStatusPneumococcalUnknown'))"
                       }
                     ]
                   }
@@ -1349,18 +1331,18 @@
               "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists())"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDatedDosed",
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDated",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDatedDosed'"
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDated'"
               }
             ]
           },
           "resource": {
             "resourceType": "Immunization",
-            "id": "ExtractedImmunizationPneumococcalDatedDosed",
+            "id": "ExtractedImmunizationPneumococcalDated",
             "status": "completed",
             "patient": {
               "reference": "Patient/ExtractedPatient"
@@ -1384,78 +1366,6 @@
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                       "valueString": "%resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.first()"
-                    }
-                  ]
-                }
-              }
-            ],
-            "vaccineCode": {
-              "coding": [
-                {
-                  "code": "836398006",
-                  "system": "http://snomed.info/sct",
-                  "display": "Streptococcus pneumoniae antigen-containing vaccine product"
-                }
-              ],
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product'))))"
-                }
-              ]
-            },
-            "occurrenceDateTime": "1900-01-01",
-            "_occurrenceDateTime": {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "%resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.first()"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists().not())"
-            }
-          ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDatedNoDose",
-          "_fullUrl": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalDatedNoDose'"
-              }
-            ]
-          },
-          "resource": {
-            "resourceType": "Immunization",
-            "id": "ExtractedImmunizationPneumococcalDatedNoDose",
-            "status": "completed",
-            "patient": {
-              "reference": "Patient/ExtractedPatient"
-            },
-            "protocolApplied": [
-              {
-                "targetDisease": [
-                  {
-                    "coding": [
-                      {
-                        "code": "16814004",
-                        "system": "http://snomed.info/sct",
-                        "display": "Pneumococcal infectious disease"
-                      }
-                    ]
-                  }
-                ],
-                "_doseNumberPositiveInt": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                      "valueCode": "asked-unknown"
                     }
                   ]
                 }
@@ -1494,18 +1404,18 @@
               "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists())"
             }
           ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndatedDosed",
+          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndated",
           "_fullUrl": {
             "extension": [
               {
                 "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndatedDosed'"
+                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndated'"
               }
             ]
           },
           "resource": {
             "resourceType": "Immunization",
-            "id": "ExtractedImmunizationPneumococcalUndatedDosed",
+            "id": "ExtractedImmunizationPneumococcalUndated",
             "status": "completed",
             "patient": {
               "reference": "Patient/ExtractedPatient"
@@ -1529,77 +1439,6 @@
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                       "valueString": "%resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.first()"
-                    }
-                  ]
-                }
-              }
-            ],
-            "vaccineCode": {
-              "coding": [
-                {
-                  "code": "836398006",
-                  "system": "http://snomed.info/sct",
-                  "display": "Streptococcus pneumoniae antigen-containing vaccine product"
-                }
-              ],
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).exists(), %factory.CodeableConcept(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(Coding).first()), iif(%resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).exists(), %factory.withProperty(%factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product')), 'text', %resource.descendants().where(linkId='immunizationVaccinePneumococcal').answer.value.ofType(string).first()), %factory.CodeableConcept(%factory.Coding('http://snomed.info/sct', '836398006', 'Streptococcus pneumoniae antigen-containing vaccine product'))))"
-                }
-              ]
-            },
-            "_occurrenceDateTime": {
-              "extension": [
-                {
-                  "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                  "valueCode": "asked-unknown"
-                }
-              ]
-            }
-          }
-        },
-        {
-          "extension": [
-            {
-              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' and %resource.descendants().where(linkId='immunizationLastDosePneumococcal').answer.value.exists().not() and %resource.descendants().where(linkId='immunizationDosesPneumococcal').answer.value.exists().not())"
-            }
-          ],
-          "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndatedNoDose",
-          "_fullUrl": {
-            "extension": [
-              {
-                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                "valueString": "'http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndatedNoDose'"
-              }
-            ]
-          },
-          "resource": {
-            "resourceType": "Immunization",
-            "id": "ExtractedImmunizationPneumococcalUndatedNoDose",
-            "status": "completed",
-            "patient": {
-              "reference": "Patient/ExtractedPatient"
-            },
-            "protocolApplied": [
-              {
-                "targetDisease": [
-                  {
-                    "coding": [
-                      {
-                        "code": "16814004",
-                        "system": "http://snomed.info/sct",
-                        "display": "Pneumococcal infectious disease"
-                      }
-                    ]
-                  }
-                ],
-                "_doseNumberPositiveInt": {
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/data-absent-reason",
-                      "valueCode": "asked-unknown"
                     }
                   ]
                 }
@@ -1699,7 +1538,7 @@
           "extension": [
             {
               "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-              "valueString": "%resource.descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='261665006')"
+              "valueString": "%resource.where(descendants().where(linkId='immunizationStatusPneumococcal').answer.value.ofType(Coding).where(code='373066001' or code='373067005').exists().not())"
             }
           ],
           "fullUrl": "http://test.fhir.ch/r4/Observation/ExtractedVaccinationStatusPneumococcalUnknown",
@@ -7517,7 +7356,8 @@
                         "system": "http://snomed.info/sct",
                         "code": "261665006",
                         "display": "Sconosciuto"
-                      }
+                      },
+                      "initialSelected": true
                     }
                   ]
                 },
@@ -7526,6 +7366,7 @@
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses",
                   "text": "Numero totale di dosi",
                   "type": "integer",
+                  "required": true,
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/minValue",
@@ -9409,6 +9250,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-23T13:58:21+02:00",
+  "date": "2026-10-28T14:40:18+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireInvasivePneumococcalDisease and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

@@ -85,20 +85,21 @@ This IG uses **two parallel representations** of the report content:
   `code = EXPAGNT`, `extension[exposureAddress]` for the place (Wo — country as ISO code +
   `iso21090-codedString`, precise location as `city`, or a `data-absent-reason` when reported as
   unknown), `effective[x]` + `component[dateOfEntry]` for the time (Wann).
-- **The "Impfstatus" section (issue #29) — one entry per answered form row, but the RESOURCE TYPE
-  depends on the answer.** Only `yes` describes a vaccination; `no` and `unknown` are answers to a
+- **The "Impfstatus" section (issues #29, #36) — one entry per form row, but the RESOURCE TYPE
+  depends on the answer.** The question is optional and pre-selected to "unknown"; a row left
+  unanswered is reported exactly like "unknown" (FOPH, #36). Only `yes` describes a vaccination; `no` and `unknown` are answers to a
   closed question, and R4 `Immunization.status` has no "unknown" (an earlier draft used
   `not-done` + a modifier extension that took the assertion back — removed). Both resource types are
   referenced from `Composition.section[immunization]` (LOINC 11369-6, the section code CH VACD also
   uses), whose `entry` is sliced by profile into `immunization` / `vaccination-status`.
   - **`ChEkmImmunization`** (← `CHCoreImmunization`) — `yes` only, so `status = completed (exactly)`.
     `occurrenceDateTime` = the last dose, `protocolApplied.doseNumberPositiveInt` = the total number
-    of doses; both details are optional on the form, so either can be valueless with a
+    of doses. The dose count is MANDATORY once "yes" is answered (#36; required form item +
+    invariant `ch-ekm-immunization-dose-count`); the date is optional, so it can be valueless with a
     `data-absent-reason` `#asked-unknown`. `protocolApplied.targetDisease` names the vaccination;
     `vaccineCode` (1..1) is the picked Swiss brand code, else the SNOMED CT vaccine product for that
-    target disease. R4 makes `doseNumber[x]` 1..1 inside `protocolApplied`, and `occurrence[x]` 1..1
-    at the root, which is why extraction needs four mutually exclusive template instances for the
-    2 × 2 combinations of "which detail was answered" — see `RuleSetImmunization.fsh` and
+    target disease. `occurrence[x]` is 1..1, which is why extraction needs two mutually exclusive
+    Immunization template instances (`…Dated` / `…Undated`) — see `RuleSetImmunization.fsh` and
     forms-summary.md §8.
   - **`ChEkmObservationVaccinationStatus`** (← `Observation`) — `no` and `unknown`.
     `code = sct#408864009 "Vaccination status"` (SNOMED has no pre-coordinated vaccination-status

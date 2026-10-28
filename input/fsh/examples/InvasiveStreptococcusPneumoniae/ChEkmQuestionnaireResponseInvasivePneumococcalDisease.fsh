@@ -29,11 +29,11 @@
 //      ChEkmServiceRequest.specimen. No other round trip has a Specimen at all.
 //  10. Impfstatus: "ja", 2 doses, NO last-dose date, and the product TYPED as free text rather than
 //      picked from the Swiss vaccine list. Two Immunization branches that no other round-trip
-//      reaches: the UndatedDosed template instance (occurrenceDateTime valueless with a
+//      reaches: the Undated template instance (occurrenceDateTime valueless with a
 //      data-absent-reason, doseNumberPositiveInt = the answered total) and the `ofType(string)` leg
 //      of RuleSetImmunizationVaccineAnswered (vaccineCode.text = the typed name, coding[0] left as
-//      the SNOMED CT fallback product). Mpox covers DatedDosed with a picked brand Coding, and the
-//      "unknown" Observation.
+//      the SNOMED CT fallback product). Mpox covers Dated with a picked brand Coding, and the
+//      "unknown" Observation of an unanswered row.
 //
 // Person data reproduces ChEkmPatientInitialsExample / the example Bundle
 // (ChEkmBundleInvasiveStreptococcusPneumoniae), and Sepsis is the manifestation the example
@@ -179,7 +179,8 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 //   vaccineCode.coding[0]                   = sct#836398006 (the template's SNOMED fallback, kept)
 //   vaccineCode.text                        = "Prevenar 13" (the typed answer)
 // A "nein" / "unbekannt" answer would instead emit a
-// ChEkmObservationVaccinationStatusInvasivePneumococcalDisease, and an unanswered row nothing at all.
+// ChEkmObservationVaccinationStatusInvasivePneumococcalDisease, and so would an unanswered row (as
+// "unbekannt", issue #36).
 * item[0].item[4].linkId = "immunization"
 * item[0].item[4].item[0].linkId = "immunizationPneumococcal"
 * item[0].item[4].item[0].item[0].linkId = "immunizationStatusPneumococcal"

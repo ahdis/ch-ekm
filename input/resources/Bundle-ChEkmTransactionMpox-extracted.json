@@ -107,7 +107,7 @@
                       "reference": "Observation/ExtractedVaccinationStatusSmallpoxUnknown"
                     },
                     {
-                      "reference": "Immunization/ExtractedImmunizationMpoxDatedDosed"
+                      "reference": "Immunization/ExtractedImmunizationMpoxDated"
                     }
                   ]
                 }
@@ -617,10 +617,10 @@
             }
           },
           {
-            "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDatedDosed",
+            "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationMpoxDated",
             "resource": {
               "resourceType": "Immunization",
-              "id": "ExtractedImmunizationMpoxDatedDosed",
+              "id": "ExtractedImmunizationMpoxDated",
               "status": "completed",
               "patient": {
                 "reference": "Patient/ExtractedPatient"

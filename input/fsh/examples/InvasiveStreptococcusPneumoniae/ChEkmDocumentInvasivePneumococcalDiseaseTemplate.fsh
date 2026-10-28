@@ -77,40 +77,31 @@ Usage: #inline
 * insert RuleSetObservationCauseOfDeath(406617004, Invasive Streptococcus pneumoniae disease (disorder\), ExtractedConditionInvasivePneumococcalDisease)
 
 // ---------------------------------------------------------------------------
-// "Impfstatus" (issue #29) — SIX MUTUALLY EXCLUSIVE INSTANCES FOR THE ONE FORM ROW, of which
-// exactly one is ever emitted; the Bundle entry gates below decide which. Four Immunizations for
-// the 2 x 2 combinations of "was a last-dose date given" x "was a dose count given", and two
-// Observations for the "no" / "unknown" answers, which are not vaccinations. The full reasoning is
-// in questionnnaire/extract/RuleSetImmunization.fsh; Mpox instantiates the same six rule sets twice.
+// "Impfstatus" (issues #29, #36) — FOUR MUTUALLY EXCLUSIVE INSTANCES FOR THE ONE FORM ROW, of which
+// exactly one is ever emitted; the Bundle entry gates below decide which. Two Immunizations for
+// "was a last-dose date given" (the dose count is mandatory once "yes" is answered), and two
+// Observations for the "no" / "unknown" answers, which are not vaccinations — "unknown" also
+// covers the unanswered row. The full reasoning is in questionnnaire/extract/RuleSetImmunization.fsh;
+// Mpox instantiates the same four rule sets twice.
 //
 // ONE ROW, TOTAL DOSES: doseNumberPositiveInt is the TOTAL number of doses and occurrenceDateTime
 // the date of the LAST one, so an answered row produces exactly ONE Immunization — not one per dose
 // as the example Bundle carries. See ChEkmImmunizationInvasivePneumococcalDisease.
 //
-// The disease parameters, identical on all six: target disease sct#16814004 "Pneumococcal
+// The disease parameters, identical on all four: target disease sct#16814004 "Pneumococcal
 // infectious disease", fallback product sct#836398006 "Streptococcus pneumoniae antigen-containing
 // vaccine product". The display is passed twice, quoted and unquoted — a rule-set argument keeps its
 // FSH quotes, so only a bare-word argument can be nested inside a FHIRPath string literal.
 // ---------------------------------------------------------------------------
-Instance: ExtractedImmunizationPneumococcalDatedDosed
+Instance: ExtractedImmunizationPneumococcalDated
 InstanceOf: ChEkmImmunizationInvasivePneumococcalDisease
 Usage: #inline
-* insert RuleSetImmunizationDatedDosed(Pneumococcal, 16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product", Streptococcus pneumoniae antigen-containing vaccine product)
+* insert RuleSetImmunizationDated(Pneumococcal, 16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product", Streptococcus pneumoniae antigen-containing vaccine product)
 
-Instance: ExtractedImmunizationPneumococcalDatedNoDose
+Instance: ExtractedImmunizationPneumococcalUndated
 InstanceOf: ChEkmImmunizationInvasivePneumococcalDisease
 Usage: #inline
-* insert RuleSetImmunizationDatedNoDose(Pneumococcal, 16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product", Streptococcus pneumoniae antigen-containing vaccine product)
-
-Instance: ExtractedImmunizationPneumococcalUndatedDosed
-InstanceOf: ChEkmImmunizationInvasivePneumococcalDisease
-Usage: #inline
-* insert RuleSetImmunizationUndatedDosed(Pneumococcal, 16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product", Streptococcus pneumoniae antigen-containing vaccine product)
-
-Instance: ExtractedImmunizationPneumococcalUndatedNoDose
-InstanceOf: ChEkmImmunizationInvasivePneumococcalDisease
-Usage: #inline
-* insert RuleSetImmunizationUndatedNoDose(Pneumococcal, 16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product", Streptococcus pneumoniae antigen-containing vaccine product)
+* insert RuleSetImmunizationUndated(Pneumococcal, 16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product", Streptococcus pneumoniae antigen-containing vaccine product)
 
 Instance: ExtractedVaccinationStatusPneumococcalNo
 InstanceOf: ChEkmObservationVaccinationStatusInvasivePneumococcalDisease
@@ -225,7 +216,7 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentI
 * entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/Observation/ExtractedCauseOfDeathInvasivePneumococcalDisease'"
 * entry[=].resource = ExtractedCauseOfDeathInvasivePneumococcalDisease
 
-// Impfstatus — the six mutually exclusive instances of the one form row. Their gates are spelled out
+// Impfstatus — the four mutually exclusive instances of the one form row. Their gates are spelled out
 // in RuleSetImmunization.fsh (they cannot be rule-set arguments: the expressions contain parentheses).
-// At most ONE of the six fires per report; an unanswered row emits nothing at all.
+// Exactly ONE of the four fires per report; an unanswered row emits the "unknown" Observation (#36).
 * insert RuleSetImmunizationEntries(Pneumococcal)

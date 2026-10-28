@@ -119,8 +119,8 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 // --- Impfstatus (issue #29) ---------------------------------------------------------------------
 // One level-2 placeholder, because the section has a single sub-questionnaire whose own root group
 // becomes the tab. As on the Mpox form it sits between the Exposition and the treating physician.
-// ONE ROW (Pneumokokkenimpfung), asked with a TOTAL dose count -> exactly one ChEkmImmunization per
-// answered row. The CSV's "Gemäss: Impfausweis / Hausarzt / Anamnese" is NOT asked: it has no FHIR
+// ONE ROW (Pneumokokkenimpfung), asked with a TOTAL dose count -> exactly one ChEkmImmunization for
+// a "ja" row; "nein" / "unbekannt" / unanswered extract to the vaccination-status Observation. The CSV's "Gemäss: Impfausweis / Hausarzt / Anamnese" is NOT asked: it has no FHIR
 // target ("Questionnaire Response level" in the CSV).
 * insert RuleSetQrGroupImmunizationInvasivePneumococcalDisease
 

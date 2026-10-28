@@ -332,6 +332,24 @@ def localize_short_text(it):
         ext.pop("_valueString", None)
 
 
+def move_initial_to_options(it):
+    """An `initial` coding next to the baked answerOption trips que-11 ("If one or more answerOption
+    is present, initial[x] must be missing"). Express it as `initialSelected` on the matching option
+    instead - which also gives the pre-selected answer the localized display (e.g. the Impfstatus
+    rows, pre-selected to "unknown", issue #36)."""
+    initial = it.pop("initial", None)
+    if not initial:
+        return
+    for init in initial:
+        coding = init.get("valueCoding")
+        match = coding and next((o for o in it["answerOption"]
+                                 if o.get("valueCoding", {}).get("system") == coding.get("system")
+                                 and o.get("valueCoding", {}).get("code") == coding.get("code")), None)
+        if not match:
+            sys.exit(f"ERROR: {it['linkId']}: initial {init} is not among the expanded answer options")
+        match["initialSelected"] = True
+
+
 def walk(item):
     for it in item:
         localize_text(it)
@@ -346,6 +364,7 @@ def walk(item):
             it.pop("_answerValueSet", None)
             opts = expand(canonical)
             it["answerOption"] = opts
+            move_initial_to_options(it)
             downgrade_autocomplete(it)
             print(f"  {it['linkId']}: {len(opts)} options  <- {canonical}")
         if "item" in it:

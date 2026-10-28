@@ -105,7 +105,7 @@
             },
             "entry": [
               {
-                "reference": "Immunization/ExtractedImmunizationPneumococcalUndatedDosed"
+                "reference": "Immunization/ExtractedImmunizationPneumococcalUndated"
               }
             ]
           }
@@ -335,10 +335,10 @@
         ],
         "name": [
           {
-            "family": "Brachialis",
             "given": [
               "Potagon"
-            ]
+            ],
+            "family": "Brachialis"
           }
         ],
         "address": [
@@ -513,10 +513,10 @@
       }
     },
     {
-      "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndatedDosed",
+      "fullUrl": "http://test.fhir.ch/r4/Immunization/ExtractedImmunizationPneumococcalUndated",
       "resource": {
         "resourceType": "Immunization",
-        "id": "ExtractedImmunizationPneumococcalUndatedDosed",
+        "id": "ExtractedImmunizationPneumococcalUndated",
         "status": "completed",
         "patient": {
           "reference": "Patient/ExtractedPatient"

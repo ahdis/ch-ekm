@@ -404,14 +404,18 @@ RuleSet: RuleSetQrImmunizationRow(suffix, text, text-de-CH, text-fr-CH, text-it-
 * insert RuleSetQrLevel2Text({text}, {text-de-CH}, {text-fr-CH}, {text-it-CH})
 * item[=].item[=].type = #group
 
-// 1. "Geimpft?" (vaccinated?) - yes / no / unknown. All three are real answers and all three produce an
-//    Immunization — see ChEkmImmunization. The other three items are details OF the vaccination and
-//    are enableWhen-gated on "yes", so an answered dose count / date / product implies "yes"; the
-//    extraction template relies on that, exactly as the hospitalisation group does.
+// 1. "Geimpft?" (vaccinated?) - yes / no / unknown. "Yes" produces a ChEkmImmunization, "no" and
+//    "unknown" a ChEkmObservationVaccinationStatus. The other three items are details OF the
+//    vaccination and are enableWhen-gated on "yes", so an answered dose count / date / product implies
+//    "yes"; the extraction template relies on that, exactly as the hospitalisation group does.
+//    NOT REQUIRED, but PRE-SELECTED to "unknown" (issue #36): FOPH records an unanswered row the same
+//    way as "unknown", so the initial value shows the physician what will be reported, and clearing
+//    it changes nothing on the wire - the extraction maps a missing answer to "unknown" as well.
 * item[=].item[=].item[+].linkId = "immunizationStatus{suffix}"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.status"
 * insert RuleSetQrLevel3Text("Vaccinated?", "Geimpft?", "Vacciné ?", "Vaccinato?")
 * item[=].item[=].item[=].type = #choice
+* item[=].item[=].item[=].initial.valueCoding = $sct#261665006 "Unknown (qualifier value)"
 * item[=].item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown"
 * item[=].item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
@@ -424,11 +428,14 @@ RuleSet: RuleSetQrImmunizationRow(suffix, text, text-de-CH, text-fr-CH, text-it-
 * item[=].item[=].item[=].extension[=].valueCode = #horizontal
 
 // 2. "mit total ___ Dosen". A positive integer: doseNumberPositiveInt cannot be 0, and "0 Dosen"
-//    is not an answer this question has — that is what "no" above is for.
+//    is not an answer this question has — that is what "no" above is for. REQUIRED (issue #36): once
+//    "yes" is answered the count must be given; `required` only applies while the item is enabled,
+//    so the question itself stays optional.
 * item[=].item[=].item[+].linkId = "immunizationDoses{suffix}"
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses"
 * insert RuleSetQrLevel3Text("Total number of doses", "Total Anzahl Dosen", "Nombre total de doses", "Numero totale di dosi")
 * item[=].item[=].item[=].type = #integer
+* item[=].item[=].item[=].required = true
 * item[=].item[=].item[=].extension[+].url = $minValue
 * item[=].item[=].item[=].extension[=].valueInteger = 1
 * item[=].item[=].item[=].enableWhen[+].question = "immunizationStatus{suffix}"

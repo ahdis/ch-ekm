@@ -1138,21 +1138,34 @@ death Observation last and intact.
 ### A 1..1 primitive that is sometimes a value and sometimes a data-absent-reason (Impfstatus, issue #29)
 The vaccination rows are the first place where a **required** primitive has to be an answered value on
 one branch and a `data-absent-reason` on another: `Immunization.occurrence[x]` and
-`protocolApplied.doseNumber[x]` are both 1..1, and the last-dose date and the dose count are both
+`protocolApplied.doseNumber[x]` are both 1..1, and the last-dose date and the dose count were both
 optional once the answer is "yes". Three engine/SUSHI facts collide here, all found the hard way:
+
+> **Since issue #36 only the date splits the row.** FOPH (22.10.2026) made the dose count MANDATORY
+> once "yes" is answered (a `required` item, enableWhen-gated, so the question itself stays
+> optional), and decided that an UNANSWERED row is recorded as "unknown". So per row there are now
+> four instances — `…Dated` / `…Undated` Immunizations and the `…No` / `…Unknown` Observations —
+> and the "unknown" gate is "neither yes nor no" (`%resource.where(...)`), so it fires for an
+> explicit "unknown", a cleared answer and a row absent from the response alike. Every row therefore
+> reaches the wire, and `section[immunization]` is always present (it keeps an always-true gate,
+> `%resource`, only to stay a gated element after the gated cause-of-death section). A "yes" without
+> a dose count — impossible on the completed form — matches no gate and emits nothing rather than
+> the dose sentinel. The form pre-selects "unknown"; the language previews bake that `initial` into
+> `answerOption.initialSelected` (`que-11`).
 
 > **Since issue #29 this bites on the "yes" branch only.** "No" and "unknown" no longer produce an
 > Immunization at all — they are answers, and they go to `ChEkmObservationVaccinationStatus.value[x]`
-> (see chapter 12). That halves the split: four Immunization instances for the 2 x 2 combinations of
-> "which optional detail was answered", plus two entirely static Observations with no date and no
-> dose count to be absent. The engine lessons below are unchanged.
+> (see chapter 12). That halved the split: four Immunization instances for the 2 x 2 combinations of
+> "which optional detail was answered" (two since #36), plus two entirely static Observations with
+> no date and no dose count to be absent. The engine lessons below are unchanged.
 >
 > **FOPH form harmonisation (2026-10, not yet decided):** the proposal is one row per vaccination —
 > "ja" with doses, date of the last dose and brand, or "Nein/Unbekannt" as ONE answer — and drops
 > "Gemäss Impfausweis / Anamnese" (which this IG never asked). The merge is contested (it matters for
 > vaccine breakthroughs, e.g. FSME), so the model keeps "nein" and "unbekannt" apart for now. If they
 > merge, only the value set of `ChEkmObservationVaccinationStatus.value[x]` shrinks; the yes-only
-> Immunization and its four template instances are unaffected. Kept apart either way: the two Mpox
+> Immunization and its template instances are unaffected. (#36 then confirmed: "No" and "Unknown"
+> stay apart.) Kept apart either way: the two Mpox
 > rows (smallpox, mpox).
 
 **1. A required primitive that is sometimes a value and sometimes a data-absent-reason cannot live in
@@ -1770,7 +1783,7 @@ forces every reader to check two places, and — as `obs-6` proved for the cause
 | `hospitalisationReason` (Hospitalisationsgrund) | `Encounter.reasonCode` — `RuleSetEncounterHospitalisation` |
 | `deathCause` (Todesursache) | `Observation.valueCodeableConcept` — `RuleSetObservationCauseOfDeath` (#28) |
 | `exposureHowUnknown` (Übertragungsweg unbekannt) | `ChEkmExposure.component[transmissionRoute].valueCodeableConcept` — `RuleSetComponentExposure` |
-| `immunizationStatus…` = No / Unknown (Impfstatus) | `ChEkmObservationVaccinationStatus.valueCodeableConcept` — `RuleSetVaccinationStatusNo` / `…Unknown` (#29) |
+| `immunizationStatus…` = No / Unknown / unanswered (Impfstatus) | `ChEkmObservationVaccinationStatus.valueCodeableConcept` — `RuleSetVaccinationStatusNo` / `…Unknown` (#29, #36) |
 
 Note the third: the form item is a **boolean check-box**, yet extraction materialises the SNOMED
 code via `%factory.Coding(...)`, and `ChEkmMpox` / `ChEkmGonorrhoea` *bind* that component to
