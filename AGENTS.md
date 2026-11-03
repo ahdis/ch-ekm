@@ -252,6 +252,10 @@ Terminology expansion uses the SNOMED CT Swiss Extension via `expansion-params.j
 
 ## Conventions
 
+- **Internal FOPH sources stay out of the repo and GitHub.** The NASURE form harmonisation (the
+  FOPH Confluence pages and the "NASURE form harmonisation" dashboard) is internal: never link to it,
+  or copy page names or comments from it, in the IG, commits, issues or PRs. Write the decision
+  itself ("NASURE proposal: Frau / Mann / unbekannt"), not where it came from.
 - **Naming**: profiles/instances are PascalCase `ChEkm…`; ids are kebab-case
   `ch-ekm-…`. (Minor inconsistency in the repo: some files use `CHEkm…` — match the
   surrounding file when editing.)
