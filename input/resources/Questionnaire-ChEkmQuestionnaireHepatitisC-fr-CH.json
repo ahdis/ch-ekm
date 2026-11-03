@@ -586,7 +586,7 @@
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                      "valueString": "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
+                      "valueString": "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.ofType(Coding).where(code = '261665006' and %resource.descendants().where(linkId='manifestationBeginDate').answer.exists().not())"
                     },
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
@@ -596,7 +596,7 @@
                 },
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                  "valueString": "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
+                  "valueString": "%resource.descendants().where(linkId='manifestationBeginDate').answer.value.first()"
                 }
               ]
             }
@@ -1516,7 +1516,8 @@
             "coding": [
               {
                 "code": "tab-container",
-                "system": "http://hl7.org/fhir/questionnaire-item-control"
+                "system": "http://hl7.org/fhir/questionnaire-item-control",
+                "version": "5.4.0"
               }
             ]
           }
@@ -4857,26 +4858,42 @@
               ]
             },
             {
-              "linkId": "manifestationBeginUnknown",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationBeginUnknown",
-              "text": "Début des manifestations inconnu",
-              "type": "boolean",
-              "initial": [
-                {
-                  "valueBoolean": false
-                }
-              ]
-            },
-            {
               "linkId": "manifestationBeginDate",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationBeginDate",
-              "text": "Début des manifestations (date)",
-              "type": "date",
+              "text": "Début des manifestations",
+              "type": "date"
+            },
+            {
+              "linkId": "manifestationBeginUnknown",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationBeginUnknown",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "check-box",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
               "enableWhen": [
                 {
-                  "question": "manifestationBeginUnknown",
-                  "operator": "=",
+                  "question": "manifestationBeginDate",
+                  "operator": "exists",
                   "answerBoolean": false
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "261665006",
+                    "display": "Inconnu"
+                  }
                 }
               ]
             },
@@ -7033,6 +7050,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-10-26T15:47:36+01:00",
+  "date": "2026-11-03T17:59:16+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisC and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

@@ -30,7 +30,7 @@ Description: "This CH EKM value set includes the codes for the gender of the inf
 // labels come from the SNOMED CT supplement in CodeSystemSupplements.fsh.
 ValueSet: ChEkmUnknown
 Title: "CH EKM Unknown"
-Description: "This CH EKM value set contains only the SNOMED CT 'Unknown' concept. It is the answer value set of open-choice form items where the alternative to a free-text entry is an explicit 'unknown'."
+Description: "This CH EKM value set contains only the SNOMED CT 'Unknown' concept. It is the answer value set of open-choice form items where the alternative to a free-text entry is an explicit 'unknown', and of single 'unknown' tick boxes next to a date (Manifestationsbeginn)."
 * ^status = #active
 * ^experimental = false
 

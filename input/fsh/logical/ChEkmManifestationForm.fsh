@@ -7,7 +7,8 @@ Characteristics: #can-be-target
 * manifestation 0..* CodeableConcept "Manifestations"
 * manifestationOther 0..1 string "Other (free text)"
 * manifestationBeginDate 0..1 dateTime "Onset of manifestation - date"
-* manifestationBeginUnknown 0..1 boolean "Onset of manifestation - unknown"
+* manifestationBeginUnknown 0..1 Coding "Onset of manifestation - unknown" "The 'unknown' tick box under the date (issue #41): ticked = SNOMED CT 261665006 'Unknown', otherwise not answered. Offered only while no date is entered."
+* manifestationBeginUnknown from ChEkmUnknown (required)
 
 
 Mapping: ManifestationToCondition
@@ -19,4 +20,4 @@ Title: "Manifestation Form to CH EKM Condition"
 * manifestation -> "Condition.evidence.code" "Manifestation coded from ChEkmManifestation"
 * manifestationOther -> "Condition.evidence.code.text" "Free text for 'other'"
 * manifestationBeginDate -> "Condition.onsetDateTime"
-* manifestationBeginUnknown -> "Condition.onsetDateTime.extension[dataabsentreason]" "data-absent-reason #unknown when the begin date is explicitly not known"
+* manifestationBeginUnknown -> "Condition.onsetDateTime.extension[dataabsentreason]" "data-absent-reason #asked-unknown when the begin date is explicitly not known (and no date is given)"

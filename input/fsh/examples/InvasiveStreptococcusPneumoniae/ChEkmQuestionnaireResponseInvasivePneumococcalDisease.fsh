@@ -92,42 +92,41 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 * item[0].item[1].item[0].linkId = "manifestation"
 * item[0].item[1].item[0].answer.valueCoding = $sct#91302008 "Sepsis (disorder)"
 // Manifestationsbeginn known -> onsetDateTime is asserted (no data-absent-reason).
-* item[0].item[1].item[1].linkId = "manifestationBeginUnknown"
-* item[0].item[1].item[1].answer.valueBoolean = false
-* item[0].item[1].item[2].linkId = "manifestationBeginDate"
-* item[0].item[1].item[2].answer.valueDate = "2026-01-27"
+// A date is answered, so the "Unbekannt" box is disabled and absent (issue #41).
+* item[0].item[1].item[1].linkId = "manifestationBeginDate"
+* item[0].item[1].item[1].answer.valueDate = "2026-01-27"
 // Labor — the analysing laboratory, which sits INSIDE this section, after the Manifestationsbeginn.
 // All nine values come from the CSV's example column. Only `labName` is required; the rest are
 // answered here so the round trip exercises every context-gated element of ExtractedLabOrganization
 // (GLN, BUR, department, address, phone, email) at once.
-* item[0].item[1].item[3].linkId = "laboratory"
-* item[0].item[1].item[3].item[0].linkId = "labName"
-* item[0].item[1].item[3].item[0].answer.valueString = "LabSan GmbH"
-* item[0].item[1].item[3].item[1].linkId = "labDepartment"
-* item[0].item[1].item[3].item[1].answer.valueString = "Mikrobiologie"
-* item[0].item[1].item[3].item[2].linkId = "labStreetLine"
-* item[0].item[1].item[3].item[2].answer.valueString = "Petriweg 88"
-* item[0].item[1].item[3].item[3].linkId = "labZipCode"
-* item[0].item[1].item[3].item[3].answer.valueString = "7575"
-* item[0].item[1].item[3].item[4].linkId = "labCity"
-* item[0].item[1].item[3].item[4].answer.valueString = "Rumplikon"
-* item[0].item[1].item[3].item[5].linkId = "labPhone"
-* item[0].item[1].item[3].item[5].answer.valueString = "+36 87 987 65 43"
-* item[0].item[1].item[3].item[6].linkId = "labEmail"
-* item[0].item[1].item[3].item[6].answer.valueString = "patho@automation.org"
-* item[0].item[1].item[3].item[7].linkId = "labBer"
-* item[0].item[1].item[3].item[7].answer.valueString = "A99082200"
-* item[0].item[1].item[3].item[8].linkId = "labGln"
-* item[0].item[1].item[3].item[8].answer.valueString = "7601000435111"
+* item[0].item[1].item[2].linkId = "laboratory"
+* item[0].item[1].item[2].item[0].linkId = "labName"
+* item[0].item[1].item[2].item[0].answer.valueString = "LabSan GmbH"
+* item[0].item[1].item[2].item[1].linkId = "labDepartment"
+* item[0].item[1].item[2].item[1].answer.valueString = "Mikrobiologie"
+* item[0].item[1].item[2].item[2].linkId = "labStreetLine"
+* item[0].item[1].item[2].item[2].answer.valueString = "Petriweg 88"
+* item[0].item[1].item[2].item[3].linkId = "labZipCode"
+* item[0].item[1].item[2].item[3].answer.valueString = "7575"
+* item[0].item[1].item[2].item[4].linkId = "labCity"
+* item[0].item[1].item[2].item[4].answer.valueString = "Rumplikon"
+* item[0].item[1].item[2].item[5].linkId = "labPhone"
+* item[0].item[1].item[2].item[5].answer.valueString = "+36 87 987 65 43"
+* item[0].item[1].item[2].item[6].linkId = "labEmail"
+* item[0].item[1].item[2].item[6].answer.valueString = "patho@automation.org"
+* item[0].item[1].item[2].item[7].linkId = "labBer"
+* item[0].item[1].item[2].item[7].answer.valueString = "A99082200"
+* item[0].item[1].item[2].item[8].linkId = "labGln"
+* item[0].item[1].item[2].item[8].answer.valueString = "7601000435111"
 // Probe — Entnahmedatum + Material, the sample half of the Labor block that only this form asks.
 // Both answered, matching the CSV's example column (27/01/2026, Blut) and the example Bundle's
 // ChEkmSpecimenExampleInvasivePneumococcalDisease -> after $extract a ChEkmSpecimen with
 // collection.collectedDateTime and type.coding, referenced from ChEkmServiceRequest.specimen.
-* item[0].item[1].item[4].linkId = "specimen"
-* item[0].item[1].item[4].item[0].linkId = "specimenCollectionDate"
-* item[0].item[1].item[4].item[0].answer.valueDate = "2026-01-27"
-* item[0].item[1].item[4].item[1].linkId = "specimenType"
-* item[0].item[1].item[4].item[1].answer.valueCoding = $sct#119297000 "Blood specimen (specimen)"
+* item[0].item[1].item[3].linkId = "specimen"
+* item[0].item[1].item[3].item[0].linkId = "specimenCollectionDate"
+* item[0].item[1].item[3].item[0].answer.valueDate = "2026-01-27"
+* item[0].item[1].item[3].item[1].linkId = "specimenType"
+* item[0].item[1].item[3].item[1].answer.valueCoding = $sct#119297000 "Blood specimen (specimen)"
 
 // --- Verlauf ---
 // Hospitalisation "nein" -> the context on the Encounter Bundle entry is empty, so NO Encounter is

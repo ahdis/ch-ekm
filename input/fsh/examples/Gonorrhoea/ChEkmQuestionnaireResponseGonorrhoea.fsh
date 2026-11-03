@@ -5,7 +5,7 @@
 // linkIds mirror the assembled questionnaire (gonorrhoea-form > person / manifestation-group /
 // transmission). Answers are taken from ChEkmPatientInitialsExample, ChEkmConditionExample and
 // ChEkmExposureExample. Manifestation uses the form code 264931009 "Symptomatic" (the cleaner
-// evidence.code per the forms-summary decision); manifestationBeginUnknown=true reproduces the
+// evidence.code per the forms-summary decision); a ticked manifestationBeginUnknown reproduces the
 // example's data-absent onset (the template omits onset rather than asserting a date).
 
 Instance: ChEkmQuestionnaireResponseGonorrhoea
@@ -64,8 +64,9 @@ Description: "Example Gonorrhoea QuestionnaireResponse used as input to SDC temp
 * item[0].item[1].linkId = "manifestation-group"
 * item[0].item[1].item[0].linkId = "manifestation"
 * item[0].item[1].item[0].answer.valueCoding = $sct#264931009 "Symptomatic (qualifier value)"
+// Manifestationsbeginn: only the "Unbekannt" box is ticked, the date is left empty (issue #41).
 * item[0].item[1].item[1].linkId = "manifestationBeginUnknown"
-* item[0].item[1].item[1].answer.valueBoolean = true
+* item[0].item[1].item[1].answer.valueCoding = $sct#261665006 "Unknown (qualifier value)"
 
 // --- Exposure (Wie / Übertragungsweg) ---
 // exposure = outer wrapper group; transmission = route-of-transmission sub-questionnaire.

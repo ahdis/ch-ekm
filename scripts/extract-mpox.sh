@@ -11,7 +11,7 @@
 # Mpox-specific coverage vs. the Gonorrhoea testcase (scripts/extract-gonorrhoea.sh):
 #   * `manifestation` repeats (check-box) -> the template's context on evidence[0] must produce
 #     ONE Condition.evidence entry PER answered manifestation, each with a single code.
-#   * manifestationBeginUnknown=false -> the asserted onsetDateTime branch (Gonorrhoea covers the
+#   * a manifestationBeginDate (the "unknown" box disabled) -> the asserted onsetDateTime branch (Gonorrhoea covers the
 #     data-absent branch).
 #   * the person group carries full names (surname/givenname), not initials.
 #

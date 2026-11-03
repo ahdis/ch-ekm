@@ -148,8 +148,9 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
   > **Caveat:** `$assemble` *replaces* a `subQuestionnaire` placeholder with the child's items, so a
   > section that is a placeholder (treatingPhysician) must carry its shortText on the **child's own
   > root group**, not on the placeholder.
-  > `tab-container` is not in the R4 `questionnaire-item-control` code system (added in a later
-  > version of the extension) → expect an extensible-binding warning from the IG publisher.
+  > `tab-container` is not in the R4 `questionnaire-item-control` code system (frozen at 4.0.1; added
+  > in a later version) → the coding carries `version = 5.4.0` (the FHIR Extensions pack the IG
+  > depends on), otherwise the IG Publisher reports an "Unknown code" error per questionnaire.
   > Reference: [Smart Forms storybook, tab container](https://smartforms.csiro.au/storybook/?path=/story/sdc-9-1-2-rendering-control-appearance-itemcontrol-group--tab-container)
 
   > **A single tick-box is a `choice`, not a `boolean`.** A `boolean` item renders as a Yes/No
@@ -165,9 +166,34 @@ whose `entry[0].resource` is the child), so **no FHIR server and no upload step 
   > Display Name* warning per language file. Inline option labels are translated via
   > `translation` extensions on the `_valueString` sibling, baked in by
   > `scripts/build-lang-questionnaire.py` (`localize_answer_options`).
-  > No live example remains in this IG — the "Wo" group's `exposureWhereUnknown` used it until the
-  > precise location was merged into a single `open-choice` item (see the next note), which is the
-  > better answer whenever the tick-box is really the "unknown" alternative to another field.
+  > Live example: the Manifestationsbeginn "Unbekannt" box (the note below), with the option from
+  > a value set rather than an inline `valueString`. The "Wo" group's `exposureWhereUnknown` used the
+  > shape too, until the precise location was merged into a single `open-choice` item (see the next
+  > note), which is the better answer when the alternative is free text.
+
+  > **Manifestationsbeginn: the date with an "Unbekannt" tick box under it (issue #41).**
+  > `ChEkmQuestionnaireManifestationBeginUnknown` replaced the separate "Manifestationsbeginn
+  > unbekannt: ja / nein" question with
+  > `Manifestationsbeginn [Datum]` and, directly under the field, `[ ] Unbekannt`:
+  > - The box is the single-option tick box of the previous note, with the option from a value set:
+  >   `choice`, `check-box`, no `text`, `answerValueSet = ChEkmUnknown` (sct#261665006, de/fr/it from
+  >   the supplement, pre-expanded into one `answerOption` by the language builder). `repeats` is
+  >   not needed: Smart Forms un-ticks a single-select check-box by removing the answer too. Its
+  >   "Clear" link appears only once the box is ticked.
+  > - The box carries `enableWhen manifestationBeginDate exists = false`: entering a date removes
+  >   it, so a date and "unknown" are never answered together, without a validation message (an
+  >   item-level `targetConstraint` worked but its red text under the box was rejected, §11). The
+  >   gate is on the box rather than on the date so the "Manifestationsbeginn" label never goes
+  >   away. The extraction lets the date win anyway (§8), in case a renderer keeps the disabled
+  >   box's answer.
+  > - **One line was tried and dropped.** A one-row `grid` gives
+  >   `Manifestationsbeginn | [Datum] | [ ]`, but Smart Forms always draws the grid's header row
+  >   (`Datum | unbekannt`, the item texts, which it also uses to match cells to columns) and shows
+  >   a boolean check-box's text to screen readers only. SDC has no item control or extension that
+  >   puts two questions on one line without a table (`collapsible` folds a group open/closed,
+  >   nothing more). R5 `answerConstraint = optionsOrType` does not fit either: answerOption values
+  >   must have the item's type, so a `date` item cannot offer a coded "unknown"; neither Smart Forms
+  >   nor LHC-Forms supports it anyway. One line needs a renderer change.
 
   > **A dropdown that also takes free text = `open-choice` (R4).** Smart Forms renders every
   > open-choice item control *other than* `autocomplete` / `check-box` / `radio-button` as `Select`
@@ -288,7 +314,7 @@ disease-specific value-set bindings).
 | --- | --- | --- | --- |
 | Manifestationen | `manifestation` | choice, single, radio | `ChEkmGonorrhoeaManifestationFormChoice` (2 options) |
 | Manifestationsbeginn – Datum | `manifestationBeginDate` | dateTime | |
-| Manifestationsbeginn – unbekannt | `manifestationBeginUnknown` | boolean | disables the date |
+| Manifestationsbeginn – unbekannt | `manifestationBeginUnknown` | choice (`ChEkmUnknown`), `check-box`, no text | the "Unbekannt" box under the date; disabled once a date is entered (issue #41) |
 
 > **Decision (2026-06-09) — Manifestationen reduced to 2 options.** The form shows only
 > **symptomatic / asymptomatic** (radio, single-select), not the broad SNOMED list.
@@ -444,9 +470,9 @@ ChEkmQuestionnaireGonorrhoea  (meta.profile = sdc-questionnaire-modular)
   `http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.dateOfBirth`)
   to keep model ↔ form traceability and enable `$extract` later.
 - Reuse existing **`answerValueSet`** canonicals from `input/fsh/terminology/`.
-- Use **`enableWhen`** for the "unknown"/"other" toggles (e.g. disable
-  `manifestationBeginDate` when `manifestationBeginUnknown = true`; show
-  `manifestationOther` when `manifestation` includes the "other" code).
+- Use **`enableWhen`** for the "unknown"/"other" toggles (e.g. offer the `manifestationBeginUnknown`
+  box only while `manifestationBeginDate` is empty; show `manifestationOther` when `manifestation`
+  includes the "other" code).
 
 ### Minimal FSH skeleton (illustrative — Person sub-questionnaire)
 ```fsh
@@ -789,9 +815,9 @@ hand-written JSON), as `#inline` instances assembled into the Bundle template:
   (e.g. `evidence.code` ⇐ the `manifestation` answer; the exposure component values).
 - **array primitive** (e.g. `name.given`) → put a `templateExtractContext` on the parent element
   so values map into `given[*]` (a standalone value path mis-targets the `_given` sibling).
-- **conditionals** → an empty FHIRPath result omits the field. `Condition.onsetDateTime` uses
-  `iif(... manifestationBeginUnknown = true, {}, manifestationBeginDate)` so onset is **omitted**
-  when "unknown" is ticked. (Per the SDC spec note, conditionals/loops are *just* empty/multi
+- **conditionals** → an empty FHIRPath result omits the field. The data-absent-reason on
+  `Condition.onsetDateTime` is context-gated on "unknown ticked and no date", so it is **omitted**
+  otherwise. (Per the SDC spec note, conditionals/loops are *just* empty/multi
   FHIRPath results — verified implemented in the reference engine.)
 - **static system metadata** (Broker `PractitionerRole`/`Practitioner`/`Organization`) is reused
   verbatim from the existing examples — it is supplied by the transmitting system, not the form.
@@ -865,10 +891,12 @@ Two directives in the `_onsetDateTime.extension` array, targeting two different 
 - `extension[0]` — the **data-absent-reason**, built by one `templateExtractValue` via
   **`%factory.Extension`** on the `SdcTemplateExtractExtension` carrier (see *Building a whole
   Extension* below), gated by a `templateExtractContext`
-  (`…manifestationBeginUnknown… answer.value.where($this = true)`) so it is emitted **only** when
-  the box is ticked (empty context → element excluded).
-- `extension[1]` — the **onset value**: `iif(…manifestationBeginUnknown = true, {}, …manifestationBeginDate…)`
-  → the date when known, `{}` (field omitted) when unknown or unanswered.
+  (`…manifestationBeginUnknown… answer.value.ofType(Coding).where(code = '261665006' and
+  <no manifestationBeginDate answer>)`) so it is emitted **only** when the box is ticked and no date
+  is answered (empty context → element excluded). The form never sends both (the box is disabled
+  once a date is entered); if a renderer kept the disabled box's answer, the date still wins.
+- `extension[1]` — the **onset value**: `…manifestationBeginDate… answer.value.first()` → the date
+  when known, empty (field omitted) otherwise.
 
 > **Why not one directive?** A `templateExtractValue` on `onsetDateTime.extension` sets the
 > **primitive's value** (`onsetDateTime`), not a sibling extension — so returning an `%factory.Extension`
@@ -1691,7 +1719,7 @@ extension" is:
 
 ---
 
-## 11. Item validation — `regex` vs. `targetConstraint` (Smart Forms reads targetConstraint at the ROOT only)
+## 11. Item validation — `regex` vs. `targetConstraint`
 
 Two ways to validate an answer in these forms; the choice is forced by what the renderer reads.
 
@@ -1705,19 +1733,25 @@ mirroring the ch-core `ahvn13-length` invariant. A regex **cannot** express the 
 (`ahvn13-digit-check`) — that, and the length invariant, are still enforced by the IG Publisher on
 the extracted Patient; the form regex is only a UX guard.
 
-**`targetConstraint` (`…/sdc-questionnaire-targetConstraint`) — must live on the modular ROOT.**
-Per the SDC extension definition its `Context` is `Questionnaire` **and** `Questionnaire.item`, so an
-item-level targetConstraint is spec-valid. **But Smart Forms ignores it on items** —
+**`targetConstraint` (`http://hl7.org/fhir/StructureDefinition/targetConstraint`) — on the ITEM it
+checks.** Its `Context` is `Questionnaire` **and** `Questionnaire.item`. Smart Forms reads both:
 `extractTargetConstraints()`
-(`packages/smart-forms-renderer/src/utils/questionnaireStoreUtils/extractTargetConstraint.ts`) only
-iterates `questionnaire.extension` and **never recurses into `questionnaire.item[*].extension`**. An
-item-level targetConstraint is silently dropped (no error, no validation). So a targetConstraint must
-sit on the **root** and bind to its item via the `location` FHIRPath (e.g.
-`Questionnaire.descendants().where(linkId='dateOfBirth')`), which `readTargetConstraintLocationLinkIds`
-resolves back to a linkId for *where* the error renders — the constraint still *lives* at the root.
-This is exactly how the `dateOfBirthRange` constraint in `ChEkmQuestionnaireGonorrhoea.fsh` is
-authored. (`$assemble` keeps the modular root's extensions, drops a child's root extensions — §10 —
-which is another reason root-level placement is the working pattern.)
+(`packages/smart-forms-renderer/src/utils/questionnaireStoreUtils/extractTargetConstraint.ts`) takes
+the root's extensions and recurses into every `item[*].extension`, recording the item's linkId so the
+`human` message renders under that field (a `location` FHIRPath overrides it). This section used to
+say "root only"; an item-level constraint is rendered too (verified, see below). Put it on the item:
+`$assemble` keeps an item's extensions but drops a sub-questionnaire's root extensions (§10), so a
+root-level constraint only works on the modular root.
+
+**Polarity: the `expression` is TRUE when the answers are VALID.** The renderer sets
+`isInvalid = !result` (FHIR invariant semantics). The `human` message is plain text: the language previews do not translate it yet.
+
+Verified in the Smart Forms playground (1.5.0) with an item-level constraint on
+`manifestationBeginUnknown` (issue #41, "date and unknown, not both"):
+`(…manifestationBeginUnknown… .where($this = true).exists() and …manifestationBeginDate… .exists()).not()`
+(at the time the box was still a boolean)
+showed its message under the box. It was replaced by an `enableWhen` (§1, the Manifestationsbeginn note), so no
+targetConstraint is live in the IG today.
 
 TODO: currently commented out
 // Birthdate validation: dateOfBirth (defined in the Person sub-questionnaire) must be in
@@ -1742,9 +1776,13 @@ TODO: currently commented out
 
 
 
+The commented-out `dateOfBirthRange` above predates this: its expression is TRUE when the date is
+INVALID (wrong polarity for the renderer) and it sits on the root. Re-enable it as an item-level
+constraint on `dateOfBirth` with the expression negated.
+
 **Rule of thumb:** item-local format/length → **`regex`** on the item; cross-field or
-expression/range validation, or anything needing a German `human` message → **`targetConstraint` on
-the root** with a `location`.
+expression/range validation, or anything needing a translated `human` message → **`targetConstraint`
+on the item** it reports on.
 
 ---
 

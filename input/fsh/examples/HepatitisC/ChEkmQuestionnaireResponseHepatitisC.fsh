@@ -5,7 +5,7 @@
 // manifestation-group / course / exposure / treatingPhysician). Answers are chosen so that ONE
 // round trip exercises the branches that differ from the Mpox/Gonorrhoea test inputs:
 //   1. `manifestation` repeats (check-box): TWO answers -> two Condition.evidence entries.
-//   2. manifestationBeginUnknown = true -> the DATA-ABSENT onset branch
+//   2. manifestationBeginUnknown ticked -> the DATA-ABSENT onset branch
 //      (onsetDateTime carries data-absent-reason#asked-unknown and no value).
 //   3. Hospitalisation answered "unbekannt" -> an Encounter carrying nothing but
 //      hospitalization.extension[data-absent-reason]; the third branch, neither Mpox ("ja") nor a
@@ -100,9 +100,9 @@ Description: "Example Hepatitis C QuestionnaireResponse used as input to SDC tem
 * item[0].item[1].item[1].answer[0].valueCoding = $sct#18165001 "Jaundice"
 * item[0].item[1].item[1].answer[1].valueCoding = $sct#707724006 "Liver enzymes level above reference range"
 // Manifestationsbeginn UNKNOWN -> onsetDateTime has no value and carries
-// data-absent-reason#asked-unknown; manifestationBeginDate is enableWhen-disabled and unanswered.
+// data-absent-reason#asked-unknown; manifestationBeginDate is left empty (issue #41).
 * item[0].item[1].item[2].linkId = "manifestationBeginUnknown"
-* item[0].item[1].item[2].answer.valueBoolean = true
+* item[0].item[1].item[2].answer.valueCoding = $sct#261665006 "Unknown (qualifier value)"
 // Krankheitsverlauf — TWO answers (repeats = true). Not extracted into a resource: $extract copies
 // this item into the disease-specific QuestionnaireResponse of the document.
 // See OPEN QUESTIONS #7 in ChEkmQuestionnaireHepatitisC.fsh.

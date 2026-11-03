@@ -227,11 +227,13 @@ RuleSet: RuleSetQrHeader(linkId, text, text-de-CH, text-fr-CH, text-it-CH, extra
 // treatingPhysician — becomes one tab. Insert directly after RuleSetQrHeader, while item[=] is still
 // the form group. Tab labels come from each child's sdc-questionnaire-shortText (RuleSetQrLevel*ShortText),
 // falling back to its item.text.
-// Note: `tab-container` is not in the R4 questionnaire-item-control code system (it was added in a
-// later version of the extension), so the IG publisher flags it as an extensible-binding warning.
+// Note: `tab-container` is not in the R4 questionnaire-item-control code system (frozen at 4.0.1; the
+// code was added in a later version), so the coding is pinned to version 5.4.0, the FHIR Extensions
+// pack the IG depends on.
 RuleSet: RuleSetQrLevel1TabContainer
 * item[=].extension[+].url = $questionnaire-itemControl
 * item[=].extension[=].valueCodeableConcept = $item-control#tab-container
+* item[=].extension[=].valueCodeableConcept.coding[0].version = "5.4.0"
 
 RuleSet: RuleSetQrLevel2Group(linkId, text, text-de-CH, text-fr-CH, text-it-CH)
 * item[=].item[+].linkId = {linkId}
@@ -313,7 +315,7 @@ RuleSet: RuleSetQrGroupManifestation
 * insert RuleSetQrLevel2ShortText("Diagnosis", "Diagnose", "Diagnostic", "Diagnosi")
 
 RuleSet: RuleSetQrManifestationBeginUnknown
-* insert RuleSetQrLevel3SubQuestionnaire("manifestationBeginUnknown", "Onset of manifestation unknown", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown")
+* insert RuleSetQrLevel3SubQuestionnaire("manifestationBeginUnknown", "Onset of manifestation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown")
 
 // "Labor" — the analysing laboratory. A LEVEL-3 child of the "Diagnose und Manifestation" section,
 // inserted directly after RuleSetQrManifestationBeginUnknown, so it renders as a sub-heading inside

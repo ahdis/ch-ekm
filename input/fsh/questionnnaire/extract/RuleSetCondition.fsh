@@ -15,20 +15,22 @@ RuleSet: RuleSetOnsetDateManifestationBeginUnknown
 // The carrier is the ch-ekm SdcTemplateExtractExtension (defined so the template validates as FHIR
 // — an engine value directive on onsetDateTime.extension would set the primitive value, not a
 // sibling extension, so a carrier is required to reach _onsetDateTime.extension).
-// The templateExtractContext gates emission: empty (element excluded) unless
-// manifestationBeginUnknown = true.
-// extension[1] is the onset value (iif -> {} when unknown, so onsetDateTime is omitted then).
+// The templateExtractContext gates emission: empty (element excluded) unless the "Unbekannt" box
+// (a choice item answered with sct#261665006, issue #41) is ticked AND no date is answered. The
+// form never lets both through (the box is disabled once a date is entered), but a renderer that
+// keeps a disabled item's answer must not turn a reported date into "unknown": the date wins.
+// extension[1] is the onset value: the answered date, or nothing (onsetDateTime omitted).
 //
 // ORDER MATTERS: the context-gated extension MUST come before the plain onset value extension.
 // The reference engine's array index bookkeeping mis-handles the reverse order (the gated element
 // is not deleted and the valueCode splits into a stray entry). See forms-summary.md §8.
 * onsetDateTime.extension[0].url = $sdc-templateExtractExtension
 * onsetDateTime.extension[0].extension[0].url = $sdc-templateExtractContext
-* onsetDateTime.extension[0].extension[0].valueString = "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.where($this = true)"
+* onsetDateTime.extension[0].extension[0].valueString = "%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.ofType(Coding).where(code = '261665006' and %resource.descendants().where(linkId='manifestationBeginDate').answer.exists().not())"
 * onsetDateTime.extension[0].extension[1].url = $sdc-templateExtractValue
 * onsetDateTime.extension[0].extension[1].valueString = "%factory.Extension('http://hl7.org/fhir/StructureDefinition/data-absent-reason', %factory.code('asked-unknown'))"
 * onsetDateTime.extension[1].url = $sdc-templateExtractValue
-* onsetDateTime.extension[1].valueString = "iif(%resource.descendants().where(linkId='manifestationBeginUnknown').answer.value.first() = true, {}, %resource.descendants().where(linkId='manifestationBeginDate').answer.value.first())"
+* onsetDateTime.extension[1].valueString = "%resource.descendants().where(linkId='manifestationBeginDate').answer.value.first()"
 
 RuleSet: RuleSetEvidenceManifestation
 // Manifestation -> one `evidence` entry PER answered manifestation (identity pass-through of the

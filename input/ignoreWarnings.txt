@@ -6,13 +6,6 @@ The extension http://hl7.org/fhir/StructureDefinition/regex|%
 The repeating element has a pattern. The pattern will apply to all the repeats (this has not been clear to all users)
 None of the codings provided are in the value set 'IdentifierType' (http://hl7.org/fhir/ValueSet/identifier-type|%
 
-# itemControl 'tab-container' (renders the sections of the modular root questionnaires as a tab strip,
-# see forms-summary.md) only exists in the CURRENT questionnaire-item-control code system shipped with
-# the FHIR Extensions pack (hl7.fhir.uv.extensions.r4) - R4 core froze that code system at 4.0.1,
-# which is the version the validator resolves here. The binding is extensible and the Smart Forms
-# renderer implements the code, so this is expected until the R4 code system catches up.
-Unknown code 'tab-container' in the CodeSystem 'http://hl7.org/fhir/questionnaire-item-control' version '4.0.1'
-
 # The "Labor: Probe" sample extracts into TWO mutually exclusive ChEkmSpecimen template instances -
 # ExtractedLabSpecimenDated and ...Undated - because ch-ekm-dateTime ("at least YYYY-MM-DD") runs on a
 # valueless collection.collectedDateTime and a single template cannot be both answered and absent
