@@ -134,7 +134,8 @@ RuleSet: RuleSetComponentExposure
 // have a REQUIRED value binding, so a coding is needed for the template to validate as a standalone
 // example; the templateExtractValue overwrites coding[0] at extraction, and when the answer is absent
 // the whole context-gated component is dropped. (Same idea as the gender/timestamp defaults, §8.)
-// #female, not #unknown: the binding is ChEkmExposureSexualContactPartner (female/male only, #32).
+// #female, not administrative-gender#unknown: that code is not in ChEkmExposureSexualContactPartner
+// (female / male / sct#261665006, #32).
 * component[+].code = ChEkmExposureComponent#sexual-contact-partner
 * component[=].extension[+].url = $sdc-templateExtractContext
 * component[=].extension[=].valueString = "%resource.descendants().where(linkId='exposureHowSexualContactPartner').answer.value"

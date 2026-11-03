@@ -311,15 +311,15 @@ disease-specific value-set bindings).
 **Transmission / Wie** (`ChEkmGonorrhoeaExposureForm.transmission`):
 | Item | linkId | type | Binding / note |
 | --- | --- | --- | --- |
-| Sexualkontakt – Geschlecht | `exposureHowSexualContactPartner` | choice | `ChEkmExposureSexualContactPartner` (female / male, #32) |
+| Sexualkontakt – Geschlecht | `exposureHowSexualContactPartner` | choice | `ChEkmExposureSexualContactPartner` (female / male / unknown, #32) |
 | Art der Beziehung | `exposureHowRelationshipType` | choice | `ChEkmExposureRelationshipType` (fester / nicht fester Partner, Angebot / Inanspruchnahme von bezahltem Sex) |
 | anderer Übertragungsweg | `exposureHowOtherTransmission` | string | |
 | unbekannt | `exposureHowUnknown` | boolean | |
 
 > **State of the FOPH form harmonisation (2026-10):** that "Wie" is asked is agreed, its details are
-> not. The four relationship types are P&P's proposal. Open: whether the partner's sex also offers
-> "anderes" or "unbekannt" (both proposals differ; `ChEkmExposureSexualContactPartner` has female /
-> male only), and whether Gonorrhoea asks Exposition "Wo" at all — the form does not assemble it today.
+> not. The four relationship types are P&P's proposal. The partner's sex offers "unbekannt" as in
+> NASURE's proposal (`sct#261665006`); whether it also offers "anderes" (P&P's alternative) is open,
+> as is whether Gonorrhoea asks Exposition "Wo" at all — the form does not assemble it today.
 
 **Treating Physician** (`ChEkmQuestionnaireGonorrhoeaTreatingPhysician`, two sub-groups). linkIds are
 prefixed `physician*` / `org*` so they stay unique across the assembled form (the Person section
@@ -635,7 +635,7 @@ parameters (so internal codes *and* `content=supplement` language supplements ar
 | --- | --- | --- |
 | `nationality`, `country` | `ChEkmCountryCodes` (ch-ekm) | 195 (→ drop-down in preview) |
 | `administrativeGender` | `ChEkmPatientAdministrativeSex` | 2 |
-| `sexualContactPartner` | `ChEkmExposureSexualContactPartner` | 2 |
+| `sexualContactPartner` | `ChEkmExposureSexualContactPartner` | 3 |
 | `genderIdentity` | `ChEkmTransPerson` | 3 |
 | `relationshipType` | `ChEkmExposureRelationshipType` | 4 |
 | `manifestation` | `ChEkmGonorrhoeaManifestationFormChoice` | 2 |
@@ -1783,6 +1783,7 @@ forces every reader to check two places, and — as `obs-6` proved for the cause
 | `hospitalisationReason` (Hospitalisationsgrund) | `Encounter.reasonCode` — `RuleSetEncounterHospitalisation` |
 | `deathCause` (Todesursache) | `Observation.valueCodeableConcept` — `RuleSetObservationCauseOfDeath` (#28) |
 | `exposureHowUnknown` (Übertragungsweg unbekannt) | `ChEkmExposure.component[transmissionRoute].valueCodeableConcept` — `RuleSetComponentExposure` |
+| `exposureHowSexualContactPartner` = unknown (Sexualkontakt – Geschlecht) | `ChEkmExposure.component[sexualContactPartner].valueCodeableConcept` — `RuleSetComponentExposure` (#32) |
 | `immunizationStatus…` = No / Unknown / unanswered (Impfstatus) | `ChEkmObservationVaccinationStatus.valueCodeableConcept` — `RuleSetVaccinationStatusNo` / `…Unknown` (#29, #36) |
 
 Note the third: the form item is a **boolean check-box**, yet extraction materialises the SNOMED

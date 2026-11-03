@@ -9,17 +9,20 @@ Description: "This CH EKM value set includes the codes for the administrative se
 * $administrative-gender#male "Male"
 * $administrative-gender#female "Female"
 
-// The gender of the infected sexual contact partner ("Wie" block). Same two codes as
-// ChEkmPatientAdministrativeSex, but its own value set: this is not the partner's administrative sex,
-// and "other" was dropped here following the patient (issue #32) - still to be reconfirmed by FOPH.
+// The gender of the infected sexual contact partner ("Wie" block). The two codes of
+// ChEkmPatientAdministrativeSex, but its own value set: this is not the partner's administrative sex.
+// "other" was dropped here following the patient (issue #32); "unknown" is offered, as in the NASURE
+// proposal (Frau / Mann / unbekannt) - an answer, so a value (forms-summary.md §12). Whether "other"
+// comes back (P&P's alternative proposal) is still open in #32.
 ValueSet: ChEkmExposureSexualContactPartner
 Title: "CH EKM Exposure Sexual Contact Partner"
-Description: "This CH EKM value set includes the codes for the gender of the infected sexual contact partner (female, male)."
+Description: "This CH EKM value set includes the codes for the gender of the infected sexual contact partner (female, male) and 'unknown'."
 * ^status = #active
 * ^experimental = false
 
 * $administrative-gender#male "Male"
 * $administrative-gender#female "Female"
+* $sct#261665006 "Unknown (qualifier value)"
 
 // Single-code value set for `open-choice` form items whose only predefined answer is "unknown" -
 // the user either types a free text (-> answer.valueString) or picks this code (-> answer.valueCoding),

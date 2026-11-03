@@ -220,8 +220,8 @@ These logical models are the **master** for building the SDC Questionnaires — 
   `ChEkmHepatitisCManifestation`, `ChEkmInvasivePneumococcalDiseaseManifestation`,
   `ChEkmHIVManifestation`, …), `ChEkmExposureClass`, `ChEkmExposureTransmissionRoute`,
   `ChEkmExposureRelationshipType`, `ChEkmPatientAdministrativeSex` (female/male only — `Patient.gender`
-  is bound to it, issue #32), `ChEkmExposureSexualContactPartner` (female/male — "other" dropped too,
-  to be reconfirmed in #32; bound by the Gonorrhoea/Mpox exposure profiles), `ChEkmGenderIdentity` (trans man / trans woman, International Edition
+  is bound to it, issue #32), `ChEkmExposureSexualContactPartner` (female / male / `sct#261665006` unknown —
+  "other" dropped too, still open in #32; bound by the Gonorrhoea/Mpox exposure profiles), `ChEkmGenderIdentity` (trans man / trans woman, International Edition
   `1332083003` / `1332082008` — not the US Edition codes; the binding of `Patient.extension[genderIdentity]`),
   `ChEkmTransPerson` (the form item's answers: those two + `373067005` "No", issue #35),
   `ChEkmServiceRequestReason`, `ChEkmOtherNoneUnknown`,
