@@ -66,6 +66,13 @@ Description: "A response that names the questionnaire it answers must name the d
 Severity: #error
 Expression: "questionnaire.hasValue() implies questionnaire.matches('^http://fhir[.]ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCDiseaseSpecific(Assembled|-(de|fr|it)-CH)([|].*)?$')"
 
+// The same for the Mpox disease-specific response (issue #43); no answer is required either — the
+// close-contact question is optional on the form.
+Invariant: ch-ekm-qr-mpox-questionnaire
+Description: "A response that names the questionnaire it answers must name the disease-specific Mpox questionnaire (ChEkmQuestionnaireMpoxDiseaseSpecificAssembled or its language variant ChEkmQuestionnaireMpoxDiseaseSpecific-de-CH / -fr-CH / -it-CH), not the reporting form."
+Severity: #error
+Expression: "questionnaire.hasValue() implies questionnaire.matches('^http://fhir[.]ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxDiseaseSpecific(Assembled|-(de|fr|it)-CH)([|].*)?$')"
+
 // ChEkmExtractTransaction: the DocumentReference must point at the document stored in the SAME
 // transaction — by location (attachment.url = the document entry's fullUrl, which the server rewrites
 // to the document's new id) and by identity (masterIdentifier = Bundle.identifier, which survives).

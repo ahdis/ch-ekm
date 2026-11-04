@@ -140,7 +140,9 @@ HepatitisC and InvasiveStreptococcusPneumoniae follow the same shape.
 Mpox additionally constrains `section[immunization]` to `ChEkmImmunizationMpox` (target diseases
 fixed to `ChEkmMpoxImmunizationTargetDisease`, smallpox + mpox) and
 `ChEkmObservationVaccinationStatusMpox` (the same two target diseases, plus the two vaccine products
-in `ChEkmMpoxVaccineProduct` as the component code). Invasive pneumococcal disease does the same for
+in `ChEkmMpoxVaccineProduct` as the component code), and `section[diagnosis].entry[questionnaire-response]`
+to `ChEkmQuestionnaireResponseDiseaseSpecificMpox` (issue #43, see "disease-specific questions" below).
+Invasive pneumococcal disease does the same for
 its single row: `ChEkmImmunizationInvasivePneumococcalDisease` /
 `ChEkmObservationVaccinationStatusInvasivePneumococcal`, with
 `ChEkmInvasivePneumococcalDiseaseImmunizationTargetDisease` (`sct#16814004`) and
@@ -196,7 +198,8 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
   generic `ChEkmLabForm` / `ChEkmLabSpecimenForm`, `ChEkmHospitalisationForm`, `ChEkmDeathForm`,
   `ChEkmExposureForm` and treating-physician models.
 - **`ChEkmMpoxForm`** — the disease-level aggregate: its own `person` (full name + gender identity),
-  `manifestation`, `exposure` (adds the "Wie" transmission block, → `ChEkmExposureMpox`) and a
+  `manifestation`, `exposure` (adds the "Wie" transmission block, → `ChEkmExposureMpox`, and the
+  close contact after the manifestation begin, → the disease-specific QuestionnaireResponse) and a
   two-row `immunization` (`smallpox`, `mpox`), plus the generic `ChEkmHospitalisationForm`,
   `ChEkmDeathForm`, `ChEkmLabForm` (issue #42; no sample) and treating-physician models.
 - **`ChEkmHepatitisCForm`** (file `CHEkmHepatitisCForm.fsh`) — the disease-level aggregate: its own
@@ -356,6 +359,13 @@ decision for each, in an `OPEN QUESTIONS` block at the bottom of the root's FSH 
   there (forms-summary.md §8, "Disease-specific questions"). LinkIds: plain for a generic question
   (`blood-donation`), prefixed with the disease when its content is disease-specific
   (`hepatitisc-course-of-disease`); only the root group always carries the disease.
+  **Mpox** uses the same pattern for one question (issue #43): "Nach Manifestationsbeginn: Enger
+  Personenkontakt" ja / nein / unbekannt + Bemerkung, the last question of the Exposition
+  (`examples/Mpox/ChEkmQuestionnaireMpoxCloseContact.fsh`, root `ChEkmQuestionnaireMpoxDiseaseSpecific`).
+  Its module is a GROUP (`close-contact-after-onset` > `close-contact`, `close-contact-note`), so the
+  template's gate tests `item.answer.value.exists()`. The response sits in `section[diagnosis]` like
+  the Hepatitis C one, although the question is asked under Exposition: one document, one
+  disease-specific response, one place.
 - **Invasive pneumococcal disease**
   (`examples/InvasiveStreptococcusPneumoniae/ChEkmQuestionnaireInvasivePneumococcalDisease.fsh`) —
   open: Risikofaktoren (a section no other organism has), Exposition "Wie", the Labor block's

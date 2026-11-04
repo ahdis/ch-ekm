@@ -109,6 +109,42 @@ Usage: #inline
 * insert RuleSetVaccinationStatusUnknown(359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
 
 // ---------------------------------------------------------------------------
+// The DISEASE-SPECIFIC QuestionnaireResponse (ChEkmQuestionnaireResponseDiseaseSpecificMpox): the
+// answers to the form questions that have no FHIR target, and only those — today the close contact
+// after the onset of the manifestation (issue #43, module ChEkmQuestionnaireMpoxCloseContact). It is
+// the response to ChEkmQuestionnaireMpoxDiseaseSpecificAssembled.
+//
+// THE SAME CONSTRUCTION AS ExtractedQuestionnaireResponseHepatitisC (ChEkmDocumentHepatitisCTemplate.fsh)
+// — read the long comment there for why every detail below is load-bearing: one context-gated
+// placeholder without static content, a value-less `linkId` and a value-less `questionnaire`.
+// The one difference: the module contributes a GROUP (`close-contact-after-onset`: the contact and
+// its remark), so the context tests the group's children for an answer, `item.answer.value.exists()`,
+// where a flat module tests `answer.value.exists()`. The value copies the group, children included.
+//
+// ADDING A MODULE = its linkId in both filters below and in the gates on the Bundle entry and the
+// section[diagnosis] reference, plus its insert in the disease-specific questionnaire and in the form,
+// at the same relative position in both.
+// ---------------------------------------------------------------------------
+Instance: ExtractedQuestionnaireResponseMpox
+InstanceOf: ChEkmQuestionnaireResponseDiseaseSpecificMpox
+Usage: #inline
+* status = #completed
+* subject.reference = "Patient/ExtractedPatient"
+// NO VALUE, only the carrier. The disease-specific questionnaire in the same variant as the form that
+// was filled in (…/ChEkmQuestionnaireMpox-de-CH -> …/ChEkmQuestionnaireMpoxDiseaseSpecific-de-CH,
+// the assembled one -> the assembled one), unversioned; anything else falls back to the assembled one.
+* questionnaire.extension[+].url = $sdc-templateExtractValue
+* questionnaire.extension[=].valueString = "iif(%resource.questionnaire.contains('/Questionnaire/ChEkmQuestionnaireMpox'), %resource.questionnaire.replaceMatches('[|].*$', '').replace('/Questionnaire/ChEkmQuestionnaireMpox', '/Questionnaire/ChEkmQuestionnaireMpoxDiseaseSpecific'), 'http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxDiseaseSpecificAssembled')"
+* insert RuleSetExtractAuthored(authored)
+* item[0].linkId = "mpox-disease-specific"
+* item[0].item[0].linkId.extension[0].url = $sdc-templateExtractValue
+* item[0].item[0].linkId.extension[0].valueString = "{}"
+* item[0].item[0].extension[0].url = $sdc-templateExtractContext
+* item[0].item[0].extension[0].valueString = "%resource.descendants().where(linkId = 'close-contact-after-onset' and item.answer.value.exists())"
+* item[0].item[0].extension[1].url = $sdc-templateExtractValue
+* item[0].item[0].extension[1].valueString = "$this.where(linkId = 'close-contact-after-onset')"
+
+// ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionMpox) — static structure, references the entries above,
 // author = Broker, date taken from QR.authored
 // ---------------------------------------------------------------------------
@@ -127,7 +163,12 @@ Usage: #inline
 * title = "Meldung zum klinischen Befund MPox"
 * section[0].title = "Diagnosis section"
 * section[0].code = $loinc#29308-4
-* section[0].entry.reference = "Condition/ExtractedCondition"
+* section[0].entry[0].reference = "Condition/ExtractedCondition"
+// The disease-specific QuestionnaireResponse (issue #43) — %resource.descendants().where(linkId = 'close-contact-after-onset' and item.answer.value.exists())D with the same test as its Bundle
+// entry, so the reference can never outlive the resource; computed, hence after the static Condition.
+* section[0].entry[1].reference = "QuestionnaireResponse/ExtractedQuestionnaireResponseMpox"
+* section[0].entry[1].extension[0].url = $sdc-templateExtractValue
+* section[0].entry[1].extension[0].valueString = "%resource.descendants().where(linkId = 'close-contact-after-onset' and item.answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'QuestionnaireResponse/ExtractedQuestionnaireResponseMpox'))"
 * section[1].title = "Social history section"
 * section[1].code = $loinc#29762-2
 * section[1].entry.reference = "Observation/ExtractedExposure"
@@ -190,13 +231,24 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 // ExtractedLabServiceRequest.specimen resolves to nothing and is dropped.
 * insert RuleSetLaboratoryEntries
 
-// --- LAST ENTRY ON PURPOSE ---------------------------------------------------------------------
-// The hospitalisation Encounter is the only CONDITIONAL entry, and a conditional entry must be the
-// last one. The engine deletes a context-gated array element from the template and re-inserts it once
-// per context result; when the context is empty nothing is re-inserted and every LATER entry has
-// shifted down by one, while the extract paths recorded for those entries still carry their original
-// index. Putting the Encounter anywhere but last therefore corrupts the entries after it as soon as
-// the answer is "no" (observed: a phantom eighth entry holding a half-built Organization).
+// --- CONDITIONAL ENTRIES, LAST ON PURPOSE -------------------------------------------------------
+// Every entry below is CONDITIONAL, and a conditional entry must come after all static ones. The
+// engine deletes a context-gated array element from the template and re-inserts it once per context
+// result; when the context is empty nothing is re-inserted and every LATER entry has shifted down by
+// one, while the extract paths recorded for those entries still carry their original index. Putting
+// the Encounter before a static entry therefore corrupted that entry as soon as the answer was "no"
+// (observed: a phantom eighth entry holding a half-built Organization). Between gated entries the
+// engine's bookkeeping copes (see the cause-of-death entry).
+// The disease-specific QuestionnaireResponse (issue #43) — emitted only when the close-contact question
+// or its remark was answered; the section[diagnosis] reference above carries the same test.
+* entry[+].extension[0].url = $sdc-templateExtractContext
+* entry[=].extension[0].valueString = "iif(%resource.descendants().where(linkId = 'close-contact-after-onset' and item.answer.value.exists()).exists(), true, {})"
+* entry[=].fullUrl = "http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseMpox"
+// IDENTITY VALUE, LOAD-BEARING — see the Encounter entry below.
+* entry[=].fullUrl.extension[0].url = $sdc-templateExtractValue
+* entry[=].fullUrl.extension[0].valueString = "'http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseMpox'"
+* entry[=].resource = ExtractedQuestionnaireResponseMpox
+
 // Hospitalisation Encounter. The WHOLE entry is context-gated: answered "no" (or unanswered) ->
 // the context is empty, the engine drops the indexed element, and no Encounter reaches the document.
 // The two references to it (Composition.encounter, Condition.encounter) carry the same test, so they

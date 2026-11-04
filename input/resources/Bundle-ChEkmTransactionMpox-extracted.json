@@ -57,6 +57,9 @@
                   "entry": [
                     {
                       "reference": "Condition/ExtractedCondition"
+                    },
+                    {
+                      "reference": "QuestionnaireResponse/ExtractedQuestionnaireResponseMpox"
                     }
                   ]
                 },
@@ -572,6 +575,51 @@
                 }
               ],
               "name": "LabSan GmbH"
+            }
+          },
+          {
+            "fullUrl": "http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseMpox",
+            "resource": {
+              "resourceType": "QuestionnaireResponse",
+              "id": "ExtractedQuestionnaireResponseMpox",
+              "status": "completed",
+              "subject": {
+                "reference": "Patient/ExtractedPatient"
+              },
+              "item": [
+                {
+                  "linkId": "mpox-disease-specific",
+                  "item": [
+                    {
+                      "linkId": "close-contact-after-onset",
+                      "item": [
+                        {
+                          "linkId": "close-contact",
+                          "answer": [
+                            {
+                              "valueCoding": {
+                                "code": "373066001",
+                                "system": "http://snomed.info/sct",
+                                "display": "Yes (qualifier value)"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "linkId": "close-contact-note",
+                          "answer": [
+                            {
+                              "valueString": "Partner und zwei Mitbewohner im selben Haushalt"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "questionnaire": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxDiseaseSpecificAssembled",
+              "authored": "2026-08-05T11:30:00+02:00"
             }
           },
           {

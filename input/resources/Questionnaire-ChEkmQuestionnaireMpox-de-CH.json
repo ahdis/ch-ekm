@@ -138,6 +138,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxCloseContact|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationMpox|0.0.1"
     },
     {
@@ -206,6 +210,15 @@
                 "entry": [
                   {
                     "reference": "Condition/ExtractedCondition"
+                  },
+                  {
+                    "reference": "QuestionnaireResponse/ExtractedQuestionnaireResponseMpox",
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "%resource.descendants().where(linkId = 'close-contact-after-onset' and item.answer.value.exists()).first().select(%factory.withProperty(%factory.create(Reference), 'reference', 'QuestionnaireResponse/ExtractedQuestionnaireResponseMpox'))"
+                      }
+                    ]
                   }
                 ]
               },
@@ -1401,6 +1414,74 @@
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                   "valueString": "%resource.descendants().where(linkId='labName').answer.value.first()"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+              "valueString": "iif(%resource.descendants().where(linkId = 'close-contact-after-onset' and item.answer.value.exists()).exists(), true, {})"
+            }
+          ],
+          "fullUrl": "http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseMpox",
+          "_fullUrl": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                "valueString": "'http://test.fhir.ch/r4/QuestionnaireResponse/ExtractedQuestionnaireResponseMpox'"
+              }
+            ]
+          },
+          "resource": {
+            "resourceType": "QuestionnaireResponse",
+            "id": "ExtractedQuestionnaireResponseMpox",
+            "status": "completed",
+            "subject": {
+              "reference": "Patient/ExtractedPatient"
+            },
+            "item": [
+              {
+                "linkId": "mpox-disease-specific",
+                "item": [
+                  {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                        "valueString": "%resource.descendants().where(linkId = 'close-contact-after-onset' and item.answer.value.exists())"
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                        "valueString": "$this.where(linkId = 'close-contact-after-onset')"
+                      }
+                    ],
+                    "_linkId": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "{}"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ],
+            "_questionnaire": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.questionnaire.contains('/Questionnaire/ChEkmQuestionnaireMpox'), %resource.questionnaire.replaceMatches('[|].*$', '').replace('/Questionnaire/ChEkmQuestionnaireMpox', '/Questionnaire/ChEkmQuestionnaireMpoxDiseaseSpecific'), 'http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxDiseaseSpecificAssembled')"
+                }
+              ]
+            },
+            "_authored": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "iif(%resource.authored.exists(), %resource.authored, now())"
                 }
               ]
             }
@@ -5633,8 +5714,7 @@
                   "operator": "=",
                   "answerCoding": {
                     "code": "74964007",
-                    "system": "http://snomed.info/sct",
-                    "display": "Other (qualifier value)"
+                    "system": "http://snomed.info/sct"
                   }
                 }
               ]
@@ -7576,6 +7656,66 @@
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.unknown",
                   "text": "Übertragungsweg unbekannt",
                   "type": "boolean"
+                }
+              ]
+            },
+            {
+              "linkId": "close-contact-after-onset",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.closeContactAfterOnset",
+              "text": "Nach Manifestationsbeginn",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "close-contact",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.closeContactAfterOnset.closeContact",
+                  "text": "Enger Personenkontakt",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "373066001",
+                        "display": "Ja"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "373067005",
+                        "display": "Nein"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "Unbekannt"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "linkId": "close-contact-note",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.closeContactAfterOnset.note",
+                  "text": "Bemerkung",
+                  "type": "string"
                 }
               ]
             }
@@ -11158,6 +11298,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T13:05:00+01:00",
+  "date": "2026-11-04T16:19:26+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

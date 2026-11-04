@@ -59,6 +59,13 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 
 * insert RuleSetQrExposureHow
 
+// Nach Manifestationsbeginn: Enger Personenkontakt (ja / nein / unbekannt) + Bemerkung (issue #43) —
+// the last question of the Exposition. NOT extracted into a resource: the module is ALSO assembled
+// into the disease-specific questionnaire ChEkmQuestionnaireMpoxDiseaseSpecific, and $extract copies
+// its answers into the QuestionnaireResponse the document carries (as for the Hepatitis C
+// Krankheitsverlauf and Blutspende).
+* insert RuleSetQrCloseContactMpox
+
 // Impfstatus (issue #29) — "ein neuer Questionnaire Abschnitt 'Impfstatus' NACH der Exposition",
 // so it sits between the Exposure and the treating physician. One level-2 placeholder, because the
 // section has a single sub-questionnaire whose own root group becomes the tab.

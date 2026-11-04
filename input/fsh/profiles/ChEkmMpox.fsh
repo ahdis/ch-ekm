@@ -12,6 +12,12 @@ Title: "CH EKM Composition: Clinical Findings Mpox"
 Description: "This CH EKM base profile constrains the Composition resource for the purpose of clinical findings for Mpox"
 * subject only Reference(ChEkmPatient)
 * section[diagnosis].entry[condition] only Reference(ChEkmConditionMpox)
+// The answers to the form questions without a FHIR target (today the close contact after the onset
+// of the manifestation, issue #43). Although that question is asked in the Exposition section, the
+// response sits in the SAME slot as for Hepatitis C: a document carries ONE disease-specific response,
+// holding the disease-specific questions of every section, so a consumer always finds it in
+// section[diagnosis]. Optional, as the question is: 0..1 from the base ChEkmComposition.
+* section[diagnosis].entry[questionnaire-response] only Reference(ChEkmQuestionnaireResponseDiseaseSpecificMpox)
 * section[social-history].entry[exposure-to-infectious-disease] only Reference(ChEkmExposureMpox)
 * section[immunization].entry[immunization] only Reference(ChEkmImmunizationMpox)
 * section[immunization].entry[vaccination-status] only Reference(ChEkmObservationVaccinationStatusMpox)
@@ -93,3 +99,19 @@ Title: "CH EKM Observation: Vaccination status Mpox"
 Description: "This CH EKM profile constrains the Observation resource for the 'no' and 'unknown' answers of the 'Impfstatus' (vaccination status) section of the Mpox report: one resource per vaccination type asked about (smallpox vaccination, mpox vaccination) that the person did not receive or where it is not known."
 * component.code from ChEkmMpoxVaccineProduct (required)
 * component.valueCodeableConcept from ChEkmMpoxImmunizationTargetDisease (required)
+
+// The QuestionnaireResponse the Mpox document carries: the answers to the form questions that have no
+// FHIR target, and ONLY those — the response to the disease-specific questionnaire
+// ChEkmQuestionnaireMpoxDiseaseSpecificAssembled. Same construction as
+// ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC (read its comment): `questionnaire` stays 0..1
+// and unfixed, and the invariant is guarded on `questionnaire.hasValue()`, because the $extract
+// template has to conform to this profile while it names no questionnaire yet. No answer is required:
+// the question is optional on the form, and a report that leaves it empty carries no response.
+Profile: ChEkmQuestionnaireResponseDiseaseSpecificMpox
+Parent: QuestionnaireResponse
+Id: ch-ekm-questionnaireresponse-mpox-diseasespecific
+Title: "CH EKM Questionnaire Response: Disease-specific questions - Mpox"
+Description: "This CH EKM base profile constrains the QuestionnaireResponse resource carried in the Mpox document: the answers to the form questions that have no FHIR target (close contact with other persons after the onset of the manifestation, with a remark). It is the response to the disease-specific questionnaire ChEkmQuestionnaireMpoxDiseaseSpecificAssembled, or to its language variant matching the form that was filled in. It is carried in the document only when one of these questions was answered."
+* obeys ch-ekm-qr-mpox-questionnaire
+* questionnaire ^short = "The disease-specific Mpox questionnaire this is a response to (ChEkmQuestionnaireMpoxDiseaseSpecificAssembled or its -de-CH / -fr-CH / -it-CH variant, as the form that was filled in). Present on every real response; absent only in the $extract template."
+* status ^short = "A response carried in a final document is expected to be 'completed'"

@@ -22,8 +22,8 @@
 #   * The disease-specific questions (blood donation, Krankheitsverlauf): answered, and NOT extracted
 #     into a resource — their two items are copied into a separate QuestionnaireResponse to the
 #     disease-specific questionnaire (ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled),
-#     referenced from section[diagnosis].entry[questionnaire-response]. Hepatitis C is the only
-#     report in the IG that carries a response. Both questions are optional, so that entry is
+#     referenced from section[diagnosis].entry[questionnaire-response] (Mpox carries one too, for
+#     the close contact after the manifestation begin, issue #43). Both questions are optional, so that entry is
 #     CONDITIONAL: a second run on a copy of the response with both items removed checks the
 #     closed state (no QuestionnaireResponse entry, no reference to it).
 #   * Labor: ONLY the mandatory name and the email are answered, so the eight optional,

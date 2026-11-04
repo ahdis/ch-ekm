@@ -29,8 +29,8 @@
 //      Composition.section[diagnosis].entry[questionnaire-response] (profile
 //      ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC). This is the OPEN state of that
 //      conditional entry; scripts/extract-hepatitisc.sh also extracts a copy of this response with
-//      both questions removed and checks the closed one (no response, no reference). No other round
-//      trip in the IG carries a response.
+//      both questions removed and checks the closed one (no response, no reference). The Mpox round
+//      trip carries a response too (issue #43), copied from a group instead of flat items.
 // The person group uses the full-name module (surname / givenname), as ChEkmHepatitisCPersonForm
 // requires.
 //

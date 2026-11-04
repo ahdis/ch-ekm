@@ -1,0 +1,101 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "ChEkmQuestionnaireMpoxDiseaseSpecific-fr-CH",
+  "meta": {
+    "source": "https://github.com/ahdis/ch-ekm/blob/master/scripts/assemble-questionnaire.sh"
+  },
+  "url": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxDiseaseSpecific-fr-CH",
+  "name": "ChEkmQuestionnaireMpoxDiseaseSpecificfrCH",
+  "title": "EKM: Mpox disease-specific questions (fr-CH, pre-expanded)",
+  "status": "active",
+  "language": "fr-CH",
+  "experimental": false,
+  "subjectType": [
+    "Patient"
+  ],
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/artifact-versionAlgorithm",
+      "valueCoding": {
+        "code": "semver",
+        "system": "http://hl7.org/fhir/version-algorithm"
+      }
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxCloseContact|0.0.1"
+    }
+  ],
+  "item": [
+    {
+      "linkId": "mpox-disease-specific",
+      "text": "Mpox : questions spécifiques à la maladie",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "close-contact-after-onset",
+          "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.closeContactAfterOnset",
+          "text": "Après le début des manifestations",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "close-contact",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.closeContactAfterOnset.closeContact",
+              "text": "Contact étroit avec d'autres personnes",
+              "type": "choice",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                  "valueCode": "horizontal"
+                }
+              ],
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "373066001",
+                    "display": "Oui"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "373067005",
+                    "display": "Non"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "261665006",
+                    "display": "Inconnu"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "close-contact-note",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.closeContactAfterOnset.note",
+              "text": "Remarque",
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "version": "0.0.1",
+  "date": "2026-11-04T16:19:37+01:00",
+  "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpoxDiseaseSpecific and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
+}

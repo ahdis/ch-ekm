@@ -1,7 +1,7 @@
 // Logical model for the Mpox clinical findings report — the master for ChEkmQuestionnaireMpox.
 //
 // Only the sections where the Mpox form differs from the generic models get their own sub-form
-// (Person, Manifestation, Exposure "Wie", the two Impfstatus rows); Verlauf and the treating
+// (Person, Manifestation, Exposure "Wie" + close contact, the two Impfstatus rows); Verlauf and the treating
 // physician reuse the generic models unchanged, exactly as the questionnaire reuses the shared
 // sub-questionnaires. So does Labor (issue #42): the analysing laboratory only, no sample.
 //
@@ -76,7 +76,9 @@ Title: "Manifestation Form to CH EKM Condition Mpox"
 
 // Wo and Wann come from ChEkmExposureForm; "Wie" is the same four questions the Gonorrhoea form asks
 // (the shared ChEkmQuestionnaireExposureHow, whose item definitions point at
-// ChEkmGonorrhoeaExposureForm), extracted into the sliced components of ChEkmExposureMpox.
+// ChEkmGonorrhoeaExposureForm), extracted into the sliced components of ChEkmExposureMpox. The close
+// contact after the onset of the manifestation (issue #43) has no FHIR target and is mapped to the
+// disease-specific QuestionnaireResponse instead.
 Logical: ChEkmMpoxExposureForm
 Parent: ChEkmExposureForm
 Title: "CH EKM Form: Mpox - Exposure"
@@ -91,6 +93,12 @@ Characteristics: #can-be-target
   * relationshipType from ChEkmExposureRelationshipType (required)
   * otherTransmission 0..1 string "Other transmission route (free text)"
   * unknown 0..1 boolean "Unknown"
+// Nach Manifestationsbeginn (issue #43) — asked last in the section. NO RESOURCE TARGET: the answers
+// travel in the disease-specific QuestionnaireResponse the document carries, hence the second mapping.
+* closeContactAfterOnset 0..1 Base "After the onset of the manifestation (Nach Manifestationsbeginn)"
+  * closeContact 0..1 CodeableConcept "Close contact with other persons (Enger Personenkontakt): yes / no / unknown"
+  * closeContact from ChEkmYesNoUnknown (required)
+  * note 0..1 string "Remark (Bemerkung)"
 
 Mapping: MpoxExposureFormToExposure
 Source: ChEkmMpoxExposureForm
@@ -102,6 +110,16 @@ Title: "Exposure Form to CH EKM Exposure Mpox"
 * transmission.relationshipType -> "Observation.component[relationshipType].valueCodeableConcept"
 * transmission.otherTransmission -> "Observation.component[otherTransmission].valueString" "Other transmission route (component code sct#74964007)"
 * transmission.unknown -> "Observation.component[transmissionRoute].valueCodeableConcept" "Ticked: sct#261665006 'Unknown'; the other transmission components are then not emitted"
+
+Mapping: MpoxExposureFormToQuestionnaireResponse
+Source: ChEkmMpoxExposureForm
+Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-questionnaireresponse-mpox-diseasespecific"
+Id: mpox-exposure-form-to-questionnaireresponse
+Title: "Exposure Form to CH EKM Questionnaire Response Disease-specific Mpox"
+* -> "QuestionnaireResponse" "The disease-specific response (to ChEkmQuestionnaireMpoxDiseaseSpecificAssembled), carried in Composition.section[diagnosis].entry[questionnaire-response]"
+* closeContactAfterOnset -> "QuestionnaireResponse.item" "The group with linkId 'close-contact-after-onset'"
+* closeContactAfterOnset.closeContact -> "QuestionnaireResponse.item.answer.valueCoding" "The answer of the item with linkId 'close-contact'"
+* closeContactAfterOnset.note -> "QuestionnaireResponse.item.answer.valueString" "The answer of the item with linkId 'close-contact-note'"
 
 // One instance per row; the row's target disease is fixed by the extraction template, and this binding
 // keeps it to the two the Mpox form asks about.

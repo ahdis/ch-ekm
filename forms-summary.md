@@ -1318,7 +1318,7 @@ answered", which FOPH wants kept apart. So `Nein` is extracted as a
 
 "Nein" is not pre-populated: the launch context is the Patient, which cannot carry it.
 
-### Disease-specific questions: a separate QuestionnaireResponse (Hepatitis C)
+### Disease-specific questions: a separate QuestionnaireResponse (Hepatitis C, Mpox)
 
 Not every form question has a resource to be extracted into, and there will be many more of them
 than the forms modelled so far suggest (therapies, clinical judgements, risk behaviour, contact
@@ -1343,6 +1343,25 @@ goes into a resource and is not repeated there.
 | Extraction | none into resources; the template copies each module's item out of the form's response into the disease-specific response |
 | Document entry | `ExtractedQuestionnaireResponseHepatitisC`, `questionnaire` = `…/ChEkmQuestionnaireHepatitisCDiseaseSpecificAssembled\|0.0.1`; CONDITIONAL — emitted (with its `section[diagnosis]` reference) only when at least one module was answered |
 | Guarantee | `ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC` + invariant `ch-ekm-qr-hepatitisc-questionnaire` (names the disease-specific questionnaire); `entry[questionnaire-response]` stays `0..1` on `ChEkmCompositionHepatitisC`, because both questions are optional on the form |
+
+**Mpox (issue #43)** has one such question, decided in the meeting of 2.11.2026 to travel as a
+QuestionnaireResponse with "unbekannt" as an answer: "Nach Manifestationsbeginn: Enger
+Personenkontakt" (ja / nein / unbekannt, `ChEkmYesNoUnknown`) plus a free-text "Bemerkung", the last
+question of the Exposition. Same construction, three differences:
+
+- the module (`ChEkmQuestionnaireMpoxCloseContact`) asks two things, so its one top-level item is a
+  GROUP, `close-contact-after-onset` > `close-contact`, `close-contact-note`. The context and the gates
+  therefore test the group's children, `where(linkId = 'close-contact-after-onset' and
+  item.answer.value.exists())`; the value copies the whole group. A remark without an answer to the
+  contact question still opens the gate;
+- linkIds plain: the question and its answers are not Mpox-specific;
+- the response is referenced from `section[diagnosis].entry[questionnaire-response]` like the
+  Hepatitis C one, although the question sits under Exposition: a document carries ONE disease-specific
+  response for the questions of all sections, so a consumer looks for it in one place.
+
+Profile `ChEkmQuestionnaireResponseDiseaseSpecificMpox` + invariant `ch-ekm-qr-mpox-questionnaire`;
+`scripts/extract-mpox.sh` checks the open state (byte-identical copy), the closed state (no response,
+no reference, every other entry unchanged) and the remark-only case.
 
 **Why a second questionnaire, and why it is not a copy.** The response holds only the
 disease-specific items, so it cannot name the reporting form: validated against the form, every

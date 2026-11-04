@@ -528,3 +528,9 @@ RuleSet: RuleSetQrCourseOfDiseaseHepatitisC
 // ChEkmQuestionnaireHepatitisCBloodDonation.fsh.
 RuleSet: RuleSetQrBloodDonationHepatitisC
 * insert RuleSetQrLevel3SubQuestionnaire("blooddonation", "Diagnosis from blood donation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCBloodDonation")
+
+// "Nach Manifestationsbeginn: Enger Personenkontakt" for Mpox (issue #43) — a LEVEL-3 child of the
+// "Exposition" section, inserted LAST, after "Wie". Disease-specific and NOT extracted into a
+// resource — see ChEkmQuestionnaireMpoxCloseContact.fsh.
+RuleSet: RuleSetQrCloseContactMpox
+* insert RuleSetQrLevel3SubQuestionnaire("closecontact", "Close contact after the onset of the manifestation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxCloseContact")

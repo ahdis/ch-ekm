@@ -18,6 +18,9 @@
 //      Condition.encounter) must appear in the extracted Bundle.
 //   6. Labor (issue #42): name, department and a partial address (no street) -> ChEkmServiceRequest
 //      + ChEkmOrganizationLab in section[laboratory]; see the Labor block below.
+//   7. Exposition "Nach Manifestationsbeginn" (issue #43): close contact "ja" with a remark -> no
+//      resource; the group is copied into the disease-specific QuestionnaireResponse
+//      (section[diagnosis].entry[questionnaire-response]).
 // The person group uses the full-name module (surname / givenname), not the initials module.
 //
 // Run: ./tests/extract-mpox.sh
@@ -141,8 +144,8 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[3].item[1].item[2].answer.valueCoding = ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
 
 // --- Exposure (Wo / Wann / Wie) ---
-// exposure = outer wrapper group; exposureWhere, exposureWhen and exposureHow are the three
-// sub-questionnaires, in the order they are assembled into the root.
+// exposure = outer wrapper group; exposureWhere, exposureWhen, exposureHow and
+// close-contact-after-onset are its four sub-questionnaires, in the order they are assembled into the root.
 * item[0].item[4].linkId = "exposure"
 
 // Wo: a country with a precise location -> after $extract
@@ -170,6 +173,16 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[4].item[2].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
 * item[0].item[4].item[2].item[2].linkId = "exposureHowUnknown"
 * item[0].item[4].item[2].item[2].answer.valueBoolean = false
+
+// Nach Manifestationsbeginn: Enger Personenkontakt "ja" + Bemerkung (issue #43). NOT extracted into a
+// resource: $extract copies this group into the disease-specific QuestionnaireResponse of the document
+// (ChEkmQuestionnaireResponseDiseaseSpecificMpox); scripts/extract-mpox.sh also extracts a copy of this
+// response without it and checks that the document then carries no response.
+* item[0].item[4].item[3].linkId = "close-contact-after-onset"
+* item[0].item[4].item[3].item[0].linkId = "close-contact"
+* item[0].item[4].item[3].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
+* item[0].item[4].item[3].item[1].linkId = "close-contact-note"
+* item[0].item[4].item[3].item[1].answer.valueString = "Partner und zwei Mitbewohner im selben Haushalt"
 
 // --- Impfstatus / vaccination status (issues #29, #36) ---
 // Two rows, deliberately answered differently so one round trip covers two of the three branches -
