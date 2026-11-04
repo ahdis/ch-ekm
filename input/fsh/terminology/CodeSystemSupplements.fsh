@@ -358,13 +358,24 @@ Description: "CodeSystem supplement adding draft German, French and Italian (Swi
 * #25064002 ^designation[+].language = #it-CH
 * #25064002 ^designation[=].value = "Cefalea"
 
-* #161891005 "Backache"
-* #161891005 ^designation[+].language = #de-CH
-* #161891005 ^designation[=].value = "Rückenschmerzen"
-* #161891005 ^designation[+].language = #fr-CH
-* #161891005 ^designation[=].value = "Dorsalgie"
-* #161891005 ^designation[+].language = #it-CH
-* #161891005 ^designation[=].value = "Mal di schiena"
+// Issue #40: the two anogenital symptoms carry the FOPH form labels, which are broader than the
+// SNOMED CT terms (rectum and anus / rectum). "Asymptomatisch" (84387000) and "Andere" (74964007)
+// are designated further up. "Rückenschmerzen" (161891005) was removed from the value set.
+* #266464001 "Hemorrhage of rectum and anus (disorder)"
+* #266464001 ^designation[+].language = #de-CH
+* #266464001 ^designation[=].value = "Anogenitale Blutungen"
+* #266464001 ^designation[+].language = #fr-CH
+* #266464001 ^designation[=].value = "Saignements anogénitaux"
+* #266464001 ^designation[+].language = #it-CH
+* #266464001 ^designation[=].value = "Sanguinamenti anogenitali"
+
+* #77880009 "Rectal pain (finding)"
+* #77880009 ^designation[+].language = #de-CH
+* #77880009 ^designation[=].value = "Anogenitale Schmerzen"
+* #77880009 ^designation[+].language = #fr-CH
+* #77880009 ^designation[=].value = "Douleurs anogénitales"
+* #77880009 ^designation[+].language = #it-CH
+* #77880009 ^designation[=].value = "Dolori anogenitali"
 
 * #13791008 "Asthenia (finding)"
 * #13791008 ^designation[+].language = #de-CH

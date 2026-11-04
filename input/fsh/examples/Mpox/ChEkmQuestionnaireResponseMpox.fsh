@@ -4,9 +4,10 @@
 // linkIds mirror the ASSEMBLED Mpox questionnaire (mpox-form > person / manifestation-group /
 // exposure / treatingPhysician). Two things are deliberately exercised here that the Gonorrhoea
 // QR does not cover:
-//   1. `manifestation` is repeats=true (check-box): THREE answers are given, so the template's
-//      context on evidence[0] must produce THREE evidence entries, one code each
-//      (see ChEkmDocumentMpoxTemplate).
+//   1. `manifestation` is repeats=true (check-box): FOUR answers are given, so the template's
+//      context on evidence[0] must produce FOUR evidence entries, one code each
+//      (see ChEkmDocumentMpoxTemplate). One of them is "Andere" with the free text of
+//      `manifestationOther`, which must land in code.text of that evidence only (issue #40).
 //   2. a real manifestationBeginDate (so the "unknown" box is disabled), i.e. the ANSWERED onset
 //      path (the Gonorrhoea QR ticks "unknown" and tests the data-absent branch instead).
 //   3. Exposure "Wann" (see issue #25).
@@ -74,7 +75,7 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[0].item[12].answer.valueCoding = $sct#1332083003 "Identifies as transgender male (finding)"
 
 // --- Diagnose und Manifestation ---
-// THREE manifestations (repeats=true) -> three Condition.evidence entries after $extract.
+// FOUR manifestations (repeats=true) -> four Condition.evidence entries after $extract.
 // The first one is a post-coordinated SNOMED expression (skin lesion + finding site), which also
 // checks that such codes survive the identity pass-through unchanged.
 * item[0].item[1].linkId = "manifestation-group"
@@ -82,10 +83,14 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[1].item[0].answer[0].valueCoding = $sct#"95324001:{363698007=73897004}" "Skin lesion of face"
 * item[0].item[1].item[0].answer[1].valueCoding = $sct#386661006 "Fever (finding)"
 * item[0].item[1].item[0].answer[2].valueCoding = $sct#25064002 "Headache (finding)"
+* item[0].item[1].item[0].answer[3].valueCoding = $sct#74964007 "Other (qualifier value)"
+// "Andere" ticked -> the free text is enabled and becomes code.text of the "Other" evidence.
+* item[0].item[1].item[1].linkId = "manifestationOther"
+* item[0].item[1].item[1].answer.valueString = "Proktitis"
 // Manifestationsbeginn known -> onsetDateTime is asserted (no data-absent-reason).
 // A date is answered, so the "Unbekannt" box is disabled and absent (issue #41).
-* item[0].item[1].item[1].linkId = "manifestationBeginDate"
-* item[0].item[1].item[1].answer.valueDate = "2026-07-20"
+* item[0].item[1].item[2].linkId = "manifestationBeginDate"
+* item[0].item[1].item[2].answer.valueDate = "2026-07-20"
 
 // --- Verlauf: Hospitalisation ---
 // Hospitalised ("yes"), because of the reported pathogen, admitted on 2026-01-27 

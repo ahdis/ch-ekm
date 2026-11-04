@@ -288,6 +288,20 @@
                       ]
                     }
                   ]
+                },
+                {
+                  "code": [
+                    {
+                      "coding": [
+                        {
+                          "system": "http://snomed.info/sct",
+                          "code": "74964007",
+                          "display": "Other (qualifier value)"
+                        }
+                      ],
+                      "text": "Proktitis"
+                    }
+                  ]
                 }
               ],
               "encounter": {

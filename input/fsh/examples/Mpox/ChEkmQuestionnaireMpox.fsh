@@ -33,6 +33,8 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
 * item[=].item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
+// Free text for further manifestations, enabled by the "Andere" box (issue #40)
+* insert RuleSetQrManifestationOther
 * insert RuleSetQrManifestationBeginUnknown
 
 // Verlauf (course of the disease) — Hospitalisation and Zustand (death). Mpox is the first organism

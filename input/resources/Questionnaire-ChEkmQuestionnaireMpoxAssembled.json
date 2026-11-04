@@ -636,7 +636,15 @@
                         "system": "http://snomed.info/sct",
                         "display": "Skin lesion (disorder)"
                       }
-                    ]
+                    ],
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "iif(ofType(Coding).where(system = 'http://snomed.info/sct' and code = '74964007').exists(), %resource.descendants().where(linkId='manifestationOther').answer.value.first(), {})"
+                        }
+                      ]
+                    }
                   }
                 ]
               }
@@ -3303,6 +3311,66 @@
                   }
                 ]
               }
+            },
+            {
+              "linkId": "manifestationOther",
+              "text": "Other manifestations",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Andere Manifestationen"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Autres manifestations"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Altre manifestazioni"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationOther",
+              "type": "string",
+              "enableWhen": [
+                {
+                  "question": "manifestation",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "74964007",
+                    "system": "http://snomed.info/sct",
+                    "display": "Other (qualifier value)"
+                  }
+                }
+              ]
             },
             {
               "linkId": "manifestationBeginDate",
@@ -6709,6 +6777,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T10:47:19+01:00",
+  "date": "2026-11-04T12:11:58+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

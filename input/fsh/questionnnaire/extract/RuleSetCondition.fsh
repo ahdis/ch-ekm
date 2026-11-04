@@ -46,3 +46,9 @@ RuleSet: RuleSetEvidenceManifestation
 * evidence[0].extension[=].valueString = "%resource.descendants().where(linkId='manifestation').answer.value"
 * evidence[0].code[0].coding[0].extension[+].url = $sdc-templateExtractValue
 * evidence[0].code[0].coding[0].extension[=].valueString = "ofType(Coding)"
+// "Andere" (sct#74964007) -> the free text of the `manifestationOther` item (RuleSetQrManifestationOther,
+// issue #40) becomes code.text of THAT evidence entry only: the expression runs once per answered
+// Coding (the context above) and yields nothing for every other code. A form without the item, or an
+// "Andere" left without text, gives an evidence coded "Other" with no text.
+* evidence[0].code[0].text.extension[+].url = $sdc-templateExtractValue
+* evidence[0].code[0].text.extension[=].valueString = "iif(ofType(Coding).where(system = 'http://snomed.info/sct' and code = '74964007').exists(), %resource.descendants().where(linkId='manifestationOther').answer.value.first(), {})"

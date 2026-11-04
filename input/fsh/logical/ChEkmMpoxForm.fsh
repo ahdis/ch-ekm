@@ -59,8 +59,9 @@ Title: "CH EKM Form: Mpox - Diagnosis and Manifestation"
 Description: "Logical model for the form section 'Diagnosis and manifestation' (German form: 'Diagnose und Manifestation') of the Mpox clinical findings report. One element per form item."
 Characteristics: #can-be-target
 
-* manifestation ^short = "Manifestations (skin lesions by site / lymphadenopathy / systemic symptoms / other / none / unknown)"
+* manifestation ^short = "Manifestations (skin lesions by site / anogenital symptoms / lymphadenopathy / systemic symptoms / asymptomatic / other)"
 * manifestation from ChEkmMpoxManifestation (required)
+* manifestationOther ^short = "Other manifestations (free text), asked when 'other' is ticked"
 
 Mapping: MpoxManifestationToCondition
 Source: ChEkmMpoxManifestationForm
@@ -69,6 +70,7 @@ Id: mpox-manifestation-to-condition
 Title: "Manifestation Form to CH EKM Condition Mpox"
 * -> "Condition" "Maps the form section to the ChEkmConditionMpox profile; Condition.code is fixed to sct#359814004"
 * manifestation -> "Condition.evidence.code" "Manifestation coded from ChEkmMpoxManifestation"
+* manifestationOther -> "Condition.evidence.code.text" "Free text of the evidence coded sct#74964007 'Other'"
 
 // Wo and Wann come from ChEkmExposureForm; "Wie" is the same four questions the Gonorrhoea form asks
 // (the shared ChEkmQuestionnaireExposureHow, whose item definitions point at

@@ -399,7 +399,15 @@
                         "system": "http://snomed.info/sct",
                         "display": "Gonorrhea (disorder)"
                       }
-                    ]
+                    ],
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "iif(ofType(Coding).where(system = 'http://snomed.info/sct' and code = '74964007').exists(), %resource.descendants().where(linkId='manifestationOther').answer.value.first(), {})"
+                        }
+                      ]
+                    }
                   }
                 ]
               }
@@ -3831,6 +3839,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T10:46:56+01:00",
+  "date": "2026-11-04T12:11:44+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireGonorrhoea and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

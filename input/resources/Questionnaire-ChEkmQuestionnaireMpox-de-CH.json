@@ -636,7 +636,15 @@
                         "system": "http://snomed.info/sct",
                         "display": "Skin lesion (disorder)"
                       }
-                    ]
+                    ],
+                    "_text": {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "iif(ofType(Coding).where(system = 'http://snomed.info/sct' and code = '74964007').exists(), %resource.descendants().where(linkId='manifestationOther').answer.value.first(), {})"
+                        }
+                      ]
+                    }
                   }
                 ]
               }
@@ -5363,6 +5371,20 @@
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
+                    "code": "266464001",
+                    "display": "Anogenitale Blutungen"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "77880009",
+                    "display": "Anogenitale Schmerzen"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
                     "code": "30746006",
                     "display": "Lymphadenopathie"
                   }
@@ -5384,13 +5406,6 @@
                 {
                   "valueCoding": {
                     "system": "http://snomed.info/sct",
-                    "code": "161891005",
-                    "display": "Rückenschmerzen"
-                  }
-                },
-                {
-                  "valueCoding": {
-                    "system": "http://snomed.info/sct",
                     "code": "13791008",
                     "display": "Asthenie"
                   }
@@ -5400,6 +5415,37 @@
                     "system": "http://snomed.info/sct",
                     "code": "386661006",
                     "display": "Fieber"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "84387000",
+                    "display": "Asymptomatisch"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "system": "http://snomed.info/sct",
+                    "code": "74964007",
+                    "display": "Andere"
+                  }
+                }
+              ]
+            },
+            {
+              "linkId": "manifestationOther",
+              "text": "Andere Manifestationen",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationOther",
+              "type": "string",
+              "enableWhen": [
+                {
+                  "question": "manifestation",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "74964007",
+                    "system": "http://snomed.info/sct",
+                    "display": "Other (qualifier value)"
                   }
                 }
               ]
@@ -10855,6 +10901,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T10:47:19+01:00",
+  "date": "2026-11-04T12:11:58+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }
