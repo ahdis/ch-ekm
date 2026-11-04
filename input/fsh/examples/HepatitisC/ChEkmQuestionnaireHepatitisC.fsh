@@ -6,7 +6,7 @@
 //
 // STARTER SCOPE. Only the sections whose questions already exist as reusable modules AND whose
 // target profiles exist for Hepatitis C are assembled here:
-//   Person (FULL name)  ·  Diagnose/Manifestation + Labor  ·  Verlauf (Hospitalisation + Zustand)
+//   Person (FULL name)  ·  Diagnose/Manifestation  ·  Labor  ·  Verlauf (Hospitalisation + Zustand)
 //   Exposition Wo/Wann  ·  Behandelnde Ärztin/Arzt
 // Everything the Hepatitis C reporting form asks on top of that is listed under OPEN QUESTIONS at the
 // bottom of this file. Those are DELIBERATELY NOT MODELLED YET — each one needs a decision before a
@@ -76,7 +76,7 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 
 // --- Krankheitsverlauf --------------------------------------------------------------------------
 // akut / chronisch / Zirrhose / Hepatokarzinom / General wellbeing. A LEVEL-3 child of this section,
-// like the Labor block below it. NOT extracted into a resource: the answer travels in the
+// its last item. NOT extracted into a resource: the answer travels in the
 // disease-specific QuestionnaireResponse that the document carries, as
 // Composition.section[diagnosis].entry[questionnaire-response] (profile
 // ChEkmQuestionnaireResponseDiseaseSpecificHepatitisC). Optional, like on the reporting form. See ChEkmQuestionnaireHepatitisCCourseOfDisease.fsh for the reasoning and
@@ -84,11 +84,10 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 * insert RuleSetQrCourseOfDiseaseHepatitisC
 
 // --- Labor -------------------------------------------------------------------------------------
-// The analysing laboratory, INSIDE the "Diagnose und Manifestation" section and after the
-// Manifestationsbeginn/Krankheitsverlauf — so it is a sub-heading of the Diagnose tab, not a tab of
-// its own. The nine
-// CSV rows are all X-marked and identical to the invasive pneumococcal disease ones, so the module
-// (ChEkmQuestionnaireLaboratory) is disease-agnostic and both roots assemble it unchanged. This
+// The analysing laboratory — a section (tab) of its own, directly after "Diagnose und
+// Manifestation" and on the same level (issue #42; it used to be a sub-heading of the Diagnose tab).
+// The nine CSV rows are all X-marked and identical to the invasive pneumococcal disease ones, so the
+// module (ChEkmQuestionnaireLaboratory) is disease-agnostic and all roots assemble it unchanged. This
 // closes the first half of OPEN QUESTION #4; "Anlass" is still open, and so is the seroconversion
 // Observation the same section can carry (#5).
 * insert RuleSetQrLaboratory
@@ -174,11 +173,11 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //
 //  4. LABOR — the ORGANISATION half is now IMPLEMENTED. The nine X-marked rows (lab name,
 //     department, address, phone, email, BUR, GLN) are the shared, disease-agnostic
-//     sub-questionnaire ChEkmQuestionnaireLaboratory, assembled INSIDE the Diagnose section right
-//     after the Manifestationsbeginn, with the logical model ChEkmLabForm behind it; they extract
+//     sub-questionnaire ChEkmQuestionnaireLaboratory, assembled as the "Labor" section right after
+//     the Diagnose section, with the logical model ChEkmLabForm behind it; they extract
 //     into ChEkmOrganizationLab, reached from ChEkmServiceRequest.performer in
 //     Composition.section[laboratory]. It is the first lab module in the IG and is shared with the
-//     invasive pneumococcal disease root unchanged.
+//     invasive pneumococcal disease and Mpox roots unchanged.
 //     STILL OPEN: "Anlass" (klinischer Verdacht / Exposition / Screening / anderer / unbekannt ->
 //     ServiceRequest.reasonCode, value set ChEkmServiceRequestReason exists) — the CSV gives two
 //     different answer lists for it. It attaches to the ChEkmServiceRequest the form already
@@ -186,7 +185,7 @@ Description: "Modular root questionnaire for the Hepatitis C clinical findings r
 //     NASURE: the list is klinischer Verdacht / Exposition / Screening / anderer / unbekannt (the
 //     CSV's first list). P&P: the categories are not clear-cut and follow from the manifestation;
 //     EPI: keep it. Whether the Labor block itself stays on this form is still marked "?" there
-//     (Gonorrhoea dropped it as already in the lab report; Mpox has no decision).
+//     (Gonorrhoea dropped it as already in the lab report; Mpox asks it, issue #42).
 //
 //  5. DOKUMENTIERTE SEROKONVERSION — "ja, zuletzt negative Serologie anti-HCV vor der Diagnose am:
 //     __ / nein / unbekannt". ChEkmComposition already has the slot

@@ -3,7 +3,7 @@
 // Only the sections where the Mpox form differs from the generic models get their own sub-form
 // (Person, Manifestation, Exposure "Wie", the two Impfstatus rows); Verlauf and the treating
 // physician reuse the generic models unchanged, exactly as the questionnaire reuses the shared
-// sub-questionnaires. The Mpox form has no Labor block.
+// sub-questionnaires. So does Labor (issue #42): the analysing laboratory only, no sample.
 //
 // NOT MODELLED: "Spital" (see ChEkmHospitalisationForm) and the second "Wann" question, the last entry
 // into Switzerland (commented out in ChEkmExposureForm, TODO.md Hepatitis C open question 9).
@@ -16,6 +16,8 @@ Characteristics: #can-be-target
 
 * person 1..1 ChEkmMpoxPersonForm "Affected person"
 * manifestation 1..1 ChEkmMpoxManifestationForm "Diagnosis and manifestation"
+* laboratory 0..1 Base "Laboratory"
+  * organization 0..1 ChEkmLabForm "Analysing laboratory"
 * course 0..1 Base "Course of the disease (Verlauf)"
   * hospitalisation 0..1 ChEkmHospitalisationForm "Hospitalisation"
   * death 0..1 ChEkmDeathForm "State (Zustand)"

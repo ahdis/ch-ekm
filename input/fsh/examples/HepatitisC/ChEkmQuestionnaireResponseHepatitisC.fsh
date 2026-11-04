@@ -2,7 +2,7 @@
 //   QuestionnaireResponse  --$extract (ChEkmDocumentHepatitisCTemplate)-->  ChEkmDocumentHepatitisC
 //
 // linkIds mirror the ASSEMBLED Hepatitis C questionnaire (hepatitisc-form > person /
-// manifestation-group / course / exposure / treatingPhysician). Answers are chosen so that ONE
+// manifestation-group / laboratory / course / exposure / treatingPhysician). Answers are chosen so that ONE
 // round trip exercises the branches that differ from the Mpox/Gonorrhoea test inputs:
 //   1. `manifestation` repeats (check-box): TWO answers -> two Condition.evidence entries.
 //   2. manifestationBeginUnknown ticked -> the DATA-ABSENT onset branch
@@ -110,88 +110,88 @@ Description: "Example Hepatitis C QuestionnaireResponse used as input to SDC tem
 * item[0].item[1].item[3].answer[0].valueCoding = $sct#235866006 "Acute hepatitis C (disorder)"
 * item[0].item[1].item[3].answer[1].valueCoding = $sct#76783007 "Chronic hepatitis (disorder)"
 
-// Labor — the analysing laboratory, which sits INSIDE this section, after the Manifestationsbeginn.
-// Values from the CSV's example column. Deliberately answers ONLY the mandatory `labName` plus the
+// --- Labor ---
+// The analysing laboratory — its own section (tab), between Diagnose and Verlauf. Values from the CSV's example column. Deliberately answers ONLY the mandatory `labName` plus the
 // email: the eight optional fields stay blank, so this round trip covers the CLOSED state of every
 // context-gated element of ExtractedLabOrganization (no identifier, no department, no address, no
 // phone) — the invasive pneumococcal disease QR answers all of them and covers the open state.
-* item[0].item[1].item[4].linkId = "laboratory"
-* item[0].item[1].item[4].item[0].linkId = "labName"
-* item[0].item[1].item[4].item[0].answer.valueString = "LabSan GmbH"
-* item[0].item[1].item[4].item[1].linkId = "labEmail"
-* item[0].item[1].item[4].item[1].answer.valueString = "patho@automation.org"
+* item[0].item[2].linkId = "laboratory"
+* item[0].item[2].item[0].linkId = "labName"
+* item[0].item[2].item[0].answer.valueString = "LabSan GmbH"
+* item[0].item[2].item[1].linkId = "labEmail"
+* item[0].item[2].item[1].answer.valueString = "patho@automation.org"
 
 // --- Verlauf ---
 // Hospitalisation "unbekannt" -> an Encounter exists but carries nothing except
 // hospitalization.extension[data-absent-reason] = asked-unknown; the reason and admission date
 // items are enableWhen-gated on "ja" and stay unanswered. Composition.encounter and
 // Condition.encounter still reference it (the gate is "not nein").
-* item[0].item[2].linkId = "course"
-* item[0].item[2].item[0].linkId = "hospitalisation"
-* item[0].item[2].item[0].item[0].linkId = "hospitalisationStatus"
-* item[0].item[2].item[0].item[0].answer.valueCoding = $sct#261665006 "Unknown (qualifier value)"
+* item[0].item[3].linkId = "course"
+* item[0].item[3].item[0].linkId = "hospitalisation"
+* item[0].item[3].item[0].item[0].linkId = "hospitalisationStatus"
+* item[0].item[3].item[0].item[0].answer.valueCoding = $sct#261665006 "Unknown (qualifier value)"
 // Zustand: the person is alive -> `deceased` false, so no cause-of-death Observation, no
 // section[cause-death] and no Patient.deceasedDateTime are emitted.
-* item[0].item[2].item[1].linkId = "death"
-* item[0].item[2].item[1].item[0].linkId = "deceased"
-* item[0].item[2].item[1].item[0].answer.valueBoolean = false
+* item[0].item[3].item[1].linkId = "death"
+* item[0].item[3].item[1].item[0].linkId = "deceased"
+* item[0].item[3].item[1].item[0].answer.valueBoolean = false
 
 // --- Exposition (Wo / Wann) ---
 // "Wie" is not part of this form yet — see OPEN QUESTIONS #2 in ChEkmQuestionnaireHepatitisC.fsh.
-* item[0].item[3].linkId = "exposure"
+* item[0].item[4].linkId = "exposure"
 // Wo: the country is answered as "unbekannt" (a Coding, not an ISO code) while the precise location
 // IS given -> after $extract the exposure-address Address carries `city` plus `_country` with a
 // data-absent-reason, and NO `country` string.
-* item[0].item[3].item[0].linkId = "exposureWhere"
-* item[0].item[3].item[0].item[0].linkId = "exposureWhereCountry"
-* item[0].item[3].item[0].item[0].answer.valueCoding = $sct#261665006 "Unknown (qualifier value)"
-* item[0].item[3].item[0].item[1].linkId = "exposureWherePreciseLocation"
-* item[0].item[3].item[0].item[1].answer.valueString = "Bern"
+* item[0].item[4].item[0].linkId = "exposureWhere"
+* item[0].item[4].item[0].item[0].linkId = "exposureWhereCountry"
+* item[0].item[4].item[0].item[0].answer.valueCoding = $sct#261665006 "Unknown (qualifier value)"
+* item[0].item[4].item[0].item[1].linkId = "exposureWherePreciseLocation"
+* item[0].item[4].item[0].item[1].answer.valueString = "Bern"
 // Wann: the most probable point in time of infection is known -> effectiveDateTime after $extract.
-* item[0].item[3].item[1].linkId = "exposureWhen"
-* item[0].item[3].item[1].item[0].linkId = "exposureWhenDate"
-* item[0].item[3].item[1].item[0].answer.valueDate = "2025-12-01"
+* item[0].item[4].item[1].linkId = "exposureWhen"
+* item[0].item[4].item[1].item[0].linkId = "exposureWhenDate"
+* item[0].item[4].item[1].item[0].answer.valueDate = "2025-12-01"
 
 // --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---
-* item[0].item[4].linkId = "treatingPhysician"
+* item[0].item[5].linkId = "treatingPhysician"
 // Practitioner
-* item[0].item[4].item[0].linkId = "treatingPhysicianPractitioner"
-* item[0].item[4].item[0].item[0].linkId = "physicianGivenname"
-* item[0].item[4].item[0].item[0].answer.valueString = "Potagon"
-* item[0].item[4].item[0].item[1].linkId = "physicianSurname"
-* item[0].item[4].item[0].item[1].answer.valueString = "Brachialis"
-* item[0].item[4].item[0].item[2].linkId = "physicianStreetLine"
-* item[0].item[4].item[0].item[2].answer.valueString = "Sodaweg 55"
-* item[0].item[4].item[0].item[3].linkId = "physicianZipCode"
-* item[0].item[4].item[0].item[3].answer.valueString = "3921"
-* item[0].item[4].item[0].item[4].linkId = "physicianCity"
-* item[0].item[4].item[0].item[4].answer.valueString = "Flammingen"
-* item[0].item[4].item[0].item[5].linkId = "physicianPhone"
-* item[0].item[4].item[0].item[5].answer.valueString = "+24 74 200 88 77"
-* item[0].item[4].item[0].item[6].linkId = "physicianEmail"
-* item[0].item[4].item[0].item[6].answer.valueString = "p.brach@sampledoc.com"
-* item[0].item[4].item[0].item[7].linkId = "physicianGln"
-* item[0].item[4].item[0].item[7].answer.valueString = "7601000435666"
+* item[0].item[5].item[0].linkId = "treatingPhysicianPractitioner"
+* item[0].item[5].item[0].item[0].linkId = "physicianGivenname"
+* item[0].item[5].item[0].item[0].answer.valueString = "Potagon"
+* item[0].item[5].item[0].item[1].linkId = "physicianSurname"
+* item[0].item[5].item[0].item[1].answer.valueString = "Brachialis"
+* item[0].item[5].item[0].item[2].linkId = "physicianStreetLine"
+* item[0].item[5].item[0].item[2].answer.valueString = "Sodaweg 55"
+* item[0].item[5].item[0].item[3].linkId = "physicianZipCode"
+* item[0].item[5].item[0].item[3].answer.valueString = "3921"
+* item[0].item[5].item[0].item[4].linkId = "physicianCity"
+* item[0].item[5].item[0].item[4].answer.valueString = "Flammingen"
+* item[0].item[5].item[0].item[5].linkId = "physicianPhone"
+* item[0].item[5].item[0].item[5].answer.valueString = "+24 74 200 88 77"
+* item[0].item[5].item[0].item[6].linkId = "physicianEmail"
+* item[0].item[5].item[0].item[6].answer.valueString = "p.brach@sampledoc.com"
+* item[0].item[5].item[0].item[7].linkId = "physicianGln"
+* item[0].item[5].item[0].item[7].answer.valueString = "7601000435666"
 // hidden: the Practitioner on the launching server, filled at $populate from %user.practitioner
-* item[0].item[4].item[0].item[8].linkId = "physicianReference"
-* item[0].item[4].item[0].item[8].answer.valueString = "Practitioner/ChEkmPractitionerTreatingPhysicianExample"
+* item[0].item[5].item[0].item[8].linkId = "physicianReference"
+* item[0].item[5].item[0].item[8].answer.valueString = "Practitioner/ChEkmPractitionerTreatingPhysicianExample"
 // Organization
-* item[0].item[4].item[1].linkId = "treatingPhysicianOrganization"
-* item[0].item[4].item[1].item[0].linkId = "orgName"
-* item[0].item[4].item[1].item[0].answer.valueString = "Regionalspital Genesis"
-* item[0].item[4].item[1].item[1].linkId = "orgDepartment"
-* item[0].item[4].item[1].item[1].answer.valueString = "Hepatologie"
-* item[0].item[4].item[1].item[2].linkId = "orgStreetLine"
-* item[0].item[4].item[1].item[2].answer.valueString = "Radixstrasse 88"
-* item[0].item[4].item[1].item[3].linkId = "orgZipCode"
-* item[0].item[4].item[1].item[3].answer.valueString = "4088"
-* item[0].item[4].item[1].item[4].linkId = "orgCity"
-* item[0].item[4].item[1].item[4].answer.valueString = "Pankreas"
-* item[0].item[4].item[1].item[5].linkId = "orgPhone"
-* item[0].item[4].item[1].item[5].answer.valueString = "+26 34 876 54 33"
-* item[0].item[4].item[1].item[6].linkId = "orgEmail"
-* item[0].item[4].item[1].item[6].answer.valueString = "hepato@hospidoc.com"
-* item[0].item[4].item[1].item[7].linkId = "orgBer"
-* item[0].item[4].item[1].item[7].answer.valueString = "A99086600"
-* item[0].item[4].item[1].item[8].linkId = "orgGln"
-* item[0].item[4].item[1].item[8].answer.valueString = "7601000435777"
+* item[0].item[5].item[1].linkId = "treatingPhysicianOrganization"
+* item[0].item[5].item[1].item[0].linkId = "orgName"
+* item[0].item[5].item[1].item[0].answer.valueString = "Regionalspital Genesis"
+* item[0].item[5].item[1].item[1].linkId = "orgDepartment"
+* item[0].item[5].item[1].item[1].answer.valueString = "Hepatologie"
+* item[0].item[5].item[1].item[2].linkId = "orgStreetLine"
+* item[0].item[5].item[1].item[2].answer.valueString = "Radixstrasse 88"
+* item[0].item[5].item[1].item[3].linkId = "orgZipCode"
+* item[0].item[5].item[1].item[3].answer.valueString = "4088"
+* item[0].item[5].item[1].item[4].linkId = "orgCity"
+* item[0].item[5].item[1].item[4].answer.valueString = "Pankreas"
+* item[0].item[5].item[1].item[5].linkId = "orgPhone"
+* item[0].item[5].item[1].item[5].answer.valueString = "+26 34 876 54 33"
+* item[0].item[5].item[1].item[6].linkId = "orgEmail"
+* item[0].item[5].item[1].item[6].answer.valueString = "hepato@hospidoc.com"
+* item[0].item[5].item[1].item[7].linkId = "orgBer"
+* item[0].item[5].item[1].item[7].answer.valueString = "A99086600"
+* item[0].item[5].item[1].item[8].linkId = "orgGln"
+* item[0].item[5].item[1].item[8].answer.valueString = "7601000435777"

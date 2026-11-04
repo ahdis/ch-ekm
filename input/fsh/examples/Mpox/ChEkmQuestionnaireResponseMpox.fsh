@@ -2,7 +2,7 @@
 //   QuestionnaireResponse  --$extract (ChEkmDocumentMpoxTemplate)-->  ChEkmDocumentMpox
 //
 // linkIds mirror the ASSEMBLED Mpox questionnaire (mpox-form > person / manifestation-group /
-// exposure / treatingPhysician). Two things are deliberately exercised here that the Gonorrhoea
+// laboratory / course / exposure / immunization / treatingPhysician). Two things are deliberately exercised here that the Gonorrhoea
 // QR does not cover:
 //   1. `manifestation` is repeats=true (check-box): FOUR answers are given, so the template's
 //      context on evidence[0] must produce FOUR evidence entries, one code each
@@ -16,6 +16,8 @@
 //   5. Verlauf / Hospitalisation: answered "yes" with a reason and an admission date, so the
 //      context-gated Encounter entry and both references to it (Composition.encounter,
 //      Condition.encounter) must appear in the extracted Bundle.
+//   6. Labor (issue #42): name, department and a partial address (no street) -> ChEkmServiceRequest
+//      + ChEkmOrganizationLab in section[laboratory]; see the Labor block below.
 // The person group uses the full-name module (surname / givenname), not the initials module.
 //
 // Run: ./tests/extract-mpox.sh
@@ -92,20 +94,36 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[1].item[2].linkId = "manifestationBeginDate"
 * item[0].item[1].item[2].answer.valueDate = "2026-07-20"
 
+// --- Labor (issue #42) ---
+// The analysing laboratory — its own section (tab), between Diagnose and Verlauf, the same module
+// Hepatitis C assembles (no Probe: the Mpox form does not ask for the sample). Answers the name, the
+// department and a PARTIAL address (postal code + city, NO street): the address context of
+// ExtractedLabOrganization opens while its `line` stays empty — the state between Hepatitis C (name +
+// email only, address closed) and invasive pneumococcal disease (all nine fields).
+* item[0].item[2].linkId = "laboratory"
+* item[0].item[2].item[0].linkId = "labName"
+* item[0].item[2].item[0].answer.valueString = "LabSan GmbH"
+* item[0].item[2].item[1].linkId = "labDepartment"
+* item[0].item[2].item[1].answer.valueString = "Virologie"
+* item[0].item[2].item[2].linkId = "labZipCode"
+* item[0].item[2].item[2].answer.valueString = "7575"
+* item[0].item[2].item[3].linkId = "labCity"
+* item[0].item[2].item[3].answer.valueString = "Rumplikon"
+
 // --- Verlauf: Hospitalisation ---
 // Hospitalised ("yes"), because of the reported pathogen, admitted on 2026-01-27 
 // after $extract an Encounter with class IMP, period.start and a reasonReference to the
 // diagnosis Condition, referenced from Composition.encounter and Condition.encounter. The two other
 // branches are covered by the round-trip notes in RuleSetEncounterHospitalisation: "no" drops the
 // whole Bundle entry, "unknown" leaves an Encounter carrying only the data-absent-reason.
-* item[0].item[2].linkId = "course"
-* item[0].item[2].item[0].linkId = "hospitalisation"
-* item[0].item[2].item[0].item[0].linkId = "hospitalisationStatus"
-* item[0].item[2].item[0].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
-* item[0].item[2].item[0].item[1].linkId = "hospitalisationReason"
-* item[0].item[2].item[0].item[1].answer.valueCoding = ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
-* item[0].item[2].item[0].item[2].linkId = "hospitalisationAdmissionDate"
-* item[0].item[2].item[0].item[2].answer.valueDate = "2026-01-27"
+* item[0].item[3].linkId = "course"
+* item[0].item[3].item[0].linkId = "hospitalisation"
+* item[0].item[3].item[0].item[0].linkId = "hospitalisationStatus"
+* item[0].item[3].item[0].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
+* item[0].item[3].item[0].item[1].linkId = "hospitalisationReason"
+* item[0].item[3].item[0].item[1].answer.valueCoding = ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
+* item[0].item[3].item[0].item[2].linkId = "hospitalisationAdmissionDate"
+* item[0].item[3].item[0].item[2].answer.valueDate = "2026-01-27"
 
 // Zustand: the person died of the reported pathogen on 2026-02-03 -> after $extract
 // Patient.deceasedDateTime, plus a cause-of-death Observation (value = the Mpox code, focus -> the
@@ -114,18 +132,18 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 // "unknown" both write the answered SNOMED qualifier verbatim into valueCodeableConcept (no
 // dataAbsentReason, see issue #28), and an unticked `deceased` drops the Observation, the section
 // and deceasedDateTime together.
-* item[0].item[2].item[1].linkId = "death"
-* item[0].item[2].item[1].item[0].linkId = "deceased"
-* item[0].item[2].item[1].item[0].answer.valueBoolean = true
-* item[0].item[2].item[1].item[1].linkId = "deathDate"
-* item[0].item[2].item[1].item[1].answer.valueDate = "2026-02-03"
-* item[0].item[2].item[1].item[2].linkId = "deathCause"
-* item[0].item[2].item[1].item[2].answer.valueCoding = ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
+* item[0].item[3].item[1].linkId = "death"
+* item[0].item[3].item[1].item[0].linkId = "deceased"
+* item[0].item[3].item[1].item[0].answer.valueBoolean = true
+* item[0].item[3].item[1].item[1].linkId = "deathDate"
+* item[0].item[3].item[1].item[1].answer.valueDate = "2026-02-03"
+* item[0].item[3].item[1].item[2].linkId = "deathCause"
+* item[0].item[3].item[1].item[2].answer.valueCoding = ChEkmReportedPathogen#reported-pathogen "Reported pathogen"
 
 // --- Exposure (Wo / Wann / Wie) ---
 // exposure = outer wrapper group; exposureWhere, exposureWhen and exposureHow are the three
 // sub-questionnaires, in the order they are assembled into the root.
-* item[0].item[3].linkId = "exposure"
+* item[0].item[4].linkId = "exposure"
 
 // Wo: a country with a precise location -> after $extract
 // extension[exposureAddress].valueAddress = {country "CD" + iso21090-codedString Coding, city}.
@@ -133,25 +151,25 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 // (CH/LI are just its first two entries); the precise location is an `open-choice`, so a TYPED
 // answer comes back as valueString - as here - and picking "unknown" would come back as
 // valueCoding sct#261665006 and put a data-absent-reason on `_city` instead of a `city` string.
-* item[0].item[3].item[0].linkId = "exposureWhere"
-* item[0].item[3].item[0].item[0].linkId = "exposureWhereCountry"
-* item[0].item[3].item[0].item[0].answer.valueCoding = $iso3166#CD "Congo (Kinshasa)"
-* item[0].item[3].item[0].item[1].linkId = "exposureWherePreciseLocation"
-* item[0].item[3].item[0].item[1].answer.valueString = "Kinshasa"
+* item[0].item[4].item[0].linkId = "exposureWhere"
+* item[0].item[4].item[0].item[0].linkId = "exposureWhereCountry"
+* item[0].item[4].item[0].item[0].answer.valueCoding = $iso3166#CD "Congo (Kinshasa)"
+* item[0].item[4].item[0].item[1].linkId = "exposureWherePreciseLocation"
+* item[0].item[4].item[0].item[1].answer.valueString = "Kinshasa"
 
 // Wann: the most probable point in time of infection is known -> effectiveDateTime after $extract.
-* item[0].item[3].item[1].linkId = "exposureWhen"
-* item[0].item[3].item[1].item[0].linkId = "exposureWhenDate"
-* item[0].item[3].item[1].item[0].answer.valueDate = "2026-07-01"
+* item[0].item[4].item[1].linkId = "exposureWhen"
+* item[0].item[4].item[1].item[0].linkId = "exposureWhenDate"
+* item[0].item[4].item[1].item[0].answer.valueDate = "2026-07-01"
 
 // Wie (Übertragungsweg)
-* item[0].item[3].item[2].linkId = "exposureHow"
-* item[0].item[3].item[2].item[0].linkId = "exposureHowSexualContactPartner"
-* item[0].item[3].item[2].item[0].answer.valueCoding = $administrative-gender#male "male"
-* item[0].item[3].item[2].item[1].linkId = "exposureHowRelationshipType"
-* item[0].item[3].item[2].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
-* item[0].item[3].item[2].item[2].linkId = "exposureHowUnknown"
-* item[0].item[3].item[2].item[2].answer.valueBoolean = false
+* item[0].item[4].item[2].linkId = "exposureHow"
+* item[0].item[4].item[2].item[0].linkId = "exposureHowSexualContactPartner"
+* item[0].item[4].item[2].item[0].answer.valueCoding = $administrative-gender#male "male"
+* item[0].item[4].item[2].item[1].linkId = "exposureHowRelationshipType"
+* item[0].item[4].item[2].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
+* item[0].item[4].item[2].item[2].linkId = "exposureHowUnknown"
+* item[0].item[4].item[2].item[2].answer.valueBoolean = false
 
 // --- Impfstatus / vaccination status (issues #29, #36) ---
 // Two rows, deliberately answered differently so one round trip covers two of the three branches -
@@ -168,57 +186,57 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 //                      code, replacing the template's SNOMED CT fallback concept.
 // The third branch, "no", produces the same Observation with value = sct#373067005; it is covered by
 // the notes in RuleSetImmunization.fsh.
-* item[0].item[4].linkId = "immunization"
-* item[0].item[4].item[0].linkId = "immunizationMpox"
-* item[0].item[4].item[0].item[0].linkId = "immunizationStatusMpox"
-* item[0].item[4].item[0].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
-* item[0].item[4].item[0].item[1].linkId = "immunizationDosesMpox"
-* item[0].item[4].item[0].item[1].answer.valueInteger = 2
-* item[0].item[4].item[0].item[2].linkId = "immunizationLastDoseMpox"
-* item[0].item[4].item[0].item[2].answer.valueDate = "2026-06-15"
-* item[0].item[4].item[0].item[3].linkId = "immunizationVaccineMpox"
-* item[0].item[4].item[0].item[3].answer.valueCoding = $ch-vacd-swissmedic-cs#69173 "Jynneos"
+* item[0].item[5].linkId = "immunization"
+* item[0].item[5].item[0].linkId = "immunizationMpox"
+* item[0].item[5].item[0].item[0].linkId = "immunizationStatusMpox"
+* item[0].item[5].item[0].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
+* item[0].item[5].item[0].item[1].linkId = "immunizationDosesMpox"
+* item[0].item[5].item[0].item[1].answer.valueInteger = 2
+* item[0].item[5].item[0].item[2].linkId = "immunizationLastDoseMpox"
+* item[0].item[5].item[0].item[2].answer.valueDate = "2026-06-15"
+* item[0].item[5].item[0].item[3].linkId = "immunizationVaccineMpox"
+* item[0].item[5].item[0].item[3].answer.valueCoding = $ch-vacd-swissmedic-cs#69173 "Jynneos"
 
 // --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---
-* item[0].item[5].linkId = "treatingPhysician"
+* item[0].item[6].linkId = "treatingPhysician"
 // Practitioner
-* item[0].item[5].item[0].linkId = "treatingPhysicianPractitioner"
-* item[0].item[5].item[0].item[0].linkId = "physicianGivenname"
-* item[0].item[5].item[0].item[0].answer.valueString = "Potagon"
-* item[0].item[5].item[0].item[1].linkId = "physicianSurname"
-* item[0].item[5].item[0].item[1].answer.valueString = "Brachialis"
-* item[0].item[5].item[0].item[2].linkId = "physicianStreetLine"
-* item[0].item[5].item[0].item[2].answer.valueString = "Sodaweg 55"
-* item[0].item[5].item[0].item[3].linkId = "physicianZipCode"
-* item[0].item[5].item[0].item[3].answer.valueString = "3921"
-* item[0].item[5].item[0].item[4].linkId = "physicianCity"
-* item[0].item[5].item[0].item[4].answer.valueString = "Flammingen"
-* item[0].item[5].item[0].item[5].linkId = "physicianPhone"
-* item[0].item[5].item[0].item[5].answer.valueString = "+24 74 200 88 77"
-* item[0].item[5].item[0].item[6].linkId = "physicianEmail"
-* item[0].item[5].item[0].item[6].answer.valueString = "p.brach@sampledoc.com"
-* item[0].item[5].item[0].item[7].linkId = "physicianGln"
-* item[0].item[5].item[0].item[7].answer.valueString = "7601000435666"
+* item[0].item[6].item[0].linkId = "treatingPhysicianPractitioner"
+* item[0].item[6].item[0].item[0].linkId = "physicianGivenname"
+* item[0].item[6].item[0].item[0].answer.valueString = "Potagon"
+* item[0].item[6].item[0].item[1].linkId = "physicianSurname"
+* item[0].item[6].item[0].item[1].answer.valueString = "Brachialis"
+* item[0].item[6].item[0].item[2].linkId = "physicianStreetLine"
+* item[0].item[6].item[0].item[2].answer.valueString = "Sodaweg 55"
+* item[0].item[6].item[0].item[3].linkId = "physicianZipCode"
+* item[0].item[6].item[0].item[3].answer.valueString = "3921"
+* item[0].item[6].item[0].item[4].linkId = "physicianCity"
+* item[0].item[6].item[0].item[4].answer.valueString = "Flammingen"
+* item[0].item[6].item[0].item[5].linkId = "physicianPhone"
+* item[0].item[6].item[0].item[5].answer.valueString = "+24 74 200 88 77"
+* item[0].item[6].item[0].item[6].linkId = "physicianEmail"
+* item[0].item[6].item[0].item[6].answer.valueString = "p.brach@sampledoc.com"
+* item[0].item[6].item[0].item[7].linkId = "physicianGln"
+* item[0].item[6].item[0].item[7].answer.valueString = "7601000435666"
 // hidden: the Practitioner on the launching server, filled at $populate from %user.practitioner
-* item[0].item[5].item[0].item[8].linkId = "physicianReference"
-* item[0].item[5].item[0].item[8].answer.valueString = "Practitioner/ChEkmPractitionerTreatingPhysicianExample"
+* item[0].item[6].item[0].item[8].linkId = "physicianReference"
+* item[0].item[6].item[0].item[8].answer.valueString = "Practitioner/ChEkmPractitionerTreatingPhysicianExample"
 // Organization
-* item[0].item[5].item[1].linkId = "treatingPhysicianOrganization"
-* item[0].item[5].item[1].item[0].linkId = "orgName"
-* item[0].item[5].item[1].item[0].answer.valueString = "Regionalspital Genesis"
-* item[0].item[5].item[1].item[1].linkId = "orgDepartment"
-* item[0].item[5].item[1].item[1].answer.valueString = "Immunologie"
-* item[0].item[5].item[1].item[2].linkId = "orgStreetLine"
-* item[0].item[5].item[1].item[2].answer.valueString = "Radixstrasse 88"
-* item[0].item[5].item[1].item[3].linkId = "orgZipCode"
-* item[0].item[5].item[1].item[3].answer.valueString = "4088"
-* item[0].item[5].item[1].item[4].linkId = "orgCity"
-* item[0].item[5].item[1].item[4].answer.valueString = "Pankreas"
-* item[0].item[5].item[1].item[5].linkId = "orgPhone"
-* item[0].item[5].item[1].item[5].answer.valueString = "+26 34 876 54 33"
-* item[0].item[5].item[1].item[6].linkId = "orgEmail"
-* item[0].item[5].item[1].item[6].answer.valueString = "immuno@hospidoc.com"
-* item[0].item[5].item[1].item[7].linkId = "orgBer"
-* item[0].item[5].item[1].item[7].answer.valueString = "A99086600"
-* item[0].item[5].item[1].item[8].linkId = "orgGln"
-* item[0].item[5].item[1].item[8].answer.valueString = "7601000435777"
+* item[0].item[6].item[1].linkId = "treatingPhysicianOrganization"
+* item[0].item[6].item[1].item[0].linkId = "orgName"
+* item[0].item[6].item[1].item[0].answer.valueString = "Regionalspital Genesis"
+* item[0].item[6].item[1].item[1].linkId = "orgDepartment"
+* item[0].item[6].item[1].item[1].answer.valueString = "Immunologie"
+* item[0].item[6].item[1].item[2].linkId = "orgStreetLine"
+* item[0].item[6].item[1].item[2].answer.valueString = "Radixstrasse 88"
+* item[0].item[6].item[1].item[3].linkId = "orgZipCode"
+* item[0].item[6].item[1].item[3].answer.valueString = "4088"
+* item[0].item[6].item[1].item[4].linkId = "orgCity"
+* item[0].item[6].item[1].item[4].answer.valueString = "Pankreas"
+* item[0].item[6].item[1].item[5].linkId = "orgPhone"
+* item[0].item[6].item[1].item[5].answer.valueString = "+26 34 876 54 33"
+* item[0].item[6].item[1].item[6].linkId = "orgEmail"
+* item[0].item[6].item[1].item[6].answer.valueString = "immuno@hospidoc.com"
+* item[0].item[6].item[1].item[7].linkId = "orgBer"
+* item[0].item[6].item[1].item[7].answer.valueString = "A99086600"
+* item[0].item[6].item[1].item[8].linkId = "orgGln"
+* item[0].item[6].item[1].item[8].answer.valueString = "7601000435777"

@@ -198,7 +198,7 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
 - **`ChEkmMpoxForm`** — the disease-level aggregate: its own `person` (full name + gender identity),
   `manifestation`, `exposure` (adds the "Wie" transmission block, → `ChEkmExposureMpox`) and a
   two-row `immunization` (`smallpox`, `mpox`), plus the generic `ChEkmHospitalisationForm`,
-  `ChEkmDeathForm` and treating-physician models. No Labor block.
+  `ChEkmDeathForm`, `ChEkmLabForm` (issue #42; no sample) and treating-physician models.
 - **`ChEkmHepatitisCForm`** (file `CHEkmHepatitisCForm.fsh`) — the disease-level aggregate: its own
   `person` (full name) and `manifestation` (incl. `courseOfDisease`, mapped to the
   QuestionnaireResponse the document carries), plus the generic `ChEkmLabForm`,
@@ -377,11 +377,15 @@ sub-questionnaire, so the reuse lives in the FSH rule sets `RuleSetQrImmunizatio
 — one). Fixed rows, not a repeating group — see forms-summary.md §8 for why variable cardinality
 breaks the single-Bundle-template extraction. **One row = one resource carrying the TOTAL dose
 count**, never one resource per dose.
-The **"Labor"** section (`RuleSetQrLaboratory` -> `ChEkmQuestionnaireLaboratory`) is a LEVEL-3 child
-of the Diagnose section, inserted right after the Manifestationsbeginn; Hepatitis C and invasive
-pneumococcal disease assemble it, Gonorrhoea and Mpox do not. Its OPT-IN companion
+The **"Labor"** section (`RuleSetQrLaboratory` -> `ChEkmQuestionnaireLaboratory`) is a LEVEL-2
+section (tab) of its own, inserted right after the Diagnose section (issue #42; it used to be nested
+inside Diagnose). The rule set creates the `laboratory` group in the root and the module has no
+wrapping group, so its nine items land directly in that tab; the group's linkId `laboratory` is read
+by the lab address extraction. Hepatitis C, Mpox and invasive pneumococcal disease assemble it,
+Gonorrhoea does not. Its OPT-IN companion
 `RuleSetQrLaboratorySpecimen` -> `ChEkmQuestionnaireLaboratorySpecimen` adds the two sample questions
-(Entnahmedatum + Material -> `ChEkmSpecimen`) and is assembled by invasive pneumococcal disease only:
+(Entnahmedatum + Material -> `ChEkmSpecimen`) as a "Probe" sub-group of the Labor tab, and is
+assembled by invasive pneumococcal disease only:
 `$assemble` cannot include a child conditionally, so a form that asks more says so with one more
 insert rather than by branching inside a shared module. Mpox, Hepatitis C and invasive pneumococcal disease
 have the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation` +

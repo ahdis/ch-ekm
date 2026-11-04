@@ -11,9 +11,9 @@
 // second module" is how a root says "my form asks these too": one extra `insert
 // RuleSetQrLaboratorySpecimen` right after `RuleSetQrLaboratory`.
 //
-// Assembled directly after the `laboratory` group, inside "Diagnose und Manifestation", so on screen
-// the two questions read as a continuation of the Labor block — which is where the reporting form has
-// them.
+// Assembled INTO the `laboratory` section group (the "Labor" tab), after the nine laboratory fields,
+// so on screen the "Probe" sub-heading reads as a continuation of the Labor block — which is where
+// the reporting form has them.
 //
 // They target a DIFFERENT RESOURCE from the nine laboratory fields: ChEkmSpecimen, not
 // ChEkmOrganizationLab. Both hang off the one ChEkmServiceRequest in

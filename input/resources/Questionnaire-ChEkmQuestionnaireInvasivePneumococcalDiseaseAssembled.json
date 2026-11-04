@@ -2808,11 +2808,61 @@
                   "answerBoolean": false
                 }
               ]
-            },
+            }
+          ]
+        },
+        {
+          "linkId": "laboratory",
+          "type": "group",
+          "text": "Laboratory",
+          "_text": {
+            "extension": [
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "de-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Labor"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "fr-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Laboratoire"
+                  }
+                ]
+              },
+              {
+                "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                "extension": [
+                  {
+                    "url": "lang",
+                    "valueCode": "it-CH"
+                  },
+                  {
+                    "url": "content",
+                    "valueString": "Laboratorio"
+                  }
+                ]
+              }
+            ]
+          },
+          "extension": [
             {
-              "linkId": "laboratory",
-              "text": "Laboratory",
-              "_text": {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Laboratory",
+              "_valueString": {
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/StructureDefinition/translation",
@@ -2854,452 +2904,451 @@
                     ]
                   }
                 ]
+              }
+            }
+          ],
+          "item": [
+            {
+              "linkId": "labName",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.name",
+              "text": "Name",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Name"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Nom"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Nome"
+                      }
+                    ]
+                  }
+                ]
               },
-              "type": "group",
-              "item": [
-                {
-                  "linkId": "labName",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.name",
-                  "text": "Name",
-                  "_text": {
+              "type": "string",
+              "required": true
+            },
+            {
+              "linkId": "labDepartment",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.department",
+              "text": "Department",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
                     "extension": [
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Name"
-                          }
-                        ]
+                        "url": "lang",
+                        "valueCode": "de-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Nom"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Nome"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Abteilung"
                       }
                     ]
                   },
-                  "type": "string",
-                  "required": true
-                },
-                {
-                  "linkId": "labDepartment",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.department",
-                  "text": "Department",
-                  "_text": {
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
                     "extension": [
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Abteilung"
-                          }
-                        ]
+                        "url": "lang",
+                        "valueCode": "fr-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Service"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Reparto"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Service"
                       }
                     ]
                   },
-                  "type": "string"
-                },
-                {
-                  "linkId": "labStreetLine",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.streetLine",
-                  "text": "Street and number",
-                  "_text": {
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
                     "extension": [
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Strasse / Nr."
-                          }
-                        ]
+                        "url": "lang",
+                        "valueCode": "it-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Rue et numéro"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Reparto"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "string"
+            },
+            {
+              "linkId": "labStreetLine",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.streetLine",
+              "text": "Street and number",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Via e numero"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Strasse / Nr."
                       }
                     ]
                   },
-                  "type": "string"
-                },
-                {
-                  "linkId": "labZipCode",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.zipCode",
-                  "text": "Zip code",
-                  "_text": {
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
                     "extension": [
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "PLZ"
-                          }
-                        ]
+                        "url": "lang",
+                        "valueCode": "fr-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "NPA"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "NPA"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Rue et numéro"
                       }
                     ]
                   },
-                  "type": "string"
-                },
-                {
-                  "linkId": "labCity",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.city",
-                  "text": "City",
-                  "_text": {
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
                     "extension": [
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Ort"
-                          }
-                        ]
+                        "url": "lang",
+                        "valueCode": "it-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Localité"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Via e numero"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "string"
+            },
+            {
+              "linkId": "labZipCode",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.zipCode",
+              "text": "Zip code",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Località"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "PLZ"
                       }
                     ]
                   },
-                  "type": "string"
-                },
-                {
-                  "linkId": "labPhone",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.phone",
-                  "text": "Phone",
-                  "_text": {
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
                     "extension": [
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Telefon"
-                          }
-                        ]
+                        "url": "lang",
+                        "valueCode": "fr-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Téléphone"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Telefono"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "NPA"
                       }
                     ]
                   },
-                  "type": "string"
-                },
-                {
-                  "linkId": "labEmail",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.email",
-                  "text": "Email",
-                  "_text": {
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
                     "extension": [
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "E-Mail"
-                          }
-                        ]
+                        "url": "lang",
+                        "valueCode": "it-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Courriel"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "NPA"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "string"
+            },
+            {
+              "linkId": "labCity",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.city",
+              "text": "City",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "E-mail"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Ort"
                       }
                     ]
                   },
-                  "type": "string"
-                },
-                {
-                  "linkId": "labBer",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber",
-                  "text": "BUR number",
-                  "_text": {
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
                     "extension": [
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "BUR-Nummer"
-                          }
-                        ]
+                        "url": "lang",
+                        "valueCode": "fr-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Numéro REE"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Numero RIS"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Localité"
                       }
                     ]
                   },
-                  "type": "string"
-                },
-                {
-                  "linkId": "labGln",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.gln",
-                  "text": "GLN",
-                  "_text": {
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
                     "extension": [
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "GLN"
-                          }
-                        ]
+                        "url": "lang",
+                        "valueCode": "it-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "GLN"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Località"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "string"
+            },
+            {
+              "linkId": "labPhone",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.phone",
+              "text": "Phone",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
                       },
                       {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "GLN"
-                          }
-                        ]
+                        "url": "content",
+                        "valueString": "Telefon"
                       }
                     ]
                   },
-                  "type": "string"
-                }
-              ]
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Téléphone"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Telefono"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "string"
+            },
+            {
+              "linkId": "labEmail",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.email",
+              "text": "Email",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "E-Mail"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Courriel"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "E-mail"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "string"
+            },
+            {
+              "linkId": "labBer",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber",
+              "text": "BUR number",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "BUR-Nummer"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Numéro REE"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Numero RIS"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "string"
+            },
+            {
+              "linkId": "labGln",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.gln",
+              "text": "GLN",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "GLN"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "GLN"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "GLN"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "type": "string"
             },
             {
               "linkId": "specimen",
@@ -6171,6 +6220,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T12:11:53+01:00",
+  "date": "2026-11-04T13:04:51+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireInvasivePneumococcalDisease and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

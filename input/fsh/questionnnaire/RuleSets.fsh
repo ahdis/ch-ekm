@@ -223,9 +223,9 @@ RuleSet: RuleSetQrHeader(linkId, text, text-de-CH, text-fr-CH, text-it-CH, extra
 * item[=].extension[=].extension[=].valueReference = Reference(ChEkmDocumentReferenceTemplate)
 
 // Renders the form group (item[0], the one RuleSetQrHeader creates) as a TAB CONTAINER: each of its
-// children — after $assemble these are the section groups person / manifestation-group / exposure /
-// treatingPhysician — becomes one tab. Insert directly after RuleSetQrHeader, while item[=] is still
-// the form group. Tab labels come from each child's sdc-questionnaire-shortText (RuleSetQrLevel*ShortText),
+// children — after $assemble these are the section groups person / manifestation-group / laboratory /
+// course / exposure / immunization / treatingPhysician, as far as a disease has them — becomes one
+// tab. Insert directly after RuleSetQrHeader, while item[=] is still the form group. Tab labels come from each child's sdc-questionnaire-shortText (RuleSetQrLevel*ShortText),
 // falling back to its item.text.
 // Note: `tab-container` is not in the R4 questionnaire-item-control code system (frozen at 4.0.1; the
 // code was added in a later version), so the coding is pinned to version 5.4.0, the FHIR Extensions
@@ -329,16 +329,26 @@ RuleSet: RuleSetQrManifestationOther
 RuleSet: RuleSetQrManifestationBeginUnknown
 * insert RuleSetQrLevel3SubQuestionnaire("manifestationBeginUnknown", "Onset of manifestation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown")
 
-// "Labor" — the analysing laboratory. A LEVEL-3 child of the "Diagnose und Manifestation" section,
-// inserted directly after RuleSetQrManifestationBeginUnknown, so it renders as a sub-heading inside
-// the Diagnose tab rather than as a tab of its own. Disease-agnostic: Hepatitis C and invasive
-// pneumococcal disease assemble the identical nine questions.
+// "Labor" — the analysing laboratory, a SECTION (tab) of its own, inserted directly after the
+// "Diagnose und Manifestation" section. Disease-agnostic: Hepatitis C, Mpox and invasive pneumococcal
+// disease assemble the identical nine questions.
+//
+// The level-2 group is created HERE, in the root, and the module (ChEkmQuestionnaireLaboratory) has
+// no wrapping group of its own: $assemble replaces the level-3 placeholder with the module's nine
+// items, so they land directly in this group — the shape of the Person section. A group in the
+// module as well would render a second "Labor" heading inside the "Labor" tab. The group's linkId
+// `laboratory` is load-bearing: ExtractedLabOrganization's address context selects it by that
+// linkId and reads the lab* items as its direct children.
 RuleSet: RuleSetQrLaboratory
-* insert RuleSetQrLevel3SubQuestionnaire("laboratorygroup", "Laboratory", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratory")
+* insert RuleSetQrLevel2Group("laboratory", "Laboratory", "Labor", "Laboratoire", "Laboratorio")
+* insert RuleSetQrLevel2ShortText("Laboratory", "Labor", "Laboratoire", "Laboratorio")
+* insert RuleSetQrLevel3SubQuestionnaire("laboratoryorganization", "Laboratory", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratory")
 
 // The SAMPLE questions (Entnahmedatum + Material) — an OPT-IN companion to RuleSetQrLaboratory,
-// inserted directly after it by the roots whose form asks them. Today that is invasive pneumococcal
-// disease only; the Hepatitis C form has neither row. Targets ChEkmSpecimen, not the lab Organization.
+// inserted directly after it by the roots whose form asks them, so the "Probe" group becomes a
+// sub-heading of the "Labor" tab, after the nine laboratory fields. Today that is invasive
+// pneumococcal disease only; the Hepatitis C and Mpox forms have neither row. Targets ChEkmSpecimen,
+// not the lab Organization.
 RuleSet: RuleSetQrLaboratorySpecimen
 * insert RuleSetQrLevel3SubQuestionnaire("laboratoryspecimengroup", "Laboratory: sample", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireLaboratorySpecimen")
 
@@ -500,7 +510,7 @@ RuleSet: RuleSetQrGroupImmunizationInvasivePneumococcalDisease
 * insert RuleSetQrLevel2SubQuestionnaire("immunization", "Immunisation status", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationInvasivePneumococcalDisease")
 
 // "Krankheitsverlauf" for Hepatitis C — a LEVEL-3 child of the "Diagnose und Manifestation"
-// section, inserted between RuleSetQrManifestationBeginUnknown and RuleSetQrLaboratory. Disease-
+// section, inserted after RuleSetQrManifestationBeginUnknown, as the last item of that section. Disease-
 // SPECIFIC (the answer list is ChEkmHepatitisCCourseOfDisease), hence the name and the child living
 // next to the Hepatitis C examples rather than in input/fsh/questionnnaire/. The answer is NOT
 // extracted into a resource; it travels in the disease-specific QuestionnaireResponse the document

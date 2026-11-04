@@ -3,15 +3,17 @@
 // ChEkmServiceRequest.performer) in input/fsh/logical/ChEkmLabForm.fsh.
 //
 // DISEASE-AGNOSTIC, and the first laboratory module in the IG: the Hepatitis C and the invasive
-// pneumococcal disease CSVs mark the identical nine rows with an "X", so both roots assemble this
-// file unchanged, and any further organism gets it with one `insert RuleSetQrLaboratory`.
+// pneumococcal disease CSVs mark the identical nine rows with an "X", Mpox asks the same block
+// (issue #42), so all three roots assemble this file unchanged, and any further organism gets it
+// with one `insert RuleSetQrLaboratory`.
 //
-// PLACED IN THE "DIAGNOSE UND MANIFESTATION" SECTION, directly after the Manifestationsbeginn, so
-// it is inserted at LEVEL 3 (inside `manifestation-group`) rather than as a tab of its own —
-// unlike the treating physician, which is a level-2 section. The wrapping group below therefore
-// becomes a sub-heading inside the Diagnose tab, the same shape ChEkmQuestionnaireHospitalisation
-// has inside "Verlauf". It carries no sdc-questionnaire-shortText for that reason: it is never a
-// tab, so there is no tab label to give.
+// A SECTION (tab) OF ITS OWN, "Labor", directly after "Diagnose und Manifestation" — on the same
+// level as the other sections, not nested in the Diagnose tab (where it sat until issue #42). The
+// section group (`laboratory`, text + tab label) is created by RuleSetQrLaboratory in the ROOT, and
+// this module deliberately has NO wrapping group: its nine items are top-level, so $assemble puts
+// them straight into that section group — the shape of the Person modules. Wrapping them here as
+// well would render a second "Labor" heading inside the "Labor" tab. The sample (Probe) module,
+// where a form asks it, is assembled into the same section after these items.
 //
 // linkIds are prefixed `lab*` so they stay unique across the assembled form — the treating
 // physician's Organization group already uses orgName/orgZipCode/orgCity/… and $assemble rejects
@@ -43,62 +45,58 @@ Title: "EKM: Laboratory"
 Description: "Modular sub-questionnaire for the 'Labor' section of the clinical findings report: the laboratory that analysed the sample (name, department, address, phone, email, BUR, GLN). Reusable as an SDC assemble-child; extracted into ChEkmOrganizationLab via ChEkmServiceRequest.performer."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireLaboratory)
 
-* item[+].linkId = "laboratory"
-* insert RuleSetQrLevel1Text("Laboratory", "Labor", "Laboratoire", "Laboratorio")
-* item[=].type = #group
-
 // Name — the only mandatory field, and the one the extraction template keys the whole block on.
-* item[=].item[+].linkId = "labName"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.name"
-* insert RuleSetQrLevel2Text("Name", "Name", "Nom", "Nome")
-* item[=].item[=].type = #string
-* item[=].item[=].required = true
+* item[+].linkId = "labName"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.name"
+* insert RuleSetQrLevel1Text("Name", "Name", "Nom", "Nome")
+* item[=].type = #string
+* item[=].required = true
 
 // Abteilung -> the ch-ekm-ext-department extension on the Organization
-* item[=].item[+].linkId = "labDepartment"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.department"
-* insert RuleSetQrLevel2Text("Department", "Abteilung", "Service", "Reparto")
-* item[=].item[=].type = #string
+* item[+].linkId = "labDepartment"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.department"
+* insert RuleSetQrLevel1Text("Department", "Abteilung", "Service", "Reparto")
+* item[=].type = #string
 
 // Strasse / Nr.
-* item[=].item[+].linkId = "labStreetLine"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.streetLine"
-* insert RuleSetQrLevel2Text("Street and number", "Strasse / Nr.", "Rue et numéro", "Via e numero")
-* item[=].item[=].type = #string
+* item[+].linkId = "labStreetLine"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.streetLine"
+* insert RuleSetQrLevel1Text("Street and number", "Strasse / Nr.", "Rue et numéro", "Via e numero")
+* item[=].type = #string
 
 // PLZ
-* item[=].item[+].linkId = "labZipCode"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.zipCode"
-* insert RuleSetQrLevel2Text("Zip code", "PLZ", "NPA", "NPA")
-* item[=].item[=].type = #string
+* item[+].linkId = "labZipCode"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.zipCode"
+* insert RuleSetQrLevel1Text("Zip code", "PLZ", "NPA", "NPA")
+* item[=].type = #string
 
 // Ort
-* item[=].item[+].linkId = "labCity"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.city"
-* insert RuleSetQrLevel2Text("City", "Ort", "Localité", "Località")
-* item[=].item[=].type = #string
+* item[+].linkId = "labCity"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.city"
+* insert RuleSetQrLevel1Text("City", "Ort", "Localité", "Località")
+* item[=].type = #string
 
 // Telefon
-* item[=].item[+].linkId = "labPhone"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.phone"
-* insert RuleSetQrLevel2Text("Phone", "Telefon", "Téléphone", "Telefono")
-* item[=].item[=].type = #string
+* item[+].linkId = "labPhone"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.phone"
+* insert RuleSetQrLevel1Text("Phone", "Telefon", "Téléphone", "Telefono")
+* item[=].type = #string
 
 // E-Mail
-* item[=].item[+].linkId = "labEmail"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.email"
-* insert RuleSetQrLevel2Text("Email", "E-Mail", "Courriel", "E-mail")
-* item[=].item[=].type = #string
+* item[+].linkId = "labEmail"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.email"
+* insert RuleSetQrLevel1Text("Email", "E-Mail", "Courriel", "E-mail")
+* item[=].type = #string
 
 // BUR — the business register number. `ber` in the model and on the wire
 // (identifier[BER], system urn:oid:2.16.756.5.45); "BUR" is what the reporting form calls it.
-* item[=].item[+].linkId = "labBer"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber"
-* insert RuleSetQrLevel2Text("BUR number", "BUR-Nummer", "Numéro REE", "Numero RIS")
-* item[=].item[=].type = #string
+* item[+].linkId = "labBer"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber"
+* insert RuleSetQrLevel1Text("BUR number", "BUR-Nummer", "Numéro REE", "Numero RIS")
+* item[=].type = #string
 
 // GLN
-* item[=].item[+].linkId = "labGln"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.gln"
-* insert RuleSetQrLevel2Text("GLN", "GLN", "GLN", "GLN")
-* item[=].item[=].type = #string
+* item[+].linkId = "labGln"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.gln"
+* insert RuleSetQrLevel1Text("GLN", "GLN", "GLN", "GLN")
+* item[=].type = #string

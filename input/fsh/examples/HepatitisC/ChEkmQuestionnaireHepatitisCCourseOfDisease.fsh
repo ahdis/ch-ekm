@@ -4,8 +4,8 @@
 // This file is disease-SPECIFIC — like ChEkmQuestionnaireImmunizationMpox, and unlike the children
 // in input/fsh/questionnnaire/ — because the answer list is a property of the disease.
 //
-// PLACED IN THE "DIAGNOSE UND MANIFESTATION" SECTION, directly after the Manifestationsbeginn and
-// before the Labor block, so it is inserted at LEVEL 3 (inside `manifestation-group`) rather than
+// PLACED IN THE "DIAGNOSE UND MANIFESTATION" SECTION, directly after the Manifestationsbeginn, as
+// the last item of that section (the Labor section follows as a tab of its own), so it is inserted at LEVEL 3 (inside `manifestation-group`) rather than
 // as a tab of its own. Like ChEkmQuestionnaireManifestationBeginUnknown it contributes a FLAT item,
 // not a wrapping group, so the question renders as one more row of the Diagnose tab. It carries no
 // sdc-questionnaire-shortText for that reason: it is never a tab, so there is no tab label to give.

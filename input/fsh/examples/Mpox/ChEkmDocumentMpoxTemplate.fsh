@@ -133,6 +133,9 @@ Usage: #inline
 * section[1].entry.reference = "Observation/ExtractedExposure"
 // "trans Person" answered "Nein" (issue #35) - computed, so after the static exposure entry.
 * insert RuleSetTransgenderStatusSectionEntry(1)
+// Labor (issue #42) — UNGATED (labName is a required form item), so it is declared before the gated
+// sections.
+* insert RuleSetLaboratorySection
 // Cause of death — gated on the person having died, and LAST for the same index-shift reason as the
 // conditional Bundle entries (see RuleSetCauseOfDeathSection).
 * insert RuleSetCauseOfDeathSection(ExtractedCauseOfDeath)
@@ -181,6 +184,11 @@ Description: "SDC template-based extraction template. Shaped like ChEkmDocumentM
 * entry[=].resource = ExtractedTreatingPractitioner
 * entry[+].fullUrl = "http://test.fhir.ch/r4/Organization/ExtractedTreatingOrganization"
 * entry[=].resource = ExtractedTreatingOrganization
+
+// Labor (issue #42) — the ServiceRequest carrying the analysing laboratory, and the laboratory.
+// Ungated, hence before the conditional entries below. The Mpox form asks no sample, so
+// ExtractedLabServiceRequest.specimen resolves to nothing and is dropped.
+* insert RuleSetLaboratoryEntries
 
 // --- LAST ENTRY ON PURPOSE ---------------------------------------------------------------------
 // The hospitalisation Encounter is the only CONDITIONAL entry, and a conditional entry must be the

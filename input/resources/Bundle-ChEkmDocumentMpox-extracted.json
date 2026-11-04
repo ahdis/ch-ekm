@@ -62,6 +62,22 @@
             ]
           },
           {
+            "title": "Laboratory section",
+            "code": {
+              "coding": [
+                {
+                  "code": "30954-2",
+                  "system": "http://loinc.org"
+                }
+              ]
+            },
+            "entry": [
+              {
+                "reference": "ServiceRequest/ExtractedLabServiceRequest"
+              }
+            ]
+          },
+          {
             "title": "Cause of death section",
             "code": {
               "coding": [
@@ -504,6 +520,43 @@
           }
         ],
         "name": "Regionalspital Genesis"
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/ServiceRequest/ExtractedLabServiceRequest",
+      "resource": {
+        "resourceType": "ServiceRequest",
+        "id": "ExtractedLabServiceRequest",
+        "status": "completed",
+        "intent": "order",
+        "subject": {
+          "reference": "Patient/ExtractedPatient"
+        },
+        "performer": [
+          {
+            "reference": "Organization/ExtractedLabOrganization"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "http://test.fhir.ch/r4/Organization/ExtractedLabOrganization",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "ExtractedLabOrganization",
+        "extension": [
+          {
+            "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department",
+            "valueString": "Virologie"
+          }
+        ],
+        "address": [
+          {
+            "postalCode": "7575",
+            "city": "Rumplikon"
+          }
+        ],
+        "name": "LabSan GmbH"
       }
     },
     {

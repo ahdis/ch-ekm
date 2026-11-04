@@ -8,7 +8,8 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 * title = "EKM: Mpox (modular)"
 
 * insert RuleSetQrHeader("mpox-form", "Clinical findings report: mpox", "Meldung zum klinischen Befund: Mpox", "Déclaration de résultat clinique : Mpox", "Notifica del referto clinico: Mpox", ChEkmDocumentMpoxTemplate)
-// Render the sections below (person / diagnosis / exposure / physician) as tabs on the left
+// Render the sections below (person / diagnosis / laboratory / course / exposure / immunisation /
+// physician) as tabs on the left
 * insert RuleSetQrLevel1TabContainer
 
 * insert RuleSetQrGroupPerson
@@ -36,6 +37,12 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 // Free text for further manifestations, enabled by the "Andere" box (issue #40)
 * insert RuleSetQrManifestationOther
 * insert RuleSetQrManifestationBeginUnknown
+
+// Labor (issue #42) — the analysing laboratory, a section (tab) of its own directly after the
+// Diagnose section: the same disease-agnostic module Hepatitis C and invasive pneumococcal disease
+// assemble (ChEkmQuestionnaireLaboratory, nine fields, only the name required). No Probe
+// (RuleSetQrLaboratorySpecimen): the Mpox form does not ask for the sample.
+* insert RuleSetQrLaboratory
 
 // Verlauf (course of the disease) — Hospitalisation and Zustand (death). Mpox is the first organism
 // with this section; Gonorrhoea has none.

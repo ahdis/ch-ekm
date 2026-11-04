@@ -4965,68 +4965,74 @@
                   }
                 }
               ]
+            }
+          ]
+        },
+        {
+          "linkId": "laboratory",
+          "type": "group",
+          "text": "Labor",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-shortText",
+              "valueString": "Labor"
+            }
+          ],
+          "item": [
+            {
+              "linkId": "labName",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.name",
+              "text": "Name",
+              "type": "string",
+              "required": true
             },
             {
-              "linkId": "laboratory",
-              "text": "Labor",
-              "type": "group",
-              "item": [
-                {
-                  "linkId": "labName",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.name",
-                  "text": "Name",
-                  "type": "string",
-                  "required": true
-                },
-                {
-                  "linkId": "labDepartment",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.department",
-                  "text": "Abteilung",
-                  "type": "string"
-                },
-                {
-                  "linkId": "labStreetLine",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.streetLine",
-                  "text": "Strasse / Nr.",
-                  "type": "string"
-                },
-                {
-                  "linkId": "labZipCode",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.zipCode",
-                  "text": "PLZ",
-                  "type": "string"
-                },
-                {
-                  "linkId": "labCity",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.city",
-                  "text": "Ort",
-                  "type": "string"
-                },
-                {
-                  "linkId": "labPhone",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.phone",
-                  "text": "Telefon",
-                  "type": "string"
-                },
-                {
-                  "linkId": "labEmail",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.email",
-                  "text": "E-Mail",
-                  "type": "string"
-                },
-                {
-                  "linkId": "labBer",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber",
-                  "text": "BUR-Nummer",
-                  "type": "string"
-                },
-                {
-                  "linkId": "labGln",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.gln",
-                  "text": "GLN",
-                  "type": "string"
-                }
-              ]
+              "linkId": "labDepartment",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.department",
+              "text": "Abteilung",
+              "type": "string"
+            },
+            {
+              "linkId": "labStreetLine",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.streetLine",
+              "text": "Strasse / Nr.",
+              "type": "string"
+            },
+            {
+              "linkId": "labZipCode",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.zipCode",
+              "text": "PLZ",
+              "type": "string"
+            },
+            {
+              "linkId": "labCity",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.city",
+              "text": "Ort",
+              "type": "string"
+            },
+            {
+              "linkId": "labPhone",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.phone",
+              "text": "Telefon",
+              "type": "string"
+            },
+            {
+              "linkId": "labEmail",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.email",
+              "text": "E-Mail",
+              "type": "string"
+            },
+            {
+              "linkId": "labBer",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.ber",
+              "text": "BUR-Nummer",
+              "type": "string"
+            },
+            {
+              "linkId": "labGln",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.gln",
+              "text": "GLN",
+              "type": "string"
             }
           ]
         },
@@ -7058,6 +7064,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T12:11:48+01:00",
+  "date": "2026-11-04T13:04:42+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisC and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

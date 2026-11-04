@@ -6,7 +6,7 @@
 //
 // STARTER SCOPE, exactly like the Hepatitis C root. Only the sections whose questions already exist
 // as reusable modules AND whose target profiles exist for this organism are assembled:
-//   Person (INITIALS, no gender identity)  ·  Diagnose/Manifestation + Labor (incl. Probe)
+//   Person (INITIALS, no gender identity)  ·  Diagnose/Manifestation  ·  Labor (incl. Probe)
 //   Verlauf (Hospitalisation + Zustand)
 //   Exposition Wo/Wann  ·  Impfstatus  ·  Behandelnde Ärztin/Arzt
 // The one block the CSV marks with an "X" that is NOT assembled — Risikofaktoren — is
@@ -76,16 +76,17 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 * insert RuleSetQrManifestationBeginUnknown
 
 // --- Labor -------------------------------------------------------------------------------------
-// The analysing laboratory, INSIDE the "Diagnose und Manifestation" section and directly after the
-// Manifestationsbeginn — so it is a sub-heading of the Diagnose tab, not a tab of its own. All nine
-// CSV rows are X-marked and identical to the Hepatitis C ones, so the module is disease-agnostic.
+// The analysing laboratory — a section (tab) of its own, directly after "Diagnose und
+// Manifestation" and on the same level (issue #42; it used to be a sub-heading of the Diagnose tab).
+// All nine CSV rows are X-marked and identical to the Hepatitis C ones, so the module is disease-agnostic.
 // The rest of the reporting form's Labor block (Anlass, Material, Entnahmedatum) is NOT asked — see
 // OPEN QUESTIONS #3.
 * insert RuleSetQrLaboratory
 // Entnahmedatum + Material — the SAMPLE half of the Labor block, an opt-in companion module. Only
 // this form asks them (the Hepatitis C CSV has no Entnahmedatum row and mentions Material only in
 // its un-mapped wish-list block), which is why they are their own sub-questionnaire rather than two
-// more items in the shared one. Material is a dropdown bound to the CH ELM specimen value set —
+// more items in the shared one. Assembled into the "Labor" section, as its "Probe" sub-heading after
+// the nine laboratory fields. Material is a dropdown bound to the CH ELM specimen value set —
 // the same canonical ChEkmSpecimen binds `type.coding` to.
 * insert RuleSetQrLaboratorySpecimen
 
@@ -196,10 +197,10 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 //
 //  3. LABOR — the ORGANISATION half is now IMPLEMENTED. The nine X-marked rows (name, department,
 //     address, phone, email, BUR, GLN) are the shared, disease-agnostic sub-questionnaire
-//     ChEkmQuestionnaireLaboratory, assembled INSIDE this section right after the
-//     Manifestationsbeginn, with the logical model ChEkmLabForm behind it; they extract into
+//     ChEkmQuestionnaireLaboratory, assembled as the "Labor" section right after the Diagnose
+//     section, with the logical model ChEkmLabForm behind it; they extract into
 //     ChEkmOrganizationLab, reached from ChEkmServiceRequest.performer in
-//     Composition.section[laboratory]. Hepatitis C assembles the same module unchanged — it is the
+//     Composition.section[laboratory]. Hepatitis C and Mpox assemble the same module unchanged — it is the
 //     first lab module in the IG and every further organism gets it with one insert.
 //     "Material" and "Entnahmedatum" are IMPLEMENTED TOO, as the opt-in companion module
 //     ChEkmQuestionnaireLaboratorySpecimen (logical model ChEkmLabSpecimenForm -> ChEkmSpecimen,

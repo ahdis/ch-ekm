@@ -1,7 +1,7 @@
 // "Labor" (the analysing laboratory) — the two Bundle entries and the Composition section.
 //
 // The extraction counterpart of RuleSetQrLaboratory: that rule set puts the nine questions into the
-// "Diagnose und Manifestation" section of a root, these two put the resources they extract to into
+// "Labor" section of a root, these two put the resources they extract to into
 // that root's Bundle template. The instances themselves (ExtractedLabOrganization,
 // ExtractedLabServiceRequest) are shared and live in extract/ChEkmDocumentTemplate.fsh next to the
 // treating physician's, because nothing about them is disease-specific.
