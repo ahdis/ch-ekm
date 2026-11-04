@@ -134,7 +134,7 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
-      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow|0.0.1"
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHowMpox|0.0.1"
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
@@ -932,6 +932,99 @@
                     {
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                       "valueString": "$this"
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "healthcare-worker-contact",
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='exposureHowHealthcareWorkerContact').answer.value"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)",
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "household-contact",
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='exposureHowHouseholdContact').answer.value"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)",
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "confirmed-case-contact",
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='exposureHowConfirmedCaseContact').answer.value"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)",
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -5482,6 +5575,258 @@
                   ]
                 },
                 {
+                  "linkId": "exposureHowHealthcareWorkerContact",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.transmission.healthcareWorkerContact",
+                  "text": "Contact as medical / nursing staff",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Kontakt als Medizinal- / Pflegepersonal"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Contact en tant que personnel médical / soignant"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Contatto in qualità di personale medico / sanitario"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
+                  "_answerValueSet": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                        "extension": [
+                          {
+                            "url": "name",
+                            "valueCode": "useSupplement"
+                          },
+                          {
+                            "url": "expression",
+                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "exposureHowHouseholdContact",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.transmission.householdContact",
+                  "text": "Contact in the household",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Kontakt im Haushalt"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Contact dans le ménage"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Contatto nell'economia domestica"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
+                  "_answerValueSet": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                        "extension": [
+                          {
+                            "url": "name",
+                            "valueCode": "useSupplement"
+                          },
+                          {
+                            "url": "expression",
+                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ]
+                },
+                {
+                  "linkId": "exposureHowConfirmedCaseContact",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.transmission.confirmedCaseContact",
+                  "text": "Contact with a laboratory-confirmed mpox case",
+                  "_text": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "de-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Kontakt mit laborbestätigtem Mpox-Fall"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "fr-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Contact avec un cas de mpox confirmé en laboratoire"
+                          }
+                        ]
+                      },
+                      {
+                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                        "extension": [
+                          {
+                            "url": "lang",
+                            "valueCode": "it-CH"
+                          },
+                          {
+                            "url": "content",
+                            "valueString": "Contatto con un caso di mpox confermato in laboratorio"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "type": "choice",
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
+                  "_answerValueSet": {
+                    "extension": [
+                      {
+                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
+                        "extension": [
+                          {
+                            "url": "name",
+                            "valueCode": "useSupplement"
+                          },
+                          {
+                            "url": "expression",
+                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ]
+                },
+                {
                   "linkId": "exposureHowOtherTransmission",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.otherTransmission",
                   "text": "Other route of transmission (free text)",
@@ -7771,6 +8116,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T16:19:26+01:00",
+  "date": "2026-11-04T17:32:17+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

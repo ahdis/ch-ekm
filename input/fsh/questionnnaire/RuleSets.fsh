@@ -367,7 +367,12 @@ RuleSet: RuleSetQrExposureWhen
 * insert RuleSetQrLevel3SubQuestionnaire("exposurewhen", "Exposure: when", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureWhen")
 
 RuleSet: RuleSetQrExposureHow
-* insert RuleSetQrLevel3SubQuestionnaire("exposurehow", "Exposure: how", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow") 
+* insert RuleSetQrLevel3SubQuestionnaire("exposurehow", "Exposure: how", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow")
+
+// The Mpox "Wie": the shared one plus the three contact questions of issue #44
+// (examples/Mpox/ChEkmQuestionnaireExposureHowMpox.fsh). Inserted INSTEAD of RuleSetQrExposureHow.
+RuleSet: RuleSetQrExposureHowMpox
+* insert RuleSetQrLevel3SubQuestionnaire("exposurehow", "Exposure: how", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHowMpox")
 
 // "Verlauf" — the course of the disease. Container for the Hospitalisation group and for "Zustand"
 // (Tot / Todesdatum / Todesursache). Only diseases whose form has this section insert it:

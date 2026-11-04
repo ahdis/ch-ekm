@@ -30,6 +30,33 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 * component[dateOfEntry].code = $sct#161097008 "Date of return from travel"
 * component[dateOfEntry].value[x] only dateTime
 
+// How - the contact questions (issue #44): contact as medical / nursing staff, in the household,
+// with a laboratory-confirmed case of the reported disease. Each is a closed question answered
+// yes / no / unknown, so the answer is the VALUE (sct#373066001 / 373067005 / 261665006) and
+// "unknown" never becomes a dataAbsentReason (same rule as ChEkmObservationCauseOfDeath). Sliced
+// here on the base profile, like dateOfEntry, so that any organism whose form asks them reuses the
+// slices; a disease profile only flags them MustSupport (Mpox today). Absent = not asked / not
+// answered.
+* component contains
+    healthcareWorkerContact 0..1 and
+    householdContact 0..1 and
+    confirmedCaseContact 0..1
+* component[healthcareWorkerContact] ^short = "Contact as medical / nursing staff (Kontakt als Medizinal- / Pflegepersonal): yes / no / unknown"
+* component[healthcareWorkerContact].code = ChEkmExposureComponent#healthcare-worker-contact
+* component[healthcareWorkerContact].value[x] 1..1
+* component[healthcareWorkerContact].value[x] only CodeableConcept
+* component[healthcareWorkerContact].valueCodeableConcept from ChEkmYesNoUnknown (required)
+* component[householdContact] ^short = "Contact in the household (Kontakt im Haushalt): yes / no / unknown"
+* component[householdContact].code = ChEkmExposureComponent#household-contact
+* component[householdContact].value[x] 1..1
+* component[householdContact].value[x] only CodeableConcept
+* component[householdContact].valueCodeableConcept from ChEkmYesNoUnknown (required)
+* component[confirmedCaseContact] ^short = "Contact with a laboratory-confirmed case of the reported disease (Kontakt mit laborbestätigtem Fall): yes / no / unknown"
+* component[confirmedCaseContact].code = ChEkmExposureComponent#confirmed-case-contact
+* component[confirmedCaseContact].value[x] 1..1
+* component[confirmedCaseContact].value[x] only CodeableConcept
+* component[confirmedCaseContact].valueCodeableConcept from ChEkmYesNoUnknown (required)
+
 
 
 // Cause of death (the "Zustand" half of the Verlauf section).

@@ -128,6 +128,33 @@ RuleSet: RuleSetEffectiveExposureWhen
 * component[=].valueDateTime.extension[+].url = $sdc-templateExtractValue
 * component[=].valueDateTime.extension[=].valueString = "$this"
 
+// The three contact questions of the "Wie" (issue #44) -> the contact component slices of the base
+// ChEkmExposure, one per answered question:
+//   exposureHowHealthcareWorkerContact -> component[healthcareWorkerContact]  ChEkmExposureComponent#healthcare-worker-contact
+//   exposureHowHouseholdContact        -> component[householdContact]         ChEkmExposureComponent#household-contact
+//   exposureHowConfirmedCaseContact    -> component[confirmedCaseContact]     ChEkmExposureComponent#confirmed-case-contact
+// value = the answered Coding of ChEkmYesNoUnknown — "unknown" too, as sct#261665006 (a value, never a
+// dataAbsentReason). Same idiom as the sexual-contact-partner component of RuleSetComponentExposure:
+// context-gated on the answer (unanswered -> no component), placeholder coding overwritten by
+// `ofType(Coding)` (the placeholder only lets the template validate against the required binding).
+// Independent of "Übertragungsweg unbekannt": they are answers of their own, not the route.
+//
+// A separate rule set, inserted only by the templates of forms that ask these questions (Mpox), and
+// AFTER every other component rule set: the extract engine's context bookkeeping is index-sensitive,
+// so appending keeps the indices of the existing components unchanged.
+RuleSet: RuleSetComponentExposureContacts
+* insert RuleSetComponentExposureContact(exposureHowHealthcareWorkerContact, healthcare-worker-contact)
+* insert RuleSetComponentExposureContact(exposureHowHouseholdContact, household-contact)
+* insert RuleSetComponentExposureContact(exposureHowConfirmedCaseContact, confirmed-case-contact)
+
+RuleSet: RuleSetComponentExposureContact(linkId, code)
+* component[+].code = ChEkmExposureComponent#{code}
+* component[=].extension[+].url = $sdc-templateExtractContext
+* component[=].extension[=].valueString = "%resource.descendants().where(linkId='{linkId}').answer.value"
+* component[=].valueCodeableConcept.coding[0] = $sct#261665006 "Unknown (qualifier value)"
+* component[=].valueCodeableConcept.coding[0].extension[+].url = $sdc-templateExtractValue
+* component[=].valueCodeableConcept.coding[0].extension[=].valueString = "ofType(Coding)"
+
 RuleSet: RuleSetComponentExposure
 // Sexualkontakt mit infizierter Person (Geschlecht)
 // PLACEHOLDER DEFAULT valueCodeableConcept — replaced/dropped at extraction. These sliced components

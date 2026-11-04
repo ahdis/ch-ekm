@@ -129,6 +129,7 @@ Each case pins one branch of the template. All five are already exercised — by
 | `mpox/exposure-entry-date-unknown` | `exposureWhenLastEntryDate`; `%factory.Extension` carrier | no `effectiveDateTime` value; `_effectiveDateTime` DAR `asked-unknown`; `component[161097008].valueDateTime` |
 | `mpox/transmission-unknown` | `exposureHowUnknown = true` gate | `component[409496000] = 261665006`; no free-text component |
 | `mpox/transmission-other` | `exposureHowOtherTransmission` free text | `component[74964007].valueString`; `component[409496000] = 74964007` |
+| `mpox/contacts` | the three contact questions (#44) answered no / unknown / yes; and unanswered | one component each (`healthcare-worker-contact = 373067005`, `household-contact = 261665006`, `confirmed-case-contact = 373066001`); unanswered → none |
 | `gonorrhoea/baseline` | initials name module; onset **data-absent** branch (`manifestationBeginUnknown = true`) | `_onsetDateTime` DAR; `name` from initials |
 
 Coverage gap worth closing later: no case yet asserts the *absence* of `section[social-history]`

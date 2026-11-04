@@ -339,8 +339,20 @@ disease-specific value-set bindings).
 | --- | --- | --- | --- |
 | Sexualkontakt – Geschlecht | `exposureHowSexualContactPartner` | choice | `ChEkmExposureSexualContactPartner` (female / male / unknown, #32) |
 | Art der Beziehung | `exposureHowRelationshipType` | choice | `ChEkmExposureRelationshipType` (fester / nicht fester Partner, Angebot / Inanspruchnahme von bezahltem Sex) |
+| *Mpox only (#44):* Kontakt als Medizinal- / Pflegepersonal | `exposureHowHealthcareWorkerContact` | choice | `ChEkmYesNoUnknown` → `ChEkmExposure.component[healthcareWorkerContact]` |
+| *Mpox only (#44):* Kontakt im Haushalt | `exposureHowHouseholdContact` | choice | `ChEkmYesNoUnknown` → `component[householdContact]` |
+| *Mpox only (#44):* Kontakt mit laborbestätigtem Mpox-Fall | `exposureHowConfirmedCaseContact` | choice | `ChEkmYesNoUnknown` → `component[confirmedCaseContact]` |
 | anderer Übertragungsweg | `exposureHowOtherTransmission` | string | |
 | unbekannt | `exposureHowUnknown` | boolean | |
+
+> **The "Wie" items are rule sets (#44).** `ChEkmQuestionnaireExposureHow.fsh` defines
+> `RuleSetQrExposureHowSexualContact`, `RuleSetQrExposureHowContacts(form, case×4)` and
+> `RuleSetQrExposureHowOtherUnknown`; the shared module inserts the first and last, Mpox's own module
+> `ChEkmQuestionnaireExposureHowMpox` all three (the contacts sit in the middle of the group, which
+> `$assemble` cannot do conditionally — the Impfstatus pattern). Same linkIds in both modules. The
+> contacts extract via `RuleSetComponentExposureContacts` into component slices of the BASE
+> `ChEkmExposure`, so another disease reuses form, slices and extraction by writing one module like
+> Mpox's with its own form model and case label.
 
 > **State of the FOPH form harmonisation (2026-10):** that "Wie" is asked is agreed, its details are
 > not. The four relationship types are P&P's proposal. The partner's sex offers "unbekannt" as in
@@ -1841,6 +1853,7 @@ forces every reader to check two places, and — as `obs-6` proved for the cause
 | `deathCause` (Todesursache) | `Observation.valueCodeableConcept` — `RuleSetObservationCauseOfDeath` (#28) |
 | `exposureHowUnknown` (Übertragungsweg unbekannt) | `ChEkmExposure.component[transmissionRoute].valueCodeableConcept` — `RuleSetComponentExposure` |
 | `exposureHowSexualContactPartner` = unknown (Sexualkontakt – Geschlecht) | `ChEkmExposure.component[sexualContactPartner].valueCodeableConcept` — `RuleSetComponentExposure` (#32) |
+| `exposureHowHealthcareWorkerContact` / `…HouseholdContact` / `…ConfirmedCaseContact` = unknown (Mpox contacts) | `ChEkmExposure.component[healthcareWorkerContact / householdContact / confirmedCaseContact].valueCodeableConcept` — `RuleSetComponentExposureContacts` (#44) |
 | `immunizationStatus…` = No / Unknown / unanswered (Impfstatus) | `ChEkmObservationVaccinationStatus.valueCodeableConcept` — `RuleSetVaccinationStatusNo` / `…Unknown` (#29, #36) |
 
 Note the third: the form item is a **boolean check-box**, yet extraction materialises the SNOMED

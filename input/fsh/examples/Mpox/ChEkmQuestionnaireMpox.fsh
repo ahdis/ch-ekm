@@ -57,7 +57,10 @@ Description: "Modular root questionnaire for the Mpox clinical findings report. 
 
 * insert RuleSetQrExposureWhen
 
-* insert RuleSetQrExposureHow
+// Wie — the Mpox variant of the shared module: three more questions (contact as medical / nursing
+// staff, in the household, with a laboratory-confirmed mpox case; issue #44) above "Anderer
+// Übertragungsweg", extracted into components of the Exposure.
+* insert RuleSetQrExposureHowMpox
 
 // Nach Manifestationsbeginn: Enger Personenkontakt (ja / nein / unbekannt) + Bemerkung (issue #43) —
 // the last question of the Exposition. NOT extracted into a resource: the module is ALSO assembled

@@ -14,6 +14,31 @@ Description: "Internal code system used as discriminator for the components of a
 * #sexual-contact-partner ^designation[+].language = #it-CH
 * #sexual-contact-partner ^designation[=].value = "Partner di contatto sessuale"
 // * #relationship-type "Type of relationship" "Type of the relationship to the sexual contact partner."
+// The three contact questions of the "Wie" (issue #44), answered yes / no / unknown
+// (ChEkmYesNoUnknown). SNOMED CT has no disease-agnostic concept for any of them (only pathogen-bound
+// ones such as "Occupational exposure to monkeypox virus"), hence local codes; the disease the case
+// had is the one the report is about.
+* #healthcare-worker-contact "Contact as healthcare worker" "Exposure through contact in the person's work as medical or nursing staff."
+* #healthcare-worker-contact ^designation[+].language = #de-CH
+* #healthcare-worker-contact ^designation[=].value = "Kontakt als Medizinal- / Pflegepersonal"
+* #healthcare-worker-contact ^designation[+].language = #fr-CH
+* #healthcare-worker-contact ^designation[=].value = "Contact en tant que personnel médical / soignant"
+* #healthcare-worker-contact ^designation[+].language = #it-CH
+* #healthcare-worker-contact ^designation[=].value = "Contatto in qualità di personale medico / sanitario"
+* #household-contact "Household contact" "Exposure through contact within the person's household."
+* #household-contact ^designation[+].language = #de-CH
+* #household-contact ^designation[=].value = "Kontakt im Haushalt"
+* #household-contact ^designation[+].language = #fr-CH
+* #household-contact ^designation[=].value = "Contact dans le ménage"
+* #household-contact ^designation[+].language = #it-CH
+* #household-contact ^designation[=].value = "Contatto nell'economia domestica"
+* #confirmed-case-contact "Contact with a laboratory-confirmed case" "Exposure through contact with a laboratory-confirmed case of the disease this report is about."
+* #confirmed-case-contact ^designation[+].language = #de-CH
+* #confirmed-case-contact ^designation[=].value = "Kontakt mit laborbestätigtem Fall"
+* #confirmed-case-contact ^designation[+].language = #fr-CH
+* #confirmed-case-contact ^designation[=].value = "Contact avec un cas confirmé en laboratoire"
+* #confirmed-case-contact ^designation[+].language = #it-CH
+* #confirmed-case-contact ^designation[=].value = "Contatto con un caso confermato in laboratorio"
 
 CodeSystem: ChEkmRelationshipType
 Id: ch-ekm-relationship-type

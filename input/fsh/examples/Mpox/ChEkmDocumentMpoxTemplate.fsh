@@ -29,6 +29,8 @@ Usage: #inline
 // Wann — inserted AFTER the transmission components so those keep their array indices
 // (the extract engine's context bookkeeping is index-sensitive, see RuleSetComponentExposure).
 * insert RuleSetEffectiveExposureWhen
+// Wie — the three contact questions (issue #44), appended LAST so no earlier component index moves.
+* insert RuleSetComponentExposureContacts
 // Wo — only touches the `extension` array (two mutually exclusive carriers), so it is independent
 // of the component indices above.
 * insert RuleSetExposureWhere

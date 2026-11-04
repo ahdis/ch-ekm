@@ -75,8 +75,10 @@ Title: "Manifestation Form to CH EKM Condition Mpox"
 * manifestationOther -> "Condition.evidence.code.text" "Free text of the evidence coded sct#74964007 'Other'"
 
 // Wo and Wann come from ChEkmExposureForm; "Wie" is the same four questions the Gonorrhoea form asks
-// (the shared ChEkmQuestionnaireExposureHow, whose item definitions point at
-// ChEkmGonorrhoeaExposureForm), extracted into the sliced components of ChEkmExposureMpox. The close
+// (the shared rule sets of ChEkmQuestionnaireExposureHow, whose item definitions point at
+// ChEkmGonorrhoeaExposureForm), extracted into the sliced components of ChEkmExposureMpox, plus the
+// three contact questions of issue #44 (ChEkmQuestionnaireExposureHowMpox, definitions pointing here),
+// extracted into the contact component slices of the base ChEkmExposure. The close
 // contact after the onset of the manifestation (issue #43) has no FHIR target and is mapped to the
 // disease-specific QuestionnaireResponse instead.
 Logical: ChEkmMpoxExposureForm
@@ -91,6 +93,13 @@ Characteristics: #can-be-target
   * sexualContactPartner from ChEkmExposureSexualContactPartner (required)
   * relationshipType 0..1 CodeableConcept "Type of relationship (anonymous partner / known partner / paid sex / unknown)"
   * relationshipType from ChEkmExposureRelationshipType (required)
+  // issue #44 — asked above "Anderer Übertragungsweg"
+  * healthcareWorkerContact 0..1 CodeableConcept "Contact as medical / nursing staff (Kontakt als Medizinal- / Pflegepersonal): yes / no / unknown"
+  * healthcareWorkerContact from ChEkmYesNoUnknown (required)
+  * householdContact 0..1 CodeableConcept "Contact in the household (Kontakt im Haushalt): yes / no / unknown"
+  * householdContact from ChEkmYesNoUnknown (required)
+  * confirmedCaseContact 0..1 CodeableConcept "Contact with a laboratory-confirmed mpox case (Kontakt mit laborbestätigtem Mpox-Fall): yes / no / unknown"
+  * confirmedCaseContact from ChEkmYesNoUnknown (required)
   * otherTransmission 0..1 string "Other transmission route (free text)"
   * unknown 0..1 boolean "Unknown"
 // Nach Manifestationsbeginn (issue #43) — asked last in the section. NO RESOURCE TARGET: the answers
@@ -108,8 +117,11 @@ Title: "Exposure Form to CH EKM Exposure Mpox"
 * -> "Observation" "Maps the form section to the ChEkmExposureMpox profile"
 * transmission.sexualContactPartner -> "Observation.component[sexualContactPartner].valueCodeableConcept"
 * transmission.relationshipType -> "Observation.component[relationshipType].valueCodeableConcept"
+* transmission.healthcareWorkerContact -> "Observation.component[healthcareWorkerContact].valueCodeableConcept" "Component code ChEkmExposureComponent#healthcare-worker-contact"
+* transmission.householdContact -> "Observation.component[householdContact].valueCodeableConcept" "Component code ChEkmExposureComponent#household-contact"
+* transmission.confirmedCaseContact -> "Observation.component[confirmedCaseContact].valueCodeableConcept" "Component code ChEkmExposureComponent#confirmed-case-contact"
 * transmission.otherTransmission -> "Observation.component[otherTransmission].valueString" "Other transmission route (component code sct#74964007)"
-* transmission.unknown -> "Observation.component[transmissionRoute].valueCodeableConcept" "Ticked: sct#261665006 'Unknown'; the other transmission components are then not emitted"
+* transmission.unknown -> "Observation.component[transmissionRoute].valueCodeableConcept" "Ticked: sct#261665006 'Unknown'; the other transmission route components are then not emitted (the contact components are, they are answers of their own)"
 
 Mapping: MpoxExposureFormToQuestionnaireResponse
 Source: ChEkmMpoxExposureForm

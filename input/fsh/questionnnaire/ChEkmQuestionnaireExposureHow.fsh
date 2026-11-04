@@ -3,6 +3,20 @@
 // Source of truth: logical model ChEkmGonorrhoeaExposureForm.transmission (-> ChEkmExposureGonorrhoea)
 // Decisions (2026-06-09): contact-partner sex = administrative-gender (model);
 // Art der Beziehung = ChEkmExposureRelationshipType (model codes).
+//
+// THE ITEMS LIVE IN THREE RULE SETS, the module only arranges them (issue #44). A disease whose "Wie"
+// asks more than these four questions cannot get them from this module: $assemble can neither
+// parameterise a sub-questionnaire nor include a child conditionally, and the extra questions sit IN
+// THE MIDDLE of the group (above "Anderer Übertragungsweg"). So such a disease writes its own "Wie"
+// module from the same rule sets, with its extra rule set in between — the Impfstatus pattern
+// (RuleSetQrImmunizationRow). Mpox does so in ChEkmQuestionnaireExposureHowMpox:
+//   RuleSetQrExposureHowSexualContact   Sexualkontakt (Geschlecht), Art der Beziehung
+//   RuleSetQrExposureHowContacts        Kontakt als Medizinal- / Pflegepersonal, im Haushalt,
+//                                       mit laborbestätigtem Fall (ja / nein / unbekannt) — #44
+//   RuleSetQrExposureHowOtherUnknown    Anderer Übertragungsweg (Freitext), Übertragungsweg unbekannt
+// All of them expect to be inserted right after the `exposureHow` group item (level-2 items). The
+// linkIds are the same in every "Wie" module: the extraction (RuleSetComponentExposure,
+// RuleSetComponentExposureContacts) reads them by linkId, whichever module the form assembled.
 
 Instance: ChEkmQuestionnaireExposureHow
 InstanceOf: Questionnaire
@@ -14,7 +28,11 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 * item[+].linkId = "exposureHow"
 * insert RuleSetQrLevel1Text("How (route of transmission\)", "Wie (Übertragungsweg\)", "Comment (voie de transmission\)", "Come (via di trasmissione\)")
 * item[=].type = #group
+* insert RuleSetQrExposureHowSexualContact
+* insert RuleSetQrExposureHowOtherUnknown
 
+
+RuleSet: RuleSetQrExposureHowSexualContact
 // Sexualkontakt mit infizierter Person - Geschlecht (Frau / Mann; "Andere" dropped with #32)
 * item[=].item[+].linkId = "exposureHowSexualContactPartner"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.sexualContactPartner"
@@ -43,6 +61,8 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 // * item[=].item[=].enableWhen[=].operator = #=
 // * item[=].item[=].enableWhen[=].answerBoolean = false
 
+
+RuleSet: RuleSetQrExposureHowOtherUnknown
 // Anderer Übertragungsweg (Freitext)
 * item[=].item[+].linkId = "exposureHowOtherTransmission"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmGonorrhoeaExposureForm#ChEkmGonorrhoeaExposureForm.transmission.otherTransmission"
@@ -60,3 +80,50 @@ Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route 
 * item[=].item[=].type = #boolean
 //* item[=].item[=].initial.valueBoolean = false
 
+
+// Kontakt als Medizinal- / Pflegepersonal, Kontakt im Haushalt, Kontakt mit laborbestätigtem <Krankheit>-Fall
+// — ja / nein / unbekannt each (issue #44, asked by the Mpox form today). Three independent
+// questions, not one check-box list: each has its own "unknown", and a "nein" is an answer FOPH
+// wants to receive, so none of them can be a code of the transmission route.
+//
+// Disease-agnostic on purpose, parameterised by what differs between diseases:
+//   form       the disease's exposure logical model, which declares the three elements under
+//              `transmission` (e.g. ChEkmMpoxExposureForm) — the items' `definition`
+//   case-*     the text of the third question in four languages, which names the disease
+//              ("Kontakt mit laborbestätigtem Mpox-Fall")
+// The linkIds are NOT parameterised: the extraction (RuleSetComponentExposureContacts) is shared too
+// and reads them by name, into components of the base ChEkmExposure.
+//
+// The items are not disabled by "Übertragungsweg unbekannt", for the same reason the other items of
+// the group are not (the enableWhen there is commented out): the physician may know a household
+// contact and still not know the route.
+RuleSet: RuleSetQrExposureHowContacts(form, case, case-de-CH, case-fr-CH, case-it-CH)
+* item[=].item[+].linkId = "exposureHowHealthcareWorkerContact"
+* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/{form}#{form}.transmission.healthcareWorkerContact"
+* insert RuleSetQrLevel2Text("Contact as medical / nursing staff", "Kontakt als Medizinal- / Pflegepersonal", "Contact en tant que personnel médical / soignant", "Contatto in qualità di personale medico / sanitario")
+* insert RuleSetQrExposureHowYesNoUnknown
+
+* item[=].item[+].linkId = "exposureHowHouseholdContact"
+* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/{form}#{form}.transmission.householdContact"
+* insert RuleSetQrLevel2Text("Contact in the household", "Kontakt im Haushalt", "Contact dans le ménage", "Contatto nell'economia domestica")
+* insert RuleSetQrExposureHowYesNoUnknown
+
+* item[=].item[+].linkId = "exposureHowConfirmedCaseContact"
+* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/{form}#{form}.transmission.confirmedCaseContact"
+* insert RuleSetQrLevel2Text({case}, {case-de-CH}, {case-fr-CH}, {case-it-CH})
+* insert RuleSetQrExposureHowYesNoUnknown
+
+// ja / nein / unbekannt as horizontal radio buttons, labels from the SNOMED CT language supplement —
+// the same control as "Enger Personenkontakt" (ChEkmQuestionnaireMpoxCloseContact).
+RuleSet: RuleSetQrExposureHowYesNoUnknown
+* item[=].item[=].type = #choice
+* item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown"
+* item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
+* item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
+* item[=].item[=].answerValueSet.extension[=].extension[=].valueCode = #useSupplement
+* item[=].item[=].answerValueSet.extension[=].extension[+].url = "expression"
+* item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+* item[=].item[=].extension[+].url = $questionnaire-itemControl
+* item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
+* item[=].item[=].extension[+].url = $choiceOrientation
+* item[=].item[=].extension[=].valueCode = #horizontal

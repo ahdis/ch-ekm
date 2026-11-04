@@ -171,8 +171,16 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[4].item[2].item[0].answer.valueCoding = $administrative-gender#male "male"
 * item[0].item[4].item[2].item[1].linkId = "exposureHowRelationshipType"
 * item[0].item[4].item[2].item[1].answer.valueCoding = ChEkmRelationshipType#offered-paid-sex "Offered paid sex"
-* item[0].item[4].item[2].item[2].linkId = "exposureHowUnknown"
-* item[0].item[4].item[2].item[2].answer.valueBoolean = false
+// The contact questions (issue #44): one of each answer, so the extracted Exposure shows that "nein"
+// and "unbekannt" are reported as values, like "ja".
+* item[0].item[4].item[2].item[2].linkId = "exposureHowHealthcareWorkerContact"
+* item[0].item[4].item[2].item[2].answer.valueCoding = $sct#373067005 "No (qualifier value)"
+* item[0].item[4].item[2].item[3].linkId = "exposureHowHouseholdContact"
+* item[0].item[4].item[2].item[3].answer.valueCoding = $sct#261665006 "Unknown (qualifier value)"
+* item[0].item[4].item[2].item[4].linkId = "exposureHowConfirmedCaseContact"
+* item[0].item[4].item[2].item[4].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
+* item[0].item[4].item[2].item[5].linkId = "exposureHowUnknown"
+* item[0].item[4].item[2].item[5].answer.valueBoolean = false
 
 // Nach Manifestationsbeginn: Enger Personenkontakt "ja" + Bemerkung (issue #43). NOT extracted into a
 // resource: $extract copies this group into the disease-specific QuestionnaireResponse of the document

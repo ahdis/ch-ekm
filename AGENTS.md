@@ -84,7 +84,13 @@ This IG uses **two parallel representations** of the report content:
   HL7 Europe HDR *Infectious Contact*: `category` from `ChEkmExposureClass`,
   `code = EXPAGNT`, `extension[exposureAddress]` for the place (Wo — country as ISO code +
   `iso21090-codedString`, precise location as `city`, or a `data-absent-reason` when reported as
-  unknown), `effective[x]` + `component[dateOfEntry]` for the time (Wann).
+  unknown), `effective[x]` + `component[dateOfEntry]` for the time (Wann). Also on the base (issue
+  #44, asked by Mpox only today): `component[healthcareWorkerContact]` / `[householdContact]` /
+  `[confirmedCaseContact]`, local `ChEkmExposureComponent` codes, value from `ChEkmYesNoUnknown`
+  ("unknown" a value). The form side is the rule sets in `ChEkmQuestionnaireExposureHow.fsh`, which
+  Mpox arranges in its own "Wie" module `ChEkmQuestionnaireExposureHowMpox` (the contacts sit above
+  "Anderer Übertragungsweg", which `$assemble` cannot insert conditionally); extraction
+  `RuleSetComponentExposureContacts`.
 - **The "Impfstatus" section (issues #29, #36) — one entry per form row, but the RESOURCE TYPE
   depends on the answer.** The question is optional and pre-selected to "unknown"; a row left
   unanswered is reported exactly like "unknown" (FOPH, #36). Only `yes` describes a vaccination; `no` and `unknown` are answers to a
