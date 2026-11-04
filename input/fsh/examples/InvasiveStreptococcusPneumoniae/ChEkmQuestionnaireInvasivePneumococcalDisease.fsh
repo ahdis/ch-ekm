@@ -72,6 +72,8 @@ Description: "Modular root questionnaire for the invasive pneumococcal disease (
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
 * item[=].item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#check-box
+// The list offers "Andere" (from ChEkmOtherNoneUnknown), so the free text comes with it, as for Mpox
+* insert RuleSetQrManifestationOther
 
 * insert RuleSetQrManifestationBeginUnknown
 

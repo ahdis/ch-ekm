@@ -315,16 +315,20 @@ RuleSet: RuleSetQrGroupManifestation
 * insert RuleSetQrLevel2ShortText("Diagnosis", "Diagnose", "Diagnostic", "Diagnosi")
 
 // "Andere Manifestationen" — free text, enabled once "Andere" (sct#74964007) is ticked in the
-// `manifestation` check boxes (issue #40). Insert it directly after the `manifestation` item; the
-// manifestation value set must contain 74964007. Extracted by RuleSetEvidenceManifestation into
-// code.text of the evidence coded "Other".
+// `manifestation` check boxes (issue #40). RULE FOR EVERY DISEASE: a form whose manifestation value
+// set offers "Andere" inserts this directly after its `manifestation` item (today Mpox and invasive
+// pneumococcal disease; Hepatitis C as soon as its ChEkmOtherNoneUnknown include comes back), and a
+// form without "Andere" does not. Extracted by the shared RuleSetEvidenceManifestation into code.text
+// of the evidence coded "Other".
 RuleSet: RuleSetQrManifestationOther
 * insert RuleSetQrLevel3Item("manifestationOther", "Other manifestations", "Andere Manifestationen", "Autres manifestations", "Altre manifestazioni")
 * item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationOther"
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].enableWhen[+].question = "manifestation"
 * item[=].item[=].item[=].enableWhen[=].operator = #=
-* item[=].item[=].item[=].enableWhen[=].answerCoding = $sct#74964007 "Other (qualifier value)"
+// No display: enableWhen matches on system + code, and a display would be checked against the
+// language of each pre-expanded questionnaire (de-CH "Andere", ...), which the builder does not translate.
+* item[=].item[=].item[=].enableWhen[=].answerCoding = $sct#74964007
 
 RuleSet: RuleSetQrManifestationBeginUnknown
 * insert RuleSetQrLevel3SubQuestionnaire("manifestationBeginUnknown", "Onset of manifestation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireManifestationBeginUnknown")

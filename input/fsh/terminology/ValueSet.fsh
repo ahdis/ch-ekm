@@ -138,6 +138,8 @@ Description: "This CH EKM value set includes the codes for the manifestation of 
 // Taken out for now: the item is a check-box (repeats), so "Keine"/"Unbekannt" could be ticked
 // together with a finding, matchbox's internal terminology server rejects codes from a nested include
 // (https://github.com/ahdis/matchbox/issues/649), and tx.fhir.ch does not translate them (TODO.md).
+// If it comes back, "Andere" brings the free text with it: insert RuleSetQrManifestationOther in the
+// Hepatitis C root (issue #40).
 * $sct#18165001   "Jaundice"
 * $sct#707724006  "Liver enzymes level above reference range"
 * $sct#409673008  "Alanine aminotransferase above reference range"

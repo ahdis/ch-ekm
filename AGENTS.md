@@ -387,7 +387,12 @@ Gonorrhoea does not. Its OPT-IN companion
 (Entnahmedatum + Material -> `ChEkmSpecimen`) as a "Probe" sub-group of the Labor tab, and is
 assembled by invasive pneumococcal disease only:
 `$assemble` cannot include a child conditionally, so a form that asks more says so with one more
-insert rather than by branching inside a shared module. Mpox, Hepatitis C and invasive pneumococcal disease
+insert rather than by branching inside a shared module. **"Andere" in a manifestation list always comes with a free text** (issue #40): the form inserts
+`RuleSetQrManifestationOther` right after its `manifestation` item (Mpox and invasive pneumococcal
+disease today), an item enabled while "Andere" (`sct#74964007`) is ticked; the shared
+`RuleSetEvidenceManifestation` writes the text into `code.text` of the evidence coded "Other". The
+text needs that code: a text-only `evidence.code` fails the required binding.
+Mpox, Hepatitis C and invasive pneumococcal disease
 have the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisation` +
 `RuleSetQrDeath`); Gonorrhoea has none. That section is also the only one needing a third launch context (`encounter`), which is why
 it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.

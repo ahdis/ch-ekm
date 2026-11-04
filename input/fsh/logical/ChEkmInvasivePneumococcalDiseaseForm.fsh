@@ -81,6 +81,7 @@ Characteristics: #can-be-target
 
 * manifestation ^short = "Manifestations (pneumonia / sepsis / meningitis / other / none / unknown)"
 * manifestation from ChEkmInvasivePneumococcalDiseaseManifestation (required)
+* manifestationOther ^short = "Other manifestations (free text), asked when 'other' is ticked"
 
 Mapping: InvasivePneumococcalDiseaseManifestationToCondition
 Source: ChEkmInvasivePneumococcalDiseaseManifestationForm
@@ -89,6 +90,7 @@ Id: invasivepneumococcaldisease-manifestation-to-condition
 Title: "Manifestation Form to CH EKM Condition Invasive Pneumococcal Disease"
 * -> "Condition" "Maps the form section to the ChEkmConditionInvasivePneumococcalDisease profile; Condition.code is fixed to sct#406617004"
 * manifestation -> "Condition.evidence.code" "Manifestation coded from ChEkmInvasivePneumococcalDiseaseManifestation"
+* manifestationOther -> "Condition.evidence.code.text" "Free text of the evidence coded sct#74964007 'Other'"
 
 // The single "Pneumokokkenimpfung" row. The conjugate and the polysaccharide vaccines share it; the
 // answered brand (Prevenar 13, Pneumovax 23, ...) is what tells them apart.

@@ -2735,6 +2735,65 @@
               }
             },
             {
+              "linkId": "manifestationOther",
+              "text": "Other manifestations",
+              "_text": {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "de-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Andere Manifestationen"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "fr-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Autres manifestations"
+                      }
+                    ]
+                  },
+                  {
+                    "url": "http://hl7.org/fhir/StructureDefinition/translation",
+                    "extension": [
+                      {
+                        "url": "lang",
+                        "valueCode": "it-CH"
+                      },
+                      {
+                        "url": "content",
+                        "valueString": "Altre manifestazioni"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationOther",
+              "type": "string",
+              "enableWhen": [
+                {
+                  "question": "manifestation",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "74964007",
+                    "system": "http://snomed.info/sct"
+                  }
+                }
+              ]
+            },
+            {
               "linkId": "manifestationBeginDate",
               "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmManifestationForm#ChEkmManifestationForm.manifestationBeginDate",
               "text": "Onset of manifestation",
@@ -6220,6 +6279,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T13:04:51+01:00",
+  "date": "2026-11-04T13:47:59+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireInvasivePneumococcalDisease and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }
