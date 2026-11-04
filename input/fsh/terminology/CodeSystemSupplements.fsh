@@ -75,7 +75,7 @@ Description: "CodeSystem supplement adding draft German, French and Italian (Swi
 * #261665006 ^designation[+].language = #fr-CH
 * #261665006 ^designation[=].value = "Inconnu"
 * #261665006 ^designation[+].language = #it-CH
-* #261665006 ^designation[=].value = "Sconosciuto"
+* #261665006 ^designation[=].value = "sconosciuto/a"
 
 * #171112000 "Screening due (finding)"
 * #171112000 ^designation[+].language = #de-CH

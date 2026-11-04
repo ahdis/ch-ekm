@@ -77,7 +77,7 @@
               "valueCoding": {
                 "system": "http://snomed.info/sct",
                 "code": "261665006",
-                "display": "Sconosciuto"
+                "display": "sconosciuto/a"
               }
             }
           ]
@@ -147,6 +147,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-03T17:59:22+01:00",
+  "date": "2026-11-04T10:47:10+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisCDiseaseSpecific and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }
