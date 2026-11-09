@@ -6,7 +6,7 @@ A report is sent to the FOPH as a [FHIR document](document.html) based on the HL
 - **Profiles** define the FHIR document itself: which resources it contains, which codes are fixed and which value sets apply.
 - **A Questionnaire** ([HL7 FHIR SDC](https://hl7.org/fhir/uv/sdc/)) contains the same clinical content as an electronic form. It carries rules to pre-populate the form with data already on file and a template that turns the completed form into the FHIR document.
 
-A clinical information system can therefore either build the FHIR document directly from the profiles, or render the Questionnaire and extract the document from the completed form. Both ways are described in [Implementation Support for Clinical Information Systems](#implementation-support-for-clinical-information-systems).
+A clinical information system can therefore either build the FHIR document directly from the profiles, or render the Questionnaire and extract the document from the completed form. Both ways are described in [Implementation Support for Clinical Information Systems](#implementation-support-for-clinical-information-systems), together with the alternative of reporting through the FOPH reporting portal.
 
 [//]: # (// TODO and the [European laboratory project](https://hl7.eu/fhir/laboratory/) (see [graphical overview](#dependency-overview)).)
 
@@ -31,9 +31,11 @@ A clinical information system (EHR, e.g. hospital or practice software) can prod
 1. **Build the FHIR Document directly.** The EHR maps its own data onto the [profiles](profiles.html) and assembles the document Bundle itself, following the rules defined per profile.
 2. **Use the Questionnaire.** For each disease this guide also publishes an [SDC](https://hl7.org/fhir/uv/sdc/) Questionnaire that contains all the clinical content of the report. A form renderer in the EHR displays it, pre-populates it with data the EHR already holds, lets the clinician complete it and then generates the FHIR Document from the answers, using an extraction template embedded in the Questionnaire.
 
-<div><img src="ekm-implementation-paths.svg" alt="Two implementation paths: the EHR either maps its data to the profiles and builds the FHIR Document itself, or renders the Questionnaire from this guide, pre-populates it, has the clinician complete it and extracts the FHIR Document. Both paths produce the same document, which is sent to the FOPH. For diseases whose form asks questions without a FHIR target, the document also contains a disease-specific QuestionnaireResponse." style="width:100%; max-width:900px"/></div>
+As an alternative that needs no FHIR implementation at all, the clinician can report through the **reporting portal provided by the FOPH**, either on its own in a web browser or embedded in the EHR (see [below](#alternative-report-in-the-foph-reporting-portal)). The EHR then produces no FHIR document; it also gives no data to the report and gets no result back.
 
-*Fig. 1: Two ways to produce the CH EKM FHIR Document*
+<div><img src="ekm-implementation-paths.svg" alt="Two implementation paths: the EHR either maps its data to the profiles and builds the FHIR Document itself, or renders the Questionnaire from this guide, pre-populates it, has the clinician complete it and extracts the FHIR Document. Both paths produce the same document, which is sent to the FOPH. For diseases whose form asks questions without a FHIR target, the document also contains a disease-specific QuestionnaireResponse. As an alternative, the clinician reports in the reporting portal provided by the FOPH, standalone in a web browser or embedded in the EHR." style="width:100%; max-width:900px"/></div>
+
+*Fig. 1: Two ways to produce the CH EKM FHIR Document, and the FOPH reporting portal as the alternative*
 
 Both paths produce the same document and are validated against the same profiles, so for the FOPH it makes no difference which path a report took.
 
@@ -62,6 +64,20 @@ The Questionnaires are listed on the [Questionnaires](questionnaire.html) page, 
 **Phase 4: Extraction.** On submission, the answers in the QuestionnaireResponse are turned into the FHIR Document by [template-based extraction](https://hl7.org/fhir/uv/sdc/extraction.html#template-based-extraction). Each Questionnaire contains one Bundle template shaped like the target document: fixed content such as the disease code is already in place, and placeholders (`templateExtractValue`) are replaced with the answers. Answers to questions without a FHIR target are copied into the [disease-specific QuestionnaireResponse](#path-1-build-the-fhir-document-from-the-profiles) the document carries; the other answers are not repeated there. The result is a document Bundle shaped like the one built on path 1.
 
 The Questionnaires are tested with open source SDC implementations: the [Smart Forms](https://smartforms.csiro.au/) renderer and its [`@aehrc/sdc-populate`](https://www.npmjs.com/package/@aehrc/sdc-populate) and [`@aehrc/sdc-template-extract`](https://www.npmjs.com/package/@aehrc/sdc-template-extract) libraries, which were also used to produce the extracted example documents in this guide.
+
+#### Alternative: Report in the FOPH reporting portal
+
+A clinical information system does not have to produce the FHIR document itself. The FOPH provides a reporting portal in which the clinician enters the report in a web form. It can be integrated in two ways:
+
+- **Standalone.** The clinician opens the portal in a web browser, without involving the clinical information system.
+- **Embedded in the clinical information system.** The clinical information system opens the portal within its own user interface, e.g. from the patient record, so the clinician does not have to switch applications.
+
+Neither way requires the clinical information system to implement anything from this guide, but in both the portal remains separate from it:
+
+- **No data is taken from the clinical information system.** The portal is not pre-populated with the patient, the treating physician or the clinical data already on file, so every answer has to be entered by hand.
+- **No result is returned to the clinical information system.** The submitted report is not stored in the patient record and is not available there for further processing.
+
+Paths 1 and 2 avoid both limitations.
 
 #### Validate before sending
 
