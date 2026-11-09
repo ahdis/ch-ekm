@@ -52,7 +52,7 @@ Description: "Modular sub-questionnaire for the 'Labor' section of the clinical 
 * item[=].type = #string
 * item[=].required = true
 
-// Abteilung -> the ch-ekm-ext-department extension on the Organization
+// Abteilung -> the ch-elm-ext-department extension on the Organization
 * item[+].linkId = "labDepartment"
 * item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmLabForm#ChEkmLabForm.department"
 * insert RuleSetQrLevel1Text("Department", "Abteilung", "Service", "Reparto")

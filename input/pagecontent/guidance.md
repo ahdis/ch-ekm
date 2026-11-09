@@ -14,6 +14,6 @@ Depending on the disease defined in the code of the Condition, the requirement f
    * [Example](Patient-ChEkmPatientVCTExample.json.html): kste12345 (Patient.identifier[VCTCode].value=kste12345, Patient.name.family/Patient.name.given = masked, no telecom and no street address)
 * **HIV Code**
    * Organism: HIV/AIDS
-   * Basic principle: Take the first letter of the first name and add the number of letters of the first name. E.g. Samuel -> S6. This value need to be provided in the [CH EKM Extension: HIV code](StructureDefinition-ch-ekm-ext-hiv-code.html) and Patient.name.family, Patient.name.given need to be masked.
+   * Basic principle: Take the first letter of the first name and add the number of letters of the first name. E.g. Samuel -> S6. This value need to be provided in the [CH ELM Extension: HIV code](http://fhir.ch/ig/ch-elm/StructureDefinition-ch-elm-ext-hiv-code.html) and Patient.name.family, Patient.name.given need to be masked.
    * see Profile [CH ELM Patient HIV](StructureDefinition-ChEkmPatientHIV.html) 
    * [Example](Patient-ChEkmPatientHIVExample.json.html): E5 (Patient.name.extension = E5, Patient.name.family/Patient.name.given = masked, no telecom and no street address)

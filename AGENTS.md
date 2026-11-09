@@ -15,7 +15,11 @@ per disease (Gonorrhoea, Hepatitis C, Invasive Streptococcus Pneumoniae, …).
 
 - Package id: `ch.fhir.ig.ch-ekm` · canonical `http://fhir.ch/ig/ch-ekm`
 - FHIR version: **4.0.1** · status `draft` · version `0.0.1`
-- Dependencies: `ch.fhir.ig.ch-core 6.0.0`, `ch.fhir.ig.ch-term 3.3.x`
+- Dependencies: `ch.fhir.ig.ch-core 6.0.0`, `ch.fhir.ig.ch-term 3.4.x`, `ch.fhir.ig.ch-elm 1.15.x`
+  (+ `ch.fhir.ig.ch-lab-report 2.0.0`, declared only so SUSHI sees `ch-elm-patient`'s parent),
+  `hl7.fhir.uv.sdc 4.0.0`. CH Core stays on 6.0.0 because CH ELM builds on it — revisit for all
+  IGs together once CH Core 7.0.0 is published (7.0.0-ballot next to CH ELM's 6.0.0 put every
+  `ch-core-*` profile into the package graph twice).
 - CI build: https://build.fhir.org/ig/ahdis/ch-ekm/branches/master/index.html
 
 This IG uses **two parallel representations** of the report content:
@@ -125,10 +129,17 @@ This IG uses **two parallel representations** of the report content:
   `Composition.section[social-history].entry[transgender-status]`; unanswered emits neither shape.
 
 ### Person / actors
-- **`ChEkmPatient`** (← `CHCorePatient`) and four representation variants reflecting the
-  privacy rules (see `guidance.md`):
+- **`ChEkmPatient`** (← `ch-elm-patient` ← `ch-lab-patient` ← `CHCorePatient`) and four
+  representation variants reflecting the privacy rules (see `guidance.md`). Deriving from the CH ELM
+  Patient means the lab and the clinical report send the FOPH the same Patient: name
+  (`ch-elm-humanname`), identifiers (incl. the Liechtenstein `IDN`), the `home` address slice and the
+  ELM invariants come from there, and `ChEkmPatient` only adds gender identity, citizenship,
+  `deceasedDateTime`, the female/male `gender` binding and a mandatory country code, and closes the
+  retired `ch-elm-ext-vct-code` name extension (the VCT code is an identifier, as in CH ELM). The variants
+  cannot inherit from `ChElmPatientInitials` / `HIV` / `VCT` as well (single parent), so they repeat
+  those constraints:
   - `ChEkmPatientInitials` — initials only (name-initials invariant; no address line / telecom)
-  - `ChEkmPatientHIV` — masked name + 2-char HIV code extension (`ch-ekm-ext-hiv-code`)
+  - `ChEkmPatientHIV` — masked name + 2-char HIV code extension (`ch-elm-ext-hiv-code`, from CH ELM)
   - `ChEkmPatientVCT` — VCT identifier, masked name
   - `ChEkmPatient` (full name) — for e.g. Hepatitis C
 - **`ChEkmPractitionerRole / Practitioner / Organization`** (← CH Core) — treating
@@ -166,9 +177,10 @@ its single row: `ChEkmImmunizationInvasivePneumococcalDisease` /
   checks the two point at each other. See forms-summary.md §8.
 
 ### Extensions & invariants
-- Extensions (`profiles/Extensions.fsh`): `ChEkmExtHivCode`, `ChEkmExtExposureAddress`,
-  `ChEkmExtDepartment`. Two template-only carrier lives here too: `SdcTemplateExtractExtension`.
-- Invariants (`profiles/Invariants.fsh`): `name-initials`, `ch-ekm-hiv-check`, `ch-ekm-dateTime`,
+- Extensions (`profiles/Extensions.fsh`): `ChEkmExtExposureAddress`, and the template-only carrier
+  `SdcTemplateExtractExtension`. The HIV code and the Organization department are CH ELM's
+  `ch-elm-ext-hiv-code` / `ch-elm-ext-department` (aliases `$ch-elm-ext-…`), not CH EKM copies.
+- Invariants (`profiles/Invariants.fsh`): `name-initials`, `ch-ekm-dateTime`,
   `ch-ekm-patient-birthdate` (on `ChEkmDocument`, taken over from CH ELM: birth date >= 1900-01-01 and
   not after `Bundle.timestamp`),
   `ch-ekm-docref-document`, `ch-ekm-docref-subject-patient`, `ch-ekm-docref-author-practitioner`.

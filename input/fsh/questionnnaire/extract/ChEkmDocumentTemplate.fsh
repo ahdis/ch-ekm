@@ -178,13 +178,13 @@ InstanceOf: ChEkmPractitionerTreatingPhysician
 
 // ---------------------------------------------------------------------------
 // Treating physician — Organization (ChEkmOrganizationTreatingPhysician) from the
-// `treatingPhysicianOrganization` group. Department (ch-ekm-ext-department, a SIMPLE valueString
+// `treatingPhysicianOrganization` group. Department (ch-elm-ext-department, a SIMPLE valueString
 // extension) is built via the SdcTemplateExtractExtension carrier + %factory.Extension, the same
-// idiom as the onsetDateTime data-absent-reason: pre-declaring `url = ch-ekm-ext-department` with a
+// idiom as the onsetDateTime data-absent-reason: pre-declaring `url = ch-elm-ext-department` with a
 // templateExtractContext sub-extension makes the template invalid (ext-1 + the department profile
 // allows 0 sub-extensions). Instead the WHOLE extension is produced by one templateExtractValue;
 // its %factory.Extension result deep-merges onto the carrier (overwriting the carrier url). The
-// context gates emission: empty -> extension omitted; answered -> {url: ch-ekm-ext-department,
+// context gates emission: empty -> extension omitted; answered -> {url: ch-elm-ext-department,
 // valueString: <department>}.
 // ---------------------------------------------------------------------------
 Instance: ExtractedTreatingOrganization
@@ -203,13 +203,13 @@ InstanceOf: ChEkmOrganizationTreatingPhysician
 * identifier[1].system = "urn:oid:2.16.756.5.45"
 * identifier[1].value.extension[0].url = $sdc-templateExtractValue
 * identifier[1].value.extension[0].valueString = "$this"
-// Department (optional, ch-ekm-ext-department) -> gated on orgDepartment; whole extension built
+// Department (optional, ch-elm-ext-department) -> gated on orgDepartment; whole extension built
 // via the carrier + %factory.Extension (see header note).
 * extension[0].url = $sdc-templateExtractExtension
 * extension[0].extension[0].url = $sdc-templateExtractContext
 * extension[0].extension[0].valueString = "%resource.descendants().where(linkId='orgDepartment').answer.value"
 * extension[0].extension[1].url = $sdc-templateExtractValue
-* extension[0].extension[1].valueString = "%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department', %resource.descendants().where(linkId='orgDepartment').answer.value.first())"
+* extension[0].extension[1].valueString = "%factory.Extension('http://fhir.ch/ig/ch-elm/StructureDefinition/ch-elm-ext-department', %resource.descendants().where(linkId='orgDepartment').answer.value.first())"
 // name (required, single)
 * name.extension[+].url = $sdc-templateExtractValue
 * name.extension[=].valueString = "%resource.descendants().where(linkId='orgName').answer.value.first()"
@@ -248,7 +248,7 @@ InstanceOf: ChEkmOrganizationTreatingPhysician
 // about. A form that made the whole laboratory optional would have to give all of this up and go
 // back to the six-instances-per-answer shape the Impfstatus rows use.
 //
-// Department (ch-ekm-ext-department, a SIMPLE valueString extension) is built via the
+// Department (ch-elm-ext-department, a SIMPLE valueString extension) is built via the
 // SdcTemplateExtractExtension carrier + %factory.Extension — see the note on
 // ExtractedTreatingOrganization for why it cannot be pre-declared.
 // ---------------------------------------------------------------------------
@@ -266,12 +266,12 @@ InstanceOf: ChEkmOrganizationLab
 * identifier[1].system = "urn:oid:2.16.756.5.45"
 * identifier[1].value.extension[0].url = $sdc-templateExtractValue
 * identifier[1].value.extension[0].valueString = "$this"
-// Department (optional, ch-ekm-ext-department) -> gated on labDepartment
+// Department (optional, ch-elm-ext-department) -> gated on labDepartment
 * extension[0].url = $sdc-templateExtractExtension
 * extension[0].extension[0].url = $sdc-templateExtractContext
 * extension[0].extension[0].valueString = "%resource.descendants().where(linkId='labDepartment').answer.value"
 * extension[0].extension[1].url = $sdc-templateExtractValue
-* extension[0].extension[1].valueString = "%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department', %resource.descendants().where(linkId='labDepartment').answer.value.first())"
+* extension[0].extension[1].valueString = "%factory.Extension('http://fhir.ch/ig/ch-elm/StructureDefinition/ch-elm-ext-department', %resource.descendants().where(linkId='labDepartment').answer.value.first())"
 // name (required, single)
 * name.extension[+].url = $sdc-templateExtractValue
 * name.extension[=].valueString = "%resource.descendants().where(linkId='labName').answer.value.first()"

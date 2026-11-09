@@ -159,7 +159,7 @@ Description: "Modular sub-questionnaire for the 'Treating Physician' section (Pr
 * item[=].item[=].item[=].type = #string
 * item[=].item[=].item[=].extension[+].url = $sdc-initialExpression
 * item[=].item[=].item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().extension.where(url='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString"
+* item[=].item[=].item[=].extension[=].valueExpression.expression = "%user.organization.resolve().extension.where(url='http://fhir.ch/ig/ch-elm/StructureDefinition/ch-elm-ext-department').valueString"
 
 // Adresse (Strasse, Hausnummer)
 * item[=].item[=].item[+].linkId = "orgStreetLine"

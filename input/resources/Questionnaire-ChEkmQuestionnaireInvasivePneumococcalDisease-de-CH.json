@@ -899,7 +899,7 @@
                   },
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                    "valueString": "%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department', %resource.descendants().where(linkId='orgDepartment').answer.value.first())"
+                    "valueString": "%factory.Extension('http://fhir.ch/ig/ch-elm/StructureDefinition/ch-elm-ext-department', %resource.descendants().where(linkId='orgDepartment').answer.value.first())"
                   }
                 ]
               }
@@ -1032,7 +1032,7 @@
                   },
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                    "valueString": "%factory.Extension('http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department', %resource.descendants().where(linkId='labDepartment').answer.value.first())"
+                    "valueString": "%factory.Extension('http://fhir.ch/ig/ch-elm/StructureDefinition/ch-elm-ext-department', %resource.descendants().where(linkId='labDepartment').answer.value.first())"
                   }
                 ]
               }
@@ -9176,7 +9176,7 @@
                       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                       "valueExpression": {
                         "language": "text/fhirpath",
-                        "expression": "%user.organization.resolve().extension.where(url='http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department').valueString"
+                        "expression": "%user.organization.resolve().extension.where(url='http://fhir.ch/ig/ch-elm/StructureDefinition/ch-elm-ext-department').valueString"
                       }
                     }
                   ]
@@ -9297,6 +9297,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T17:32:10+01:00",
+  "date": "2026-11-09T11:51:12+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireInvasivePneumococcalDisease and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

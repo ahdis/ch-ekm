@@ -1,21 +1,21 @@
-Profile: CHEkmHumanName
-Parent: CHCoreHumanName
-Id: ch-ekm-humanname
-Title: "Human Name"
-Description: "Name with extensions for data-absent-reason"
-* extension ^slicing.discriminator.type = #value
-* extension ^slicing.discriminator.path = "url"
-* extension ^slicing.rules = #open
-* extension contains ChEkmExtHivCode named hivcode 0..1
-* family.extension contains $data-absent-reason named dataabsentreason 0..1
-* given.extension contains $data-absent-reason named dataabsentreason 0..1
-
+// ChEkmPatient derives from the CH ELM Patient (ch-elm-patient, CH ELM 1.15.x), so the laboratory
+// report (ELM) and the clinical report (EKM) send the FOPH the same Patient. CH ELM already brings:
+// - name 1..1 as ch-elm-humanname (family 1.., given 1..1, data-absent-reason on both, the
+//   ch-elm-ext-hiv-code and the retired ch-elm-ext-vct-code extension, closed below),
+// - gender 1.., birthDate 1.. with a data-absent-reason slice,
+// - identifier slices: AHVN13 ..1 MS, LocalPid ..1, IDN (Liechtenstein) ..1 MS, EPR-SPID and
+//   insuranceCardNumber 0..0,
+// - address ..1 with the `home` slice (use = home, line ..1 with street name / house number, city,
+//   postalCode, state, country with the countrycode coding bound to bfs-country-codes),
+// - telecom[phone] ..1, and the invariants ch-elm-patient-address-require-countrycode and
+//   ch-elm-patient-nameorlocalpid.
+// What follows is only what the clinical report adds on top.
 
 Profile: ChEkmPatient
-Parent: CHCorePatient
+Parent: $ch-elm-patient
 Id: ch-ekm-patient
 Title: "CH EKM Patient"
-Description: "This CH EKM base profile constrains the Patient resource."
+Description: "This CH EKM base profile constrains the Patient resource. It derives from the CH ELM Patient, so the clinical and the laboratory report identify the person the same way."
 * extension ^slicing.discriminator[0].type = #value
 * extension ^slicing.discriminator[0].path = "url"
 * extension ^slicing.discriminator[1].type = #profile
@@ -27,21 +27,17 @@ Description: "This CH EKM base profile constrains the Patient resource."
 * extension contains $individual-genderIdentity named genderIdentity 0..1 
 * extension[genderIdentity].extension[value].valueCodeableConcept from ChEkmGenderIdentity (required)
 * identifier MS
-* identifier[AHVN13] ..1 MS
 * identifier[AHVN13] ^short = "OASI Number Switzerland"
-* identifier[EPR-SPID] 0..0
-* identifier[insuranceCardNumber] 0..0
-* identifier[LocalPid] ..1
-* name 1..1
-* name only CHEkmHumanName
 * name ^short = "Whether the personal data is transmitted by using initials or full name is described under 'Guidance - Personal Data (Patient Name)'"
-* name.family 1..
-* name.given 1..1
-* gender 1..
+// The VCT code is an identifier (ChEkmPatientVCT: identifier[LocalPid] of type MR), as in CH ELM, which
+// retired its ch-elm-ext-vct-code name extension ("use identifier instead"); ch-elm-humanname still
+// allows it, so it is closed here for every CH EKM Patient.
+* name.extension[vctcode] 0..0
+* name.family ^short = "Family name; its initial only for ChEkmPatientInitials, masked by a data-absent-reason for ChEkmPatientHIV / ChEkmPatientVCT"
+* name.given ^short = "Given name; its initial only for ChEkmPatientInitials, masked by a data-absent-reason for ChEkmPatientHIV / ChEkmPatientVCT"
+* birthDate ^short = "Date of birth; a data-absent-reason when it is not known"
 * gender from ChEkmPatientAdministrativeSex (required)
 * gender ^short = "Administrative sex: female or male (the only two administrative sexes in Switzerland)"
-* birthDate 1..
-* birthDate.extension contains $data-absent-reason named dataabsentreason 0..1
 // Death. `deceased[x]` is restricted to dateTime so that one element carries both facts the form
 // asks for: its presence means the person died, its value is the date of death. The cause of death
 // is a separate resource (ChEkmObservationCauseOfDeath) referenced from
@@ -54,23 +50,8 @@ Description: "This CH EKM base profile constrains the Patient resource."
 * deceasedDateTime ^short = "Date of death. Present only if the person died; use the data-absent-reason slice when the death is reported without a date"
 * deceasedDateTime.extension contains $data-absent-reason named dataabsentreason 0..1
 * deceasedDateTime.extension[dataabsentreason] ^short = "Death reported without a date (asked-unknown)"
-* address ..1 MS
-* address ^slicing.discriminator[0].type = #value
-* address ^slicing.discriminator[=].path = "use"
-* address ^slicing.rules = #open
-* address contains home ..1 MS
-* address[home] ^short = "Residential address"
-* address[home].use 1..
-* address[home].use = #home
-* address[home].line ..1 MS
-* address[home].postalCode MS
-* address[home].city MS
-* address[home].state MS 
-* address[home].state ^short = "sub-unit of country. canton-abbreviation is expected for a Swiss or Liechtenstein address." // kein Binding notwendig: constraint ch-addr-2 = For a Swiss address, a canton abbreviation from the value set 'eCH-0007 Canton Abbreviation' must be used.
-* address[home].country MS
+* address[home].line MS
 * address[home].country.extension[countrycode] 1.. 
-* address[home].country.extension[countrycode].valueCoding from $bfs-country-codes (required)
-* telecom[phone] ..1 MS
 
 
 
@@ -115,6 +96,8 @@ Title: "CH EKM Patient VCT"
 Description: "This CH EKM base profile constrains the Patient resource for patient representation via VCT code."
 * . ^short = "CH EKM Patient VCT"
 * identifier[AHVN13] 0..0
+* identifier[IDN] 0..0
+* name.extension[hivcode] 0..0
 * identifier[LocalPid] 1..1 
 * identifier[LocalPid] only VCTIdentifier
 * identifier[LocalPid] ^short = "VCT identifier"

@@ -263,6 +263,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-04T17:32:31+01:00",
+  "date": "2026-11-09T11:51:26+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpoxDiseaseSpecific and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

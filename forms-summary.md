@@ -376,7 +376,7 @@ Pre-population reads a single `%user` launch context — the treating physician'
 | Practitioner | E-Mail | `physicianEmail` | 0..1 | `%user.practitioner.resolve().telecom.where(system='email').value.first()` |
 | Practitioner | GLN | `physicianGln` | 0..1 | `%user.practitioner.resolve().identifier.where(system='urn:oid:2.51.1.3').value.first()` |
 | Organization | Name | `orgName` | 1..1 | `%user.organization.resolve().name` |
-| Organization | Abteilung | `orgDepartment` | 0..1 | `%user.organization.resolve().extension.where(url='…/ch-ekm-ext-department').valueString` |
+| Organization | Abteilung | `orgDepartment` | 0..1 | `%user.organization.resolve().extension.where(url='…/ch-elm-ext-department').valueString` |
 | Organization | Adresse | `orgStreetLine` | 0..1 | `%user.organization.resolve().address.first().line.first()` |
 | Organization | PLZ | `orgZipCode` | 1..1 | `%user.organization.resolve().address.first().postalCode` |
 | Organization | Ort | `orgCity` | 1..1 | `%user.organization.resolve().address.first().city` |
@@ -847,11 +847,11 @@ so the consumer navigation `Condition.recorder.practitioner / .organization` res
 - **optional fields** (`identifier[GLN]`/`[BER]`, `telecom[email]`) → **whole-element** context-gated
   on the answer (same as the Patient AHVN13 identifier): omitted when blank, and the static `system`
   survives when answered.
-- **department** (`ch-ekm-ext-department`, a **simple `valueString` extension**) → the **whole
+- **department** (`ch-elm-ext-department`, a **simple `valueString` extension**) → the **whole
   extension is built by one `templateExtractValue` via `%factory.Extension`** on the
   `SdcTemplateExtractExtension` carrier, gated by a `templateExtractContext`; empty ⇒ the whole
-  extension is omitted, answered ⇒ `{url: ch-ekm-ext-department, valueString: <department>}`. Pre-declaring
-  `url = ch-ekm-ext-department` with a `templateExtractContext` sub-extension makes the **template
+  extension is omitted, answered ⇒ `{url: ch-elm-ext-department, valueString: <department>}`. Pre-declaring
+  `url = ch-elm-ext-department` with a `templateExtractContext` sub-extension makes the **template
   itself invalid** (fails `ext-1`, and the department extension allows 0 sub-extensions) — see
   *Building a whole Extension* below.
 
@@ -975,7 +975,7 @@ sibling-strip bug. (`genderIdentity` has the identical shape and the same caveat
 Some required extensions **cannot** be pre-declared in the template with their real `url` and a
 `templateExtractContext`/`Value` directive hung on them: a to-be-computed value leaves the extension
 with no value at authoring time (fails `ext-1`), and a `templateExtractContext` sub-extension violates
-extensions that allow **0 sub-extensions** (`data-absent-reason`, `ch-ekm-ext-department`). The IG
+extensions that allow **0 sub-extensions** (`data-absent-reason`, `ch-elm-ext-department`). The IG
 Publisher flags exactly this (`ext-1` + `Extension.extension: max allowed = 0, but found 1`).
 
 Build the **whole** extension at extraction time instead, with a single `templateExtractValue`:

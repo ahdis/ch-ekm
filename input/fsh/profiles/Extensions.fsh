@@ -1,16 +1,3 @@
-Extension: ChEkmExtHivCode
-Id: ch-ekm-ext-hiv-code
-Title: "CH EKM Extension: HIV code"
-Description: "This CH EKM extension enables to provide the HIV Code."
-* ^context[+].type = #element
-* ^context[=].expression = "HumanName"
-* . ^short = "CH EKM Extension: HIV Code"
-* obeys ch-ekm-hiv-check
-* value[x] 1..
-* value[x] only string
-* valueString ^short = "Name of the HIV code"
-* valueString ^maxLength = 2
-
 Extension: ChEkmExtExposureAddress
 Id: ch-ekm-ext-exposure-address
 Title: "CH EKM Extension: Exposure Address"
@@ -43,17 +30,6 @@ Description: "This CH EKM extension enables to provide the exposure address (the
 * valueAddress.country.extension contains $iso21090-codedString named countryCoding 0..1
 * valueAddress.country.extension[countryCoding] ^short = "Country of exposure as a Coding (ISO 3166)"
 * valueAddress.city ^short = "Precise location of exposure (Genauer Ort), in Switzerland/Liechtenstein or abroad"
-
-Extension: ChEkmExtDepartment
-Id: ch-ekm-ext-department
-Title: "CH EKM Extension: Department"
-Description: "This CH EKM extension enables the representation of a department (name) of an organization directly in the resource Organization itself."
-* ^context[+].type = #element
-* ^context[=].expression = "Organization"
-* . ^short = "CH EKM Extension: Department"
-* value[x] 1..
-* value[x] only string
-* valueString ^short = "Name of the department"
 
 // -----------------------------------------------------------------------------------------------
 // Carrier extension for SDC template-based $extract.

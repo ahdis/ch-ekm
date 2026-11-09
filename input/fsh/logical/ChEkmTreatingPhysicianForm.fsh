@@ -49,7 +49,7 @@ Target: "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-organization-treati
 Title: "Treating Physician Organization Form to CH EKM Organization"
 * -> "Organization" "Maps the form section to the ChEkmOrganizationTreatingPhysician profile"
 * name -> "Organization.name" "Name"
-* department -> "Organization.extension[department].valueString" "Department (ch-ekm-ext-department extension)"
+* department -> "Organization.extension[department].valueString" "Department (ch-elm-ext-department extension)"
 * streetLine -> "Organization.address.line" "Address line"
 * zipCode -> "Organization.address.postalCode" "Zip code"
 * city -> "Organization.address.city" "City"

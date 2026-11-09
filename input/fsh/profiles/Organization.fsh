@@ -4,7 +4,7 @@ Id: ch-ekm-organization-author
 Title: "CH EKM Organization: Broker"
 Description: "This CH EKM base profile constrains the Organization resource for the broker."
 * . ^short = "CH EKM Organization: Broker"
-* extension contains ChEkmExtDepartment named department 0..1 MS
+* extension contains $ch-elm-ext-department named department 0..1 MS
 * identifier 1..2 MS
 * identifier[GLN] 1..1 
 * identifier[BER] ..1 MS
@@ -30,7 +30,7 @@ Id: ch-ekm-organization-treating-physician
 Title: "CH EKM Organization: Treating Physician"
 Description: "This CH EKM base profile constrains the Organization resource for the treating physician."
 * . ^short = "CH EKM Organization: Treating Physician"
-* extension contains ChEkmExtDepartment named department 0..1 MS
+* extension contains $ch-elm-ext-department named department 0..1 MS
 * identifier ..2 MS
 * identifier[GLN] ..1 MS
 * identifier[BER] ..1 MS
@@ -55,7 +55,7 @@ Id: ch-ekm-organization-lab
 Title: "CH EKM Organization: Lab"
 Description: "This CH EKM base profile constrains the Organization resource for the reporting laboratory."
 * . ^short = "CH EKM Organization: Lab"
-* extension contains ChEkmExtDepartment named department 0..1 
+* extension contains $ch-elm-ext-department named department 0..1 
 * identifier ..2
 * identifier[GLN] ..1 
 * identifier[BER] ..1 

@@ -366,7 +366,7 @@
         ],
         "extension": [
           {
-            "url": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ch-ekm-ext-department",
+            "url": "http://fhir.ch/ig/ch-elm/StructureDefinition/ch-elm-ext-department",
             "valueString": "Immunologie"
           }
         ],
