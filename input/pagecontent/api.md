@@ -4,13 +4,15 @@ The API for sending a report to the FOPH may change once the NASURE / SwissHDS A
 
 </div>
 
+<br clear="all"/>
+
 CH EKM uses the RESTful web API that [CH ELM](http://fhir.ch/ig/ch-elm/api.html) defines for laboratories. The treating physician, or a broker on their behalf, sends the report with it and verifies that it has been processed. This page describes what is specific to CH EKM; for everything else, the CH ELM API applies unchanged, with *laboratory* read as *treating physician or broker*.
 
 ### Actor Roles
-**Actor:** Treating physician or broker (clinical information system)
+**Actor:** Treating physician or broker (clinical information system)<br/>
 **Role:** Sends a report as a [CH EKM FHIR document](document.html) to the FOPH and verifies that the report has been successfully processed.
 
-**Actor:** FOPH
+**Actor:** FOPH<br/>
 **Role:** Accepts the report and processes it in a later stage.
 
 The FOPH server is described by the [CapabilityStatement of the CH ELM document recipient](http://fhir.ch/ig/ch-elm/CapabilityStatement-ch-elm-documentrecipient.html); CH EKM defines none of its own.

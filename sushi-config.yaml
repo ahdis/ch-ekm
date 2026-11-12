@@ -155,8 +155,6 @@ pages:
     title: Questionnaires
   logical.md:
     title: Logical Models
-  api.md:
-    title: API
   usecase.md:
     title: Use Case
   examples.md:
@@ -167,6 +165,8 @@ pages:
     title: Profiles
   terminology.md:
     title: Terminology
+  api.md:
+    title: API
 
 
 menu:
@@ -176,12 +176,12 @@ menu:
     FHIR Document: document.html
     Questionnaires: questionnaire.html
     Logical Models: logical.html
-  API: api.html
   Use Case: usecase.html
   Examples: examples.html
   Profiles: profiles.html
   Guidance: guidance.html
   Terminology: terminology.html
+  API: api.html
   Artifacts: artifacts.html
 
 # Parameters
