@@ -165,6 +165,8 @@ pages:
     title: Profiles
   terminology.md:
     title: Terminology
+  api.md:
+    title: API
 
 
 menu:
@@ -179,6 +181,7 @@ menu:
   Profiles: profiles.html
   Guidance: guidance.html
   Terminology: terminology.html
+  API: api.html
   Artifacts: artifacts.html
 
 # Parameters

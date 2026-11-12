@@ -88,3 +88,10 @@ Invariant: ch-ekm-docref-author-practitioner
 Description: "The author is a literal reference to a Practitioner (not the PractitionerRole of the SMART user)."
 Severity: #error
 Expression: "reference.matches('(^|/)Practitioner/[^/]+(/_history/[^/]+)?$')"
+
+// Taken over from CH ELM (ch-elm-resolveableurl, PublishDocumentReference), same expression: the
+// attachment of ChEkmPublishDocumentReference points to the contained document Bundle.
+Invariant: ch-ekm-resolveableurl
+Description: "Must resolve to the contained bundle."
+Severity: #error
+Expression: "url.exists() and url.resolve()"
