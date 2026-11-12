@@ -62,6 +62,13 @@ Description: "This CH EKM value set includes the codes for the type of relations
 * ^experimental = false
 * include codes from system ChEkmRelationshipType
 
+ValueSet: ChEkmExposureContactRoute
+Title: "CH EKM Exposure Contact Route"
+Description: "This CH EKM value set includes the codes for the other routes of transmission through contact (Andere Übertragungswege): contact as medical / nursing staff, contact in the household."
+* ^status = #active
+* ^experimental = false
+* include codes from system ChEkmContactRoute
+
 ValueSet: ChEkmServiceRequestReason
 Title: "CH EKM ServiceRequest Reason"
 Description: "This CH EKM value set includes the codes for service request reason."

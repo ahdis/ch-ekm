@@ -940,7 +940,7 @@
                 "code": {
                   "coding": [
                     {
-                      "code": "healthcare-worker-contact",
+                      "code": "contact-route",
                       "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
                     }
                   ]
@@ -948,52 +948,21 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowHealthcareWorkerContact').answer.value"
+                    "valueString": "%resource.descendants().where(linkId='exposureHowContactRoute').answer.value"
                   }
                 ],
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "code": "261665006",
-                      "system": "http://snomed.info/sct",
-                      "display": "Unknown (qualifier value)",
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                           "valueString": "ofType(Coding)"
                         }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
+                      ],
                       "code": "household-contact",
-                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowHouseholdContact').answer.value"
-                  }
-                ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "261665006",
-                      "system": "http://snomed.info/sct",
-                      "display": "Unknown (qualifier value)",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "ofType(Coding)"
-                        }
-                      ]
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-contact-route",
+                      "display": "Contact in the household"
                     }
                   ]
                 }
@@ -1016,15 +985,15 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "code": "261665006",
-                      "system": "http://snomed.info/sct",
-                      "display": "Unknown (qualifier value)",
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                           "valueString": "ofType(Coding)"
                         }
-                      ]
+                      ],
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)"
                     }
                   ]
                 }
@@ -5575,9 +5544,9 @@
                   ]
                 },
                 {
-                  "linkId": "exposureHowHealthcareWorkerContact",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.transmission.healthcareWorkerContact",
-                  "text": "Contact as medical / nursing staff",
+                  "linkId": "exposureHowContactRoute",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.transmission.contactRoute",
+                  "text": "Other routes of transmission",
                   "_text": {
                     "extension": [
                       {
@@ -5589,7 +5558,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Kontakt als Medizinal- / Pflegepersonal"
+                            "valueString": "Andere Übertragungswege"
                           }
                         ]
                       },
@@ -5602,7 +5571,7 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Contact en tant que personnel médical / soignant"
+                            "valueString": "Autres voies de transmission"
                           }
                         ]
                       },
@@ -5615,115 +5584,14 @@
                           },
                           {
                             "url": "content",
-                            "valueString": "Contatto in qualità di personale medico / sanitario"
+                            "valueString": "Altre vie di trasmissione"
                           }
                         ]
                       }
                     ]
                   },
                   "type": "choice",
-                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
-                  "_answerValueSet": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
-                        "extension": [
-                          {
-                            "url": "name",
-                            "valueCode": "useSupplement"
-                          },
-                          {
-                            "url": "expression",
-                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "code": "radio-button",
-                            "system": "http://hl7.org/fhir/questionnaire-item-control"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                      "valueCode": "horizontal"
-                    }
-                  ]
-                },
-                {
-                  "linkId": "exposureHowHouseholdContact",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.transmission.householdContact",
-                  "text": "Contact in the household",
-                  "_text": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "de-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Kontakt im Haushalt"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "fr-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Contact dans le ménage"
-                          }
-                        ]
-                      },
-                      {
-                        "url": "http://hl7.org/fhir/StructureDefinition/translation",
-                        "extension": [
-                          {
-                            "url": "lang",
-                            "valueCode": "it-CH"
-                          },
-                          {
-                            "url": "content",
-                            "valueString": "Contatto nell'economia domestica"
-                          }
-                        ]
-                      }
-                    ]
-                  },
-                  "type": "choice",
-                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmYesNoUnknown",
-                  "_answerValueSet": {
-                    "extension": [
-                      {
-                        "url": "http://hl7.org/fhir/tools/StructureDefinition/binding-parameter",
-                        "extension": [
-                          {
-                            "url": "name",
-                            "valueCode": "useSupplement"
-                          },
-                          {
-                            "url": "expression",
-                            "valueString": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
-                          }
-                        ]
-                      }
-                    ]
-                  },
+                  "answerValueSet": "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureContactRoute",
                   "extension": [
                     {
                       "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
@@ -8116,6 +7984,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-09T11:51:18+01:00",
+  "date": "2026-11-12T09:02:16+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

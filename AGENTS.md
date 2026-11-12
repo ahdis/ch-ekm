@@ -89,9 +89,10 @@ This IG uses **two parallel representations** of the report content:
   `code = EXPAGNT`, `extension[exposureAddress]` for the place (Wo — country as ISO code +
   `iso21090-codedString`, precise location as `city`, or a `data-absent-reason` when reported as
   unknown), `effective[x]` + `component[dateOfEntry]` for the time (Wann). Also on the base (issue
-  #44, asked by Mpox only today): `component[healthcareWorkerContact]` / `[householdContact]` /
-  `[confirmedCaseContact]`, local `ChEkmExposureComponent` codes, value from `ChEkmYesNoUnknown`
-  ("unknown" a value). The form side is the rule sets in `ChEkmQuestionnaireExposureHow.fsh`, which
+  #44, asked by Mpox only today): `component[contactRoute]` ("Andere Übertragungswege", radio
+  buttons: value from `ChEkmExposureContactRoute` — contact as medical / nursing staff or in the
+  household) and `component[confirmedCaseContact]` (value from `ChEkmYesNoUnknown`, "unknown" a
+  value), local `ChEkmExposureComponent` codes. The form side is the rule sets in `ChEkmQuestionnaireExposureHow.fsh`, which
   Mpox arranges in its own "Wie" module `ChEkmQuestionnaireExposureHowMpox` (the contacts sit above
   "Anderer Übertragungsweg", which `$assemble` cannot insert conditionally); extraction
   `RuleSetComponentExposureContacts`.
@@ -234,13 +235,14 @@ These logical models are the **master** for building the SDC Questionnaires — 
 
 `input/fsh/terminology/`:
 - **CodeSystems**: `ChEkmExposureComponent` (internal discriminator codes for Exposure
-  components), `ChEkmRelationshipType` (Art der Beziehung), `ChEkmReportedPathogen` (the one
+  components), `ChEkmRelationshipType` (Art der Beziehung), `ChEkmContactRoute` (Andere
+  Übertragungswege: medical / nursing staff, household — #44), `ChEkmReportedPathogen` (the one
   "reported pathogen" answer shared by the hospitalisation-reason and cause-of-death questions — a
   pointer to the disease this report is about, not a clinical concept).
 - **ValueSets**: per-disease manifestation sets (`ChEkmGonorrhoeaManifestation`,
   `ChEkmHepatitisCManifestation`, `ChEkmInvasivePneumococcalDiseaseManifestation`,
   `ChEkmHIVManifestation`, …), `ChEkmExposureClass`, `ChEkmExposureTransmissionRoute`,
-  `ChEkmExposureRelationshipType`, `ChEkmPatientAdministrativeSex` (female/male only — `Patient.gender`
+  `ChEkmExposureRelationshipType`, `ChEkmExposureContactRoute`, `ChEkmPatientAdministrativeSex` (female/male only — `Patient.gender`
   is bound to it, issue #32), `ChEkmExposureSexualContactPartner` (female / male / `sct#261665006` unknown —
   "other" dropped too, still open in #32; bound by the Gonorrhoea/Mpox exposure profiles), `ChEkmGenderIdentity` (trans man / trans woman, International Edition
   `1332083003` / `1332082008` — not the US Edition codes; the binding of `Patient.extension[genderIdentity]`),

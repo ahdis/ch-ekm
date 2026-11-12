@@ -1,10 +1,10 @@
 // Modular sub-questionnaire: "Wie (Übertragungsweg)" for Mpox (issue #44).
 //
-// The shared "Wie" (ChEkmQuestionnaireExposureHow) plus three contact questions, each ja / nein /
-// unbekannt, asked ABOVE "Anderer Übertragungsweg":
-//   Kontakt als Medizinal- / Pflegepersonal
-//   Kontakt im Haushalt
-//   Kontakt mit laborbestätigtem Mpox-Fall
+// The shared "Wie" (ChEkmQuestionnaireExposureHow) plus two contact questions, asked ABOVE
+// "Anderer Übertragungsweg":
+//   Andere Übertragungswege                 Kontakt als Medizinal- / Pflegepersonal | Kontakt im Haushalt
+//                                           (radio buttons, one of them)
+//   Kontakt mit laborbestätigtem Mpox-Fall  ja / nein / unbekannt
 // Disease-specific only in its arrangement and in the word "Mpox": every item comes from the shared
 // rule sets in ChEkmQuestionnaireExposureHow.fsh (read its header for why this needs a module of its
 // own), and the answers extract into the shared component slices of the base ChEkmExposure
@@ -18,7 +18,7 @@ Instance: ChEkmQuestionnaireExposureHowMpox
 InstanceOf: Questionnaire
 Usage: #definition
 Title: "EKM: Exposure - How (route of transmission) - Mpox"
-Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route of transmission) group of the Mpox report: sexual-contact partner sex, relationship type, contact as medical / nursing staff, contact in the household, contact with a laboratory-confirmed mpox case, other route, unknown. Reusable as an SDC assemble-child."
+Description: "Modular sub-questionnaire for the 'Wie (Übertragungsweg)' (route of transmission) group of the Mpox report: sexual-contact partner sex, relationship type, other routes of transmission (contact as medical / nursing staff or in the household), contact with a laboratory-confirmed mpox case, other route, unknown. Reusable as an SDC assemble-child."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnaireExposureHowMpox)
 
 * item[+].linkId = "exposureHow"

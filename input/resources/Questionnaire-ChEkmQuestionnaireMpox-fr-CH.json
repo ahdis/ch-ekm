@@ -940,7 +940,7 @@
                 "code": {
                   "coding": [
                     {
-                      "code": "healthcare-worker-contact",
+                      "code": "contact-route",
                       "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
                     }
                   ]
@@ -948,52 +948,21 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowHealthcareWorkerContact').answer.value"
+                    "valueString": "%resource.descendants().where(linkId='exposureHowContactRoute').answer.value"
                   }
                 ],
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "code": "261665006",
-                      "system": "http://snomed.info/sct",
-                      "display": "Unknown (qualifier value)",
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                           "valueString": "ofType(Coding)"
                         }
-                      ]
-                    }
-                  ]
-                }
-              },
-              {
-                "code": {
-                  "coding": [
-                    {
+                      ],
                       "code": "household-contact",
-                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
-                    }
-                  ]
-                },
-                "extension": [
-                  {
-                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='exposureHowHouseholdContact').answer.value"
-                  }
-                ],
-                "valueCodeableConcept": {
-                  "coding": [
-                    {
-                      "code": "261665006",
-                      "system": "http://snomed.info/sct",
-                      "display": "Unknown (qualifier value)",
-                      "extension": [
-                        {
-                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
-                          "valueString": "ofType(Coding)"
-                        }
-                      ]
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-contact-route",
+                      "display": "Contact in the household"
                     }
                   ]
                 }
@@ -1016,15 +985,15 @@
                 "valueCodeableConcept": {
                   "coding": [
                     {
-                      "code": "261665006",
-                      "system": "http://snomed.info/sct",
-                      "display": "Unknown (qualifier value)",
                       "extension": [
                         {
                           "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
                           "valueString": "ofType(Coding)"
                         }
-                      ]
+                      ],
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)"
                     }
                   ]
                 }
@@ -7739,9 +7708,9 @@
                   ]
                 },
                 {
-                  "linkId": "exposureHowHealthcareWorkerContact",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.transmission.healthcareWorkerContact",
-                  "text": "Contact en tant que personnel médical / soignant",
+                  "linkId": "exposureHowContactRoute",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.transmission.contactRoute",
+                  "text": "Autres voies de transmission",
                   "type": "choice",
                   "extension": [
                     {
@@ -7763,69 +7732,16 @@
                   "answerOption": [
                     {
                       "valueCoding": {
-                        "system": "http://snomed.info/sct",
-                        "code": "373066001",
-                        "display": "Oui"
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-contact-route",
+                        "code": "healthcare-worker-contact",
+                        "display": "Contact en tant que personnel médical / soignant"
                       }
                     },
                     {
                       "valueCoding": {
-                        "system": "http://snomed.info/sct",
-                        "code": "373067005",
-                        "display": "Non"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://snomed.info/sct",
-                        "code": "261665006",
-                        "display": "Inconnu"
-                      }
-                    }
-                  ]
-                },
-                {
-                  "linkId": "exposureHowHouseholdContact",
-                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.transmission.householdContact",
-                  "text": "Contact dans le ménage",
-                  "type": "choice",
-                  "extension": [
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
-                      "valueCodeableConcept": {
-                        "coding": [
-                          {
-                            "code": "radio-button",
-                            "system": "http://hl7.org/fhir/questionnaire-item-control"
-                          }
-                        ]
-                      }
-                    },
-                    {
-                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
-                      "valueCode": "horizontal"
-                    }
-                  ],
-                  "answerOption": [
-                    {
-                      "valueCoding": {
-                        "system": "http://snomed.info/sct",
-                        "code": "373066001",
-                        "display": "Oui"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://snomed.info/sct",
-                        "code": "373067005",
-                        "display": "Non"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://snomed.info/sct",
-                        "code": "261665006",
-                        "display": "Inconnu"
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-contact-route",
+                        "code": "household-contact",
+                        "display": "Contact dans le ménage"
                       }
                     }
                   ]
@@ -8475,7 +8391,7 @@
                       "valueCoding": {
                         "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
                         "code": "711-02",
-                        "display": "Diphtérie- et tétanos-vaccin adsorbant pour pour les adultes et les enfants à partir de 7 ans"
+                        "display": "Diphtérie- et tétanos-vaccin adsorbant pour les adultes et les enfants à partir de 7 ans"
                       }
                     },
                     {
@@ -9022,6 +8938,48 @@
                         "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
                         "code": "70490",
                         "display": "Vimkunya"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69948",
+                        "display": "Celldemic"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69941",
+                        "display": "Incellipan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70893",
+                        "display": "Comirnaty XFG (30 Mikrogramm)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70272",
+                        "display": "mNEXSPIKE 0.05 mg/mL"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70847",
+                        "display": "Spikevax XFG (50 Microgramm)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70051",
+                        "display": "Vaxigrip"
                       }
                     },
                     {
@@ -10100,7 +10058,7 @@
                       "valueCoding": {
                         "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
                         "code": "711-02",
-                        "display": "Diphtérie- et tétanos-vaccin adsorbant pour pour les adultes et les enfants à partir de 7 ans"
+                        "display": "Diphtérie- et tétanos-vaccin adsorbant pour les adultes et les enfants à partir de 7 ans"
                       }
                     },
                     {
@@ -10647,6 +10605,48 @@
                         "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
                         "code": "70490",
                         "display": "Vimkunya"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69948",
+                        "display": "Celldemic"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "69941",
+                        "display": "Incellipan"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70893",
+                        "display": "Comirnaty XFG (30 Mikrogramm)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70272",
+                        "display": "mNEXSPIKE 0.05 mg/mL"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70847",
+                        "display": "Spikevax XFG (50 Microgramm)"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
+                        "code": "70051",
+                        "display": "Vaxigrip"
                       }
                     },
                     {
@@ -11529,6 +11529,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-09T11:51:18+01:00",
+  "date": "2026-11-12T09:02:16+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

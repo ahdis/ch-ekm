@@ -34,7 +34,7 @@ Profile: ChEkmExposureMpox
 Parent: ChEkmExposure
 Id: ch-ekm-exposure-mpox
 Title: "CH EKM Exposure: Mpox"
-Description: "TODO: This CH EKM base profile constrains the Exposure observation for the purpose of clinical findings for Mpox, adding the transmission route, the sex of the infected sexual contact partner, the type of relationship and the contact as medical / nursing staff, in the household and with a laboratory-confirmed mpox case (Wie / Übertragungsweg)."
+Description: "TODO: This CH EKM base profile constrains the Exposure observation for the purpose of clinical findings for Mpox, adding the transmission route, the sex of the infected sexual contact partner, the type of relationship, the other routes of transmission through contact (as medical / nursing staff, in the household) and the contact with a laboratory-confirmed mpox case (Wie / Übertragungsweg)."
 * component ^slicing.discriminator.type = #pattern
 * component ^slicing.discriminator.path = "code"
 * component ^slicing.rules = #open
@@ -65,8 +65,7 @@ Description: "TODO: This CH EKM base profile constrains the Exposure observation
 
 // The contact questions of the Mpox "Wie" (issue #44) — sliced on the base ChEkmExposure, asked by
 // the Mpox form, hence MustSupport here.
-* component[healthcareWorkerContact] MS
-* component[householdContact] MS
+* component[contactRoute] MS
 * component[confirmedCaseContact] MS
 // Impfstatus (https://github.com/ahdis/ch-ekm/issues/29). The Mpox form asks about TWO
 // vaccination types, so this profile does two things the base ChEkmImmunization cannot: it fixes

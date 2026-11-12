@@ -369,7 +369,7 @@ RuleSet: RuleSetQrExposureWhen
 RuleSet: RuleSetQrExposureHow
 * insert RuleSetQrLevel3SubQuestionnaire("exposurehow", "Exposure: how", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHow")
 
-// The Mpox "Wie": the shared one plus the three contact questions of issue #44
+// The Mpox "Wie": the shared one plus the two contact questions of issue #44
 // (examples/Mpox/ChEkmQuestionnaireExposureHowMpox.fsh). Inserted INSTEAD of RuleSetQrExposureHow.
 RuleSet: RuleSetQrExposureHowMpox
 * insert RuleSetQrLevel3SubQuestionnaire("exposurehow", "Exposure: how", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireExposureHowMpox")

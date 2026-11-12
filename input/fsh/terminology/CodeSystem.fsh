@@ -14,24 +14,20 @@ Description: "Internal code system used as discriminator for the components of a
 * #sexual-contact-partner ^designation[+].language = #it-CH
 * #sexual-contact-partner ^designation[=].value = "Partner di contatto sessuale"
 // * #relationship-type "Type of relationship" "Type of the relationship to the sexual contact partner."
-// The three contact questions of the "Wie" (issue #44), answered yes / no / unknown
-// (ChEkmYesNoUnknown). SNOMED CT has no disease-agnostic concept for any of them (only pathogen-bound
-// ones such as "Occupational exposure to monkeypox virus"), hence local codes; the disease the case
-// had is the one the report is about.
-* #healthcare-worker-contact "Contact as healthcare worker" "Exposure through contact in the person's work as medical or nursing staff."
-* #healthcare-worker-contact ^designation[+].language = #de-CH
-* #healthcare-worker-contact ^designation[=].value = "Kontakt als Medizinal- / Pflegepersonal"
-* #healthcare-worker-contact ^designation[+].language = #fr-CH
-* #healthcare-worker-contact ^designation[=].value = "Contact en tant que personnel médical / soignant"
-* #healthcare-worker-contact ^designation[+].language = #it-CH
-* #healthcare-worker-contact ^designation[=].value = "Contatto in qualità di personale medico / sanitario"
-* #household-contact "Household contact" "Exposure through contact within the person's household."
-* #household-contact ^designation[+].language = #de-CH
-* #household-contact ^designation[=].value = "Kontakt im Haushalt"
-* #household-contact ^designation[+].language = #fr-CH
-* #household-contact ^designation[=].value = "Contact dans le ménage"
-* #household-contact ^designation[+].language = #it-CH
-* #household-contact ^designation[=].value = "Contatto nell'economia domestica"
+// The contact questions of the "Wie" (issue #44). SNOMED CT has no disease-agnostic concept for them
+// (only pathogen-bound ones such as "Occupational exposure to monkeypox virus"), hence local codes;
+// the disease the case had is the one the report is about.
+// "Andere Übertragungswege": ONE question, answered by picking one of the codes of ChEkmContactRoute
+// (contact as medical / nursing staff, in the household).
+* #contact-route "Route of transmission through contact" "Other route of transmission through contact (Andere Übertragungswege); the value names the contact, from ChEkmContactRoute."
+* #contact-route ^designation[+].language = #de-CH
+* #contact-route ^designation[=].value = "Andere Übertragungswege"
+* #contact-route ^designation[+].language = #fr-CH
+* #contact-route ^designation[=].value = "Autres voies de transmission"
+* #contact-route ^designation[+].language = #it-CH
+* #contact-route ^designation[=].value = "Altre vie di trasmissione"
+// "Kontakt mit laborbestätigtem Fall": a closed question of its own, answered yes / no / unknown
+// (ChEkmYesNoUnknown).
 * #confirmed-case-contact "Contact with a laboratory-confirmed case" "Exposure through contact with a laboratory-confirmed case of the disease this report is about."
 * #confirmed-case-contact ^designation[+].language = #de-CH
 * #confirmed-case-contact ^designation[=].value = "Kontakt mit laborbestätigtem Fall"
@@ -39,6 +35,31 @@ Description: "Internal code system used as discriminator for the components of a
 * #confirmed-case-contact ^designation[=].value = "Contact avec un cas confirmé en laboratoire"
 * #confirmed-case-contact ^designation[+].language = #it-CH
 * #confirmed-case-contact ^designation[=].value = "Contatto con un caso confermato in laboratorio"
+
+// The answers of "Andere Übertragungswege" (issue #44): one of them is picked (radio buttons, like
+// "Art der Beziehung"), so they are VALUES of the component ChEkmExposureComponent#contact-route,
+// not component codes of their own. No "unknown": the question is optional, unanswered = absent.
+CodeSystem: ChEkmContactRoute
+Id: ch-ekm-contact-route
+Title: "CH EKM Contact Route"
+Description: "Other routes of transmission through contact (Andere Übertragungswege): contact as medical / nursing staff, contact in the household."
+* ^status = #active
+* ^experimental = false
+* ^caseSensitive = true
+* #healthcare-worker-contact "Contact as medical / nursing staff" "Exposure through contact in the person's work as medical or nursing staff."
+* #healthcare-worker-contact ^designation[+].language = #de-CH
+* #healthcare-worker-contact ^designation[=].value = "Kontakt als Medizinal- / Pflegepersonal"
+* #healthcare-worker-contact ^designation[+].language = #fr-CH
+* #healthcare-worker-contact ^designation[=].value = "Contact en tant que personnel médical / soignant"
+* #healthcare-worker-contact ^designation[+].language = #it-CH
+* #healthcare-worker-contact ^designation[=].value = "Contatto in qualità di personale medico / sanitario"
+* #household-contact "Contact in the household" "Exposure through contact within the person's household."
+* #household-contact ^designation[+].language = #de-CH
+* #household-contact ^designation[=].value = "Kontakt im Haushalt"
+* #household-contact ^designation[+].language = #fr-CH
+* #household-contact ^designation[=].value = "Contact dans le ménage"
+* #household-contact ^designation[+].language = #it-CH
+* #household-contact ^designation[=].value = "Contatto nell'economia domestica"
 
 CodeSystem: ChEkmRelationshipType
 Id: ch-ekm-relationship-type

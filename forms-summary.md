@@ -339,13 +339,15 @@ disease-specific value-set bindings).
 | --- | --- | --- | --- |
 | Sexualkontakt – Geschlecht | `exposureHowSexualContactPartner` | choice | `ChEkmExposureSexualContactPartner` (female / male / unknown, #32) |
 | Art der Beziehung | `exposureHowRelationshipType` | choice | `ChEkmExposureRelationshipType` (fester / nicht fester Partner, Angebot / Inanspruchnahme von bezahltem Sex) |
-| *Mpox only (#44):* Kontakt als Medizinal- / Pflegepersonal | `exposureHowHealthcareWorkerContact` | choice | `ChEkmYesNoUnknown` → `ChEkmExposure.component[healthcareWorkerContact]` |
-| *Mpox only (#44):* Kontakt im Haushalt | `exposureHowHouseholdContact` | choice | `ChEkmYesNoUnknown` → `component[householdContact]` |
+| *Mpox only (#44):* Andere Übertragungswege | `exposureHowContactRoute` | choice (radio) | `ChEkmExposureContactRoute` (Kontakt als Medizinal- / Pflegepersonal, Kontakt im Haushalt) → `ChEkmExposure.component[contactRoute]` |
 | *Mpox only (#44):* Kontakt mit laborbestätigtem Mpox-Fall | `exposureHowConfirmedCaseContact` | choice | `ChEkmYesNoUnknown` → `component[confirmedCaseContact]` |
 | anderer Übertragungsweg | `exposureHowOtherTransmission` | string | |
 | unbekannt | `exposureHowUnknown` | boolean | |
 
-> **The "Wie" items are rule sets (#44).** `ChEkmQuestionnaireExposureHow.fsh` defines
+> **The "Wie" items are rule sets (#44).** "Andere Übertragungswege" offers its two contacts as radio
+> buttons (one is picked, like "Art der Beziehung"; no "unbekannt"), so the picked code of
+> `ChEkmContactRoute` is the value of one component; "Kontakt mit laborbestätigtem Mpox-Fall" stays a
+> ja / nein / unbekannt question of its own. `ChEkmQuestionnaireExposureHow.fsh` defines
 > `RuleSetQrExposureHowSexualContact`, `RuleSetQrExposureHowContacts(form, case×4)` and
 > `RuleSetQrExposureHowOtherUnknown`; the shared module inserts the first and last, Mpox's own module
 > `ChEkmQuestionnaireExposureHowMpox` all three (the contacts sit in the middle of the group, which
@@ -1853,7 +1855,7 @@ forces every reader to check two places, and — as `obs-6` proved for the cause
 | `deathCause` (Todesursache) | `Observation.valueCodeableConcept` — `RuleSetObservationCauseOfDeath` (#28) |
 | `exposureHowUnknown` (Übertragungsweg unbekannt) | `ChEkmExposure.component[transmissionRoute].valueCodeableConcept` — `RuleSetComponentExposure` |
 | `exposureHowSexualContactPartner` = unknown (Sexualkontakt – Geschlecht) | `ChEkmExposure.component[sexualContactPartner].valueCodeableConcept` — `RuleSetComponentExposure` (#32) |
-| `exposureHowHealthcareWorkerContact` / `…HouseholdContact` / `…ConfirmedCaseContact` = unknown (Mpox contacts) | `ChEkmExposure.component[healthcareWorkerContact / householdContact / confirmedCaseContact].valueCodeableConcept` — `RuleSetComponentExposureContacts` (#44) |
+| `exposureHowConfirmedCaseContact` = unknown (Mpox, Kontakt mit laborbestätigtem Fall) | `ChEkmExposure.component[confirmedCaseContact].valueCodeableConcept` — `RuleSetComponentExposureContacts` (#44) |
 | `immunizationStatus…` = No / Unknown / unanswered (Impfstatus) | `ChEkmObservationVaccinationStatus.valueCodeableConcept` — `RuleSetVaccinationStatusNo` / `…Unknown` (#29, #36) |
 
 Note the third: the form item is a **boolean check-box**, yet extraction materialises the SNOMED

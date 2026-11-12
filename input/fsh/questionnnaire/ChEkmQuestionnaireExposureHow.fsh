@@ -11,8 +11,9 @@
 // module from the same rule sets, with its extra rule set in between — the Impfstatus pattern
 // (RuleSetQrImmunizationRow). Mpox does so in ChEkmQuestionnaireExposureHowMpox:
 //   RuleSetQrExposureHowSexualContact   Sexualkontakt (Geschlecht), Art der Beziehung
-//   RuleSetQrExposureHowContacts        Kontakt als Medizinal- / Pflegepersonal, im Haushalt,
-//                                       mit laborbestätigtem Fall (ja / nein / unbekannt) — #44
+//   RuleSetQrExposureHowContacts        Andere Übertragungswege (Kontakt als Medizinal- /
+//                                       Pflegepersonal | im Haushalt), Kontakt mit laborbestätigtem
+//                                       Fall (ja / nein / unbekannt) — #44
 //   RuleSetQrExposureHowOtherUnknown    Anderer Übertragungsweg (Freitext), Übertragungsweg unbekannt
 // All of them expect to be inserted right after the `exposureHow` group item (level-2 items). The
 // linkIds are the same in every "Wie" module: the extraction (RuleSetComponentExposure,
@@ -81,15 +82,17 @@ RuleSet: RuleSetQrExposureHowOtherUnknown
 //* item[=].item[=].initial.valueBoolean = false
 
 
-// Kontakt als Medizinal- / Pflegepersonal, Kontakt im Haushalt, Kontakt mit laborbestätigtem <Krankheit>-Fall
-// — ja / nein / unbekannt each (issue #44, asked by the Mpox form today). Three independent
-// questions, not one check-box list: each has its own "unknown", and a "nein" is an answer FOPH
-// wants to receive, so none of them can be a code of the transmission route.
+// The contact questions (issue #44, asked by the Mpox form today):
+//   Andere Übertragungswege   radio buttons, one of: Kontakt als Medizinal- / Pflegepersonal |
+//                             Kontakt im Haushalt (ChEkmExposureContactRoute) — the same control as
+//                             "Art der Beziehung"; no "unbekannt", unanswered = not reported
+//   Kontakt mit laborbestätigtem <Krankheit>-Fall   ja / nein / unbekannt — a closed question of its
+//                             own: its "nein" is an answer FOPH wants to receive
 //
 // Disease-agnostic on purpose, parameterised by what differs between diseases:
-//   form       the disease's exposure logical model, which declares the three elements under
+//   form       the disease's exposure logical model, which declares the two elements under
 //              `transmission` (e.g. ChEkmMpoxExposureForm) — the items' `definition`
-//   case-*     the text of the third question in four languages, which names the disease
+//   case-*     the text of the second question in four languages, which names the disease
 //              ("Kontakt mit laborbestätigtem Mpox-Fall")
 // The linkIds are NOT parameterised: the extraction (RuleSetComponentExposureContacts) is shared too
 // and reads them by name, into components of the base ChEkmExposure.
@@ -98,15 +101,15 @@ RuleSet: RuleSetQrExposureHowOtherUnknown
 // the group are not (the enableWhen there is commented out): the physician may know a household
 // contact and still not know the route.
 RuleSet: RuleSetQrExposureHowContacts(form, case, case-de-CH, case-fr-CH, case-it-CH)
-* item[=].item[+].linkId = "exposureHowHealthcareWorkerContact"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/{form}#{form}.transmission.healthcareWorkerContact"
-* insert RuleSetQrLevel2Text("Contact as medical / nursing staff", "Kontakt als Medizinal- / Pflegepersonal", "Contact en tant que personnel médical / soignant", "Contatto in qualità di personale medico / sanitario")
-* insert RuleSetQrExposureHowYesNoUnknown
-
-* item[=].item[+].linkId = "exposureHowHouseholdContact"
-* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/{form}#{form}.transmission.householdContact"
-* insert RuleSetQrLevel2Text("Contact in the household", "Kontakt im Haushalt", "Contact dans le ménage", "Contatto nell'economia domestica")
-* insert RuleSetQrExposureHowYesNoUnknown
+* item[=].item[+].linkId = "exposureHowContactRoute"
+* item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/{form}#{form}.transmission.contactRoute"
+* insert RuleSetQrLevel2Text("Other routes of transmission", "Andere Übertragungswege", "Autres voies de transmission", "Altre vie di trasmissione")
+* item[=].item[=].type = #choice
+* item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmExposureContactRoute"
+* item[=].item[=].extension[+].url = $questionnaire-itemControl
+* item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
+* item[=].item[=].extension[+].url = $choiceOrientation
+* item[=].item[=].extension[=].valueCode = #horizontal
 
 * item[=].item[+].linkId = "exposureHowConfirmedCaseContact"
 * item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/{form}#{form}.transmission.confirmedCaseContact"
