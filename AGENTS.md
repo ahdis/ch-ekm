@@ -41,7 +41,7 @@ This IG uses **two parallel representations** of the report content:
 | `input/fsh/examples/` | Instance examples, grouped by organism (`Gonorrhoea/`, `HepatitisC/`, `InvasiveStreptococcusPneumoniae/`, `Mpox/`) and shared Patient/Practitioner/Organization examples; the per-disease questionnaire roots and `$extract` templates live here too |
 | `input/fsh/questionnnaire/` | Disease-agnostic SDC sub-questionnaires + `RuleSets.fsh`; `extract/` holds the reusable `$extract` rule sets |
 | `input/fsh/ALIAS.fsh` | All FSH aliases (code systems, extensions, value sets) |
-| `input/pagecontent/` | Narrative IG pages (`index`, `usecase`, `guidance`, `profiles`, `terminology`, `examples`, `changelog`, `extensions`) |
+| `input/pagecontent/` | Narrative IG pages (`index`, `api`, `usecase`, `guidance`, `profiles`, `terminology`, `examples`, `changelog`, `extensions`) |
 | `input/images-source/` | PlantUML sources for use-case diagrams |
 | `scripts/` | Questionnaire tooling (formerly `tests/`): `$assemble` / `$populate` / `$extract` runners, the language-preview builder, `load_examples.sh`; plus `generate-overview-svgs.py` (the two overview figures on `profiles.md`) |
 | `sushi-config.yaml` | SUSHI / IG configuration, menu, dependencies, pages |
@@ -176,6 +176,17 @@ its single row: `ChEkmImmunizationInvasivePneumococcalDisease` /
   document Bundle (`ChEkmDocument`) + its `ChEkmDocumentReference`; invariant `ch-ekm-docref-document`
   checks the two point at each other. See forms-summary.md §8.
 
+### Sending a report to the FOPH (API, issue #46)
+- **`ChEkmPublishDocumentReference`** (← `DocumentReference`, file `profiles/Publish.fsh`) — a copy of
+  CH ELM's `PublishDocumentReference` with `contained[document]` = `ChEkmDocument` (CH ELM's slice is
+  typed to `ch-elm-document`, so it cannot be derived from). `POST [base]/DocumentReference`, document
+  `contained`, `content.attachment.url` = `#<Bundle.id>` (invariant `ch-ekm-resolveableurl`),
+  `identifier` = the Bundle's identifier. Not `ChEkmDocumentReference` (that one indexes a stored
+  document by reference). The response (`PublishDocumentReferenceResponse`, `ch-ext-elm-status`) and
+  the CapabilityStatement are CH ELM's, only linked from `api.md`. Example
+  `ChEkmPublishDocumentReferenceGonorrhoea` contains `ChEkmBundleGonorrhoea`, with no `meta.profile`
+  on any of it.
+
 ### Extensions & invariants
 - Extensions (`profiles/Extensions.fsh`): `ChEkmExtExposureAddress`, and the template-only carrier
   `SdcTemplateExtractExtension`. The HIV code and the Organization department are CH ELM's
@@ -183,7 +194,8 @@ its single row: `ChEkmImmunizationInvasivePneumococcalDisease` /
 - Invariants (`profiles/Invariants.fsh`): `name-initials`, `ch-ekm-dateTime`,
   `ch-ekm-patient-birthdate` (on `ChEkmDocument`, taken over from CH ELM: birth date >= 1900-01-01 and
   not after `Bundle.timestamp`),
-  `ch-ekm-docref-document`, `ch-ekm-docref-subject-patient`, `ch-ekm-docref-author-practitioner`.
+  `ch-ekm-docref-document`, `ch-ekm-docref-subject-patient`, `ch-ekm-docref-author-practitioner`,
+  `ch-ekm-resolveableurl` (from CH ELM, on `ChEkmPublishDocumentReference`).
 
 ## Logical models (form models)
 
