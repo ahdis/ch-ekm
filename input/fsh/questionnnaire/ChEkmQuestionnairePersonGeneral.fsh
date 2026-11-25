@@ -15,7 +15,7 @@ Instance: ChEkmQuestionnairePersonGeneral
 InstanceOf: Questionnaire
 Usage: #definition
 Title: "EKM: Person - General information"
-Description: "Modular sub-questionnaire for the general data of the affected person (birth date, AHVN13, nationality, address, canton, administrative gender). Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
+Description: "Modular sub-questionnaire for the general data of the affected person (birth date, AHVN13 or IDN, nationality, address, canton, administrative gender). Reusable as an SDC assemble-child; supports expression-based pre-population from a patient launch context."
 * insert RuleSetQrHeaderSubSdc(ChEkmQuestionnairePersonGeneral)
 
 // Address to pre-populate from: prefer the home address, else fall back to the first address.
@@ -60,23 +60,28 @@ Description: "Modular sub-questionnaire for the general data of the affected per
 * item[=].extension[=].valueExpression.language = #text/fhirpath
 * item[=].extension[=].valueExpression.expression = "%patient.birthDate"
 
-// AHV-Nummer (OASI / AHVN13) - optional free-text string.
+// AHV-Nummer (OASI / AHVN13) or, for persons from Liechtenstein, the IDN - ONE optional string
+// field for both (issue #45, "AHV / IDN (FL)"). Both are 13 digits; the AHV number starts with the
+// country prefix 756, the IDN (ID for natural persons, no check digit) does not, and that prefix
+// is what the extraction tells them apart by (ExtractedPatient in ChEkmDocumentTemplate.fsh).
 // Pre-populated from the patient's AHV identifier (system urn:oid:2.16.756.5.32 ->
-// ChEkmPatient identifier[AHVN13]). Per §10, read it with extension/identifier .where(...)
-// rather than a slice name, since slices have no runtime FHIRPath representation.
-* item[+].linkId = "ahvn13"
-* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.ahvn13"
-* insert RuleSetQrLevel1Text("OASI number (AHV\)", "AHV-Nummer (OASI\)", "Numéro AVS (OASI\)", "Numero AVS (OASI\)")
+// ChEkmPatient identifier[AHVN13]) and, only when there is none, from the IDN (system
+// urn:oid:2.16.438.10.20.10.10.1.2.1 -> identifier[IDN]). Per §10, read it with
+// identifier.where(...) rather than a slice name, since slices have no runtime FHIRPath
+// representation.
+* item[+].linkId = "ahvn13OrIdn"
+* item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.ahvn13OrIdn"
+* insert RuleSetQrLevel1Text("OASI number (AHV\) / IDN (FL\)", "AHV-Nummer / IDN (FL\)", "Numéro AVS / IDN (FL\)", "Numero AVS / IDN (FL\)")
 * item[=].type = #string
 // Format validation via the standard `regex` extension (Smart Forms reads valueString and
-// surfaces it as inline validation). Mirrors the ch-core ahvn13-length invariant
-// (matches('^756[0-9]{10}$') -> 756 followed by 10 digits). 13 chars total -> maxLength 13.
+// surfaces it as inline validation): 13 digits, which is all the two identifiers have in common
+// (ch-core ahvn13-length: 756 + 10 digits; ch-elm idn-length: 13 digits). 13 chars -> maxLength 13.
 * item[=].maxLength = 13
 * item[=].extension[+].url = $regex
-* item[=].extension[=].valueString = "^756[0-9]{10}$"
+* item[=].extension[=].valueString = "^[0-9]{13}$"
 * item[=].extension[+].url = $sdc-initialExpression
 * item[=].extension[=].valueExpression.language = #text/fhirpath
-* item[=].extension[=].valueExpression.expression = "%patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.first()"
+* item[=].extension[=].valueExpression.expression = "iif(%patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.exists(), %patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.first(), %patient.identifier.where(system = 'urn:oid:2.16.438.10.20.10.10.1.2.1').value.first())"
 
 // Nationalität - choice (BFS country codes), autocomplete
 // Pre-populated from the patient-citizenship extension's `code` Coding

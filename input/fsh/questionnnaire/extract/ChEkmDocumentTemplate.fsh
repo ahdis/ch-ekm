@@ -104,17 +104,25 @@ InstanceOf: ChEkmPatient
 * gender.extension[=].valueString = "%resource.descendants().where(linkId='administrativeGender').answer.value.code.first()"
 * birthDate.extension[+].url = $sdc-templateExtractValue
 * birthDate.extension[=].valueString = "%resource.descendants().where(linkId='dateOfBirth').answer.value.first()"
-// AHVN13 / OASI number -> identifier[AHVN13]. The WHOLE identifier is context-gated on the ahvn13
-// answer: templateExtractContext on identifier[0] is non-empty only when answered, so when ahvn13 is
-// blank the entire element (incl. the static system) is omitted — not just the value. Same gating
-// idiom as the onsetDateTime data-absent extension below (empty context -> element excluded).
+// The one "AHV / IDN (FL)" answer (issue #45) -> identifier[AHVN13] OR identifier[IDN], told apart
+// by the AHV country prefix: 13 digits starting with 756 are the Swiss OASI number, anything else
+// is the Liechtenstein IDN. Each identifier is context-gated as a WHOLE:
+// templateExtractContext on identifier[n] is non-empty only for its own kind of answer, so the
+// other one (and both, when the item is blank) is omitted entirely, incl. the static system — not
+// just the value. Same gating idiom as the onsetDateTime data-absent extension below (empty context
+// -> element excluded).
 * identifier[0].extension[0].url = $sdc-templateExtractContext
-* identifier[0].extension[0].valueString = "%resource.descendants().where(linkId='ahvn13').answer.value"
+* identifier[0].extension[0].valueString = "%resource.descendants().where(linkId='ahvn13OrIdn').answer.value.where($this.startsWith('756'))"
 * identifier[0].system = $ahvn13-system
 // value (the `_value` sibling, NOT identifier[0] itself, else the string becomes the array element).
 // Inside the context scope $this is the answer string.
 * identifier[0].value.extension[0].url = $sdc-templateExtractValue
 * identifier[0].value.extension[0].valueString = "$this"
+* identifier[1].extension[0].url = $sdc-templateExtractContext
+* identifier[1].extension[0].valueString = "%resource.descendants().where(linkId='ahvn13OrIdn').answer.value.where($this.startsWith('756').not())"
+* identifier[1].system = $idn-system
+* identifier[1].value.extension[0].url = $sdc-templateExtractValue
+* identifier[1].value.extension[0].valueString = "$this"
 // Death ("Zustand"). Only forms with a Verlauf section answer these; elsewhere the expressions are
 // empty and no deceasedDateTime is emitted. See RuleSetPatientDeceased.
 * insert RuleSetPatientDeceased

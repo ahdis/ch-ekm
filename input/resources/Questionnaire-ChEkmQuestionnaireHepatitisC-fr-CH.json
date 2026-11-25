@@ -384,10 +384,27 @@
                 "extension": [
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
-                    "valueString": "%resource.descendants().where(linkId='ahvn13').answer.value"
+                    "valueString": "%resource.descendants().where(linkId='ahvn13OrIdn').answer.value.where($this.startsWith('756'))"
                   }
                 ],
                 "system": "urn:oid:2.16.756.5.32",
+                "_value": {
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                      "valueString": "$this"
+                    }
+                  ]
+                }
+              },
+              {
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='ahvn13OrIdn').answer.value.where($this.startsWith('756').not())"
+                  }
+                ],
+                "system": "urn:oid:2.16.438.10.20.10.10.1.2.1",
                 "_value": {
                   "extension": [
                     {
@@ -1600,21 +1617,21 @@
               ]
             },
             {
-              "linkId": "ahvn13",
-              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.ahvn13",
-              "text": "Numéro AVS (OASI)",
+              "linkId": "ahvn13OrIdn",
+              "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmPersonForm#ChEkmPersonForm.ahvn13OrIdn",
+              "text": "Numéro AVS / IDN (FL)",
               "type": "string",
               "maxLength": 13,
               "extension": [
                 {
                   "url": "http://hl7.org/fhir/StructureDefinition/regex",
-                  "valueString": "^756[0-9]{10}$"
+                  "valueString": "^[0-9]{13}$"
                 },
                 {
                   "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-initialExpression",
                   "valueExpression": {
                     "language": "text/fhirpath",
-                    "expression": "%patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.first()"
+                    "expression": "iif(%patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.exists(), %patient.identifier.where(system = 'urn:oid:2.16.756.5.32').value.first(), %patient.identifier.where(system = 'urn:oid:2.16.438.10.20.10.10.1.2.1').value.first())"
                   }
                 }
               ]
@@ -7064,6 +7081,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-12T09:01:56+01:00",
+  "date": "2026-11-25T15:49:38+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireHepatitisC and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

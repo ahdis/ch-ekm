@@ -43,7 +43,7 @@ Characteristics: #can-be-target
 * givennameInitial 0..0
 * givenname 1..1
 * dateOfBirth 1..1
-* ahvn13 0..1
+* ahvn13OrIdn 0..1
 * nationality 0..1
 * streetLine 0..1
 * zipCode 0..1

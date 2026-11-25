@@ -62,7 +62,7 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 
 // --- Angaben zur betroffenen Person ---
 // Item order must follow the assembled questionnaire's person group (surnameInitial,
-// givennameInitial, dateOfBirth, ahvn13, nationality, zipCode, city, country, canton,
+// givennameInitial, dateOfBirth, ahvn13OrIdn, nationality, zipCode, city, country, canton,
 // administrativeGender) or QR validation reports "items are out of order". `country` is omitted
 // (optional), and there is NO genderIdentity item: this form does not ask it.
 * item[0].item[0].linkId = "person"
@@ -72,7 +72,7 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 * item[0].item[0].item[1].answer.valueString = "B"
 * item[0].item[0].item[2].linkId = "dateOfBirth"
 * item[0].item[0].item[2].answer.valueDate = "2000-01-01"
-* item[0].item[0].item[3].linkId = "ahvn13"
+* item[0].item[0].item[3].linkId = "ahvn13OrIdn"
 * item[0].item[0].item[3].answer.valueString = "7560000000000"
 * item[0].item[0].item[4].linkId = "nationality"
 * item[0].item[0].item[4].answer.valueCoding = $iso3166#CH "Switzerland"
