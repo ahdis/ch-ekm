@@ -7885,7 +7885,7 @@
                       "valueCoding": {
                         "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
                         "code": "711-02",
-                        "display": "Diphtérie- et tétanos-vaccin adsorbant pour les adultes et les enfants à partir de 7 ans"
+                        "display": "Diphtérie- et tétanos-vaccin adsorbant pour pour les adultes et les enfants à partir de 7 ans"
                       }
                     },
                     {
@@ -8432,48 +8432,6 @@
                         "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
                         "code": "70490",
                         "display": "Vimkunya"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
-                        "code": "69948",
-                        "display": "Celldemic"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
-                        "code": "69941",
-                        "display": "Incellipan"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
-                        "code": "70893",
-                        "display": "Comirnaty XFG (30 Mikrogramm)"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
-                        "code": "70272",
-                        "display": "mNEXSPIKE 0.05 mg/mL"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
-                        "code": "70847",
-                        "display": "Spikevax XFG (50 Microgramm)"
-                      }
-                    },
-                    {
-                      "valueCoding": {
-                        "system": "http://fhir.ch/ig/ch-vacd/CodeSystem/ch-vacd-swissmedic-cs",
-                        "code": "70051",
-                        "display": "Vaxigrip"
                       }
                     },
                     {
@@ -9356,6 +9314,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-25T16:28:22+01:00",
+  "date": "2026-11-25T16:49:31+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireInvasivePneumococcalDisease and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

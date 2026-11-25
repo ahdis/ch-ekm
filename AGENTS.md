@@ -449,6 +449,16 @@ have the **"Verlauf"** section (`RuleSetQrGroupCourse` + `RuleSetQrHospitalisati
 `RuleSetQrDeath`); Gonorrhoea has none. That section is also the only one needing a third launch context (`encounter`), which is why
 it is inserted separately (`RuleSetQrLaunchContextEncounter`) rather than from the shared header.
 
+**The per-language questionnaires are expanded against the dependencies declared in
+`sushi-config.yaml`.** tx.fhir.ch also holds the unreleased CI build of the next CH Term and expands
+against the newest version unless told otherwise, while the IG Publisher validates against the
+declared package; unpinned, the vaccine dropdown offered codes the declared CH Term does not know
+("Unknown code … in the CodeSystem … version '3.4.0'", 54 errors). `scripts/build-lang-questionnaire.py`
+therefore reads the `dependencies:` block, resolves each version in the local package cache
+(`~/.fhir/packages`, `3.4.x` = the highest released 3.4.*) and pins both the code systems
+(`system-version`) and the value sets (the package's own ValueSet resources are sent along — tx
+ignores a requested value set version). Nothing to maintain: bump the dependency and re-assemble.
+
 The assemble scripts are **local only** by default. Publishing the per-language questionnaires
 (`<RootId>-de-CH` / `-fr-CH` / `-it-CH`, titled `EKM: <Disease> (<lang>, pre-expanded)`) to the Forms
 Server (https://smartforms.ahdis.ch/api/fhir) is opt-in — add `--upload` (or `EKM_UPLOAD=1`), and

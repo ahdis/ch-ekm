@@ -32,7 +32,7 @@ Usage:  python3 scripts/build-lang-questionnaire.py [AssembledIdOrPath]
         Set PREVIEW_LANG=fr-CH to build just one language.
 Output: input/resources/Questionnaire-<Base>-<LANG>.json  (one file per language)
 """
-import json, os, sys, urllib.request, urllib.parse, glob
+import json, os, re, sys, urllib.request, urllib.parse, glob
 
 # Run from the repo root regardless of where the script is invoked from.
 os.chdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
@@ -65,6 +65,127 @@ def _expansion_params():
 
 
 EXPANSION_PARAMS = _expansion_params()
+
+# ---------------------------------------------------------------------------------------------
+# Pin the expansions to the DEPENDENCIES DECLARED IN sushi-config.yaml.
+#
+# tx.fhir.ch holds every version of the CH terminology, including the unreleased CI build of the
+# next one, and expands against the NEWEST unless told otherwise. The IG Publisher validates against
+# the package versions the IG depends on. Without pinning, the two drift apart as soon as a
+# dependency has a newer build: the vaccine dropdown then offered six Swissmedic codes of CH Term
+# 3.5.0-ci-build that the declared CH Term 3.4.x does not know, and the build reported "Unknown code
+# ... in the CodeSystem ... version '3.4.0'" for each of them, in every language.
+#
+# So the versions are read from where they are declared, never repeated here: `dependencies:` in
+# sushi-config.yaml, each resolved against the local FHIR package cache (~/.fhir/packages, which
+# SUSHI and the IG Publisher fill) exactly as they resolve it — `3.4.x` is the highest released
+# 3.4.* in the cache. Bumping a dependency in sushi-config.yaml moves the expansions with it.
+#
+# Two things are pinned, because tx needs both (verified against tx.fhir.ch):
+#   * CODE SYSTEMS, with a `system-version` parameter per code system the value set uses;
+#   * VALUE SETS, by sending the package's own ValueSet resource — the requested one as `valueSet`,
+#     the ones it includes as `tx-resource`. tx ignores `valueSetVersion` and a `url|version` for
+#     the value sets it resolves itself and takes the newest, so the definition has to be supplied.
+# ---------------------------------------------------------------------------------------------
+PACKAGE_CACHE = os.path.expanduser(os.environ.get("FHIR_PACKAGE_CACHE", "~/.fhir/packages"))
+
+
+def _declared_dependencies():
+    """{package id: version (pattern)} from the `dependencies:` block of sushi-config.yaml.
+
+    A minimal reader for the one shape the file uses (`  <package id>: <version>`), so the script
+    keeps running on a plain Python without PyYAML."""
+    deps, inside = {}, False
+    try:
+        lines = open("sushi-config.yaml").read().splitlines()
+    except OSError:
+        return deps
+    for line in lines:
+        if re.match(r"^dependencies:\s*$", line):
+            inside = True
+            continue
+        if not inside:
+            continue
+        if line.strip() == "" or line.lstrip().startswith("#"):
+            continue
+        if not line.startswith((" ", "\t")):
+            break                                    # next top-level key: the block is over
+        m = re.match(r"^\s+([A-Za-z0-9._-]+):\s*['\"]?([^'\"#\s]+)", line)
+        if m:
+            deps[m.group(1)] = m.group(2)
+    return deps
+
+
+def _resolve_package(pkg, version):
+    """Directory of the cached package matching `version` (exact, or a `1.2.x` pattern), or None."""
+    exact = os.path.join(PACKAGE_CACHE, f"{pkg}#{version}", "package")
+    if os.path.isdir(exact):
+        return exact
+    if version.endswith(".x"):
+        prefix = version[:-1]                        # "3.4."
+        found = []
+        for d in glob.glob(os.path.join(PACKAGE_CACHE, f"{pkg}#{prefix}*")):
+            v = d.rsplit("#", 1)[1]
+            # released versions only: a pre-release ("3.4.1-ballot") never satisfies "3.4.x"
+            if re.fullmatch(r"\d+(\.\d+)*", v) and os.path.isdir(os.path.join(d, "package")):
+                found.append((tuple(int(n) for n in v.split(".")), d))
+        if found:
+            return os.path.join(max(found)[1], "package")
+    return None
+
+
+def _dependency_terminology():
+    """(code systems, value sets) of the declared dependencies.
+
+    code systems: {url: version}; value sets: {url: path of the ValueSet resource in the package}."""
+    code_systems, value_sets = {}, {}
+    for pkg, version in _declared_dependencies().items():
+        pkg_dir = _resolve_package(pkg, version)
+        if not pkg_dir:
+            print(f"WARNING: {pkg}#{version} (sushi-config.yaml) is not in {PACKAGE_CACHE}; its "
+                  f"terminology is NOT pinned — run `sushi .` once to download it")
+            continue
+        try:
+            files = json.load(open(os.path.join(pkg_dir, ".index.json"))).get("files", [])
+        except Exception:
+            continue
+        for f in files:
+            url, ver = f.get("url"), f.get("version")
+            if not url:
+                continue
+            if f.get("resourceType") == "CodeSystem" and ver:
+                code_systems.setdefault(url, ver)
+            elif f.get("resourceType") == "ValueSet":
+                value_sets.setdefault(url, os.path.join(pkg_dir, f["filename"]))
+    return code_systems, value_sets
+
+
+DEPENDENCY_CODESYSTEMS, DEPENDENCY_VALUESETS = _dependency_terminology()
+
+
+def dependency_valueset(canonical):
+    """The ValueSet resource a declared dependency defines for `canonical`, or None."""
+    path = DEPENDENCY_VALUESETS.get(canonical.split("|", 1)[0])
+    return json.load(open(path)) if path else None
+
+
+def included_dependency_valuesets(vs_resource, seen=None):
+    """Every dependency ValueSet `vs_resource` includes, directly or through another value set —
+    the local (ch-ekm) ones in between are followed too. Returned as resources, for `tx-resource`."""
+    seen = {} if seen is None else seen
+    for inc in (vs_resource or {}).get("compose", {}).get("include", []):
+        for ref in inc.get("valueSet", []):
+            url = ref.split("|", 1)[0]
+            if url in seen:
+                continue
+            dep = dependency_valueset(url)
+            nested = dep or next((v for v in LOCAL_VALUESETS if v.get("url") == url), None)
+            if dep:
+                seen[url] = dep
+            if nested:
+                included_dependency_valuesets(nested, seen)
+    return list(seen.values())
+
 
 # Which assembled questionnaire to preview: positional arg is either an id
 # (e.g. ChEkmQuestionnaireMpoxAssembled) or a path to the assembled Questionnaire JSON.
@@ -164,11 +285,19 @@ def expand(canonical):
         if not vsfile:
             raise RuntimeError(f"no local ValueSet for {canonical}")
         vs_resource = json.load(open(vsfile))
+    else:
+        # A value set of a declared dependency: expand the definition of THAT package version (see
+        # "Pin the expansions" above). Anything else is left to tx to resolve by canonical.
+        vs_resource = dependency_valueset(canonical)
+    pinned_valuesets = included_dependency_valuesets(vs_resource)
+    system_pins = []   # filled after the discovery pass below
 
     def do_expand(display_language, use_supplement_urls):
-        param = [{"name": "valueSet", "resource": vs_resource}] if is_chekm \
+        param = [{"name": "valueSet", "resource": vs_resource}] if vs_resource \
             else [{"name": "url", "valueUri": canonical}]
         param += EXPANSION_PARAMS
+        param += [{"name": "system-version", "valueUri": pin} for pin in system_pins]
+        param += [{"name": "tx-resource", "resource": vs} for vs in pinned_valuesets]
         if display_language:
             param.append({"name": "displayLanguage", "valueCode": display_language})
         param += [{"name": "tx-resource", "resource": cs} for cs in LOCAL_CODESYSTEMS]
@@ -179,8 +308,22 @@ def expand(canonical):
             raise RuntimeError(f"expand failed for {canonical}: {vs.get('issue')}")
         return vs
 
-    # Base pass (no displayLanguage): default displays + the code systems present in the value set.
+    # Discovery pass: which code systems does the value set use? Those a declared dependency defines
+    # are then pinned to that package's version, and the base pass is repeated with the pins — the
+    # set of codes itself can differ between versions (new vaccines), not just the displays.
     base = do_expand(None, [])
+    used = {c["system"] for c in base.get("expansion", {}).get("contains", [])}
+    system_pins = sorted(f"{s}|{DEPENDENCY_CODESYSTEMS[s]}" for s in used if s in DEPENDENCY_CODESYSTEMS)
+    if system_pins:
+        try:
+            base = do_expand(None, [])
+        except Exception as e:
+            # e.g. tx does not hold that version. An unpinned dropdown beats no preview at all.
+            print(f"  WARNING: {canonical}: expansion pinned to {', '.join(system_pins)} failed ({e}); "
+                  f"expanding against the terminology server's default versions instead")
+            system_pins = []
+
+    # Base pass (no displayLanguage): default displays + the code systems present in the value set.
     base_display = {(c["system"], c["code"]): c.get("display")
                     for c in base.get("expansion", {}).get("contains", [])}
     systems = {s for s, _ in base_display}
