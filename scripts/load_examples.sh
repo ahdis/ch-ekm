@@ -23,6 +23,7 @@ RESOURCES=(
   "Organization/ChEkmOrganizationTreatingPhysicianExample|Organization-ChEkmOrganizationTreatingPhysicianExample.json"
   "PractitionerRole/ChEkmPractitionerRoleTreatingPhysicianExample|PractitionerRole-ChEkmPractitionerRoleTreatingPhysicianExample.json"
   "Patient/ChEkmPatientInitialsExample|Patient-ChEkmPatientInitialsExample.json"
+  "Patient/ChEkmPatientInitialsLiechtensteinExample|Patient-ChEkmPatientInitialsLiechtensteinExample.json"
   "Patient/ChEkmPatientDupontAntoine|Patient-ChEkmPatientDupontAntoine.json"
   "Patient/ChEkmPatientExample|Patient-ChEkmPatientExample.json"
   "Condition/ChEkmConditionMpoxExample|Condition-ChEkmConditionMpoxExample.json"

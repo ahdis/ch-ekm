@@ -47,7 +47,7 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 
 // --- Angaben zur betroffenen Person ---
 // Item order must follow the assembled questionnaire's person group
-// (surname, givenname, dateOfBirth, ahvn13, nationality, zipCode, city, country, canton,
+// (surname, givenname, dateOfBirth, ahvn13OrIdn, nationality, zipCode, city, country, canton,
 // administrativeGender, streetLine, phone, email, genderIdentity) or QR validation reports "items are
 // out of order". country is omitted (optional). streetLine / phone / email (ChEkmQuestionnairePersonContact)
 // are all answered here; the Hepatitis C round trip answers only phone.
@@ -58,7 +58,7 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[0].item[1].answer.valueString = "Beat Ruedi"
 * item[0].item[0].item[2].linkId = "dateOfBirth"
 * item[0].item[0].item[2].answer.valueDate = "2000-01-01"
-* item[0].item[0].item[3].linkId = "ahvn13"
+* item[0].item[0].item[3].linkId = "ahvn13OrIdn"
 * item[0].item[0].item[3].answer.valueString = "7560000000000"
 * item[0].item[0].item[4].linkId = "nationality"
 * item[0].item[0].item[4].answer.valueCoding = $iso3166#CH "Switzerland"

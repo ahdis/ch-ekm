@@ -294,7 +294,7 @@ disease-specific value-set bindings).
 | Initiale Name | `surnameInitial` | string | required (1..1) |
 | Initiale Vorname | `givennameInitial` | string | required (1..1) |
 | Geburtsdatum | `dateOfBirth` | date | required |
-| AHV-Nr. | `ahvn13` | string | `regex = "^756[0-9]{10}$"` (§11) |
+| AHV-Nr. / IDN (FL) | `ahvn13OrIdn` | string | `regex = "^[0-9]{13}$"` (§11); one field for the AHV number and the Liechtenstein IDN (issue #45) |
 | Nationalität | `nationality` | choice | `ChEkmCountryCodes` |
 | PLZ/Wohnort | `zipCode`, `city` | string | |
 | Land | `country` | choice | `ChEkmCountryCodes` |
@@ -425,7 +425,7 @@ ChEkmQuestionnaireTreatingPhysician   (assemble-child)  ← ChEkmTreatingPhysici
 
 > **Person is split into three generic LEAF sub-questionnaires (2026-07):**
 > `ChEkmQuestionnairePersonInitials` (surname/given initials), `ChEkmQuestionnairePersonGeneral`
-> (birth date, AHVN13, nationality, address, canton, administrative gender — carries the
+> (birth date, AHVN13 or IDN, nationality, address, canton, administrative gender — carries the
 > questionnaire-level `homeOrFirstAddress` variable) and `ChEkmQuestionnairePersonGenderIdentity`
 > (all three under `input/fsh/questionnnaire/`). Each leaf's items are **top-level (no wrapping
 > group)**, so on assembly they merge into their referencing group as one flat block.
@@ -950,12 +950,23 @@ answer) **on the element itself**: empty context → the element is excluded. Th
 plain complex type whose other fields are **normal elements**, e.g. `Patient.identifier[AHVN13]`:
 
 ```
-* identifier[0].extension[0].url = templateExtractContext   // = …where(linkId='ahvn13').answer.value
+* identifier[0].extension[0].url = templateExtractContext   // = …where(linkId='ahvn13OrIdn').answer.value.where($this.startsWith('756'))
 * identifier[0].system = "urn:oid:2.16.756.5.32"            // static, survives the strip
 * identifier[0].value.extension[0] = templateExtractValue ($this)   // value on the _value sibling
 ```
 
-When `ahvn13` is blank the entire identifier (incl. the static `system`) is omitted.
+When `ahvn13OrIdn` is blank the entire identifier (incl. the static `system`) is omitted.
+
+The same gate also **chooses between two elements** (issue #45). The form has ONE field
+"AHV / IDN (FL)" for the Swiss AHV number and the Liechtenstein IDN; the template has an identifier
+for each, and the two contexts are complementary filters on the one answer —
+`…answer.value.where($this.startsWith('756'))` for `identifier[AHVN13]` and
+`…answer.value.where($this.startsWith('756').not())` for `identifier[IDN]`
+(`urn:oid:2.16.438.10.20.10.10.1.2.1`). Both are 13 digits; 756 is the AHV country prefix, and the
+IDN has no check digit, so the prefix is the only thing to tell them apart by. Exactly one fires for
+an answered field, none for a blank one. Pre-population is the reverse: the AHV number if the
+launch Patient has one, else the IDN. Round trips: Gonorrhoea answers an IDN, the other three an
+AHV number.
 
 **It does NOT work for a complex extension** (e.g. `patient-citizenship`) whose payload is a required
 **sub-extension** (`code`). There the gating context must be a *sibling* of `code` in the same
@@ -1760,9 +1771,10 @@ Two ways to validate an answer in these forms; the choice is forced by what the 
 Smart Forms reads it directly off the item (`getRegexString` in
 `packages/smart-forms-renderer/src/utils/extensions.ts`, applied in `validate.ts`) and surfaces
 inline validation. It even unwraps a `matches('…')` wrapper, but a bare pattern works too. Use it
-for pure **format/length** checks. Example — `ahvn13` (OASI / AHVN13) in
-`ChEkmQuestionnairePersonGeneral.fsh` carries `regex = "^756[0-9]{10}$"` (+ `maxLength = 13`),
-mirroring the ch-core `ahvn13-length` invariant. A regex **cannot** express the AHV digit-check
+for pure **format/length** checks. Example — `ahvn13OrIdn` ("AHV / IDN (FL)") in
+`ChEkmQuestionnairePersonGeneral.fsh` carries `regex = "^[0-9]{13}$"` (+ `maxLength = 13`): 13
+digits is what the AHV number (ch-core `ahvn13-length`: 756 + 10 digits) and the Liechtenstein IDN
+(ch-elm `idn-length`) have in common. A regex **cannot** express the AHV digit-check
 (`ahvn13-digit-check`) — that, and the length invariant, are still enforced by the IG Publisher on
 the extracted Patient; the form regex is only a UX guard.
 

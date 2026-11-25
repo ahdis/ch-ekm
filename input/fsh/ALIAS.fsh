@@ -59,6 +59,7 @@ Alias: $translation =                    http://hl7.org/fhir/StructureDefinition
 
 //Identifier systems
 Alias: $ahvn13-system =                  urn:oid:2.16.756.5.32
+Alias: $idn-system =                     urn:oid:2.16.438.10.20.10.10.1.2.1
 Alias: $iso21090-ADXP-streetName =       http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-streetName
 Alias: $iso21090-ADXP-houseNumber =      http://hl7.org/fhir/StructureDefinition/iso21090-ADXP-houseNumber
 Alias: $iso21090-codedString =           http://hl7.org/fhir/StructureDefinition/iso21090-codedString

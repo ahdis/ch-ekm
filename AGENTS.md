@@ -136,7 +136,10 @@ This IG uses **two parallel representations** of the report content:
   (`ch-elm-humanname`), identifiers (incl. the Liechtenstein `IDN`), the `home` address slice and the
   ELM invariants come from there, and `ChEkmPatient` only adds gender identity, citizenship,
   `deceasedDateTime`, the female/male `gender` binding and a mandatory country code, and closes the
-  retired `ch-elm-ext-vct-code` name extension (the VCT code is an identifier, as in CH ELM). The variants
+  retired `ch-elm-ext-vct-code` name extension (the VCT code is an identifier, as in CH ELM). The
+  forms ask the AHV number and the IDN in ONE field (`ahvn13OrIdn`, "AHV / IDN (FL)", issue #45):
+  13 digits starting with 756 extract to `identifier[AHVN13]`, any other to `identifier[IDN]`;
+  pre-population takes the AHV number, else the IDN (forms-summary.md §8, "Context-gating"). The variants
   cannot inherit from `ChElmPatientInitials` / `HIV` / `VCT` as well (single parent), so they repeat
   those constraints:
   - `ChEkmPatientInitials` — initials only (name-initials invariant; no address line / telecom)
