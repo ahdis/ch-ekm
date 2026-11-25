@@ -191,6 +191,12 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 * item[0].item[4].item[3].item[1].linkId = "close-contact-note"
 * item[0].item[4].item[3].item[1].answer.valueString = "Partner und zwei Mitbewohner im selben Haushalt"
 
+// Berufliche Tätigkeit (issue #48), the last block of the Exposition: one of the five local groups
+// -> component[occupationalActivity] of the extracted Exposure.
+* item[0].item[4].item[4].linkId = "occupation"
+* item[0].item[4].item[4].item[0].linkId = "occupationalActivity"
+* item[0].item[4].item[4].item[0].answer.valueCoding = ChEkmOccupationalActivity#close-contact-services "Services involving close physical contact"
+
 // --- Impfstatus / vaccination status (issues #29, #36) ---
 // Two rows, deliberately answered differently so one round trip covers two of the three branches -
 // and both resource types, because the answer decides which one is emitted (see ChEkmImmunization

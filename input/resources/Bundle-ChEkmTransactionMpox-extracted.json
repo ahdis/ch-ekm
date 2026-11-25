@@ -455,6 +455,25 @@
                       }
                     ]
                   }
+                },
+                {
+                  "code": {
+                    "coding": [
+                      {
+                        "code": "occupational-activity",
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                      }
+                    ]
+                  },
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-occupational-activity",
+                        "code": "close-contact-services",
+                        "display": "Services involving close physical contact"
+                      }
+                    ]
+                  }
                 }
               ],
               "extension": [

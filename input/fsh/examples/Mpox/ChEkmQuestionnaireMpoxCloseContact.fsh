@@ -1,6 +1,6 @@
 // Modular sub-questionnaire: "Nach Manifestationsbeginn: Enger Personenkontakt" for Mpox — ja / nein /
-// unbekannt (value set ChEkmYesNoUnknown) plus a free-text "Bemerkung" (issue #43). Asked at the END
-// of the "Exposition" section, after "Wie". Kept for contact tracing.
+// unbekannt (value set ChEkmYesNoUnknown) plus a free-text "Bemerkung" (issue #43). Asked in
+// the "Exposition" section, after "Wie". Kept for contact tracing.
 //
 // A DISEASE-SPECIFIC QUESTION WITHOUT A FHIR TARGET, the Mpox counterpart of the Hepatitis C
 // blood-donation question (ChEkmQuestionnaireHepatitisCBloodDonation): decided in the meeting of

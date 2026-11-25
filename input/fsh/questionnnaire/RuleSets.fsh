@@ -534,8 +534,14 @@ RuleSet: RuleSetQrCourseOfDiseaseHepatitisC
 RuleSet: RuleSetQrBloodDonationHepatitisC
 * insert RuleSetQrLevel3SubQuestionnaire("blooddonation", "Diagnosis from blood donation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireHepatitisCBloodDonation")
 
+// "Berufliche Tätigkeit" for Mpox (issue #48) — a LEVEL-3 child of the "Exposition" section, inserted
+// LAST, after "Nach Manifestationsbeginn". Extracted into a component of the Exposure — see
+// ChEkmQuestionnaireMpoxOccupationalActivity.fsh.
+RuleSet: RuleSetQrOccupationalActivityMpox
+* insert RuleSetQrLevel3SubQuestionnaire("occupationalactivity", "Occupational activity", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxOccupationalActivity")
+
 // "Nach Manifestationsbeginn: Enger Personenkontakt" for Mpox (issue #43) — a LEVEL-3 child of the
-// "Exposition" section, inserted LAST, after "Wie". Disease-specific and NOT extracted into a
+// "Exposition" section, inserted after "Wie". Disease-specific and NOT extracted into a
 // resource — see ChEkmQuestionnaireMpoxCloseContact.fsh.
 RuleSet: RuleSetQrCloseContactMpox
 * insert RuleSetQrLevel3SubQuestionnaire("closecontact", "Close contact after the onset of the manifestation", "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxCloseContact")

@@ -35,6 +35,15 @@ Description: "Internal code system used as discriminator for the components of a
 * #confirmed-case-contact ^designation[=].value = "Contact avec un cas confirmé en laboratoire"
 * #confirmed-case-contact ^designation[+].language = #it-CH
 * #confirmed-case-contact ^designation[=].value = "Contatto con un caso confermato in laboratorio"
+// "Berufliche Tätigkeit" (issue #48): the group of occupations the person works in, as far as it
+// matters for the exposure; the value is a code of ChEkmOccupationalActivity or "unknown".
+* #occupational-activity "Occupational activity" "The group of occupations the person works in, classified by how close the contact with other people is (Berufliche Tätigkeit); the value names the group, from ChEkmOccupationalActivity."
+* #occupational-activity ^designation[+].language = #de-CH
+* #occupational-activity ^designation[=].value = "Berufliche Tätigkeit"
+* #occupational-activity ^designation[+].language = #fr-CH
+* #occupational-activity ^designation[=].value = "Activité professionnelle"
+* #occupational-activity ^designation[+].language = #it-CH
+* #occupational-activity ^designation[=].value = "Attività professionale"
 
 // The answers of "Andere Übertragungswege" (issue #44): one of them is picked (radio buttons, like
 // "Art der Beziehung"), so they are VALUES of the component ChEkmExposureComponent#contact-route,
@@ -121,3 +130,64 @@ Description: "Internal code system holding the single form answer that is not a 
 * #reported-pathogen ^designation[=].value = "Agent pathogène déclaré"
 * #reported-pathogen ^designation[+].language = #it-CH
 * #reported-pathogen ^designation[=].value = "Agente patogeno notificato"
+
+
+// The answers of "Berufliche Tätigkeit" (issue #48), without "unknown" (sct#261665006, added by the
+// value set ChEkmExposureOccupationalActivity).
+//
+// LOCAL CODES ALTHOUGH SNOMED CT HAS OCCUPATIONS. The five answers are not occupations but groups of
+// them, cut by one criterion: how close the contact with other people is. SNOMED CT (International
+// Edition 2026-11-01) covers that only in part:
+//   healthcare-nursing       223366009 "Healthcare professional" fits.
+//   sex-work                 449344001 "Sex worker" fits.
+//   close-contact-services   no concept. The nearest, 308219004 "Personal services occupation", is
+//                            the PARENT of "Sex worker", so the two answers would overlap.
+//   care-education           229774002 "Caregiver occupation" is the care half only; teaching is
+//                            307972006 "Education profession", and their common ancestor 265930003
+//                            "Education/welfare/health profession" also contains healthcare.
+//   no-close-contact         no concept; a group defined by what it is not.
+// A value set with two exact SNOMED CT codes, one too narrow and two local ones would be harder to
+// evaluate than five codes that mean exactly what the form says, and the SNOMED CT hierarchy would
+// suggest subsumptions the form does not intend. Hence one local code system for all five.
+CodeSystem: ChEkmOccupationalActivity
+Id: ch-ekm-occupational-activity
+Title: "CH EKM Occupational Activity"
+Description: "Groups of occupations by how close the contact with other people is (Berufliche Tätigkeit): healthcare and nursing, sex work, services involving close physical contact, supervision and education, occupation without close contact with other people."
+* ^status = #active
+* ^experimental = false
+* ^caseSensitive = true
+* #healthcare-nursing "Healthcare and nursing" "The person works in healthcare or nursing."
+* #healthcare-nursing ^designation[+].language = #de-CH
+* #healthcare-nursing ^designation[=].value = "Gesundheitswesen und Pflege"
+* #healthcare-nursing ^designation[+].language = #fr-CH
+* #healthcare-nursing ^designation[=].value = "Santé et soins"
+* #healthcare-nursing ^designation[+].language = #it-CH
+* #healthcare-nursing ^designation[=].value = "Sanità e assistenza"
+* #sex-work "Sex work" "The person works as a sex worker."
+* #sex-work ^designation[+].language = #de-CH
+* #sex-work ^designation[=].value = "Sexarbeit"
+* #sex-work ^designation[+].language = #fr-CH
+* #sex-work ^designation[=].value = "Travail du sexe"
+* #sex-work ^designation[+].language = #it-CH
+* #sex-work ^designation[=].value = "Lavoro sessuale"
+* #close-contact-services "Services involving close physical contact" "The person provides services that involve close physical contact, other than healthcare, nursing and sex work."
+* #close-contact-services ^designation[+].language = #de-CH
+* #close-contact-services ^designation[=].value = "Dienstleistungen mit engem Körperkontakt"
+* #close-contact-services ^designation[+].language = #fr-CH
+* #close-contact-services ^designation[=].value = "Services impliquant un contact physique rapproché"
+* #close-contact-services ^designation[+].language = #it-CH
+* #close-contact-services ^designation[=].value = "Servizi che comportano uno stretto contatto fisico"
+* #care-education "Supervision and education" "The person works in the supervision, care or education of other people."
+* #care-education ^designation[+].language = #de-CH
+* #care-education ^designation[=].value = "Betreuung und Bildung"
+* #care-education ^designation[+].language = #fr-CH
+* #care-education ^designation[=].value = "Encadrement et éducation"
+* #care-education ^designation[+].language = #it-CH
+* #care-education ^designation[=].value = "Assistenza e istruzione"
+* #no-close-contact "Occupation without close contact with other people" "The person's occupation involves no close contact with other people."
+* #no-close-contact ^designation[+].language = #de-CH
+* #no-close-contact ^designation[=].value = "Berufliche Tätigkeit ohne engen Personenkontakt"
+* #no-close-contact ^designation[+].language = #fr-CH
+* #no-close-contact ^designation[=].value = "Activité professionnelle sans contact étroit avec d’autres personnes"
+* #no-close-contact ^designation[+].language = #it-CH
+* #no-close-contact ^designation[=].value = "Attività professionale senza contatti stretti con altre persone"

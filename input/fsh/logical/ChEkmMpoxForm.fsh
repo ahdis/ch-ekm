@@ -100,6 +100,9 @@ Characteristics: #can-be-target
   * confirmedCaseContact from ChEkmYesNoUnknown (required)
   * otherTransmission 0..1 string "Other transmission route (free text)"
   * unknown 0..1 boolean "Unknown"
+// Berufliche Tätigkeit (issue #48) — the last block of the section. A closed list replacing the former free text.
+* occupationalActivity 0..1 CodeableConcept "Occupational activity (Berufliche Tätigkeit): healthcare and nursing / sex work / services involving close physical contact / supervision and education / occupation without close contact with other people / unknown"
+* occupationalActivity from ChEkmExposureOccupationalActivity (required)
 // Nach Manifestationsbeginn (issue #43) — asked last in the section. NO RESOURCE TARGET: the answers
 // travel in the disease-specific QuestionnaireResponse the document carries, hence the second mapping.
 * closeContactAfterOnset 0..1 Base "After the onset of the manifestation (Nach Manifestationsbeginn)"
@@ -118,6 +121,7 @@ Title: "Exposure Form to CH EKM Exposure Mpox"
 * transmission.contactRoute -> "Observation.component[contactRoute].valueCodeableConcept" "Component code ChEkmExposureComponent#contact-route"
 * transmission.confirmedCaseContact -> "Observation.component[confirmedCaseContact].valueCodeableConcept" "Component code ChEkmExposureComponent#confirmed-case-contact"
 * transmission.otherTransmission -> "Observation.component[otherTransmission].valueString" "Other transmission route (component code sct#74964007)"
+* occupationalActivity -> "Observation.component[occupationalActivity].valueCodeableConcept" "Component code ChEkmExposureComponent#occupational-activity; 'unknown' is the value sct#261665006"
 * transmission.unknown -> "Observation.component[transmissionRoute].valueCodeableConcept" "Ticked: sct#261665006 'Unknown'; the other transmission route components are then not emitted (the contact components are, they are answers of their own)"
 
 Mapping: MpoxExposureFormToQuestionnaireResponse

@@ -150,6 +150,17 @@ RuleSet: RuleSetComponentExposureContacts
 * insert RuleSetComponentExposureContact(exposureHowConfirmedCaseContact, confirmed-case-contact)
 * component[=].valueCodeableConcept.coding[0] = $sct#261665006 "Unknown (qualifier value)"
 
+// "Berufliche Tätigkeit" (issue #48) -> component[occupationalActivity] of the base ChEkmExposure:
+//   occupationalActivity -> ChEkmExposureComponent#occupational-activity
+//                           value = the picked Coding of ChEkmExposureOccupationalActivity —
+//                           "unknown" too, as sct#261665006 (a value, never a dataAbsentReason)
+// Same idiom and the same placement rule as RuleSetComponentExposureContacts: context-gated on the
+// answer, inserted only by the templates of forms that ask the question (Mpox), AFTER every other
+// component rule set.
+RuleSet: RuleSetComponentExposureOccupationalActivity
+* insert RuleSetComponentExposureContact(occupationalActivity, occupational-activity)
+* component[=].valueCodeableConcept.coding[0] = $sct#261665006 "Unknown (qualifier value)"
+
 // The component without its placeholder coding: the caller sets
 // `component[=].valueCodeableConcept.coding[0]` right after the insert, to a code of the slice's value set.
 RuleSet: RuleSetComponentExposureContact(linkId, code)

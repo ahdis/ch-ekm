@@ -40,9 +40,20 @@ Description: "This CH EKM base profile constrains the Observation resource to re
 //   question answered yes / no / unknown, so the answer is the VALUE (sct#373066001 / 373067005 /
 //   261665006) and "unknown" never becomes a dataAbsentReason (same rule as
 //   ChEkmObservationCauseOfDeath).
+// - occupationalActivity: "Berufliche Tätigkeit" (issue #48), the group of occupations the person
+//   works in, by how close the contact with other people is (ChEkmExposureOccupationalActivity).
+//   A component of the Exposure rather than an occupation Observation of its own: the answer is a
+//   coarse exposure category ("occupation without close contact with other people"), not the
+//   person's job, and it is asked to assess this exposure. "Unknown" is a value (sct#261665006).
 * component contains
     contactRoute 0..1 and
-    confirmedCaseContact 0..1
+    confirmedCaseContact 0..1 and
+    occupationalActivity 0..1
+* component[occupationalActivity] ^short = "Occupational activity (Berufliche Tätigkeit): the group of occupations the person works in, by how close the contact with other people is, or unknown"
+* component[occupationalActivity].code = ChEkmExposureComponent#occupational-activity
+* component[occupationalActivity].value[x] 1..1
+* component[occupationalActivity].value[x] only CodeableConcept
+* component[occupationalActivity].valueCodeableConcept from ChEkmExposureOccupationalActivity (required)
 * component[contactRoute] ^short = "Other routes of transmission (Andere Übertragungswege): contact as medical / nursing staff or contact in the household"
 * component[contactRoute].code = ChEkmExposureComponent#contact-route
 * component[contactRoute].value[x] 1..1

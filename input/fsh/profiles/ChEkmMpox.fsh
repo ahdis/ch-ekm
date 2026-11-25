@@ -67,6 +67,8 @@ Description: "TODO: This CH EKM base profile constrains the Exposure observation
 // the Mpox form, hence MustSupport here.
 * component[contactRoute] MS
 * component[confirmedCaseContact] MS
+// "Berufliche Tätigkeit" (issue #48) — likewise sliced on the base and asked by the Mpox form.
+* component[occupationalActivity] MS
 // Impfstatus (https://github.com/ahdis/ch-ekm/issues/29). The Mpox form asks about TWO
 // vaccination types, so this profile does two things the base ChEkmImmunization cannot: it fixes
 // which target diseases may appear, and it constrains the fallback product code to the SNOMED CT

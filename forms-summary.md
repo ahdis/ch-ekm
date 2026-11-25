@@ -343,6 +343,16 @@ disease-specific value-set bindings).
 | *Mpox only (#44):* Kontakt mit laborbestätigtem Mpox-Fall | `exposureHowConfirmedCaseContact` | choice | `ChEkmYesNoUnknown` → `component[confirmedCaseContact]` |
 | anderer Übertragungsweg | `exposureHowOtherTransmission` | string | |
 | unbekannt | `exposureHowUnknown` | boolean | |
+| *Mpox only (#48), last block of the Exposition:* Berufliche Tätigkeit > Tätigkeitsbereich | `occupation` > `occupationalActivity` | group > choice (radio, vertical) | `ChEkmExposureOccupationalActivity` (five groups of `ChEkmOccupationalActivity` + `sct#261665006` unknown) → `ChEkmExposure.component[occupationalActivity]` |
+
+> **"Berufliche Tätigkeit" (#48) is in the model, not in the disease-specific response.** The answer
+> is coded and evaluated by the FOPH, so it has a FHIR target: a component of the Exposure, like the
+> #44 contacts (module `ChEkmQuestionnaireMpoxOccupationalActivity`, extraction
+> `RuleSetComponentExposureOccupationalActivity`). The disease-specific QuestionnaireResponse stays
+> reserved for questions without one. The five answers are LOCAL codes although SNOMED CT has
+> occupations: they are groups cut by "how close is the contact with other people", SNOMED CT matches
+> two of them exactly, one half-way and two not at all, and its hierarchy makes "Personal services
+> occupation" the parent of "Sex worker" — see the comment on `ChEkmOccupationalActivity`.
 
 > **The "Wie" items are rule sets (#44).** "Andere Übertragungswege" offers its two contacts as radio
 > buttons (one is picked, like "Art der Beziehung"; no "unbekannt"), so the picked code of

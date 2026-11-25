@@ -142,6 +142,10 @@
     },
     {
       "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
+      "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireMpoxOccupationalActivity|0.0.1"
+    },
+    {
+      "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-assembledFrom",
       "valueCanonical": "http://fhir.ch/ig/ch-ekm/Questionnaire/ChEkmQuestionnaireImmunizationMpox|0.0.1"
     },
     {
@@ -997,6 +1001,37 @@
                   {
                     "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
                     "valueString": "%resource.descendants().where(linkId='exposureHowConfirmedCaseContact').answer.value"
+                  }
+                ],
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "extension": [
+                        {
+                          "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                          "valueString": "ofType(Coding)"
+                        }
+                      ],
+                      "code": "261665006",
+                      "system": "http://snomed.info/sct",
+                      "display": "Unknown (qualifier value)"
+                    }
+                  ]
+                }
+              },
+              {
+                "code": {
+                  "coding": [
+                    {
+                      "code": "occupational-activity",
+                      "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-exposure-component"
+                    }
+                  ]
+                },
+                "extension": [
+                  {
+                    "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractContext",
+                    "valueString": "%resource.descendants().where(linkId='occupationalActivity').answer.value"
                   }
                 ],
                 "valueCodeableConcept": {
@@ -7882,6 +7917,76 @@
                   "type": "string"
                 }
               ]
+            },
+            {
+              "linkId": "occupation",
+              "text": "Attività professionale",
+              "type": "group",
+              "item": [
+                {
+                  "linkId": "occupationalActivity",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmMpoxExposureForm#ChEkmMpoxExposureForm.occupationalActivity",
+                  "text": "Settore di attività",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-occupational-activity",
+                        "code": "healthcare-nursing",
+                        "display": "Sanità e assistenza"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-occupational-activity",
+                        "code": "sex-work",
+                        "display": "Lavoro sessuale"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-occupational-activity",
+                        "code": "close-contact-services",
+                        "display": "Servizi che comportano uno stretto contatto fisico"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-occupational-activity",
+                        "code": "care-education",
+                        "display": "Assistenza e istruzione"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-occupational-activity",
+                        "code": "no-close-contact",
+                        "display": "Attività professionale senza contatti stretti con altre persone"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://snomed.info/sct",
+                        "code": "261665006",
+                        "display": "sconosciuto/a"
+                      }
+                    }
+                  ]
+                }
+              ]
             }
           ]
         },
@@ -11546,6 +11651,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-25T15:49:51+01:00",
+  "date": "2026-11-25T16:28:29+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

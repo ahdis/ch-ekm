@@ -69,6 +69,16 @@ Description: "This CH EKM value set includes the codes for the other routes of t
 * ^experimental = false
 * include codes from system ChEkmContactRoute
 
+// "Berufliche Tätigkeit" (issue #48): the five groups of ChEkmOccupationalActivity plus "unknown",
+// which is an answer here and therefore a value (forms-summary.md §12).
+ValueSet: ChEkmExposureOccupationalActivity
+Title: "CH EKM Exposure Occupational Activity"
+Description: "This CH EKM value set includes the codes for the occupational activity of the person (Berufliche Tätigkeit): groups of occupations by how close the contact with other people is, and 'unknown'."
+* ^status = #active
+* ^experimental = false
+* include codes from system ChEkmOccupationalActivity
+* $sct#261665006 "Unknown (qualifier value)"
+
 ValueSet: ChEkmServiceRequestReason
 Title: "CH EKM ServiceRequest Reason"
 Description: "This CH EKM value set includes the codes for service request reason."

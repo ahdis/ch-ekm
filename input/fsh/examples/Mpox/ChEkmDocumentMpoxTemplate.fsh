@@ -31,6 +31,8 @@ Usage: #inline
 * insert RuleSetEffectiveExposureWhen
 // Wie — the two contact questions (issue #44), appended LAST so no earlier component index moves.
 * insert RuleSetComponentExposureContacts
+// Berufliche Tätigkeit (issue #48) — appended after the contacts, for the same reason.
+* insert RuleSetComponentExposureOccupationalActivity
 // Wo — only touches the `extension` array (two mutually exclusive carriers), so it is independent
 // of the component indices above.
 * insert RuleSetExposureWhere

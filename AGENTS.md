@@ -92,7 +92,13 @@ This IG uses **two parallel representations** of the report content:
   #44, asked by Mpox only today): `component[contactRoute]` ("Andere Übertragungswege", radio
   buttons: value from `ChEkmExposureContactRoute` — contact as medical / nursing staff or in the
   household) and `component[confirmedCaseContact]` (value from `ChEkmYesNoUnknown`, "unknown" a
-  value), local `ChEkmExposureComponent` codes. The form side is the rule sets in `ChEkmQuestionnaireExposureHow.fsh`, which
+  value), local `ChEkmExposureComponent` codes. Likewise `component[occupationalActivity]` (issue #48,
+  "Berufliche Tätigkeit", Mpox only today): value from `ChEkmExposureOccupationalActivity` — five
+  local groups of occupations by how close the contact with other people is (`ChEkmOccupationalActivity`;
+  deliberately not SNOMED CT, see the comment there) or `sct#261665006` unknown. Form module
+  `examples/Mpox/ChEkmQuestionnaireMpoxOccupationalActivity.fsh` (a group `occupation` with the one
+  item, the last block of the Exposition), extraction
+  `RuleSetComponentExposureOccupationalActivity`. The form side is the rule sets in `ChEkmQuestionnaireExposureHow.fsh`, which
   Mpox arranges in its own "Wie" module `ChEkmQuestionnaireExposureHowMpox` (the contacts sit above
   "Anderer Übertragungsweg", which `$assemble` cannot insert conditionally); extraction
   `RuleSetComponentExposureContacts`.
@@ -251,13 +257,14 @@ These logical models are the **master** for building the SDC Questionnaires — 
 `input/fsh/terminology/`:
 - **CodeSystems**: `ChEkmExposureComponent` (internal discriminator codes for Exposure
   components), `ChEkmRelationshipType` (Art der Beziehung), `ChEkmContactRoute` (Andere
-  Übertragungswege: medical / nursing staff, household — #44), `ChEkmReportedPathogen` (the one
+  Übertragungswege: medical / nursing staff, household — #44), `ChEkmOccupationalActivity` (Berufliche
+  Tätigkeit: five groups of occupations — #48), `ChEkmReportedPathogen` (the one
   "reported pathogen" answer shared by the hospitalisation-reason and cause-of-death questions — a
   pointer to the disease this report is about, not a clinical concept).
 - **ValueSets**: per-disease manifestation sets (`ChEkmGonorrhoeaManifestation`,
   `ChEkmHepatitisCManifestation`, `ChEkmInvasivePneumococcalDiseaseManifestation`,
   `ChEkmHIVManifestation`, …), `ChEkmExposureClass`, `ChEkmExposureTransmissionRoute`,
-  `ChEkmExposureRelationshipType`, `ChEkmExposureContactRoute`, `ChEkmPatientAdministrativeSex` (female/male only — `Patient.gender`
+  `ChEkmExposureRelationshipType`, `ChEkmExposureContactRoute`, `ChEkmExposureOccupationalActivity`, `ChEkmPatientAdministrativeSex` (female/male only — `Patient.gender`
   is bound to it, issue #32), `ChEkmExposureSexualContactPartner` (female / male / `sct#261665006` unknown —
   "other" dropped too, still open in #32; bound by the Gonorrhoea/Mpox exposure profiles), `ChEkmGenderIdentity` (trans man / trans woman, International Edition
   `1332083003` / `1332082008` — not the US Edition codes; the binding of `Patient.extension[genderIdentity]`),
@@ -395,7 +402,7 @@ decision for each, in an `OPEN QUESTIONS` block at the bottom of the root's FSH 
   (`blood-donation`), prefixed with the disease when its content is disease-specific
   (`hepatitisc-course-of-disease`); only the root group always carries the disease.
   **Mpox** uses the same pattern for one question (issue #43): "Nach Manifestationsbeginn: Enger
-  Personenkontakt" ja / nein / unbekannt + Bemerkung, the last question of the Exposition
+  Personenkontakt" ja / nein / unbekannt + Bemerkung, asked in the Exposition after "Wie"
   (`examples/Mpox/ChEkmQuestionnaireMpoxCloseContact.fsh`, root `ChEkmQuestionnaireMpoxDiseaseSpecific`).
   Its module is a GROUP (`close-contact-after-onset` > `close-contact`, `close-contact-note`), so the
   template's gate tests `item.answer.value.exists()`. The response sits in `section[diagnosis]` like
