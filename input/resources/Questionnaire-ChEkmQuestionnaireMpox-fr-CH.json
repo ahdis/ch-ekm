@@ -1790,6 +1790,21 @@
                 }
               ]
             },
+            "reportOrigin": {
+              "coding": [
+                {
+                  "code": "record",
+                  "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                  "display": "Written Record"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationSourceSmallpox').answer.value.ofType(Coding).first().select(%factory.CodeableConcept($this))"
+                }
+              ]
+            },
             "occurrenceDateTime": "1900-01-01",
             "_occurrenceDateTime": {
               "extension": [
@@ -1863,6 +1878,21 @@
                 }
               ]
             },
+            "reportOrigin": {
+              "coding": [
+                {
+                  "code": "record",
+                  "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                  "display": "Written Record"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationSourceSmallpox').answer.value.ofType(Coding).first().select(%factory.CodeableConcept($this))"
+                }
+              ]
+            },
             "_occurrenceDateTime": {
               "extension": [
                 {
@@ -1904,6 +1934,21 @@
             },
             "subject": {
               "reference": "Patient/ExtractedPatient"
+            },
+            "method": {
+              "coding": [
+                {
+                  "code": "record",
+                  "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                  "display": "Written Record"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationSourceSmallpox').answer.value.ofType(Coding).first().select(%factory.CodeableConcept($this))"
+                }
+              ]
             },
             "component": [
               {
@@ -1969,6 +2014,21 @@
             },
             "subject": {
               "reference": "Patient/ExtractedPatient"
+            },
+            "method": {
+              "coding": [
+                {
+                  "code": "record",
+                  "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                  "display": "Written Record"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationSourceSmallpox').answer.value.ofType(Coding).first().select(%factory.CodeableConcept($this))"
+                }
+              ]
             },
             "component": [
               {
@@ -2065,6 +2125,21 @@
                 }
               ]
             },
+            "reportOrigin": {
+              "coding": [
+                {
+                  "code": "record",
+                  "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                  "display": "Written Record"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationSourceMpox').answer.value.ofType(Coding).first().select(%factory.CodeableConcept($this))"
+                }
+              ]
+            },
             "occurrenceDateTime": "1900-01-01",
             "_occurrenceDateTime": {
               "extension": [
@@ -2138,6 +2213,21 @@
                 }
               ]
             },
+            "reportOrigin": {
+              "coding": [
+                {
+                  "code": "record",
+                  "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                  "display": "Written Record"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationSourceMpox').answer.value.ofType(Coding).first().select(%factory.CodeableConcept($this))"
+                }
+              ]
+            },
             "_occurrenceDateTime": {
               "extension": [
                 {
@@ -2179,6 +2269,21 @@
             },
             "subject": {
               "reference": "Patient/ExtractedPatient"
+            },
+            "method": {
+              "coding": [
+                {
+                  "code": "record",
+                  "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                  "display": "Written Record"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationSourceMpox').answer.value.ofType(Coding).first().select(%factory.CodeableConcept($this))"
+                }
+              ]
             },
             "component": [
               {
@@ -2244,6 +2349,21 @@
             },
             "subject": {
               "reference": "Patient/ExtractedPatient"
+            },
+            "method": {
+              "coding": [
+                {
+                  "code": "record",
+                  "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                  "display": "Written Record"
+                }
+              ],
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-templateExtractValue",
+                  "valueString": "%resource.descendants().where(linkId='immunizationSourceMpox').answer.value.ofType(Coding).first().select(%factory.CodeableConcept($this))"
+                }
+              ]
             },
             "component": [
               {
@@ -8054,6 +8174,45 @@
                   ]
                 },
                 {
+                  "linkId": "immunizationSourceSmallpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.source",
+                  "text": "Source d'information",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                        "code": "record",
+                        "display": "Carnet de vaccination"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                        "code": "recall",
+                        "display": "Anamnèse"
+                      }
+                    }
+                  ]
+                },
+                {
                   "linkId": "immunizationDosesSmallpox",
                   "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.doses",
                   "text": "Nombre total de doses",
@@ -9675,6 +9834,45 @@
                         "display": "Inconnu"
                       },
                       "initialSelected": true
+                    }
+                  ]
+                },
+                {
+                  "linkId": "immunizationSourceMpox",
+                  "definition": "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.source",
+                  "text": "Source d'information",
+                  "type": "choice",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-choiceOrientation",
+                      "valueCode": "horizontal"
+                    }
+                  ],
+                  "answerOption": [
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                        "code": "record",
+                        "display": "Carnet de vaccination"
+                      }
+                    },
+                    {
+                      "valueCoding": {
+                        "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                        "code": "recall",
+                        "display": "Anamnèse"
+                      }
                     }
                   ]
                 },
@@ -11567,6 +11765,6 @@
     }
   ],
   "version": "0.0.1",
-  "date": "2026-11-25T16:49:31+01:00",
+  "date": "2026-11-25T18:11:03+01:00",
   "description": "GENERATED FILE — do not edit by hand. Assembled from the modular questionnaire ChEkmQuestionnaireMpox and its sub-questionnaires via Questionnaire/$assemble (scripts/assemble-questionnaire.sh). Re-run that script after changing any child questionnaire to keep this resource in sync."
 }

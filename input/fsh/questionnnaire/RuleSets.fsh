@@ -415,7 +415,7 @@ RuleSet: RuleSetQrGroupTreatingPhysician
 // parameterise a sub-questionnaire, so the reuse happens one level down, in FSH: every disease that
 // asks about vaccinations builds its own small sub-questionnaire (ChEkmQuestionnaireImmunization<X>)
 // by inserting this rule set once per vaccination type. Mpox inserts it twice; a future organism
-// inserts it as often as its form has rows, and gets the identical four questions, item controls,
+// inserts it as often as its form has rows, and gets the identical five questions, item controls,
 // enableWhen wiring and translations for free.
 //
 // FIXED ROWS, NOT A REPEATING GROUP. A `repeats = true` group would be disease-agnostic without any
@@ -425,12 +425,12 @@ RuleSet: RuleSetQrGroupTreatingPhysician
 // Immunization a plain context-gated Bundle entry, the shape that is already proven by the
 // hospitalisation Encounter and the cause-of-death Observation. The reporting form has a fixed list too.
 //
-// {suffix} is appended to all five linkIds so several rows can live in one questionnaire; it must be
+// {suffix} is appended to all six linkIds so several rows can live in one questionnaire; it must be
 // a bare word (no spaces), e.g. `Smallpox`. NOTE the FSH escaping rule for rule set arguments: `,`
 // `(` and `)` must be backslash-escaped inside a parameter value, so the label parameters below use
 // an en dash instead of a parenthetical.
 //
-// The four questions map one-to-one onto ChEkmImmunizationForm; `targetDisease` is NOT a question
+// The five questions map one-to-one onto ChEkmImmunizationForm; `targetDisease` is NOT a question
 // (the row heading is the vaccination type), it is supplied by the extraction template.
 RuleSet: RuleSetQrImmunizationRow(suffix, text, text-de-CH, text-fr-CH, text-it-CH)
 * item[=].item[+].linkId = "immunization{suffix}"
@@ -438,7 +438,7 @@ RuleSet: RuleSetQrImmunizationRow(suffix, text, text-de-CH, text-fr-CH, text-it-
 * item[=].item[=].type = #group
 
 // 1. "Geimpft?" (vaccinated?) - yes / no / unknown. "Yes" produces a ChEkmImmunization, "no" and
-//    "unknown" a ChEkmObservationVaccinationStatus. The other three items are details OF the
+//    "unknown" a ChEkmObservationVaccinationStatus. Items 2-4 are details OF the
 //    vaccination and are enableWhen-gated on "yes", so an answered dose count / date / product implies
 //    "yes"; the extraction template relies on that, exactly as the hospitalisation group does.
 //    NOT REQUIRED, but PRE-SELECTED to "unknown" (issue #36): FOPH records an unanswered row the same
@@ -455,6 +455,29 @@ RuleSet: RuleSetQrImmunizationRow(suffix, text, text-de-CH, text-fr-CH, text-it-
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueCode = #useSupplement
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "expression"
 * item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-snomed-language-supplement"
+* item[=].item[=].item[=].extension[+].url = $questionnaire-itemControl
+* item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
+* item[=].item[=].item[=].extension[+].url = $choiceOrientation
+* item[=].item[=].item[=].extension[=].valueCode = #horizontal
+
+// 1a. "gemäss: Impfausweis / Anamnese" - the source of information of THIS row (issue #49). Per
+//    row, because the Mpox form asks it on each line; the invasive pneumococcal disease form asks it
+//    once for the section, but that section has a single row. NOT gated on "yes": the form shows it
+//    next to all three answers, and "according to the vaccination record: no" is an answer too. So it
+//    reaches the wire on both resource types - Immunization.reportOrigin for "yes",
+//    Observation.method for "no" / "unknown" (see RuleSetImmunization.fsh). Optional; unanswered
+//    emits nothing. Single choice (radio buttons), although the issue drew check boxes: the target
+//    elements hold one concept.
+* item[=].item[=].item[+].linkId = "immunizationSource{suffix}"
+* item[=].item[=].item[=].definition = "http://fhir.ch/ig/ch-ekm/StructureDefinition/ChEkmImmunizationForm#ChEkmImmunizationForm.source"
+* insert RuleSetQrLevel3Text("Source of information", "Informationsquelle", "Source d'information", "Fonte delle informazioni")
+* item[=].item[=].item[=].type = #choice
+* item[=].item[=].item[=].answerValueSet = "http://fhir.ch/ig/ch-ekm/ValueSet/ChEkmImmunizationInformationSource"
+* item[=].item[=].item[=].answerValueSet.extension[+].url = $binding-parameter
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "name"
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueCode = #useSupplement
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[+].url = "expression"
+* item[=].item[=].item[=].answerValueSet.extension[=].extension[=].valueString = "http://fhir.ch/ig/ch-ekm/CodeSystem/ch-ekm-immunization-origin-language-supplement"
 * item[=].item[=].item[=].extension[+].url = $questionnaire-itemControl
 * item[=].item[=].item[=].extension[=].valueCodeableConcept = $item-control#radio-button
 * item[=].item[=].item[=].extension[+].url = $choiceOrientation

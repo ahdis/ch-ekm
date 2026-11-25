@@ -85,12 +85,12 @@ Usage: #inline
 Instance: ExtractedVaccinationStatusSmallpoxNo
 InstanceOf: ChEkmObservationVaccinationStatusMpox
 Usage: #inline
-* insert RuleSetVaccinationStatusNo(67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
+* insert RuleSetVaccinationStatusNo(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
 
 Instance: ExtractedVaccinationStatusSmallpoxUnknown
 InstanceOf: ChEkmObservationVaccinationStatusMpox
 Usage: #inline
-* insert RuleSetVaccinationStatusUnknown(67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
+* insert RuleSetVaccinationStatusUnknown(Smallpox, 67924001, "Smallpox", 1290624003, "Variola virus antigen-containing vaccine product")
 
 Instance: ExtractedImmunizationMpoxDated
 InstanceOf: ChEkmImmunizationMpox
@@ -105,12 +105,12 @@ Usage: #inline
 Instance: ExtractedVaccinationStatusMpoxNo
 InstanceOf: ChEkmObservationVaccinationStatusMpox
 Usage: #inline
-* insert RuleSetVaccinationStatusNo(359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
+* insert RuleSetVaccinationStatusNo(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
 
 Instance: ExtractedVaccinationStatusMpoxUnknown
 InstanceOf: ChEkmObservationVaccinationStatusMpox
 Usage: #inline
-* insert RuleSetVaccinationStatusUnknown(359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
+* insert RuleSetVaccinationStatusUnknown(Mpox, 359814004, "Mpox", 1293025000, "Modified Vaccinia virus Ankara antigen only vaccine product")
 
 // ---------------------------------------------------------------------------
 // The DISEASE-SPECIFIC QuestionnaireResponse (ChEkmQuestionnaireResponseDiseaseSpecificMpox): the

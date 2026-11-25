@@ -183,6 +183,13 @@ Description: "This CH EKM base profile constrains the Observation resource for t
 * dataAbsentReason 0..0
 * dataAbsentReason ^short = "Not used: 'unknown' is an answer and is carried in value[x]; an unanswered row is reported as 'unknown' too"
 
+// "gemäss: Impfausweis / Anamnese" (issue #49): how the status was determined. Observation has no
+// `reportOrigin`, and `method` ("the mechanism used to perform the observation") is what the answer
+// is; the same two codes as ChEkmImmunization.reportOrigin, so all three answers of a row carry
+// their source identically.
+* method from ChEkmImmunizationInformationSource (required)
+* method ^short = "Source of information ('Informationsquelle'): vaccination record (#record) or medical history (#recall). Absent when not answered"
+
 // The vaccination the answer is about.
 * component 1..1
 * component ^short = "The vaccination this answer is about: the vaccine product, with the disease it targets as its value"

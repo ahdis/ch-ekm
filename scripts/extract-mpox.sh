@@ -88,6 +88,18 @@ if command -v jq >/dev/null 2>&1; then
   ' "$OUT" || true
 
   echo
+  echo "Impfstatus (expect the smallpox row as an \"unknown\" Observation with method recall, issue #49,"
+  echo "and the mpox row as an Immunization WITHOUT reportOrigin - its source was not answered):"
+  jq -r '
+    .entry[].resource
+    | select(.resourceType == "Immunization" or (.resourceType == "Observation" and .code.coding[0].code == "408864009"))
+    | if .resourceType == "Immunization"
+      then "    Immunization \(.id)  reportOrigin = \(.reportOrigin.coding[0].code // "(absent)")"
+      else "    Observation  \(.id)  value = \(.valueCodeableConcept.coding[0].code)  method = \(.method.coding[0].code // "(absent)")"
+      end
+  ' "$OUT" || true
+
+  echo
   echo "Disease-specific QuestionnaireResponse in the document (expect it to name the disease-specific"
   echo "questionnaire and hold ONLY the close-contact group, issue #43):"
   jq -r '([.entry[].resource | select(.resourceType == "QuestionnaireResponse")][0]

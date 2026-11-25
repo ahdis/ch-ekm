@@ -369,3 +369,21 @@ Description: "This CH EKM value set contains the SNOMED CT vaccine product of th
 * ^experimental = false
 
 * $sct#836398006 "Streptococcus pneumoniae antigen-containing vaccine product"
+
+// "Informationsquelle" / "gemäss: Impfausweis / Anamnese" (issue #49) - where the answer to one row
+// of the "Impfstatus" section comes from. The HL7 immunization-origin codes, the code system R4
+// binds `Immunization.reportOrigin` to (as an example), so a consumer that already reads
+// vaccination records needs no CH EKM specific terminology:
+//   Impfausweis / vaccination record -> #record "Written Record"
+//   Anamnese / medical history       -> #recall "Parent/Guardian/Patient Recall"
+// Bound to Immunization.reportOrigin ("yes") AND to Observation.method ("no" / "unknown"), so all
+// three answers carry their source with the same two codes. German, French and Italian displays come
+// from ChEkmImmunizationOriginLanguageSupplement.
+ValueSet: ChEkmImmunizationInformationSource
+Title: "CH EKM Immunization Information Source"
+Description: "This CH EKM value set contains the answers to the 'Source of information' question of a row of the 'Impfstatus' (vaccination status) form section: the vaccination record or the medical history. It is the value set of ChEkmImmunization.reportOrigin and ChEkmObservationVaccinationStatus.method."
+* ^status = #active
+* ^experimental = false
+
+* $immunization-origin#record "Written Record"
+* $immunization-origin#recall "Parent/Guardian/Patient Recall"

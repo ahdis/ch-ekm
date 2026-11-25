@@ -785,6 +785,15 @@
                     "display": "Unknown (qualifier value)"
                   }
                 ]
+              },
+              "method": {
+                "coding": [
+                  {
+                    "code": "recall",
+                    "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                    "display": "Parent/Guardian/Patient Recall"
+                  }
+                ]
               }
             }
           },

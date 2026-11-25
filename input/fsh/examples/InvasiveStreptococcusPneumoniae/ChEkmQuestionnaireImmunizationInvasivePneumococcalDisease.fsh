@@ -6,7 +6,7 @@
 //
 // This file is disease-SPECIFIC — like examples/Mpox/ChEkmQuestionnaireImmunizationMpox.fsh, and
 // unlike the children in input/fsh/questionnnaire/ — because which vaccinations are asked about is
-// a property of the disease. What is shared lives in RuleSetQrImmunizationRow: the four questions,
+// a property of the disease. What is shared lives in RuleSetQrImmunizationRow: the five questions,
 // their item controls, the enableWhen wiring on "yes" and all four languages. This organism is the
 // second one to use it, and it needed no change to do so.
 //

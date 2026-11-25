@@ -47,7 +47,13 @@
 // directly queryable as "vaccinated against smallpox" rather than only through `vaccineCode`. R4
 // makes `doseNumber[x]` 1..1 inside `protocolApplied`; with the count mandatory it is always a value.
 // The Observation needs none of this - it has no date and no dose count to be absent, which is why
-// its two instances are entirely static.
+// its two instances are static apart from the source of information below.
+//
+// THE SOURCE OF INFORMATION (issue #49, "gemäss: Impfausweis / Anamnese") is asked for every answer,
+// so all four instances read it: `reportOrigin` on the two Immunizations, `method` on the two
+// Observations (Observation has no reportOrigin), the same two immunization-origin codes on both.
+// Optional, and NOT part of any gate - it does not change which resource a row becomes, only adds
+// to it. Unanswered, the directive yields nothing and the element is dropped.
 //
 // The last-dose date stays optional: "vaccinated, date unknown" is the likely answer for the
 // historical smallpox programme.
@@ -59,8 +65,8 @@
 // reads exists, those directives ALWAYS fire - which is what makes a sentinel next to them safe.
 //
 // DISEASE-SPECIFIC PARAMETERS, because the FHIRPath cannot read them off the template:
-//   {suffix}            the linkId suffix of the row, e.g. Smallpox. Only the variants that READ an
-//                       answer need it; the two Observations read none, so they do not take it.
+//   {suffix}            the linkId suffix of the row, e.g. Smallpox. All four variants read at
+//                       least the source of information, so all four take it.
 //   {diseaseCode}       / {diseaseDisplay} -> Immunization.protocolApplied.targetDisease, resp. the
 //                       Observation's component value: what the row is about
 //   {vaccineCode}       / {vaccineDisplay} -> the SNOMED CT vaccine product, used as the
@@ -135,6 +141,18 @@ RuleSet: RuleSetImmunizationDoseAnswered(suffix)
 * protocolApplied.doseNumberPositiveInt.extension[+].url = $sdc-templateExtractValue
 * protocolApplied.doseNumberPositiveInt.extension[=].valueString = "%resource.descendants().where(linkId='immunizationDoses{suffix}').answer.value.first()"
 
+// The source of information (issue #49) - into the element {element}: `reportOrigin` on the
+// Immunization, `method` on the Observation. PLACEHOLDER DEFAULT, like the product above: the
+// element has a required binding, so the template needs a code of the value set to validate on its
+// own. The directive always runs and decides alone - answered, its CodeableConcept REPLACES the
+// static one; unanswered, the empty result DELETES the element - so the placeholder never survives a
+// real extraction. NOT gated by a templateExtractContext: the instance sits inside a context-gated
+// Bundle entry, below which no context directive may appear (see the header).
+RuleSet: RuleSetImmunizationSourceAnswered(suffix, element)
+* {element} = $immunization-origin#record "Written Record"
+* {element}.extension[+].url = $sdc-templateExtractValue
+* {element}.extension[=].valueString = "%resource.descendants().where(linkId='immunizationSource{suffix}').answer.value.ofType(Coding).first().select(%factory.CodeableConcept($this))"
+
 
 // =================================================================================================
 // The two "yes" row variants.
@@ -144,6 +162,7 @@ RuleSet: RuleSetImmunizationDated(suffix, diseaseCode, diseaseDisplay, vaccineCo
 * insert RuleSetImmunizationBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
 * insert RuleSetImmunizationVaccineAnswered({suffix}, {vaccineCode}, {vaccineDisplayRaw})
 * status = #completed
+* insert RuleSetImmunizationSourceAnswered({suffix}, reportOrigin)
 * insert RuleSetImmunizationOccurrenceAnswered({suffix})
 * insert RuleSetImmunizationDoseAnswered({suffix})
 
@@ -151,6 +170,7 @@ RuleSet: RuleSetImmunizationUndated(suffix, diseaseCode, diseaseDisplay, vaccine
 * insert RuleSetImmunizationBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
 * insert RuleSetImmunizationVaccineAnswered({suffix}, {vaccineCode}, {vaccineDisplayRaw})
 * status = #completed
+* insert RuleSetImmunizationSourceAnswered({suffix}, reportOrigin)
 * insert RuleSetImmunizationOccurrenceAbsent(asked-unknown)
 * insert RuleSetImmunizationDoseAnswered({suffix})
 
@@ -162,10 +182,11 @@ RuleSet: RuleSetImmunizationUndated(suffix, diseaseCode, diseaseDisplay, vaccine
 // `Immunization.status` has no "unknown", and `not-done` asserts that the vaccination did not take
 // place. Both are answers, and an answer lives in `Observation.value[x]` - see Observation.fsh.
 //
-// ENTIRELY STATIC, which is what makes these the two simplest instances in the template: the
-// answer, the vaccine product and the target disease are all fixed by the instance's own gate and
-// its disease parameters, so there is not one templateExtractValue directive below the gate. No
-// sentinel, no data-absent-reason, nothing that could survive into the wrong branch.
+// STATIC BUT FOR ONE ELEMENT, which is what makes these the two simplest instances in the template:
+// the answer, the vaccine product and the target disease are all fixed by the instance's own gate
+// and its disease parameters. The only templateExtractValue below the gate is the source of
+// information in `method` (issue #49), which replaces or drops its own placeholder and nothing else.
+// No data-absent-reason, nothing that could survive into the wrong branch.
 //
 // The answer is NOT a rule set argument. Its display, "No (qualifier value)" / "Unknown (qualifier
 // value)", contains parentheses, and `(` and `)` inside an argument are read by the FSH parser as
@@ -173,23 +194,24 @@ RuleSet: RuleSetImmunizationUndated(suffix, diseaseCode, diseaseDisplay, vaccine
 // everything except the answer is shared here and each variant writes its own value[x].
 // =================================================================================================
 
-RuleSet: RuleSetVaccinationStatusBase(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
+RuleSet: RuleSetVaccinationStatusBase(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
 * status = #final
 * code = $sct#408864009 "Vaccination status (observable entity)"
 * subject.reference = "Patient/ExtractedPatient"
+* insert RuleSetImmunizationSourceAnswered({suffix}, method)
 * component.code = $sct#{vaccineCode} {vaccineDisplay}
 * component.valueCodeableConcept = $sct#{diseaseCode} {diseaseDisplay}
 
 // "No" - the person was not vaccinated against this disease.
-RuleSet: RuleSetVaccinationStatusNo(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
-* insert RuleSetVaccinationStatusBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
+RuleSet: RuleSetVaccinationStatusNo(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
+* insert RuleSetVaccinationStatusBase({suffix}, {diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
 * valueCodeableConcept = $sct#373067005 "No (qualifier value)"
 
 // "Unknown" - it is not known whether the person was vaccinated against this disease, either because
 // the physician said so or because the row was left unanswered (issue #36: FOPH records both the
 // same way). The same qualifier this IG uses for every other "unknown" that can be carried as a code.
-RuleSet: RuleSetVaccinationStatusUnknown(diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
-* insert RuleSetVaccinationStatusBase({diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
+RuleSet: RuleSetVaccinationStatusUnknown(suffix, diseaseCode, diseaseDisplay, vaccineCode, vaccineDisplay)
+* insert RuleSetVaccinationStatusBase({suffix}, {diseaseCode}, {diseaseDisplay}, {vaccineCode}, {vaccineDisplay})
 * valueCodeableConcept = $sct#261665006 "Unknown (qualifier value)"
 
 

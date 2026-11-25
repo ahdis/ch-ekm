@@ -115,6 +115,8 @@ Description: "Example for a CH EKM Immunization: pneumococcal vaccination, two d
 * patient = Reference(ChEkmPatientInitialsExample)
 // Date of the LAST dose, not of a single administration.
 * occurrenceDateTime = "2000-05-01"
+// "Informationsquelle: Impfausweis" (issue #49).
+* reportOrigin = $immunization-origin#record "Written Record"
 * protocolApplied.targetDisease[+] = $sct#16814004 "Pneumococcal infectious disease"
 // The TOTAL number of doses of the series.
 * protocolApplied.doseNumberPositiveInt = 2

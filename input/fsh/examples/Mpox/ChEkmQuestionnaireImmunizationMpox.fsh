@@ -6,7 +6,7 @@
 //
 // This file is disease-SPECIFIC — like ChEkmQuestionnaireHepatitisCCourseOfDisease, and unlike the
 // children in input/fsh/questionnnaire/ — because which vaccinations are asked about is a property
-// of the disease. What is shared lives in RuleSetQrImmunizationRow: the four questions, their item
+// of the disease. What is shared lives in RuleSetQrImmunizationRow: the five questions, their item
 // controls, the enableWhen wiring on "yes" and all four languages. A second organism writes a file
 // like this one with its own rows and inherits everything else. See the rule set's header for why
 // the rows are fixed rather than a repeating "add a vaccination" group.
@@ -23,7 +23,7 @@
 // NO PRE-POPULATION. Unlike the Hospitalisation and Death children there is no initialExpression
 // here: the vaccination history lives in Immunization resources, which no SDC launch context
 // carries (%patient / %user / %encounter). The form asks. Should a launch context for it ever
-// appear, the four items are the natural place to add one.
+// appear, the five items are the natural place to add one.
 
 Instance: ChEkmQuestionnaireImmunizationMpox
 InstanceOf: Questionnaire

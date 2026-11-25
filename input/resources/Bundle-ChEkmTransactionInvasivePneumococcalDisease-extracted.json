@@ -569,6 +569,15 @@
                   }
                 ],
                 "text": "Prevenar 13"
+              },
+              "reportOrigin": {
+                "coding": [
+                  {
+                    "code": "record",
+                    "system": "http://terminology.hl7.org/CodeSystem/immunization-origin",
+                    "display": "Written Record"
+                  }
+                ]
               }
             }
           }

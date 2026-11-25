@@ -179,6 +179,8 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 //   occurrenceDateTime                      = valueless, data-absent-reason#asked-unknown
 //   vaccineCode.coding[0]                   = sct#836398006 (the template's SNOMED fallback, kept)
 //   vaccineCode.text                        = "Prevenar 13" (the typed answer)
+//   reportOrigin                            = immunization-origin#record (source of information
+//                                             "Impfausweis", issue #49)
 // A "nein" / "unbekannt" answer would instead emit a
 // ChEkmObservationVaccinationStatusInvasivePneumococcalDisease, and so would an unanswered row (as
 // "unbekannt", issue #36).
@@ -186,10 +188,12 @@ Description: "Example invasive pneumococcal disease QuestionnaireResponse used a
 * item[0].item[5].item[0].linkId = "immunizationPneumococcal"
 * item[0].item[5].item[0].item[0].linkId = "immunizationStatusPneumococcal"
 * item[0].item[5].item[0].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
-* item[0].item[5].item[0].item[1].linkId = "immunizationDosesPneumococcal"
-* item[0].item[5].item[0].item[1].answer.valueInteger = 2
-* item[0].item[5].item[0].item[2].linkId = "immunizationVaccinePneumococcal"
-* item[0].item[5].item[0].item[2].answer.valueString = "Prevenar 13"
+* item[0].item[5].item[0].item[1].linkId = "immunizationSourcePneumococcal"
+* item[0].item[5].item[0].item[1].answer.valueCoding = $immunization-origin#record "Written Record"
+* item[0].item[5].item[0].item[2].linkId = "immunizationDosesPneumococcal"
+* item[0].item[5].item[0].item[2].answer.valueInteger = 2
+* item[0].item[5].item[0].item[3].linkId = "immunizationVaccinePneumococcal"
+* item[0].item[5].item[0].item[3].answer.valueString = "Prevenar 13"
 
 // --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---
 // Values from the CSV's example column, so the extracted document matches the reporting form's sample.

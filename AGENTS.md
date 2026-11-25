@@ -109,6 +109,12 @@ This IG uses **two parallel representations** of the report content:
   `not-done` + a modifier extension that took the assertion back — removed). Both resource types are
   referenced from `Composition.section[immunization]` (LOINC 11369-6, the section code CH VACD also
   uses), whose `entry` is sliced by profile into `immunization` / `vaccination-status`.
+  Each row also asks the **source of information** (#49, "Informationsquelle: Impfausweis /
+  Anamnese", single choice, optional, not gated on "yes"; per row because the Mpox form asks it per
+  line, the invasive pneumococcal disease form once for its single row). It goes to the resource the
+  row produces: `Immunization.reportOrigin` for `yes`, `Observation.method` for `no` / `unknown`
+  (Observation has no `reportOrigin`), both bound required to `ChEkmImmunizationInformationSource`
+  (HL7 `immunization-origin` `#record` / `#recall`). `primarySource` is not set.
   - **`ChEkmImmunization`** (← `CHCoreImmunization`) — `yes` only, so `status = completed (exactly)`.
     `occurrenceDateTime` = the last dose, `protocolApplied.doseNumberPositiveInt` = the total number
     of doses. The dose count is MANDATORY once "yes" is answered (#36; required form item +
@@ -125,7 +131,8 @@ This IG uses **two parallel representations** of the report content:
     A single mandatory `component` names the vaccination, entirely in SNOMED CT: `component.code` is
     the vaccine product of the row (the same concept `ChEkmImmunization` uses as its `vaccineCode`
     fallback) and `component.value` the target disease, so both halves of one form line answer
-    "which vaccination?" identically. The two Observation template instances are fully static.
+    "which vaccination?" identically. The two Observation template instances are static apart from
+    `method` (the source of information).
 
 - **`ChEkmObservationTransgenderStatus`** (← `Observation`) — the "Nein" answer of the form question
   "trans Person" (issue #35). `code = sct#1384187000` "Identifies as transgender" (the parent of both
@@ -220,7 +227,8 @@ and one element per form item, plus a `Mapping` to the corresponding profile.
   (the Verlauf / Zustand part).
 - **`ChEkmImmunizationForm`** → maps to `ChEkmImmunization` (the `yes` answer) **and** to
   `ChEkmObservationVaccinationStatus` (`no` / `unknown`) — two `Mapping` blocks. Describes ONE row
-  of the "Impfstatus" section (target disease, yes/no/unknown, doses, last dose date, product); a
+  of the "Impfstatus" section (target disease, yes/no/unknown, source of information, doses, last
+  dose date, product); a
   disease instantiates it once per vaccination type it asks about.
 - **`ChEkmTreatingPhysicianForm`** → `Practitioner` + `Organization` form models.
 - **`ChEkmLabForm`** → `ChEkmOrganizationLab` (the "Labor" block: the analysing laboratory).
@@ -272,7 +280,9 @@ These logical models are the **master** for building the SDC Questionnaires — 
   `ChEkmServiceRequestReason`, `ChEkmOtherNoneUnknown`,
   `ChEkmHepatitisCCourseOfDisease`, `ChEkmYesNoUnknown`, `ChEkmHospitalisationReasonChoice`,
   `ChEkmCauseOfDeathChoice`, `ChEkmMpoxImmunizationTargetDisease`,
-  `ChEkmVaccinationStatusNoUnknown`, `ChEkmMpoxVaccineProduct`. The vaccine brand list and the
+  `ChEkmVaccinationStatusNoUnknown`, `ChEkmMpoxVaccineProduct`, `ChEkmImmunizationInformationSource`
+  (HL7 `immunization-origin` `#record` / `#recall`, #49; its de/fr/it labels come from the supplement
+  `ChEkmImmunizationOriginLanguageSupplement`). The vaccine brand list and the
   target disease list are NOT redefined here — `ChEkmImmunization` reuses the CH VACD value sets that
   `CHCoreImmunization` already binds (`$SwissVaccinesVS`, `$TargetDiseasesVS`, both from ch-term).
 - **ConceptMap**: `ChEkmSexToHl7Gender` (biological sex → administrative gender).

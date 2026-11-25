@@ -201,27 +201,34 @@ Description: "Example Mpox QuestionnaireResponse used as input to SDC template-b
 // Two rows, deliberately answered differently so one round trip covers two of the three branches -
 // and both resource types, because the answer decides which one is emitted (see ChEkmImmunization
 // and ChEkmObservationVaccinationStatus):
-//   Pockenimpfung      LEFT UNANSWERED - the row is absent from this response, as it is when the
-//                      physician clears the pre-selected "unknown" -> a
-//                      ChEkmObservationVaccinationStatus with value = sct#261665006 "Unknown"
-//                      (issue #36: FOPH records an unanswered row as "unknown"), the vaccination
-//                      named by its single component (vaccine product as the code, smallpox as the
-//                      value). An explicit "unknown" passes the very same gate ("neither yes nor no").
+//   Pockenimpfung      "Geimpft?" LEFT UNANSWERED, as it is when the physician clears the
+//                      pre-selected "unknown", but the source of information answered "Anamnese"
+//                      (issue #49) -> a ChEkmObservationVaccinationStatus with value =
+//                      sct#261665006 "Unknown" (issue #36: FOPH records an unanswered row as
+//                      "unknown"), method = immunization-origin#recall, the vaccination named by its
+//                      single component (vaccine product as the code, smallpox as the value). An
+//                      explicit "unknown" passes the very same gate ("neither yes nor no").
 //   Affenpockenimpfung "yes", 2 doses, last dose 2026-06-15, Jynneos picked from the Swiss vaccine
-//                      list -> a fully populated Immunization whose vaccineCode is the picked brand
-//                      code, replacing the template's SNOMED CT fallback concept.
+//                      list, NO source of information -> a fully populated Immunization whose
+//                      vaccineCode is the picked brand code, replacing the template's SNOMED CT
+//                      fallback concept, and without reportOrigin (the template's placeholder is
+//                      dropped). The invasive pneumococcal disease round trip covers an answered
+//                      reportOrigin.
 // The third branch, "no", produces the same Observation with value = sct#373067005; it is covered by
 // the notes in RuleSetImmunization.fsh.
 * item[0].item[5].linkId = "immunization"
-* item[0].item[5].item[0].linkId = "immunizationMpox"
-* item[0].item[5].item[0].item[0].linkId = "immunizationStatusMpox"
-* item[0].item[5].item[0].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
-* item[0].item[5].item[0].item[1].linkId = "immunizationDosesMpox"
-* item[0].item[5].item[0].item[1].answer.valueInteger = 2
-* item[0].item[5].item[0].item[2].linkId = "immunizationLastDoseMpox"
-* item[0].item[5].item[0].item[2].answer.valueDate = "2026-06-15"
-* item[0].item[5].item[0].item[3].linkId = "immunizationVaccineMpox"
-* item[0].item[5].item[0].item[3].answer.valueCoding = $ch-vacd-swissmedic-cs#69173 "Jynneos"
+* item[0].item[5].item[0].linkId = "immunizationSmallpox"
+* item[0].item[5].item[0].item[0].linkId = "immunizationSourceSmallpox"
+* item[0].item[5].item[0].item[0].answer.valueCoding = $immunization-origin#recall "Parent/Guardian/Patient Recall"
+* item[0].item[5].item[1].linkId = "immunizationMpox"
+* item[0].item[5].item[1].item[0].linkId = "immunizationStatusMpox"
+* item[0].item[5].item[1].item[0].answer.valueCoding = $sct#373066001 "Yes (qualifier value)"
+* item[0].item[5].item[1].item[1].linkId = "immunizationDosesMpox"
+* item[0].item[5].item[1].item[1].answer.valueInteger = 2
+* item[0].item[5].item[1].item[2].linkId = "immunizationLastDoseMpox"
+* item[0].item[5].item[1].item[2].answer.valueDate = "2026-06-15"
+* item[0].item[5].item[1].item[3].linkId = "immunizationVaccineMpox"
+* item[0].item[5].item[1].item[3].answer.valueCoding = $ch-vacd-swissmedic-cs#69173 "Jynneos"
 
 // --- Behandelnde Ärztin / behandelnder Arzt (Practitioner + Organization) ---
 * item[0].item[6].linkId = "treatingPhysician"

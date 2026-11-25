@@ -20,7 +20,7 @@ Logical: ChEkmImmunizationForm
 Parent: Base
 Characteristics: #can-be-target
 Title: "CH EKM Form: Immunization"
-Description: "Logical model for one row of the form section 'Vaccination status' (German form: 'Impfstatus'): which vaccination, whether it was given, with how many doses, when the last dose was given and with which product. One element per form item."
+Description: "Logical model for one row of the form section 'Vaccination status' (German form: 'Impfstatus'): which vaccination, whether it was given, according to which source, with how many doses, when the last dose was given and with which product. One element per form item."
 
 // Which vaccination the row is about. Not asked on the form — it IS the row, printed as its
 // heading ("Pockenimpfung", "Affenpockenimpfung") — but it is the element that identifies the row
@@ -33,6 +33,11 @@ Description: "Logical model for one row of the form section 'Vaccination status'
 // is reported as "unknown", which is also the form's initial value.
 * status 0..1 CodeableConcept "Vaccinated? yes / no / unknown (Geimpft?); unanswered means unknown"
 * status from ChEkmYesNoUnknown (required)
+
+// "gemäss: Impfausweis / Anamnese" (issue #49) - where the answer of this row comes from. Asked for
+// every answer, not only "yes", so it maps onto both target resources.
+* source 0..1 CodeableConcept "Source of information (Informationsquelle): vaccination record or medical history"
+* source from ChEkmImmunizationInformationSource (required)
 
 // "mit total ___ Dosen" - only asked when the answer above is "yes", and then MANDATORY (issue #36).
 * doses 0..1 positiveInt "Total number of doses received (mit total ___ Dosen); required when vaccinated"
@@ -53,6 +58,7 @@ Title: "Immunization Form to CH EKM Immunization"
 * -> "Immunization" "Maps a row of the 'Impfstatus' form section that was answered 'yes' to the ChEkmImmunization profile. 'no' and 'unknown' map to ChEkmObservationVaccinationStatus instead — see the ImmunizationFormToVaccinationStatus mapping"
 * targetDisease -> "Immunization.protocolApplied.targetDisease" "The vaccination the row asks about"
 * status -> "Immunization.status" "Answered 'yes' (373066001): status = completed. This resource exists for no other answer"
+* source -> "Immunization.reportOrigin" "Vaccination record (immunization-origin#record) or medical history (#recall). primarySource is left unset: the reporting physician may have given the recorded vaccination themselves"
 * doses -> "Immunization.protocolApplied.doseNumberPositiveInt" "Total number of doses; this resource describes the last dose of the series, so the last dose's number is the total"
 * lastDoseDate -> "Immunization.occurrenceDateTime" "Date of the last dose"
 * lastDoseDate -> "Immunization.occurrenceDateTime.extension[dataabsentreason]" "Vaccinated without a stated date: asked-unknown"
@@ -65,6 +71,7 @@ Id: immunization-form-to-vaccination-status
 Title: "Immunization Form to CH EKM Vaccination Status Observation"
 * -> "Observation" "Maps a row of the 'Impfstatus' form section that was answered 'no' or 'unknown' to the ChEkmObservationVaccinationStatus profile. 'yes' maps to ChEkmImmunization instead"
 * status -> "Observation.valueCodeableConcept" "The answer itself: 'no' (373067005) or 'unknown' (261665006); an unanswered row is 'unknown' too. 'yes' produces no Observation"
+* source -> "Observation.method" "How the status was determined: vaccination record (immunization-origin#record) or medical history (#recall). Observation has no reportOrigin"
 * targetDisease -> "Observation.component.valueCodeableConcept" "The vaccination the row asks about, named by the disease it protects against"
 * vaccine -> "Observation.component.code" "The SNOMED CT vaccine product of the row. NOT the answered brand name: the product question is only asked when the answer is 'yes', so this is always the fixed product concept for the row"
 // `doses` and `lastDoseDate` have no target here: both form items are enableWhen-gated on "yes", so

@@ -106,12 +106,12 @@ Usage: #inline
 Instance: ExtractedVaccinationStatusPneumococcalNo
 InstanceOf: ChEkmObservationVaccinationStatusInvasivePneumococcalDisease
 Usage: #inline
-* insert RuleSetVaccinationStatusNo(16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product")
+* insert RuleSetVaccinationStatusNo(Pneumococcal, 16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product")
 
 Instance: ExtractedVaccinationStatusPneumococcalUnknown
 InstanceOf: ChEkmObservationVaccinationStatusInvasivePneumococcalDisease
 Usage: #inline
-* insert RuleSetVaccinationStatusUnknown(16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product")
+* insert RuleSetVaccinationStatusUnknown(Pneumococcal, 16814004, "Pneumococcal infectious disease", 836398006, "Streptococcus pneumoniae antigen-containing vaccine product")
 
 // ---------------------------------------------------------------------------
 // Composition (ChEkmCompositionInvasivePneumococcalDisease) — static structure, references the

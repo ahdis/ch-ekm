@@ -13,6 +13,7 @@ Alias: $v3-ActClass =                   http://terminology.hl7.org/CodeSystem/v3
 Alias: $v3-ActCode =                                http://terminology.hl7.org/CodeSystem/v3-ActCode
 Alias: $v3-ParticipationType =          http://terminology.hl7.org/CodeSystem/v3-ParticipationType
 Alias: $v2-0203 = http://terminology.hl7.org/CodeSystem/v2-0203
+Alias: $immunization-origin =          http://terminology.hl7.org/CodeSystem/immunization-origin
 
 // SDC (Structured Data Capture) - Questionnaire
 Alias: $sdc-modular =               http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-modular

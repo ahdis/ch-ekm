@@ -25,6 +25,8 @@
 //   no         ChEkmObservationVaccinationStatus, value = sct#373067005 "No"
 //   unknown    ChEkmObservationVaccinationStatus, value = sct#261665006 "Unknown"
 //   unanswered the same as "unknown" (issue #36)
+// The source of information (issue #49) is asked for all three answers: reportOrigin here,
+// Observation.method on the other two.
 //
 // WHY THE DOSE COUNT MUST BE A VALUE. FOPH requires the number of doses whenever a vaccination was
 // given (issue #36, 22.10.2026). `protocolApplied.targetDisease` names the vaccination the row is
@@ -70,6 +72,13 @@ Description: "This CH EKM base profile constrains the Immunization resource for 
 // also the answer value set of the form item.
 * vaccineCode 1..1
 * vaccineCode ^short = "The vaccine product. A Swiss vaccine (brand) code when the physician picked one, otherwise the SNOMED CT vaccine product concept for the target disease; a typed brand name is carried in vaccineCode.text"
+
+// "gemäss: Impfausweis / Anamnese" (issue #49): where the physician has the answer from. The R4
+// element made for it; its binding is only an example there, here it is the two answers of the form.
+// `primarySource` stays unconstrained and is not set by the form: the reporting physician may have
+// given the vaccination in the vaccination record themselves, so `false` would be a guess.
+* reportOrigin from ChEkmImmunizationInformationSource (required)
+* reportOrigin ^short = "Source of information ('Informationsquelle'): vaccination record (#record) or medical history (#recall). Absent when not answered"
 
 // Date of the LAST dose, not of a single administration — the form asks for one date per
 // vaccination series. Valueless + data-absent-reason when the physician did not give a date.

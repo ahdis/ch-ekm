@@ -1231,6 +1231,14 @@ optional once the answer is "yes". Three engine/SUSHI facts collide here, all fo
 > stay apart.) Kept apart either way: the two Mpox
 > rows (smallpox, mpox).
 
+> **Issue #49 added the source of information back** ("Informationsquelle: Impfausweis / Anamnese"),
+> asked per row and for every answer. It does not touch the split: it is in no gate, and each of the
+> four instances carries ONE plain `templateExtractValue` on `reportOrigin` (Immunization) or `method`
+> (Observation) that builds the whole CodeableConcept from the answered Coding. The element holds a
+> static placeholder (`immunization-origin#record`) so the template validates against the required
+> binding; the directive always runs, so an answer REPLACES the placeholder and no answer DELETES
+> the element — the placeholder cannot survive. (`RuleSetImmunizationSourceAnswered`.)
+
 **1. A required primitive that is sometimes a value and sometimes a data-absent-reason cannot live in
 one template.** An element carrying only `templateExtractValue` artifacts is reported by SUSHI as
 `occurrence[x] has minimum cardinality 1 but occurs 0 time(s)`, so the template needs real static

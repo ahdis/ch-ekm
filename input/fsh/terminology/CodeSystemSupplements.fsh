@@ -31,6 +31,34 @@ Description: "CodeSystem supplement adding German, French and Italian (Swiss) di
 * #other ^designation[+].language = #it-CH
 * #other ^designation[=].value = "indeterminato"
 
+// The two HL7 immunization-origin codes of ChEkmImmunizationInformationSource (issue #49), with the
+// labels of the reporting form ("gemäss: Impfausweis / Anamnese") rather than translations of the
+// HL7 displays, which are US-flavoured ("Parent/Guardian/Patient Recall").
+CodeSystem: ChEkmImmunizationOriginLanguageSupplement
+Id: ch-ekm-immunization-origin-language-supplement
+Title: "CH EKM Immunization Origin Language Supplement (de/fr/it)"
+Description: "CodeSystem supplement adding German, French and Italian (Swiss) display designations to the two HL7 immunization-origin codes the 'Source of information' question of the vaccination status uses, for localized Questionnaire option labels via displayLanguage expansion."
+* ^status = #active
+* ^experimental = false
+* ^content = #supplement
+* ^supplements = $immunization-origin
+
+* #record "Written Record"
+* #record ^designation[+].language = #de-CH
+* #record ^designation[=].value = "Impfausweis"
+* #record ^designation[+].language = #fr-CH
+* #record ^designation[=].value = "Carnet de vaccination"
+* #record ^designation[+].language = #it-CH
+* #record ^designation[=].value = "Libretto delle vaccinazioni"
+
+* #recall "Parent/Guardian/Patient Recall"
+* #recall ^designation[+].language = #de-CH
+* #recall ^designation[=].value = "Anamnese"
+* #recall ^designation[+].language = #fr-CH
+* #recall ^designation[=].value = "Anamnèse"
+* #recall ^designation[+].language = #it-CH
+* #recall ^designation[=].value = "Anamnesi"
+
 // ============================================================================================
 // SNOMED CT language supplement — de-CH / fr-CH / it-CH for the SNOMED codes enumerated in
 // input/fsh/terminology/ValueSet.fsh (the explicitly listed `$sct#...` concepts; is-a filter /
